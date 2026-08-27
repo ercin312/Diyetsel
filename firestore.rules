@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function userDoc() { return get(/databases/$(database)/documents/users/$(uid())); }
+    function isAdmin() { return signedIn() && userDoc().data.role == 'admin'; }
+    function isOwner(userId) { return signedIn() && uid() == userId; }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.role == 'client';
+      allow update: if (isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    match /appointments/{id} {
+      allow read: if signedIn() && (isAdmin() || resource.data.clientId == uid());
+      allow create: if signedIn();
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+    }
+    match /availability/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /services/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /serviceRequests/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+      allow create: if signedIn() && request.resource.data.clientId == uid();
+      allow update: if isAdmin() || isOwner(resource.data.clientId);
+    }
+    match /dietPlans/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+    }
+    match /waterLogs/{userId}/days/{day} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+    match /measurements/{userId}/entries/{id} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+    match /mealLogs/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+      allow create: if signedIn() && request.resource.data.clientId == uid();
+      allow update: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+    }
+    match /blogPosts/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /blogInteractions/{id} {
+      allow read: if signedIn();
+      allow write: if signedIn();
+    }
+    match /recipes/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+    match /chats/{threadId} {
+      allow read, write: if signedIn() && (isAdmin() || uid() in resource.data.participantIds);
+      match /messages/{messageId} {
+        allow read, write: if signedIn();
+      }
+    }
+    match /documents/{userId}/files/{id} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+    match /payments/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.clientId == uid());
+      allow write: if isAdmin();
+    }
+    match /shoppingLists/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+  }
+}

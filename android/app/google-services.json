@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760739483719",
+    "project_id": "diyetsel-platform",
+    "storage_bucket": "diyetsel-platform.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760739483719:android:edbae48ec9c0133b672162",
+        "android_client_info": {
+          "package_name": "com.diyetsel.diyetsel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCklLr5hnXjZMeWqNHikrWpdUquVsYFf_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

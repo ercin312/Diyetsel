@@ -1,0 +1,207 @@
+# Diyetsel → TestFlight (GitHub Actions)
+#
+# App Store Connect app: 6805844542
+# Bundle ID: com.diyetsel.diyetsel
+#
+# Required secrets (same names as dieton / Kresim — reusable except provisioning profile):
+#   IOS_TEAM_ID
+#   IOS_DISTRIBUTION_CERT_BASE64
+#   IOS_DISTRIBUTION_CERT_PASSWORD
+#   IOS_PROVISIONING_PROFILE_BASE64   ← NEW profile for com.diyetsel.diyetsel
+#   IOS_PROVISIONING_PROFILE_NAME     ← exact Name from that profile
+#   APP_STORE_CONNECT_KEY_ID
+#   APP_STORE_CONNECT_ISSUER_ID
+#   APP_STORE_CONNECT_KEY_CONTENT     ← .p8 PEM or base64
+#
+# See docs/TESTFLIGHT.md
+
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      what_to_test:
+        description: "TestFlight What to Test (optional)"
+        required: false
+        default: ""
+
+concurrency:
+  group: ios-testflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_upload:
+    runs-on: macos-15
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Verify signing secrets
+        env:
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+          IOS_DISTRIBUTION_CERT_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERT_BASE64 }}
+          IOS_DISTRIBUTION_CERT_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY_CONTENT }}
+        run: |
+          set -euo pipefail
+          for v in IOS_TEAM_ID IOS_DISTRIBUTION_CERT_BASE64 IOS_DISTRIBUTION_CERT_PASSWORD \
+                   IOS_PROVISIONING_PROFILE_BASE64 IOS_PROVISIONING_PROFILE_NAME \
+                   APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_KEY_CONTENT; do
+            eval "val=\${$v:-}"
+            if [ -z "$val" ]; then
+              echo "::error::Missing secret: $v"
+              exit 1
+            fi
+          done
+          echo "Signing secrets present. Team ID length=${#IOS_TEAM_ID}"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Import distribution certificate
+        uses: apple-actions/import-codesign-certs@v6
+        with:
+          p12-file-base64: ${{ secrets.IOS_DISTRIBUTION_CERT_BASE64 }}
+          p12-password: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
+
+      - name: Install provisioning profile
+        env:
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/diyetsel.mobileprovision
+          security cms -D -i /tmp/diyetsel.mobileprovision > /tmp/diyetsel_prov.plist
+          UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' /tmp/diyetsel_prov.plist)
+          NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' /tmp/diyetsel_prov.plist)
+          APP_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' /tmp/diyetsel_prov.plist)
+          echo "Profile Name=$NAME"
+          echo "Profile UUID=$UUID"
+          echo "Profile AppId=$APP_ID"
+          if [[ "$APP_ID" != *".com.diyetsel.diyetsel" ]]; then
+            echo "::error::Provisioning profile is not for com.diyetsel.diyetsel (got $APP_ID)"
+            exit 1
+          fi
+          if [ "$NAME" != "$IOS_PROVISIONING_PROFILE_NAME" ]; then
+            echo "::error::IOS_PROVISIONING_PROFILE_NAME secret ('$IOS_PROVISIONING_PROFILE_NAME') must equal profile Name ('$NAME')"
+            exit 1
+          fi
+          cp /tmp/diyetsel.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision"
+
+      - name: Apply CI signing patch
+        env:
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+          IOS_BUNDLE_ID: com.diyetsel.diyetsel
+        run: python3 tools/patch_ios_ci_signing.py
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-cocoapods-${{ hashFiles('ios/Podfile', 'pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cocoapods-
+
+      - name: CocoaPods
+        working-directory: ios
+        run: |
+          set -euo pipefail
+          export COCOAPODS_DISABLE_STATS=true
+          for attempt in 1 2 3; do
+            echo "pod install attempt ${attempt}/3..."
+            if pod install; then
+              echo "CocoaPods install OK."
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              sleep $((attempt * 10))
+            fi
+          done
+          echo "::error::pod install failed after 3 attempts."
+          exit 1
+
+      - name: Build IPA
+        run: |
+          set -euo pipefail
+          VERSION_LINE=$(grep -E '^version:' pubspec.yaml | head -1 | awk '{print $2}' | tr -d ' \r')
+          BUILD_NAME="${VERSION_LINE%%+*}"
+          PUBSPEC_BUILD="${VERSION_LINE##*+}"
+          BUILD_NUMBER="${PUBSPEC_BUILD}"
+          if [ "${{ github.run_number }}" -gt "$BUILD_NUMBER" ] 2>/dev/null; then
+            BUILD_NUMBER="${{ github.run_number }}"
+          fi
+          echo "Building $BUILD_NAME+$BUILD_NUMBER"
+          flutter build ipa --release \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --export-options-plist=ios/ExportOptions-ci.plist
+
+      - name: Locate IPA
+        id: ipa
+        run: |
+          set -euo pipefail
+          IPA=$(ls -t build/ios/ipa/*.ipa | head -1)
+          test -f "$IPA"
+          echo "path=$IPA" >> "$GITHUB_OUTPUT"
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | tr -d ' ')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: diyetsel-ios-${{ steps.ipa.outputs.version }}
+          path: ${{ steps.ipa.outputs.path }}
+          retention-days: 30
+
+      - name: Prepare App Store Connect API key
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY_CONTENT }}
+        run: |
+          set -euo pipefail
+          ISSUER=$(printf '%s' "$APP_STORE_CONNECT_ISSUER_ID" | tr -d '[:space:]')
+          KEY_ID=$(printf '%s' "$APP_STORE_CONNECT_KEY_ID" | tr -d '[:space:]')
+          KEY_PATH="/tmp/AuthKey_${KEY_ID}.p8"
+          if printf '%s' "$APP_STORE_CONNECT_KEY_CONTENT" | grep -q 'BEGIN PRIVATE KEY'; then
+            printf '%s\n' "$APP_STORE_CONNECT_KEY_CONTENT" > "$KEY_PATH"
+          else
+            CONTENT=$(printf '%s' "$APP_STORE_CONNECT_KEY_CONTENT" | tr -d '[:space:]')
+            printf '%s' "$CONTENT" | base64 --decode > "$KEY_PATH"
+          fi
+          test -s "$KEY_PATH"
+          {
+            echo "ASC_API_PRIVATE_KEY<<EOF"
+            cat "$KEY_PATH"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+          echo "ASC_KEY_ID=$KEY_ID" >> "$GITHUB_ENV"
+          echo "ASC_ISSUER_ID=$ISSUER" >> "$GITHUB_ENV"
+
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v3
+        with:
+          app-path: ${{ steps.ipa.outputs.path }}
+          app-type: ios
+          issuer-id: ${{ env.ASC_ISSUER_ID }}
+          api-key-id: ${{ env.ASC_KEY_ID }}
+          api-private-key: ${{ env.ASC_API_PRIVATE_KEY }}
