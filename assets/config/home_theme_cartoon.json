@@ -1,0 +1,167 @@
+{
+  "logoTitle": "Diyetsel",
+  "userAvatarUrl": "",
+  "welcomeMessage": "Merhaba, {{userName}}! 👋",
+  "welcomeSubtitle": "Bugün için tatlı bir plan seni bekliyor",
+  "searchHint": "Tarif, yazı veya hizmet ara",
+  "colors": {
+    "canvas": "#FDFBF5",
+    "primary": "#74B46E",
+    "ink": "#3D342C",
+    "muted": "#7A6F64"
+  },
+  "categories": [
+    { "id": "story", "title": "Hikayem", "iconKey": "star", "iconUrl": "", "bgColor": "#FFF9E5", "route": "/app/story" },
+    { "id": "streak", "title": "Seri", "iconKey": "fire", "iconUrl": "", "bgColor": "#FFE8D6", "route": "/app/story" },
+    { "id": "water", "title": "Su", "iconKey": "water", "iconUrl": "", "bgColor": "#D1EFFF", "route": "/app/track" },
+    { "id": "plan", "title": "Plan", "iconKey": "plan", "iconUrl": "", "bgColor": "#FFF8F0", "route": "/app/diet" },
+    { "id": "all", "title": "Tümü", "iconKey": "more", "iconUrl": "", "bgColor": "#F5F0E8", "route": "/app/more" }
+  ],
+  "mainPlan": {
+    "title": "Bugünkü plan tamam 🎉",
+    "description": "Kampanyalar ve tarifler aşağıda seni bekliyor",
+    "buttonText": "Diyetim",
+    "buttonRoute": "/app/diet",
+    "imageUrl": "",
+    "imageKey": "bowl",
+    "bgColor": "#E8F5E9"
+  },
+  "quickActions": [
+    { "id": "diet", "title": "Diyet", "iconKey": "scale", "iconUrl": "", "route": "/app/diet" },
+    { "id": "water", "title": "Su", "iconKey": "bottle", "iconUrl": "", "route": "/app/track" },
+    { "id": "appt", "title": "Randevu", "iconKey": "calendar", "iconUrl": "", "route": "/app/appointments" },
+    { "id": "service", "title": "Hizmet", "iconKey": "headset", "iconUrl": "", "route": "/app/services" }
+  ],
+  "mealSuggestion": {
+    "title": "Mercimek çorbası",
+    "description": "Bugün protein hedefine yaklaş — sıcak bir kase!",
+    "bgColor": "#FFE8D6",
+    "imageUrl": "",
+    "imageKey": "soup",
+    "route": "/app/recipes",
+    "stats": [
+      { "type": "kcal", "value": "310", "icon": "🔥" },
+      { "type": "duration", "value": "35 dk", "icon": "🕒" },
+      { "type": "protein", "value": "+18g", "icon": "🌿" }
+    ]
+  },
+  "miniCards": [
+    {
+      "id": "lesson",
+      "title": "Mini ders",
+      "subtitle": "2 dk izle",
+      "characterUrl": "",
+      "characterKey": "lesson",
+      "bgColor": "#E8D9FF",
+      "progress": 0,
+      "progressColor": "#9B7EDE",
+      "route": "/app/learn",
+      "actionLabel": "Oynat"
+    },
+    {
+      "id": "streak",
+      "title": "Ateş serisi",
+      "subtitle": "3/7 gün",
+      "characterUrl": "",
+      "characterKey": "streak",
+      "bgColor": "#D1EFFF",
+      "progress": 43,
+      "progressColor": "#5B9BD5",
+      "route": "/app/story",
+      "actionLabel": ""
+    }
+  ],
+  "statusChips": [
+    { "id": "streak", "label": "3 gün Seri", "iconKey": "fire", "bgColor": "#FFE4CC" },
+    { "id": "water", "label": "%30 Su", "iconKey": "water", "bgColor": "#D1EFFF" },
+    { "id": "meal", "label": "Tamam Öğün", "iconKey": "avocado", "bgColor": "#E8F5E9" }
+  ],
+  "sections": [
+    {
+      "id": "campaigns",
+      "title": "Kampanyalar",
+      "seeAllLabel": "Tümü >",
+      "seeAllRoute": "/app/services",
+      "items": [
+        {
+          "id": "clinic",
+          "title": "Yüz Yüze Klinik Seansı",
+          "subtitle": "Diyetisyenle birebir",
+          "price": "₺1.200",
+          "duration": "",
+          "tag": "",
+          "imageUrl": "",
+          "imageKey": "clinic",
+          "route": "/app/services"
+        }
+      ]
+    },
+    {
+      "id": "recipes",
+      "title": "Sana özel tarifler",
+      "seeAllLabel": "Tümü >",
+      "seeAllRoute": "/app/recipes",
+      "items": [
+        {
+          "id": "bowl",
+          "title": "Akdeniz Protein Bowl",
+          "subtitle": "420 kcal",
+          "price": "",
+          "duration": "25 dk",
+          "tag": "",
+          "imageUrl": "",
+          "imageKey": "bowl",
+          "route": "/app/recipes"
+        },
+        {
+          "id": "soup",
+          "title": "Mercimek Çorbası",
+          "subtitle": "310 kcal",
+          "price": "",
+          "duration": "35 dk",
+          "tag": "",
+          "imageUrl": "",
+          "imageKey": "soup",
+          "route": "/app/recipes"
+        }
+      ]
+    },
+    {
+      "id": "articles",
+      "title": "Öne çıkan yazılar",
+      "seeAllLabel": "Tümü >",
+      "seeAllRoute": "/app/blog",
+      "items": [
+        {
+          "id": "if",
+          "title": "Aralıklı Oruç Rehberi",
+          "subtitle": "Başlangıç için 5 ipucu",
+          "price": "",
+          "duration": "",
+          "tag": "Blog",
+          "imageUrl": "",
+          "imageKey": "clock",
+          "route": "/app/blog"
+        },
+        {
+          "id": "keto",
+          "title": "Keto ile Dost Avokado",
+          "subtitle": "Sağlıklı yağlar",
+          "price": "",
+          "duration": "",
+          "tag": "Beslenme",
+          "imageUrl": "",
+          "imageKey": "avocado",
+          "route": "/app/blog"
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    { "id": "home", "title": "Ana Sayfa", "iconKey": "home", "iconUrl": "", "route": "/app" },
+    { "id": "diet", "title": "Diyetim", "iconKey": "apple", "iconUrl": "", "route": "/app/diet" },
+    { "id": "add", "title": "+", "iconKey": "add", "iconUrl": "", "route": "/app/track" },
+    { "id": "calendar", "title": "Takvim", "iconKey": "calendar", "iconUrl": "", "route": "/app/appointments" },
+    { "id": "profile", "title": "Profil", "iconKey": "profile", "iconUrl": "", "route": "/app/more" }
+  ]
+}

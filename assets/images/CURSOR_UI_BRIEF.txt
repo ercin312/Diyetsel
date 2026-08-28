@@ -1,0 +1,51 @@
+DIYETSEL CARTOON UI — ASSET & STYLE BRIEF
+
+Use the supplied assets as visual references for a Turkish nutrition / wellness mobile app.
+Do NOT recreate the screenshot as one flat image. Build the interface as real, responsive mobile UI components.
+
+VISUAL LANGUAGE
+- Friendly hand-drawn cartoon / children's-book illustration style, but still premium and suitable for adults.
+- Warm cream/off-white background.
+- Rounded cards with thin, soft outlines and very subtle shadows.
+- Main green: #6DBF67
+- Warm yellow/orange: #FFB347
+- Coral/orange: #FF7A45
+- Sky blue: #6EC5FF
+- Purple: #A78BFA
+- Cream: #FFF6E9
+- Use generous whitespace and large rounded touch targets.
+- Illustrations should have expressive faces, organic imperfect outlines, and a cohesive hand-drawn feel.
+- Avoid generic emoji-style icons; use the supplied illustrated assets wherever appropriate.
+
+ASSET MAPPING
+- logo_diyetsel.png → app logo
+- character_boy.png → profile / greeting illustration
+- mascot_carrot.png → small decorative mascot
+- food_salad_bowl.png → today's-plan / healthy meal card
+- food_lentil_soup.png → recommended recipe card
+- food_green_smoothie.png → detox / campaign card
+- character_woman.png → mini lesson / clinic campaign
+- character_active_boy.png → activity streak card
+- mascot_avocado.png → meal / water / completion decoration
+- icon_set.png → reference for the app's illustrated icon language
+- card_examples.png → reference for card proportions and hierarchy
+- search_and_navigation.png → reference for search and bottom-navigation styling
+
+HOME SCREEN CONTENT
+- Diyetsel logo
+- “Merhaba, Mehmet! 👋”
+- “Planın, tariflerin ve kampanyaların tek yerde.”
+- Search: “Tarif, yazı veya hizmet ara...”
+- Quick shortcuts: Hikayem, Seri, Su, Plan, Tümü
+- Hero: “Bugünkü plan tamam 🎉”
+- CTA: “Diyetim”
+- Quick actions: Diyet, Su, Randevu, Hizmet
+- Recommendation: “Bugün akşam bunu dene” / “Mercimek çorbası”
+- Nutrition metadata: 310 kcal · 35 dk · 18 g protein
+- Mini lesson and activity streak cards
+- Progress chips: Seri / Su / Öğün
+- Sections: Kampanyalar, Sana özel tarifler, Öne çıkan yazılar
+- Bottom navigation: Ana Sayfa, Diyetim, central + button, Takvim, Profil
+
+IMPORTANT
+Keep the visual system consistent across every screen. Prefer reusable components and a centralized theme/token file rather than hardcoding styles in individual screens.
