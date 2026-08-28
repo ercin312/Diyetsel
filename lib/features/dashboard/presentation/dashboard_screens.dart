@@ -14,9 +14,7 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/utils/pdf_report.dart';
-import '../../../core/utils/reminder_service.dart';
 import '../../../core/utils/smart_notification_service.dart';
-import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/marketplace.dart';
 import '../../../core/widgets/style_icon.dart';
@@ -27,6 +25,7 @@ import '../../blog/presentation/blog_screens.dart';
 import '../../gamification/presentation/gamification_screens.dart';
 import '../../learn/presentation/learn_screens.dart';
 import '../../recipes/presentation/recipe_screens.dart';
+import 'cartoon_configured_home.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -57,7 +56,9 @@ class AdminDashboardScreen extends ConsumerWidget {
                 subtitle: 'Randevu, tahsilat ve içerik tek bakışta',
                 trailing: IconButton(
                   tooltip: 'PDF',
-                  color: context.isDesktopLayout ? null : Colors.white,
+                  color: context.isDesktopLayout || context.isModern
+                      ? AppColors.primary
+                      : Colors.white,
                   onPressed: () => PdfReport.sharePracticeSummary(
                     clients: clients,
                     appointments: appointments,
@@ -65,7 +66,9 @@ class AdminDashboardScreen extends ConsumerWidget {
                   ),
                   icon: Icon(
                     Icons.picture_as_pdf_outlined,
-                    color: context.isDesktopLayout ? null : Colors.white,
+                    color: context.isDesktopLayout || context.isModern
+                        ? AppColors.primary
+                        : Colors.white,
                   ),
                 ),
                 search: MarketSearchBar(
@@ -93,7 +96,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                           subtitle: 'Toplam ${clients.length} kişi klinik kaydında',
                           cta: 'Danışanlar',
                           route: '/admin/clients',
-                          color: AppColors.primary,
+                          color: context.brandPrimary,
                         ),
                         PromoSlide(
                           emoji: '📅',
@@ -101,7 +104,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                           subtitle: 'Takvimden yeni slot açabilirsin',
                           cta: 'Takvim',
                           route: '/admin/appointments',
-                          color: AppColors.primaryDeep,
+                          color: context.brandDeep,
                         ),
                         PromoSlide(
                           emoji: '💰',
@@ -109,7 +112,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                           subtitle: 'Bekleyen bakiye ₺${due.toStringAsFixed(0)}',
                           cta: 'CRM',
                           route: '/admin',
-                          color: AppColors.accent,
+                          color: context.isLuxury ? AppColors.luxuryGold : AppColors.accent,
                         ),
                         PromoSlide(
                           emoji: '📝',
@@ -117,21 +120,45 @@ class AdminDashboardScreen extends ConsumerWidget {
                           subtitle: 'Yeni yazı ve menü önerisi yayınla',
                           cta: 'Editör',
                           route: '/admin/blog',
-                          color: AppColors.peachDeep,
+                          color: context.isLuxury ? AppColors.luxuryBronze : context.brandBright,
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     CategoryShortcuts(
-                      items: const [
-                        HomeCategory(label: 'Danışan', emoji: '👥', icon: Icons.groups_rounded, route: '/admin/clients', tint: AppColors.primary),
-                        HomeCategory(label: 'Takvim', emoji: '📅', icon: Icons.event, route: '/admin/appointments', tint: AppColors.peachDeep),
-                        HomeCategory(label: 'Sohbet', emoji: '💬', icon: Icons.chat, route: '/admin/chat', tint: AppColors.accent),
-                        HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article, route: '/admin/blog', tint: AppColors.primaryDeep),
-                        HomeCategory(label: 'Hizmet', emoji: '🎁', icon: Icons.storefront, route: '/admin/services', tint: AppColors.primary),
-                        HomeCategory(label: 'Tarif', emoji: '🍲', icon: Icons.menu_book, route: '/admin/recipes', tint: AppColors.peachDeep),
-                        HomeCategory(label: 'Diyet', emoji: '🥗', icon: Icons.restaurant, route: '/admin/diet-plans', tint: AppColors.accent),
-                        HomeCategory(label: 'Ayarlar', emoji: '⚙️', icon: Icons.settings, route: '/admin/settings', tint: Color(0xFF57534E)),
+                      items: [
+                        HomeCategory(label: 'Danışan', emoji: '👥', icon: Icons.groups_rounded, route: '/admin/clients', tint: context.brandPrimary),
+                        HomeCategory(
+                          label: 'Takvim',
+                          emoji: '📅',
+                          icon: Icons.event,
+                          route: '/admin/appointments',
+                          tint: context.isLuxury ? AppColors.luxuryBronze : context.brandBright,
+                        ),
+                        HomeCategory(
+                          label: 'Sohbet',
+                          emoji: '💬',
+                          icon: Icons.chat,
+                          route: '/admin/chat',
+                          tint: context.isLuxury ? AppColors.luxuryGold : AppColors.accent,
+                        ),
+                        HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article, route: '/admin/blog', tint: context.brandDeep),
+                        HomeCategory(label: 'Hizmet', emoji: '🎁', icon: Icons.storefront, route: '/admin/services', tint: context.brandPrimary),
+                        HomeCategory(
+                          label: 'Tarif',
+                          emoji: '🍲',
+                          icon: Icons.menu_book,
+                          route: '/admin/recipes',
+                          tint: context.isLuxury ? AppColors.luxuryBronze : context.brandPrimary,
+                        ),
+                        HomeCategory(
+                          label: 'Diyet',
+                          emoji: '🥗',
+                          icon: Icons.restaurant,
+                          route: '/admin/diet-plans',
+                          tint: context.isLuxury ? AppColors.luxuryGold : AppColors.accent,
+                        ),
+                        const HomeCategory(label: 'Ayarlar', emoji: '⚙️', icon: Icons.settings, route: '/admin/settings', tint: Color(0xFF57534E)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -139,8 +166,8 @@ class AdminDashboardScreen extends ConsumerWidget {
                       spacing: 12,
                       runSpacing: 12,
                       children: [
-                        _kpi(context, 'Aktif danışan', '$active / ${clients.length}', Icons.favorite, '🧡', AppColors.accent),
-                        _kpi(context, 'Bu ay seans', '$monthSessions', Icons.event_available, '📅', AppColors.primary),
+                        _kpi(context, 'Aktif danışan', '$active / ${clients.length}', Icons.favorite, '🧡', context.isLuxury ? AppColors.luxuryGold : AppColors.accent),
+                        _kpi(context, 'Bu ay seans', '$monthSessions', Icons.event_available, '📅', context.brandPrimary),
                         _kpi(context, 'Tahsil edilen', '₺${paid.toStringAsFixed(0)}', Icons.payments, '💰', AppColors.success),
                         _kpi(context, 'Bekleyen bakiye', '₺${due.toStringAsFixed(0)}', Icons.account_balance_wallet, '⏳', AppColors.warning),
                       ],
@@ -181,9 +208,9 @@ class AdminDashboardScreen extends ConsumerWidget {
                                             barRods: [
                                               BarChartRodData(
                                                 toY: count + 1,
-                                                color: AppColors.primary,
+                                                color: context.brandPrimary,
                                                 width: 16,
-                                                borderRadius: BorderRadius.circular(8),
+                                                borderRadius: BorderRadius.circular(context.isLuxury ? 6 : 8),
                                               ),
                                             ],
                                           );
@@ -229,9 +256,9 @@ class AdminDashboardScreen extends ConsumerWidget {
                                       barRods: [
                                         BarChartRodData(
                                           toY: count + 1,
-                                          color: AppColors.primary,
+                                          color: context.brandPrimary,
                                           width: 16,
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(context.isLuxury ? 6 : 8),
                                         ),
                                       ],
                                     );
@@ -405,24 +432,85 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     if (mounted) await maybeShowBadgeCelebrations(context, ref, user.id);
   }
 
-  static const _homeCats = [
-    HomeCategory(label: 'Diyet', emoji: '🥗', icon: Icons.restaurant_rounded, route: '/app/diet', tint: AppColors.primary),
-    HomeCategory(label: 'Su', emoji: '💧', icon: Icons.water_drop_rounded, route: '/app/track', tint: AppColors.accent),
-    HomeCategory(label: 'Randevu', emoji: '📅', icon: Icons.event_available_rounded, route: '/app/appointments', tint: AppColors.primaryDeep),
-    HomeCategory(label: 'Hizmet', emoji: '🎁', icon: Icons.storefront_rounded, route: '/app/services', tint: AppColors.peachDeep),
-    HomeCategory(label: 'Tarif', emoji: '🍲', icon: Icons.menu_book_rounded, route: '/app/recipes', tint: AppColors.primary),
-    HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article_rounded, route: '/app/blog', tint: AppColors.primaryDeep),
-    HomeCategory(label: 'Alışveriş', emoji: '🛒', icon: Icons.shopping_cart_rounded, route: '/app/shopping', tint: AppColors.accent),
-    HomeCategory(label: 'Sohbet', emoji: '💬', icon: Icons.chat_rounded, route: '/app/chat', tint: AppColors.peachDeep),
-    HomeCategory(label: 'Barkod', emoji: '📷', icon: Icons.qr_code_scanner_rounded, route: '/app/barcode', tint: AppColors.primary),
-    HomeCategory(label: 'Check-in', emoji: '❤️', icon: Icons.favorite_rounded, route: '/app/check-in', tint: AppColors.accent),
-    HomeCategory(label: 'Dışarıda', emoji: '🍽️', icon: Icons.restaurant_menu_rounded, route: '/app/eat-out', tint: AppColors.peachDeep),
-    HomeCategory(label: 'Oruç', emoji: '⏳', icon: Icons.hourglass_bottom, route: '/app/fasting', tint: AppColors.primaryDeep),
-  ];
+  List<HomeCategory> _homeCats(BuildContext context) => [
+        HomeCategory(label: 'Diyet', emoji: '🥗', icon: Icons.restaurant_rounded, route: '/app/diet', tint: context.brandPrimary),
+        HomeCategory(
+          label: 'Su',
+          emoji: '💧',
+          icon: Icons.water_drop_rounded,
+          route: '/app/track',
+          tint: context.isLuxury
+              ? AppColors.luxuryGold
+              : (context.isModern ? AppColors.modernSage : AppColors.accent),
+        ),
+        HomeCategory(label: 'Randevu', emoji: '📅', icon: Icons.event_available_rounded, route: '/app/appointments', tint: context.brandDeep),
+        HomeCategory(
+          label: 'Hizmet',
+          emoji: '🎁',
+          icon: Icons.storefront_rounded,
+          route: '/app/services',
+          tint: context.isLuxury
+              ? AppColors.luxuryBronze
+              : (context.isModern ? AppColors.primaryBright : context.brandBright),
+        ),
+        HomeCategory(label: 'Tarif', emoji: '🍲', icon: Icons.menu_book_rounded, route: '/app/recipes', tint: context.brandPrimary),
+        HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article_rounded, route: '/app/blog', tint: context.brandDeep),
+        HomeCategory(
+          label: 'Alışveriş',
+          emoji: '🛒',
+          icon: Icons.shopping_cart_rounded,
+          route: '/app/shopping',
+          tint: context.isLuxury ? AppColors.luxuryGold : AppColors.accent,
+        ),
+        HomeCategory(
+          label: 'Sohbet',
+          emoji: '💬',
+          icon: Icons.chat_rounded,
+          route: '/app/chat',
+          tint: context.isLuxury ? AppColors.luxuryBronze : context.brandPrimary,
+        ),
+        HomeCategory(label: 'Barkod', emoji: '📷', icon: Icons.qr_code_scanner_rounded, route: '/app/barcode', tint: context.brandPrimary),
+        HomeCategory(
+          label: 'Check-in',
+          emoji: '❤️',
+          icon: Icons.favorite_rounded,
+          route: '/app/check-in',
+          tint: context.isLuxury ? AppColors.luxuryGold : AppColors.accent,
+        ),
+        HomeCategory(
+          label: 'Dışarıda',
+          emoji: '🍽️',
+          icon: Icons.restaurant_menu_rounded,
+          route: '/app/eat-out',
+          tint: context.isLuxury ? AppColors.luxuryBronze : context.brandBright,
+        ),
+        HomeCategory(label: 'Oruç', emoji: '⏳', icon: Icons.hourglass_bottom, route: '/app/fasting', tint: context.brandDeep),
+      ];
 
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authControllerProvider).user!;
+    final firstName = user.displayName.split(' ').first;
+
+    if (context.isCartoon) {
+      return Scaffold(
+        backgroundColor: AppColors.kawaiiSurfaceCream,
+        body: SafeArea(
+          bottom: false,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: context.contentMaxWidth),
+              child: CartoonConfiguredHome(
+                userName: firstName,
+                avatarUrl: user.photoUrl,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final store = ref.watch(appStoreProvider);
     final appointments = ref.watch(appointmentsProvider).valueOrNull ?? [];
     final services = (ref.watch(servicesProvider).valueOrNull ?? []).where((s) => s.active).toList();
@@ -446,33 +534,64 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             .toList() ??
         [];
     final leftover = todayMeals.where((m) => !m.consumed).toList();
-    final firstName = user.displayName.split(' ').first;
-    final cats = _homeCats.where((c) {
+    final catsAll = _homeCats(context).where((c) {
       final id = AppModule.fromRoute(c.route);
       return id == null || store.moduleOn(user.id, id);
     }).toList();
+    final cats = context.isCartoon
+        ? catsAll
+            .where((c) => const {
+                  'Diyet',
+                  'Su',
+                  'Randevu',
+                  'Hizmet',
+                  'Tarif',
+                  'Blog',
+                  'Alışveriş',
+                  'Sohbet',
+                }.contains(c.label))
+            .take(8)
+            .toList()
+        : context.isModern
+            ? catsAll
+                .where((c) => const {'Diyet', 'Su', 'Randevu', 'Hizmet'}.contains(c.label))
+                .take(4)
+                .toList()
+            : catsAll;
+
+    final recipePhoto = recipes.isNotEmpty
+        ? diyetselFoodImage(imageUrl: recipes.first.imageUrl, seed: recipes.first.title)
+        : diyetselFoodImage(seed: 'bowl');
 
     final slides = <PromoSlide>[
       if (store.moduleOn(user.id, AppModule.diet))
-      PromoSlide(
-        emoji: leftover.isEmpty ? '🎉' : '🥗',
-        title: leftover.isEmpty ? 'Bugünkü plan tamam' : '${leftover.length} öğün kaldı',
-        subtitle: plan == null ? 'Diyet listen hazır olunca burada görünür' : 'Kampanyalar ve tarifler aşağıda, öğünler tek kartta',
-        cta: 'Diyetim',
-        route: '/app/diet',
-        color: AppColors.primary,
-        kind: leftover.isEmpty ? KawaiiKind.sparkle : KawaiiKind.diet,
-      ),
+        PromoSlide(
+          emoji: leftover.isEmpty ? '🎉' : '🥗',
+          title: leftover.isEmpty ? 'Bugünkü plan tamam' : '${leftover.length} öğün kaldı',
+          subtitle: plan == null
+              ? 'Diyet listen hazır olunca burada görünür'
+              : 'Kampanyalar ve tarifler aşağıda, öğünler tek kartta',
+          cta: 'Diyetim',
+          route: '/app/diet',
+          color: context.brandPrimary,
+          kind: leftover.isEmpty ? KawaiiKind.sparkle : KawaiiKind.diet,
+          imageUrl: recipePhoto,
+        ),
       if (store.moduleOn(user.id, AppModule.water))
-      PromoSlide(
-        emoji: water.progress >= 1 ? '🥳' : '💧',
-        title: 'Su: ${water.amountMl} / ${water.goalMl} ml',
-        subtitle: water.progress >= 1 ? 'Hedef doldu, harika gidiyorsun' : '%${(water.progress * 100).round()} tamamlandı — bir bardak daha',
-        cta: 'Takip',
-        route: '/app/track',
-        color: AppColors.accent,
-        kind: KawaiiKind.water,
-      ),
+        PromoSlide(
+          emoji: water.progress >= 1 ? '🥳' : '💧',
+          title: 'Su: ${water.amountMl} / ${water.goalMl} ml',
+          subtitle: water.progress >= 1
+              ? 'Hedef doldu, harika gidiyorsun'
+              : '%${(water.progress * 100).round()} tamamlandı — bir bardak daha',
+          cta: 'Takip',
+          route: '/app/track',
+          color: context.isLuxury
+              ? AppColors.luxuryGold
+              : (context.isCartoon ? AppColors.kawaiiSky : AppColors.modernSage),
+          kind: KawaiiKind.water,
+          imageUrl: diyetselFoodImage(seed: 'su'),
+        ),
       if (store.moduleOn(user.id, AppModule.appointments) && next.isNotEmpty)
         PromoSlide(
           emoji: '⏳',
@@ -480,18 +599,20 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           subtitle: DateFormat('d MMMM HH:mm', 'tr').format(next.first.startAt),
           cta: 'Takvim',
           route: '/app/appointments',
-          color: AppColors.primaryDeep,
+          color: context.brandDeep,
           kind: KawaiiKind.hourglass,
+          imageUrl: recipePhoto,
         )
       else if (store.moduleOn(user.id, AppModule.appointments))
-        const PromoSlide(
+        PromoSlide(
           emoji: '📅',
           title: 'Seansını planla',
           subtitle: 'Müsait slotlardan randevu talep et',
           cta: 'Randevu al',
           route: '/app/appointments',
-          color: AppColors.primaryDeep,
+          color: context.brandDeep,
           kind: KawaiiKind.calendar,
+          imageUrl: recipePhoto,
         ),
       if (store.moduleOn(user.id, AppModule.services) && services.isNotEmpty)
         PromoSlide(
@@ -500,25 +621,31 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           subtitle: '₺${services.first.price.toStringAsFixed(0)} • ${services.first.durationMinutes} dk',
           cta: 'Kampanya',
           route: '/app/services',
-          color: AppColors.peachDeep,
+          color: context.isLuxury
+              ? AppColors.luxuryBronze
+              : (context.isCartoon ? AppColors.kawaiiLilac : AppColors.primaryBright),
           kind: KawaiiKind.gift,
+          imageUrl: recipePhoto,
         )
       else if (store.moduleOn(user.id, AppModule.services))
-        const PromoSlide(
+        PromoSlide(
           emoji: '✨',
           title: 'Yeni paketler yolda',
           subtitle: 'Detoks ve online seans seçeneklerine bak',
           cta: 'Keşfet',
           route: '/app/services',
-          color: AppColors.peachDeep,
+          color: context.isLuxury
+              ? AppColors.luxuryBronze
+              : (context.isCartoon ? AppColors.kawaiiLilac : AppColors.primaryBright),
           kind: KawaiiKind.sparkle,
+          imageUrl: recipePhoto,
         ),
     ];
 
     final stories = <StoryBundle>[
       const StoryBundle(
         id: 'mine',
-        label: 'Hikayen',
+        label: 'Hikayem',
         kind: KawaiiKind.sparkle,
         isMine: true,
         createRoute: '/app/story',
@@ -533,7 +660,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             subtitle: 'Rekor ${streak.best} gün',
             detail: streak.freezeUsed ? 'Bu ay dondurma kullanıldı' : 'Bu ay 1 dondurma hakkın var',
             kind: KawaiiKind.fire,
-            colors: const [Color(0xFFFF7A18), Color(0xFFFF4D6D)],
+            colors: const [AppColors.modernFire, AppColors.modernFireBright],
             ctaLabel: 'Paylaş',
             ctaRoute: '/app/story',
           ),
@@ -549,7 +676,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             subtitle: '${water.amountMl} / ${water.goalMl} ml',
             detail: water.progress >= 1 ? 'Hedef doldu!' : 'Bir yudum daha, seri bozulmasın.',
             kind: KawaiiKind.water,
-            colors: const [Color(0xFF2EC4B6), Color(0xFF4D96FF)],
+            colors: const [AppColors.primaryBright, AppColors.accent],
             ctaLabel: 'Su ekle',
             ctaRoute: '/app/track',
           ),
@@ -562,15 +689,40 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         pages: [
           StoryPageData(
             title: leftover.isEmpty ? 'Tamam' : '${leftover.length} kaldı',
-            subtitle: leftover.isEmpty ? 'Bugünkü öğünler işaretli' : leftover.take(3).map((m) => m.name).join(' • '),
+            subtitle: leftover.isEmpty
+                ? 'Bugünkü öğünler işaretli'
+                : leftover.take(3).map((m) => m.name).join(' • '),
             kind: KawaiiKind.plate,
-            colors: const [Color(0xFFFF8A4C), Color(0xFFFFC56D)],
+            colors: context.isModern
+                ? const [AppColors.primary, AppColors.modernSage]
+                : context.isCartoon
+                    ? const [AppColors.kawaiiRose, AppColors.kawaiiLemon]
+                    : const [AppColors.luxuryCopper, AppColors.luxuryBronze],
             ctaLabel: 'Diyetim',
             ctaRoute: '/app/diet',
           ),
         ],
       ),
-      for (final post in posts.take(6))
+      StoryBundle(
+        id: 'all',
+        label: 'Tümü',
+        kind: KawaiiKind.sparkle,
+        pages: [
+          StoryPageData(
+            title: 'Tüm hikayeler',
+            subtitle: 'Seri, su, plan ve daha fazlası',
+            kind: KawaiiKind.sparkle,
+            colors: context.isModern
+                ? const [AppColors.primaryBright, AppColors.primary]
+                : context.isCartoon
+                    ? const [AppColors.kawaiiCoralBright, AppColors.kawaiiMint]
+                    : const [AppColors.luxuryCopperBright, AppColors.luxuryChampagne],
+            ctaLabel: 'Aç',
+            ctaRoute: '/app/story',
+          ),
+        ],
+      ),
+      for (final post in posts.take(4))
         StoryBundle(
           id: 'blog-${post.id}',
           label: post.category,
@@ -580,7 +732,11 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               title: post.title,
               subtitle: post.subtitle,
               kind: KawaiiKindX.forBlog(post.category),
-              colors: const [Color(0xFFE85D04), Color(0xFF0F766E)],
+              colors: context.isModern
+                  ? const [AppColors.primary, AppColors.primaryDeep]
+                  : context.isCartoon
+                      ? const [AppColors.kawaiiLilac, AppColors.kawaiiMint]
+                      : const [AppColors.luxuryCopperDeep, AppColors.primaryDeep],
               ctaLabel: 'Oku',
               ctaRoute: '/app/blog',
             ),
@@ -596,7 +752,11 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               title: recipes.first.title,
               subtitle: '${recipes.first.calories} kcal • ${recipes.first.prepMinutes} dk',
               kind: KawaiiKind.recipe,
-              colors: const [Color(0xFF2EC4B6), Color(0xFFFF8A4C)],
+              colors: context.isModern
+                  ? const [AppColors.primaryBright, AppColors.modernSage]
+                  : context.isCartoon
+                      ? const [AppColors.kawaiiMint, AppColors.kawaiiSky]
+                      : const [AppColors.luxuryCopper, AppColors.luxuryBronze],
               ctaLabel: 'Tarifler',
               ctaRoute: '/app/recipes',
             ),
@@ -604,7 +764,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         ),
     ];
     final visibleStories = stories.where((s) {
-      if (s.id == 'mine' || s.id == 'streak') return store.moduleOn(user.id, AppModule.story);
+      if (s.id == 'mine' || s.id == 'streak' || s.id == 'all') {
+        return store.moduleOn(user.id, AppModule.story);
+      }
       if (s.id == 'water') return store.moduleOn(user.id, AppModule.water);
       if (s.id == 'plan') return store.moduleOn(user.id, AppModule.diet);
       if (s.id.startsWith('blog')) return store.moduleOn(user.id, AppModule.blog);
@@ -622,10 +784,14 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             children: [
               MarketHeroHeader(
                 greeting: 'Merhaba, $firstName',
-                subtitle: context.isCartoon ? 'Planın, tariflerin ve minik kampanyaların burada' : 'Planın, tariflerin ve kampanyaların tek yerde',
+                subtitle: context.isCartoon
+                    ? 'Pastel planlar, tatlı tarifler ve minik sürprizler burada'
+                    : context.isLuxury
+                        ? 'Planın, tariflerin ve seçkin kampanyaların tek yerde'
+                        : 'Bugün için yumuşak bir ritim — plan, tarif ve kampanyalar',
                 trailing: CartoonAvatar(name: user.displayName, size: 40),
                 search: MarketSearchBar(
-                  hint: 'Tarif, yazı veya hizmet ara',
+                  hint: context.isCartoon ? 'Tatlı bir tarif veya yazı ara' : 'Tarif, yazı veya hizmet ara',
                   onSubmitted: (q) => _openHomeSearch(
                     context,
                     query: q,
@@ -636,183 +802,317 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                 ),
               ),
               Padding(
-                padding: context.homePadding,
+                padding: context.isModern
+                    ? EdgeInsets.fromLTRB(
+                        context.isDesktopLayout ? 28 : 18,
+                        context.isDesktopLayout ? 22 : 18,
+                        context.isDesktopLayout ? 28 : 18,
+                        context.isDesktopLayout ? 40 : 34,
+                      )
+                    : context.isCartoon
+                        ? EdgeInsets.fromLTRB(
+                            context.isDesktopLayout ? 28 : 18,
+                            context.isDesktopLayout ? 20 : 16,
+                            context.isDesktopLayout ? 28 : 18,
+                            context.isDesktopLayout ? 36 : 32,
+                          )
+                        : context.homePadding,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (visibleStories.isNotEmpty && !context.isDesktopLayout)
-                      StoryRail(
-                        items: visibleStories,
-                        seenIds: _seenStories,
-                        onSeen: (id) => setState(() => _seenStories.add(id)),
+                      _homeStagger(
+                        context,
+                        0,
+                        StoryRail(
+                          items: visibleStories,
+                          seenIds: _seenStories,
+                          onSeen: (id) => setState(() => _seenStories.add(id)),
+                        ),
                       ),
-                    if (visibleStories.isNotEmpty && !context.isDesktopLayout) const SizedBox(height: 8),
-                    PromoSlider(slides: slides),
-                    const SizedBox(height: 12),
-                    CategoryStrip(items: cats),
-                    const SizedBox(height: 12),
-                    const BadgeHomeStrip(),
-                    const SizedBox(height: 12),
+                    if (visibleStories.isNotEmpty && !context.isDesktopLayout)
+                      SizedBox(height: context.isCartoon ? 14 : (context.isModern ? 16 : 8)),
+                    _homeStagger(
+                      context,
+                      1,
+                      PromoSlider(slides: slides, height: context.isModern ? 210 : 168),
+                    ),
+                    SizedBox(height: context.isCartoon ? 16 : (context.isModern ? 18 : 12)),
+                    if (context.isCartoon && store.moduleOn(user.id, AppModule.water)) ...[
+                      _homeStagger(
+                        context,
+                        2,
+                        WaterProgressCard(
+                          amountMl: water.amountMl,
+                          goalMl: water.goalMl,
+                          onTrack: () {
+                            store.addWaterSip(user.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('+250 ml — minik bir yudum!'),
+                                behavior: SnackBarBehavior.floating,
+                                duration: Duration(milliseconds: 900),
+                                backgroundColor: AppColors.kawaiiCoral,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    _homeStagger(context, 3, CategoryStrip(items: cats)),
+                    SizedBox(height: context.isCartoon ? 16 : (context.isModern ? 18 : 12)),
+                    if (!context.isModern) ...[
+                      _homeStagger(context, 4, const BadgeHomeStrip()),
+                      SizedBox(height: context.isCartoon ? 16 : 12),
+                    ],
+                    _homeStagger(
+                      context,
+                      5,
+                      TodayStrip(
+                        items: [
+                          if (store.moduleOn(user.id, AppModule.story))
+                            TodayStat(
+                              label: 'Seri',
+                              value: '${streak.current} gün',
+                              kind: KawaiiKind.fire,
+                              color: context.isCartoon
+                                  ? AppColors.kawaiiRose
+                                  : (context.isModern ? AppColors.modernFire : context.brandPrimary),
+                              onTap: () => context.push('/app/story'),
+                            ),
+                          if (store.moduleOn(user.id, AppModule.water))
+                            TodayStat(
+                              label: 'Su',
+                              value: '%${(water.progress * 100).round()}',
+                              kind: KawaiiKind.water,
+                              color: context.isLuxury
+                                  ? AppColors.luxuryGold
+                                  : (context.isCartoon
+                                      ? AppColors.kawaiiSky
+                                      : (context.isModern ? AppColors.modernSage : AppColors.accent)),
+                              onTap: () {
+                                store.addWaterSip(user.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.isCartoon ? '+250 ml — minik bir yudum!' : '+250 ml eklendi',
+                                    ),
+                                    behavior: SnackBarBehavior.floating,
+                                    duration: const Duration(milliseconds: 900),
+                                    backgroundColor: context.isLuxury
+                                        ? AppColors.luxuryCopper
+                                        : (context.isCartoon
+                                            ? AppColors.kawaiiCoral
+                                            : (context.isModern ? AppColors.primary : AppColors.accent)),
+                                  ),
+                                );
+                              },
+                            ),
+                          if (store.moduleOn(user.id, AppModule.diet))
+                            TodayStat(
+                              label: 'Öğün',
+                              value: leftover.isEmpty
+                                  ? (context.isCartoon ? 'Hepsi tamam' : 'Tamam')
+                                  : '${leftover.length} kaldı',
+                              kind: KawaiiKind.plate,
+                              color: context.isLuxury
+                                  ? AppColors.luxuryBronze
+                                  : (context.isCartoon
+                                      ? AppColors.kawaiiRose
+                                      : (context.isModern ? AppColors.primaryBright : context.brandBright)),
+                              onTap: () => context.go('/app/diet'),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: context.isCartoon ? 16 : (context.isModern ? 18 : 12)),
                     if (store.moduleOn(user.id, AppModule.recipes) && recipes.isNotEmpty) ...[
-                      const RecipeTonightCard(),
-                      const SizedBox(height: 8),
+                      _homeStagger(context, 6, const RecipeTonightCard()),
+                      SizedBox(height: context.isCartoon ? 12 : (context.isModern ? 12 : 8)),
+                    ],
+                    if (context.isModern) ...[
+                      _homeStagger(context, 7, const BadgeHomeStrip()),
+                      const SizedBox(height: 12),
                     ],
                     if (store.moduleOn(user.id, AppModule.blog)) ...[
-                      const LearnHomeRail(),
-                      const SizedBox(height: 8),
+                      _homeStagger(context, 8, const LearnHomeRail()),
+                      SizedBox(height: context.isCartoon ? 12 : (context.isModern ? 12 : 8)),
                     ],
-                    TodayStrip(
-                      items: [
-                        if (store.moduleOn(user.id, AppModule.story))
-                          TodayStat(
-                            label: 'Seri',
-                            value: '${streak.current} gün',
-                            kind: KawaiiKind.fire,
-                            color: AppColors.primary,
-                            onTap: () => context.push('/app/story'),
-                          ),
-                        if (store.moduleOn(user.id, AppModule.water))
-                          TodayStat(
-                            label: 'Su',
-                            value: '%${(water.progress * 100).round()}',
-                            kind: KawaiiKind.water,
-                            color: AppColors.accent,
-                            onTap: () {
-                              store.addWaterSip(user.id);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('+250 ml eklendi'),
-                                  behavior: SnackBarBehavior.floating,
-                                  duration: Duration(milliseconds: 900),
-                                  backgroundColor: AppColors.accent,
-                                ),
-                              );
-                            },
-                          ),
-                        if (store.moduleOn(user.id, AppModule.diet))
-                          TodayStat(
-                            label: 'Öğün',
-                            value: leftover.isEmpty ? 'Tamam' : '${leftover.length} kaldı',
-                            kind: KawaiiKind.plate,
-                            color: AppColors.peachDeep,
-                            onTap: () => context.go('/app/diet'),
-                          ),
-                      ],
-                    ),
                     if (store.moduleOn(user.id, AppModule.services) && services.isNotEmpty)
-                      HorizontalRail(
-                        title: 'Kampanyalar',
-                        onSeeAll: () => context.push('/app/services'),
-                        children: [
-                          for (final s in services.take(8))
-                            ProductTile(
-                              emoji: '🎁',
-                              title: s.title,
-                              meta: '₺${s.price.toStringAsFixed(0)} • ${s.durationMinutes} dk',
-                              onTap: () => context.push('/app/services'),
-                            ),
-                        ],
+                      _homeStagger(
+                        context,
+                        9,
+                        HorizontalRail(
+                          title: context.isCartoon ? 'Minik kampanyalar' : 'Kampanyalar',
+                          onSeeAll: () => context.push('/app/services'),
+                          children: [
+                            for (final s in services.take(8))
+                              ProductTile(
+                                emoji: '🎁',
+                                title: s.title,
+                                meta: '₺${s.price.toStringAsFixed(0)} • ${s.durationMinutes} dk',
+                                onTap: () => context.push('/app/services'),
+                              ),
+                          ],
+                        ),
                       ),
                     if (store.moduleOn(user.id, AppModule.recipes) && recipes.isNotEmpty)
-                      HorizontalRail(
-                        title: 'Sana özel tarifler',
-                        onSeeAll: () => context.push('/app/recipes'),
-                        children: [
-                          for (final r in recipes.take(8))
-                            ProductTile(
-                              emoji: '🍲',
-                              title: r.title,
-                              meta: '${r.calories} kcal • ${r.prepMinutes} dk',
-                              onTap: () => context.push('/app/recipes'),
-                            ),
-                        ],
+                      _homeStagger(
+                        context,
+                        10,
+                        HorizontalRail(
+                          title: context.isCartoon ? 'Sana özel tatlı tarifler' : 'Sana özel tarifler',
+                          onSeeAll: () => context.push('/app/recipes'),
+                          children: [
+                            for (final r in recipes.take(8))
+                              ProductTile(
+                                emoji: '🍲',
+                                title: r.title,
+                                meta: '${r.calories} kcal • ${r.prepMinutes} dk',
+                                onTap: () => context.push('/app/recipes'),
+                              ),
+                          ],
+                        ),
                       ),
                     if (store.moduleOn(user.id, AppModule.blog) && posts.isNotEmpty)
-                      HorizontalRail(
-                        title: 'Öne çıkan yazılar',
-                        onSeeAll: () => context.push('/app/blog'),
-                        children: [
-                          for (final p in posts.take(8))
-                            ProductTile(
-                              emoji: '📰',
-                              title: p.title,
-                              meta: p.category,
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute<void>(builder: (_) => BlogDetailScreen(post: p, admin: false)),
-                              ),
-                            ),
-                        ],
-                      ),
-                    if (store.moduleOn(user.id, AppModule.diet)) ...[
-                    SectionHeader(
-                      title: 'Bugünün planı',
-                      action: TextButton(onPressed: () => context.go('/app/diet'), child: const Text('Tümü')),
-                    ),
-                    if (todayMeals.isEmpty)
-                      const EmptyState(icon: Icons.restaurant, title: 'Bugün için öğün yok', subtitle: 'Diyet listen gelince buradan devam edersin.')
-                    else
-                      DiyetselCard(
-                        child: Column(
+                      _homeStagger(
+                        context,
+                        11,
+                        HorizontalRail(
+                          title: 'Öne çıkan yazılar',
+                          onSeeAll: () => context.push('/app/blog'),
                           children: [
-                            for (final m in leftover.take(3))
-                              CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                value: m.consumed,
-                                secondary: StyleIcon(icon: Icons.restaurant, emoji: m.type.emoji, size: 22),
-                                title: Text(m.name, style: const TextStyle(fontWeight: FontWeight.w800)),
-                                subtitle: Text('${m.type.tr} • ${m.calories} kcal'),
-                                onChanged: plan == null
-                                    ? null
-                                    : (_) {
-                                        final dayIndex = plan.days.indexWhere((d) => DateUtils.isSameDay(d.date, DateTime.now()));
-                                        if (dayIndex >= 0) {
-                                          ref.read(appStoreProvider).toggleMealConsumed(plan, dayIndex, m.id);
-                                        }
-                                      },
-                              ),
-                            if (leftover.isEmpty)
-                              const ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text('Tüm öğünler tamam', style: TextStyle(fontWeight: FontWeight.w800)),
-                                subtitle: Text('Harika gidiyorsun'),
-                              )
-                            else if (leftover.length > 3)
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: TextButton(
-                                  onPressed: () => context.go('/app/diet'),
-                                  child: Text('+${leftover.length - 3} öğün daha'),
+                            for (final p in posts.take(8))
+                              ProductTile(
+                                emoji: '📰',
+                                title: p.title,
+                                meta: p.category,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(builder: (_) => BlogDetailScreen(post: p, admin: false)),
                                 ),
                               ),
                           ],
                         ),
                       ),
-                    ],
-                    const SizedBox(height: 10),
-                    if (store.moduleOn(user.id, AppModule.appointments))
-                    if (next.isEmpty)
-                      DiyetselCard(
-                        onTap: () => context.go('/app/appointments'),
-                        child: Row(
-                          children: [
-                            const StyleIcon(icon: Icons.event, emoji: '📅', size: 26, color: AppColors.primaryDeep),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Randevu al', style: TextStyle(fontWeight: FontWeight.w800)),
-                                  Text('Müsait slotlara bak', style: Theme.of(context).textTheme.bodySmall),
-                                ],
-                              ),
-                            ),
-                          ],
+                    if (store.moduleOn(user.id, AppModule.diet)) ...[
+                      _homeStagger(
+                        context,
+                        12,
+                        SectionHeader(
+                          title: 'Bugünün planı',
+                          action: TextButton(onPressed: () => context.go('/app/diet'), child: const Text('Tümü')),
                         ),
-                      )
-                    else
-                      CountdownCard(appointment: next.first),
+                      ),
+                      if (todayMeals.isEmpty)
+                        _homeStagger(
+                          context,
+                          13,
+                          const EmptyState(
+                            icon: Icons.restaurant,
+                            title: 'Bugün için öğün yok',
+                            subtitle: 'Diyet listen gelince buradan devam edersin.',
+                          ),
+                        )
+                      else
+                        _homeStagger(
+                          context,
+                          13,
+                          DiyetselCard(
+                            padding: context.isModern
+                                ? const EdgeInsets.fromLTRB(18, 16, 18, 14)
+                                : const EdgeInsets.all(18),
+                            child: Column(
+                              children: [
+                                for (final m in leftover.take(3))
+                                  CheckboxListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    value: m.consumed,
+                                    secondary: StyleIcon(icon: Icons.restaurant, emoji: m.type.emoji, size: 22),
+                                    title: Text(
+                                      m.name,
+                                      style: TextStyle(
+                                        fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800,
+                                      ),
+                                    ),
+                                    subtitle: Text('${m.type.tr} • ${m.calories} kcal'),
+                                    onChanged: plan == null
+                                        ? null
+                                        : (_) {
+                                            final dayIndex = plan.days.indexWhere(
+                                              (d) => DateUtils.isSameDay(d.date, DateTime.now()),
+                                            );
+                                            if (dayIndex >= 0) {
+                                              ref.read(appStoreProvider).toggleMealConsumed(plan, dayIndex, m.id);
+                                            }
+                                          },
+                                  ),
+                                if (leftover.isEmpty)
+                                  ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text(
+                                      'Tüm öğünler tamam',
+                                      style: TextStyle(
+                                        fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800,
+                                      ),
+                                    ),
+                                    subtitle: const Text('Harika gidiyorsun'),
+                                  )
+                                else if (leftover.length > 3)
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextButton(
+                                      onPressed: () => context.go('/app/diet'),
+                                      child: Text('+${leftover.length - 3} öğün daha'),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                    SizedBox(height: context.isModern ? 14 : 10),
+                    if (store.moduleOn(user.id, AppModule.appointments))
+                      if (next.isEmpty)
+                        _homeStagger(
+                          context,
+                          14,
+                          DiyetselCard(
+                            onTap: () => context.go('/app/appointments'),
+                            padding: context.isModern
+                                ? const EdgeInsets.fromLTRB(16, 16, 16, 16)
+                                : const EdgeInsets.all(18),
+                            child: Row(
+                              children: [
+                                StyleIcon(
+                                  icon: Icons.event,
+                                  emoji: '📅',
+                                  size: 26,
+                                  color: context.isModern ? AppColors.modernSage : context.brandDeep,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Randevu al',
+                                        style: TextStyle(
+                                          fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800,
+                                        ),
+                                      ),
+                                      Text('Müsait slotlara bak', style: Theme.of(context).textTheme.bodySmall),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        _homeStagger(context, 14, CountdownCard(appointment: next.first)),
                   ],
                 ),
               ),
@@ -821,6 +1121,21 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
         ),
       ),
     );
+  }
+
+  Widget _homeStagger(BuildContext context, int index, Widget child) {
+    if (context.isLuxury) return child;
+    final delay = (context.isCartoon ? 40 : 55) * index;
+    return child
+        .animate()
+        .fadeIn(duration: context.isCartoon ? 360.ms : 420.ms, delay: delay.ms, curve: Curves.easeOutCubic)
+        .slideY(
+          begin: context.isCartoon ? 0.04 : 0.035,
+          end: 0,
+          duration: context.isCartoon ? 400.ms : 460.ms,
+          delay: delay.ms,
+          curve: Curves.easeOutCubic,
+        );
   }
 
   void _openHomeSearch(
@@ -909,104 +1224,15 @@ class CountdownCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 6),
-          Text('$hours sa $mins dk', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900, fontSize: 22)),
-        ],
-      ),
-    );
-  }
-}
-
-class MoreScreen extends ConsumerWidget {
-  const MoreScreen({super.key, required this.admin});
-  final bool admin;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authControllerProvider).user!;
-    final store = ref.watch(appStoreProvider);
-    ref.watch(settingsProvider);
-    ref.watch(usersProvider);
-    final raw = admin
-        ? const [
-            (Icons.edit_note, '📝', 'Blog editörü', '/admin/blog'),
-            (Icons.medical_services, '🎁', 'Hizmetler', '/admin/services'),
-            (Icons.menu_book, '🍲', 'Tarifler', '/admin/recipes'),
-            (Icons.restaurant, '🥗', 'Diyet planları', '/admin/diet-plans'),
-            (Icons.photo, '📷', 'Öğün günlüğü', '/admin/meals'),
-            (Icons.settings, '⚙️', 'Ayarlar', '/admin/settings'),
-          ]
-        : const [
-            (Icons.article, '📰', 'Blog', '/app/blog'),
-            (Icons.storefront, '🎁', 'Hizmetler', '/app/services'),
-            (Icons.chat, '💬', 'Sohbet', '/app/chat'),
-            (Icons.menu_book, '🍲', 'Tarifler', '/app/recipes'),
-            (Icons.shopping_cart, '🛒', 'Alışveriş listesi', '/app/shopping'),
-            (Icons.folder, '📁', 'Belge kasası', '/app/documents'),
-            (Icons.insights_rounded, '📊', 'Haftalık / aylık rapor', '/app/reports'),
-            (Icons.emoji_events_rounded, '🏆', 'Rozetler', '/app/badges'),
-            (Icons.school_rounded, '📚', 'Mini dersler', '/app/learn'),
-            (Icons.qr_code_scanner, '📷', 'Barkod', '/app/barcode'),
-            (Icons.favorite, '❤️', 'Check-in', '/app/check-in'),
-            (Icons.restaurant_menu, '🍽️', 'Dışarıda ne yesem', '/app/eat-out'),
-            (Icons.auto_awesome, '✨', 'Hikaye kartı', '/app/story'),
-            (Icons.hourglass_bottom, '⏳', 'Aralıklı oruç', '/app/fasting'),
-            (Icons.water_drop, '💧', 'Su kısayolu', '/app/water-shortcut'),
-            (Icons.settings, '⚙️', 'Ayarlar', '/app/settings'),
-          ];
-    final items = admin
-        ? raw
-        : raw.where((item) {
-            if (item.$4 == '/app/reports' || item.$4 == '/app/water-shortcut' || item.$4 == '/app/settings' || item.$4 == '/app/badges' || item.$4 == '/app/learn') {
-              return item.$4 != '/app/water-shortcut' || store.moduleOn(user.id, AppModule.water);
-            }
-            final id = AppModule.fromRoute(item.$4);
-            return id == null || store.moduleOn(user.id, id);
-          }).toList();
-    return AppPage(
-      title: 'Daha fazla',
-      child: GridView.count(
-        crossAxisCount: context.isDesktopLayout ? 4 : (context.isWide ? 3 : 2),
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        children: [
-          for (final item in items)
-            DiyetselCard(
-              onTap: () {
-                if (item.$4 == '/app/water-shortcut') {
-                  final user = ref.read(authControllerProvider).user!;
-                  final store = ref.read(appStoreProvider);
-                  final prefs = store.prefs(user.id);
-                  final next = !prefs.waterShortcut;
-                  store.savePrefs(user.id, prefs.copyWith(waterShortcut: next));
-                  if (next) {
-                    ReminderService.instance.showWaterShortcut();
-                  } else {
-                    ReminderService.instance.hideWaterShortcut();
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        next
-                            ? (ReminderService.instance.supportsNative
-                                ? 'Kalıcı su bildirimi açıldı.'
-                                : 'Android’de kalıcı bildirim olur. Windows’ta widget yok.')
-                            : 'Su kısayolu kapatıldı.',
-                      ),
-                    ),
-                  );
-                  return;
-                }
-                context.push(item.$4);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StyleIcon(icon: item.$1, emoji: item.$2, size: 28),
-                  const SizedBox(height: 10),
-                  Text(item.$3, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w800)),
-                ],
-              ),
+          Text(
+            '$hours sa $mins dk',
+            style: TextStyle(
+              color: context.brandPrimary,
+              fontWeight: context.isLuxury ? FontWeight.w600 : FontWeight.w900,
+              fontSize: 22,
+              letterSpacing: context.isLuxury ? 0.4 : null,
             ),
+          ),
         ],
       ),
     );

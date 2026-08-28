@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/data/seed_data.dart';
@@ -50,6 +51,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
       child: ListView(
         children: [
           DiyetselCard(
+            color: context.isCartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : null,
             padding: const EdgeInsets.all(8),
             child: TableCalendar<Appointment>(
               firstDay: DateTime.now().subtract(const Duration(days: 365)),
@@ -66,19 +68,34 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
               }),
               onFormatChanged: (f) => setState(() => _format = f),
               calendarStyle: CalendarStyle(
-                selectedDecoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                selectedDecoration: BoxDecoration(
+                  color: context.brandPrimary,
+                  shape: BoxShape.circle,
+                ),
                 selectedTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                 todayDecoration: BoxDecoration(
-                  color: AppColors.peach.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.35 : 0.9),
+                  color: context.isCartoon
+                      ? AppColors.kawaiiRose.withValues(alpha: 0.85)
+                      : context.isLuxury
+                          ? AppColors.luxuryCopper.withValues(alpha: 0.28)
+                          : AppColors.modernSageSoft.withValues(
+                              alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.95,
+                            ),
                   shape: BoxShape.circle,
                 ),
                 todayTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: context.isCartoon
+                      ? AppColors.kawaiiInk
+                      : Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
                 ),
                 defaultTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 weekendTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 outsideTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.55)),
+                markerDecoration: BoxDecoration(
+                  color: context.isCartoon ? AppColors.kawaiiCoral : context.brandPrimary,
+                  shape: BoxShape.circle,
+                ),
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
                 weekdayStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w700),
@@ -130,6 +147,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
           return false;
         },
         child: DiyetselCard(
+          color: context.isCartoon ? AppColors.kawaiiMint.withValues(alpha: 0.65) : null,
           onTap: widget.admin ? () => _adminActions(context, store, a) : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +173,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
         AppointmentStatus.pending => AppColors.warning,
         AppointmentStatus.rejected => AppColors.danger,
         AppointmentStatus.completed => AppColors.calorie,
-        AppointmentStatus.rescheduled => AppColors.peachDeep,
+        AppointmentStatus.rescheduled => AppColors.warning,
       };
 
   Future<void> _book(BuildContext context, AppStore store, UserProfile user) async {
@@ -224,12 +242,12 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
             TextField(controller: notes, decoration: const InputDecoration(labelText: 'Klinik notlar'), maxLines: 3),
             TextField(controller: rec, decoration: const InputDecoration(labelText: 'Tavsiyeler'), maxLines: 2),
             const SizedBox(height: 8),
-            FilledButton(
+            DiyetselButton(
+              label: 'Notları kaydet',
               onPressed: () {
                 store.saveAppointment(a.copyWith(clinicalNotes: notes.text, recommendations: rec.text));
                 Navigator.pop(ctx);
               },
-              child: const Text('Notları kaydet'),
             ),
             const SizedBox(height: 16),
           ],

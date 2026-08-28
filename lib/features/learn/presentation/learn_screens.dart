@@ -65,18 +65,43 @@ class _SeriesHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
-    final c1 = Color(series.gradient[0]);
-    final c2 = Color(series.gradient[1]);
-    return Material(
+    final luxury = context.isLuxury;
+    final c1 = cartoon
+        ? AppColors.kawaiiLemon
+        : luxury
+            ? Color.lerp(Color(series.gradient[0]), AppColors.luxuryCopperDeep, 0.65)!
+            : Color(series.gradient[0]);
+    final c2 = cartoon
+        ? AppColors.kawaiiSky
+        : luxury
+            ? Color.lerp(Color(series.gradient[1]), AppColors.luxuryBronze, 0.55)!
+            : Color(series.gradient[1]);
+    final radius = cartoon ? 28.0 : (luxury ? 12.0 : 22.0);
+    Widget card = Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(cartoon ? 24 : 18),
+        borderRadius: BorderRadius.circular(radius),
         child: Ink(
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [c1, c2], begin: Alignment.topLeft, end: Alignment.bottomRight),
-            borderRadius: BorderRadius.circular(cartoon ? 24 : 18),
-            boxShadow: [BoxShadow(color: c1.withValues(alpha: 0.35), blurRadius: 16, offset: const Offset(0, 8))],
+            borderRadius: BorderRadius.circular(radius),
+            border: cartoon
+                ? null
+                : luxury
+                    ? Border.all(color: AppColors.luxuryCopper.withValues(alpha: 0.45))
+                    : null,
+            boxShadow: [
+              BoxShadow(
+                color: cartoon
+                    ? AppColors.kawaiiShadow
+                    : luxury
+                        ? c1.withValues(alpha: 0.28)
+                        : AppColors.modernSoftShadow,
+                blurRadius: luxury || cartoon ? 16 : 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -94,24 +119,35 @@ class _SeriesHeroCard extends StatelessWidget {
                 Text(
                   series.title,
                   style: TextStyle(
-                    color: cartoon ? AppColors.lightInk : Colors.white,
-                    fontWeight: FontWeight.w900,
+                    color: cartoon ? AppColors.kawaiiInk : Colors.white,
+                    fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
                     fontSize: 22,
+                    letterSpacing: luxury ? 0.2 : null,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   series.subtitle,
-                  style: TextStyle(color: cartoon ? AppColors.lightInk.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.88)),
+                  style: TextStyle(
+                    color: cartoon
+                        ? AppColors.kawaiiInk.withValues(alpha: 0.8)
+                        : Colors.white.withValues(alpha: 0.88),
+                  ),
                 ),
                 const SizedBox(height: 14),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(99),
                   child: LinearProgressIndicator(
                     value: done / 7,
-                    minHeight: 7,
-                    backgroundColor: Colors.white.withValues(alpha: 0.25),
-                    color: Colors.white,
+                    minHeight: luxury ? 5 : 7,
+                    backgroundColor: cartoon
+                        ? AppColors.kawaiiBubble.withValues(alpha: 0.7)
+                        : Colors.white.withValues(alpha: 0.25),
+                    color: cartoon
+                        ? AppColors.kawaiiCoral
+                        : luxury
+                            ? AppColors.luxuryChampagne
+                            : Colors.white,
                   ),
                 ),
               ],
@@ -120,6 +156,13 @@ class _SeriesHeroCard extends StatelessWidget {
         ),
       ),
     );
+    if (cartoon) {
+      return card
+          .animate()
+          .fadeIn(duration: 300.ms)
+          .scale(begin: const Offset(0.94, 0.94), curve: Curves.easeOutBack, duration: 420.ms);
+    }
+    return card;
   }
 }
 
@@ -172,7 +215,7 @@ class LessonSeriesScreen extends ConsumerWidget {
                       done.contains(day.day)
                           ? Icons.check_circle_rounded
                           : (_unlocked(day.day, done) ? Icons.play_circle_fill_rounded : Icons.lock_rounded),
-                      color: done.contains(day.day) ? AppColors.success : AppColors.primary,
+                      color: done.contains(day.day) ? AppColors.success : context.brandPrimary,
                     ),
                   ],
                 ),
@@ -236,7 +279,10 @@ class _LessonDayScreenState extends ConsumerState<LessonDayScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(lesson.lead, style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary)),
+                Text(
+                  lesson.lead,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: context.brandPrimary),
+                ),
                 const SizedBox(height: 12),
                 for (final p in lesson.paragraphs) ...[
                   Text(p, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45)),
@@ -349,9 +395,23 @@ class LearnHomeRail extends ConsumerWidget {
             height: 56,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(series.gradient[0]), Color(series.gradient[1])],
+                colors: context.isCartoon
+                    ? const [AppColors.kawaiiRose, AppColors.kawaiiLilac]
+                    : [Color(series.gradient[0]), Color(series.gradient[1])],
               ),
-              borderRadius: BorderRadius.circular(context.isCartoon ? 18 : 14),
+              borderRadius: BorderRadius.circular(
+                context.isCartoon ? 24 : (context.isLuxury ? 12 : 20),
+              ),
+              border: null,
+              boxShadow: context.isCartoon
+                  ? const [
+                      BoxShadow(
+                        color: AppColors.kawaiiShadow,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ]
+                  : null,
             ),
             alignment: Alignment.center,
             child: Text(series.emoji, style: const TextStyle(fontSize: 26)),
@@ -368,7 +428,7 @@ class LearnHomeRail extends ConsumerWidget {
               ],
             ),
           ),
-          const StyleIcon(icon: Icons.play_circle_fill_rounded, emoji: '▶️', size: 28, color: AppColors.primary),
+          StyleIcon(icon: Icons.play_circle_fill_rounded, emoji: '▶️', size: 28, color: context.brandPrimary),
         ],
       ),
     );

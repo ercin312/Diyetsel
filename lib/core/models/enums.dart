@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 enum UserRole { admin, client }
 
-enum VisualStyle { modern, cartoon }
+enum VisualStyle { modern, cartoon, luxury }
 
 enum AppointmentStatus { pending, approved, rejected, rescheduled, completed }
 
@@ -61,4 +63,37 @@ extension MealTypeX on MealType {
         return 'Dinner';
     }
   }
+
+  IconData get icon {
+    switch (this) {
+      case MealType.breakfast:
+        return Icons.wb_sunny_rounded;
+      case MealType.morningSnack:
+        return Icons.apple;
+      case MealType.lunch:
+        return Icons.restaurant_rounded;
+      case MealType.afternoonSnack:
+        return Icons.local_cafe_rounded;
+      case MealType.dinner:
+        return Icons.nightlight_round;
+    }
+  }
+
+  /// Default reminder clock `HH:mm`.
+  String get defaultReminderTime {
+    switch (this) {
+      case MealType.breakfast:
+        return '08:00';
+      case MealType.morningSnack:
+        return '10:30';
+      case MealType.lunch:
+        return '13:00';
+      case MealType.afternoonSnack:
+        return '16:00';
+      case MealType.dinner:
+        return '19:30';
+    }
+  }
+
+  int get notificationId => 101 + index;
 }

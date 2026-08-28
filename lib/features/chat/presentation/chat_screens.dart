@@ -1,9 +1,12 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/data/seed_data.dart';
@@ -85,28 +88,75 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               itemBuilder: (context, i) {
                 final m = messages[i];
                 final mine = m.senderId == user.id;
+                final cartoon = context.isCartoon;
+                final bubbleRadius = cartoon ? 26.0 : (context.isLuxury ? 10.0 : 20.0);
+                Widget bubble = Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.all(12),
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  decoration: BoxDecoration(
+                    color: cartoon
+                        ? (mine
+                            ? AppColors.kawaiiCoral.withValues(alpha: 0.22)
+                            : AppColors.kawaiiMint.withValues(alpha: 0.9))
+                        : (mine
+                            ? context.brandPrimary
+                            : Theme.of(context).colorScheme.surfaceContainerHighest),
+                    borderRadius: BorderRadius.circular(bubbleRadius),
+                    border: null,
+                    boxShadow: cartoon
+                        ? const [
+                            BoxShadow(
+                              color: AppColors.kawaiiShadow,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ]
+                        : context.isModern
+                            ? const [
+                                BoxShadow(
+                                  color: AppColors.modernSoftShadow,
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
+                                ),
+                              ]
+                            : null,
+                  ),
+                  child: m.type == ChatMediaType.text
+                      ? Text(
+                          m.content,
+                          style: TextStyle(
+                            color: cartoon
+                                ? AppColors.kawaiiInk
+                                : (mine ? Colors.white : null),
+                          ),
+                        )
+                      : TextButton(
+                          onPressed: () async {
+                            try {
+                              await _player.setFilePath(m.content);
+                              await _player.play();
+                            } catch (_) {}
+                          },
+                          child: Text(
+                            '${m.type.name}: ${m.content.split(RegExp(r'[\\/]')).last}',
+                            style: TextStyle(
+                              color: cartoon
+                                  ? AppColors.kawaiiInk
+                                  : (mine ? Colors.white : null),
+                            ),
+                          ),
+                        ),
+                );
+                if (cartoon) {
+                  bubble = bubble
+                      .animate()
+                      .fadeIn(duration: 220.ms)
+                      .scale(begin: const Offset(0.92, 0.92), curve: Curves.easeOutBack, duration: 320.ms);
+                }
                 return Align(
                   alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.all(12),
-                    constraints: const BoxConstraints(maxWidth: 320),
-                    decoration: BoxDecoration(
-                      color: mine ? const Color(0xFFFF6B00) : Theme.of(context).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: m.type == ChatMediaType.text
-                        ? Text(m.content, style: TextStyle(color: mine ? Colors.white : null))
-                        : TextButton(
-                            onPressed: () async {
-                              try {
-                                await _player.setFilePath(m.content);
-                                await _player.play();
-                              } catch (_) {}
-                            },
-                            child: Text('${m.type.name}: ${m.content.split(RegExp(r'[\\/]')).last}', style: TextStyle(color: mine ? Colors.white : null)),
-                          ),
-                  ),
+                  child: bubble,
                 );
               },
             ),

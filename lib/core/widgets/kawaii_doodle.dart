@@ -35,18 +35,18 @@ extension KawaiiKindX on KawaiiKind {
   Color get tile {
     return switch (this) {
       KawaiiKind.home => AppColors.kawaiiLemon,
-      KawaiiKind.diet => const Color(0xFFF3E4D4),
-      KawaiiKind.water => const Color(0xFFE6F0E7),
-      KawaiiKind.calendar => const Color(0xFFF4EDE3),
-      KawaiiKind.shop => const Color(0xFFF4EDE3),
-      KawaiiKind.recipe => const Color(0xFFF4EDE3),
-      KawaiiKind.blog => const Color(0xFFF4EDE3),
-      KawaiiKind.cart => const Color(0xFFF4EDE3),
-      KawaiiKind.chat => const Color(0xFFE6F0E7),
+      KawaiiKind.diet => AppColors.kawaiiPeach,
+      KawaiiKind.water => AppColors.kawaiiSky,
+      KawaiiKind.calendar => AppColors.kawaiiMint,
+      KawaiiKind.shop => AppColors.kawaiiLilac,
+      KawaiiKind.recipe => AppColors.kawaiiPeach,
+      KawaiiKind.blog => AppColors.kawaiiSky,
+      KawaiiKind.cart => AppColors.kawaiiLemon,
+      KawaiiKind.chat => AppColors.kawaiiMint,
       KawaiiKind.people => AppColors.kawaiiLilac,
       KawaiiKind.settings => const Color(0xFFE8E4DC),
       KawaiiKind.sparkle => AppColors.kawaiiLemon,
-      KawaiiKind.gift => AppColors.kawaiiPeach,
+      KawaiiKind.gift => AppColors.kawaiiRose,
       KawaiiKind.camera => AppColors.kawaiiLilac,
       KawaiiKind.folder => AppColors.kawaiiLemon,
       KawaiiKind.document => AppColors.kawaiiSky,
@@ -54,10 +54,10 @@ extension KawaiiKindX on KawaiiKind {
       KawaiiKind.search => AppColors.kawaiiSky,
       KawaiiKind.orange => AppColors.kawaiiPeach,
       KawaiiKind.barcode => AppColors.kawaiiLilac,
-      KawaiiKind.heart => const Color(0xFFFFD6DE),
+      KawaiiKind.heart => AppColors.kawaiiRose,
       KawaiiKind.fire => const Color(0xFFFFE0C2),
       KawaiiKind.hourglass => AppColors.kawaiiLemon,
-      KawaiiKind.plate => const Color(0xFFE7F6EE),
+      KawaiiKind.plate => AppColors.kawaiiMint,
     };
   }
 
@@ -205,28 +205,38 @@ class KawaiiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final radius = size * 0.3;
+    final radius = size * 0.36;
     final fill = dark ? Color.lerp(kind.tile, const Color(0xFF2A241F), 0.55)! : kind.tile;
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutBack,
       width: size,
       height: size,
       alignment: Alignment.center,
+      transform: selected
+          ? (Matrix4.identity()..scaleByDouble(1.06, 1.06, 1.06, 1.0))
+          : Matrix4.identity(),
+      transformAlignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.lerp(fill, Colors.white, dark ? 0.08 : 0.28)!,
+            Color.lerp(fill, Colors.white, dark ? 0.1 : 0.42)!,
             fill,
+            Color.lerp(fill, AppColors.kawaiiPeach, 0.12)!,
           ],
+        ),
+        border: Border.all(
+          color: selected ? AppColors.kawaiiCoral.withValues(alpha: 0.35) : Colors.white.withValues(alpha: 0.9),
+          width: selected ? 1.5 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: selected ? AppColors.primary.withValues(alpha: 0.32) : const Color(0x28000000),
+            color: selected ? AppColors.kawaiiGlow : AppColors.kawaiiShadow,
             blurRadius: selected ? 16 : 12,
-            offset: const Offset(0, 7),
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -234,18 +244,18 @@ class KawaiiTile extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Positioned(
-            top: size * 0.08,
-            left: size * 0.1,
+            top: size * 0.1,
+            left: size * 0.12,
             child: Container(
-              width: size * 0.34,
-              height: size * 0.18,
+              width: size * 0.36,
+              height: size * 0.2,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: dark ? 0.12 : 0.55),
+                color: Colors.white.withValues(alpha: dark ? 0.14 : 0.65),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
           ),
-          KawaiiDoodle(kind: kind, size: size * 0.72),
+          KawaiiDoodle(kind: kind, size: size * 0.7),
         ],
       ),
     );

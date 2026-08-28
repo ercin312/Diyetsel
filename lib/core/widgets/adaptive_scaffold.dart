@@ -5,9 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
+import '../../app/theme/app_spacing.dart';
+import '../constants/diyetsel_assets.dart';
 import '../models/enums.dart';
 import '../utils/desktop.dart';
 import 'kawaii_doodle.dart';
+import 'luxury_glyph.dart';
 import 'modern_glyph.dart';
 
 class NavDest {
@@ -51,27 +54,94 @@ class AdaptiveScaffold extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
   final UserRole role;
 
-  Widget _mobileGlyph(BuildContext context, NavDest dest, {required bool selected}) {
-    if (!context.isCartoon) {
-      final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-      final accent = ModernPalette.accent(dest.kind);
+  Widget _mobileGlyph(BuildContext context, NavDest dest, {required bool selected, int? navIndex}) {
+    if (context.isCartoon) {
+      final asset = _cartoonNavAsset(navIndex);
       return AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        width: 48,
-        height: 32,
+        duration: const Duration(milliseconds: 220),
+        width: 44,
+        height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: selected ? accent.withValues(alpha: 0.16) : Colors.transparent,
+          shape: BoxShape.circle,
+          color: selected ? AppColors.kawaiiLeaf.withValues(alpha: 0.16) : Colors.transparent,
+        ),
+        child: asset != null
+            ? Image.asset(
+                asset,
+                width: selected ? 28 : 26,
+                height: selected ? 28 : 26,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, _, _) => Icon(
+                  dest.icon,
+                  size: selected ? 24 : 22,
+                  color: selected ? AppColors.kawaiiLeaf : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              )
+            : Icon(
+                dest.icon,
+                size: selected ? 24 : 22,
+                color: selected ? AppColors.kawaiiLeaf : Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+      );
+    }
+    if (context.isLuxury) {
+      final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+      final accent = AppColors.luxuryCopper;
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 48,
+        height: 34,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: selected ? AppColors.luxuryPlate : Colors.transparent,
+          border: Border.all(
+            color: selected ? accent : AppColors.luxuryLine.withValues(alpha: 0.7),
+            width: selected ? 1.2 : 0.9,
+          ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(color: accent.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0, 3)),
+                ]
+              : null,
         ),
         child: Icon(
           dest.kind.materialIcon,
-          size: 24,
+          size: 20,
           color: selected ? accent : muted,
         ),
       );
     }
-    return KawaiiTile(kind: dest.kind, size: selected ? 46 : 40, selected: selected);
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final accent = ModernPalette.accent(dest.kind);
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 44,
+      height: 36,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: selected ? accent.withValues(alpha: 0.12) : Colors.transparent,
+      ),
+      child: Icon(
+        dest.kind.materialIcon,
+        size: 22,
+        color: selected ? AppColors.primary : muted,
+      ),
+    );
+  }
+
+  static String? _cartoonNavAsset(int? index) {
+    if (index == null) return null;
+    return switch (index) {
+      0 => DiyetselAssets.iconNavHome,
+      1 => DiyetselAssets.iconNavApple,
+      3 => DiyetselAssets.iconNavCalendar,
+      4 => DiyetselAssets.iconNavProfile,
+      _ => null,
+    };
   }
 
   @override
@@ -79,12 +149,22 @@ class AdaptiveScaffold extends StatelessWidget {
     final dest = role == UserRole.admin ? adminDestinations() : clientDestinations();
     final desktop = context.isDesktopLayout;
     final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
     final selected = navigationShell.currentIndex.clamp(0, dest.length - 1);
     final body = KeyedSubtree(
       key: ValueKey(navigationShell.currentIndex),
       child: navigationShell,
     );
     final scheme = Theme.of(context).colorScheme;
+
+    void selectTab(int i) {
+      final loc = dest[i].location;
+      if (navigationShell.currentIndex == i) {
+        navigationShell.goBranch(i, initialLocation: true);
+      } else {
+        context.go(loc);
+      }
+    }
 
     Widget scaffold;
     if (desktop) {
@@ -97,32 +177,139 @@ class AdaptiveScaffold extends StatelessWidget {
               selectedIndex: selected,
               extended: extended,
               cartoon: cartoon,
-              onSelect: navigationShell.goBranch,
+              luxury: luxury,
+              onSelect: selectTab,
             ),
-            VerticalDivider(width: 1, thickness: 1, color: scheme.outlineVariant.withValues(alpha: 0.9)),
+            VerticalDivider(
+              width: 1,
+              thickness: luxury ? 0.8 : 1,
+              color: luxury
+                  ? AppColors.luxuryCopper.withValues(alpha: 0.45)
+                  : scheme.outlineVariant.withValues(alpha: 0.9),
+            ),
             Expanded(child: body),
           ],
         ),
       );
     } else if (cartoon) {
+      // Floating-style bar with in-row center + (no Scaffold FAB — avoids tap stealing)
+      final mid = dest.length ~/ 2;
+
       scaffold = Scaffold(
         body: body,
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: DecoratedBox(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(28)),
-              boxShadow: [BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 18, offset: Offset(0, 8))],
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+          child: Material(
+            color: Colors.transparent,
+            elevation: 0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusNav),
+                border: Border.all(color: AppColors.kawaiiOutline),
+                boxShadow: AppSpacing.nav,
+              ),
+              child: SafeArea(
+                top: false,
+                child: SizedBox(
+                  height: 68,
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < dest.length; i++)
+                        if (i == mid)
+                          Expanded(
+                            child: Center(
+                              child: Transform.translate(
+                                offset: const Offset(0, -14),
+                                child: Material(
+                                  color: AppColors.kawaiiLeaf,
+                                  shape: const CircleBorder(),
+                                  elevation: 4,
+                                  shadowColor: AppColors.kawaiiLeaf.withValues(alpha: 0.4),
+                                  child: InkWell(
+                                    customBorder: const CircleBorder(),
+                                    onTap: () => selectTab(mid),
+                                    child: SizedBox(
+                                      width: 56,
+                                      height: 56,
+                                      child: Center(
+                                        child: Image.asset(
+                                          DiyetselAssets.iconNavPlus,
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.contain,
+                                          filterQuality: FilterQuality.high,
+                                          errorBuilder: (_, _, _) =>
+                                              const Icon(Icons.add_rounded, color: Colors.white, size: 30),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () => selectTab(i),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AnimatedScale(
+                                    scale: i == selected ? 1.08 : 1,
+                                    duration: const Duration(milliseconds: 180),
+                                    child: _mobileGlyph(context, dest[i], selected: i == selected, navIndex: i),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    dest[i].label,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 10.5,
+                                      fontWeight: i == selected ? FontWeight.w800 : FontWeight.w600,
+                                      color: i == selected
+                                          ? AppColors.kawaiiLeaf
+                                          : scheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(26),
+          ),
+        ),
+      );
+    } else if (luxury) {
+      scaffold = Scaffold(
+        body: body,
+        bottomNavigationBar: Material(
+          color: scheme.surface,
+          elevation: 0,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: AppColors.luxuryCopper.withValues(alpha: 0.5), width: 0.9),
+              ),
+              color: AppColors.luxuryPlate,
+            ),
+            child: SafeArea(
+              top: false,
               child: NavigationBar(
                 selectedIndex: selected,
-                onDestinationSelected: navigationShell.goBranch,
+                onDestinationSelected: selectTab,
                 destinations: [
                   for (var i = 0; i < dest.length; i++)
                     NavigationDestination(
-                      icon: _mobileGlyph(context, dest[i], selected: i == selected),
+                      icon: _mobileGlyph(context, dest[i], selected: false),
+                      selectedIcon: _mobileGlyph(context, dest[i], selected: true),
                       label: dest[i].label,
                     ),
                 ],
@@ -132,6 +319,9 @@ class AdaptiveScaffold extends StatelessWidget {
         ),
       );
     } else {
+      // Soft wellness: in-row center + (no Scaffold FAB — avoids tap stealing)
+      final mid = dest.length ~/ 2;
+
       scaffold = Scaffold(
         body: body,
         bottomNavigationBar: Material(
@@ -139,21 +329,68 @@ class AdaptiveScaffold extends StatelessWidget {
           elevation: 0,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: scheme.outline.withValues(alpha: 0.8))),
+              border: Border(top: BorderSide(color: scheme.outline.withValues(alpha: 0.55))),
+              boxShadow: const [
+                BoxShadow(color: AppColors.modernSoftShadow, blurRadius: 16, offset: Offset(0, -4)),
+              ],
             ),
             child: SafeArea(
               top: false,
-              child: NavigationBar(
-                selectedIndex: selected,
-                onDestinationSelected: navigationShell.goBranch,
-                destinations: [
-                  for (var i = 0; i < dest.length; i++)
-                    NavigationDestination(
-                      icon: _mobileGlyph(context, dest[i], selected: false),
-                      selectedIcon: _mobileGlyph(context, dest[i], selected: true),
-                      label: dest[i].label,
-                    ),
-                ],
+              child: SizedBox(
+                height: 68,
+                child: Row(
+                  children: [
+                    for (var i = 0; i < dest.length; i++)
+                      if (i == mid)
+                        Expanded(
+                          child: Center(
+                            child: Transform.translate(
+                              offset: const Offset(0, -12),
+                              child: Material(
+                                color: AppColors.primaryDeep,
+                                shape: const CircleBorder(),
+                                elevation: 4,
+                                shadowColor: AppColors.primary.withValues(alpha: 0.4),
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: () => selectTab(mid),
+                                  child: const SizedBox(
+                                    width: 56,
+                                    height: 56,
+                                    child: Icon(Icons.add_rounded, color: Colors.white, size: 28),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => selectTab(i),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _mobileGlyph(context, dest[i], selected: i == selected),
+                                const SizedBox(height: 2),
+                                Text(
+                                  dest[i].label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: i == selected ? FontWeight.w700 : FontWeight.w500,
+                                    color: i == selected
+                                        ? AppColors.primary
+                                        : scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -185,6 +422,7 @@ class _DesktopSidebar extends StatelessWidget {
     required this.selectedIndex,
     required this.extended,
     required this.cartoon,
+    required this.luxury,
     required this.onSelect,
   });
 
@@ -192,15 +430,23 @@ class _DesktopSidebar extends StatelessWidget {
   final int selectedIndex;
   final bool extended;
   final bool cartoon;
+  final bool luxury;
   final ValueChanged<int> onSelect;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final width = extended ? 248.0 : 72.0;
-    final pane = cartoon ? const Color(0xFFFFFBF5) : const Color(0xFFF3F2F1);
+    final pane = cartoon
+        ? AppColors.kawaiiBubble
+        : luxury
+            ? AppColors.luxuryCanvas
+            : AppColors.lightBg;
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final bg = dark ? scheme.surfaceContainerLowest : pane;
+    final bg = dark
+        ? (luxury ? AppColors.luxuryPlate : scheme.surfaceContainerLowest)
+        : pane;
+    final brand = context.brandPrimary;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
@@ -217,8 +463,8 @@ class _DesktopSidebar extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.eco_rounded,
-                    size: 22,
-                    color: AppColors.primary,
+                    size: luxury ? 20 : 22,
+                    color: brand,
                   ),
                   if (extended) ...[
                     const SizedBox(width: 10),
@@ -226,9 +472,9 @@ class _DesktopSidebar extends StatelessWidget {
                       child: Text(
                         'Diyetsel',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
-                              letterSpacing: -0.4,
+                              fontWeight: luxury ? FontWeight.w600 : FontWeight.w700,
+                              color: brand,
+                              letterSpacing: luxury ? 0.6 : -0.4,
                             ),
                       ),
                     ),
@@ -240,11 +486,11 @@ class _DesktopSidebar extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: Text(
-                  'Menü',
+                  luxury ? 'ATÖLYE' : (cartoon ? 'Sevimli menü' : 'Menü'),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                        color: cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.65) : scheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 0.4,
+                        letterSpacing: luxury ? 1.4 : 0.4,
                       ),
                 ),
               ),
@@ -255,60 +501,86 @@ class _DesktopSidebar extends StatelessWidget {
                 itemBuilder: (context, i) {
                   final d = destinations[i];
                   final selected = i == selectedIndex;
-                  final accent = cartoon ? AppColors.primary : ModernPalette.accent(d.kind);
+                  final accent = cartoon
+                      ? AppColors.kawaiiLeaf
+                      : luxury
+                          ? LuxuryPalette.accent(d.kind)
+                          : ModernPalette.accent(d.kind);
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
+                    padding: EdgeInsets.only(bottom: cartoon ? 4 : 2),
                     child: Material(
-                      color: selected ? accent.withValues(alpha: 0.14) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
+                      color: selected
+                          ? (cartoon
+                              ? AppColors.kawaiiLeaf.withValues(alpha: 0.14)
+                              : accent.withValues(alpha: luxury ? 0.12 : 0.12))
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(cartoon ? 16 : (luxury ? 10 : 10)),
                       child: InkWell(
                         onTap: () => onSelect(i),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(cartoon ? 16 : (luxury ? 10 : 10)),
                         hoverColor: scheme.onSurface.withValues(alpha: 0.05),
-                        child: extended
-                            ? SizedBox(
-                                height: 40,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        d.kind.materialIcon,
-                                        size: 20,
-                                        color: selected ? accent : scheme.onSurfaceVariant,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          d.label,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 13.5,
-                                            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                                            color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
-                                            letterSpacing: -0.1,
+                        child: DecoratedBox(
+                          decoration: selected && luxury
+                              ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: AppColors.luxuryCopper.withValues(alpha: 0.55),
+                                    width: 0.8,
+                                  ),
+                                )
+                              : const BoxDecoration(),
+                          child: extended
+                              ? SizedBox(
+                                  height: cartoon ? 44 : 40,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    child: Row(
+                                      children: [
+                                        if (cartoon)
+                                          KawaiiDoodle(kind: d.kind, size: 22)
+                                        else
+                                          Icon(
+                                            d.kind.materialIcon,
+                                            size: luxury ? 18 : 20,
+                                            color: selected ? accent : scheme.onSurfaceVariant,
+                                          ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            d.label,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: luxury ? 13 : (cartoon ? 14 : 13.5),
+                                              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                                              color: cartoon
+                                                  ? (selected ? AppColors.kawaiiLeaf : AppColors.kawaiiInk)
+                                                  : (selected ? scheme.onSurface : scheme.onSurfaceVariant),
+                                              letterSpacing: luxury ? 0.3 : -0.1,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Tooltip(
-                                message: d.label,
-                                waitDuration: const Duration(milliseconds: 400),
-                                child: SizedBox(
-                                  height: 40,
-                                  child: Center(
-                                    child: Icon(
-                                      d.kind.materialIcon,
-                                      size: 20,
-                                      color: selected ? accent : scheme.onSurfaceVariant,
+                                )
+                              : Tooltip(
+                                  message: d.label,
+                                  waitDuration: const Duration(milliseconds: 400),
+                                  child: SizedBox(
+                                    height: cartoon ? 44 : 40,
+                                    child: Center(
+                                      child: cartoon
+                                          ? KawaiiDoodle(kind: d.kind, size: 22)
+                                          : Icon(
+                                              d.kind.materialIcon,
+                                              size: luxury ? 18 : 20,
+                                              color: selected ? accent : scheme.onSurfaceVariant,
+                                            ),
                                     ),
                                   ),
                                 ),
-                              ),
+                        ),
                       ),
                     ),
                   );
@@ -323,6 +595,7 @@ class _DesktopSidebar extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
                       fontSize: 10,
+                      letterSpacing: luxury ? 0.6 : 0,
                     ),
               ),
             ),

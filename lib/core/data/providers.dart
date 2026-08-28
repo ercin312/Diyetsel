@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/app_constants.dart';
+import '../models/home_theme_config.dart';
 import '../models/models.dart';
 import 'app_store.dart';
 
@@ -124,4 +125,9 @@ final fastingProvider = StreamProvider<List<FastingSession>>((ref) {
 final settingsProvider = StreamProvider<AppSettings>((ref) {
   final store = ref.watch(appStoreProvider);
   return _watch(store, 'settings', store.settings);
+});
+
+final homeThemeProvider = StreamProvider<HomeThemeConfig>((ref) {
+  final store = ref.watch(appStoreProvider);
+  return _watch(store, 'home_theme', store.homeThemeConfig);
 });

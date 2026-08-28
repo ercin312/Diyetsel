@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -10,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../constants/app_constants.dart';
 import '../models/enums.dart';
+import '../models/home_theme_config.dart';
 import '../models/models.dart';
 import '../network/local_database.dart';
 import 'seed_data.dart';
@@ -38,6 +40,17 @@ class AppStore {
   }
 
   Future<void> saveSettings(AppSettings value) => db.put('settings', 'app', value.toMap());
+
+  HomeThemeConfig homeThemeConfig() {
+    final raw = db.get('home_theme', 'cartoon');
+    if (raw == null) return HomeThemeConfig.defaults();
+    return HomeThemeConfig.fromMap(raw);
+  }
+
+  Future<void> saveHomeThemeConfig(HomeThemeConfig value) =>
+      db.put('home_theme', 'cartoon', value.toMap());
+
+  Future<void> resetHomeThemeConfig() => saveHomeThemeConfig(HomeThemeConfig.defaults());
 
   bool moduleOn(String userId, String module) {
     if (settings().clinicModules[module] == false) return false;
@@ -318,6 +331,8 @@ class AppStore {
   Future<void> saveDocument(VaultFile item) =>
       db.put(FirestorePaths.documents, item.id, item.toMap());
 
+  Future<void> deleteDocument(String id) => db.delete(FirestorePaths.documents, id);
+
   List<PaymentRecord> payments() => _map(FirestorePaths.payments, PaymentRecord.fromMap);
 
   Future<void> savePayment(PaymentRecord item) =>
@@ -399,6 +414,66 @@ class AppStore {
     days[dayIndex] = DietDay(date: days[dayIndex].date, meals: meals);
     await saveDietPlan(plan.copyWith(days: days));
     await touchActivity(plan.clientId);
+  }
+
+  /// Apply the same reminder clock to every meal of [type] across the week.
+  Future<void> updateMealReminder(String planId, MealType type, String timeHhMm) async {
+    final plan = dietPlans().where((p) => p.id == planId).firstOrNull;
+    if (plan == null) return;
+    final days = [
+      for (final day in plan.days)
+        DietDay(
+          date: day.date,
+          meals: [
+            for (final meal in day.meals)
+              if (meal.type == type) meal.copyWith(reminderTime: timeHhMm) else meal,
+          ],
+        ),
+    ];
+    await saveDietPlan(plan.copyWith(days: days));
+  }
+
+  /// Replace or create a weekly plan from a parsed meal template for [client].
+  Future<DietPlan> assignDietFromMeals({
+    required UserProfile client,
+    required String dietitianId,
+    required String title,
+    required List<DietMeal> templateMeals,
+  }) async {
+    var monday = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+    monday = DateTime(monday.year, monday.month, monday.day);
+    final existing = dietPlanForClient(client.id);
+    final id = existing?.id ?? newId();
+    final plan = DietPlan(
+      id: id,
+      clientId: client.id,
+      clientName: client.displayName,
+      dietitianId: dietitianId,
+      title: title,
+      weekStart: monday,
+      days: [
+        for (var i = 0; i < 7; i++)
+          DietDay(
+            date: monday.add(Duration(days: i)),
+            meals: [
+              for (final m in templateMeals)
+                DietMeal(
+                  id: newId(),
+                  type: m.type,
+                  name: m.name,
+                  description: m.description,
+                  calories: m.calories,
+                  protein: m.protein,
+                  carbs: m.carbs,
+                  fat: m.fat,
+                  reminderTime: m.reminderTime ?? m.type.defaultReminderTime,
+                ),
+            ],
+          ),
+      ],
+    );
+    await saveDietPlan(plan);
+    return plan;
   }
 
   Future<UserProfile> register({

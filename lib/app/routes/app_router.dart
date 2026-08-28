@@ -8,12 +8,18 @@ import '../../features/appointment/presentation/appointment_screens.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/blog/presentation/blog_screens.dart';
+import '../../features/story/presentation/story_screens.dart';
+import '../../features/check_in/presentation/check_in_screens.dart';
 import '../../features/chat/presentation/chat_screens.dart';
+import '../../features/more/presentation/more_screens.dart';
 import '../../features/dashboard/presentation/dashboard_screens.dart';
+import '../../features/dashboard/presentation/home_theme_editor_screen.dart';
 import '../../features/dashboard/presentation/settings_screen.dart';
 import '../../features/diet_plan/presentation/diet_screens.dart';
 import '../../features/recipes/presentation/recipe_screens.dart';
 import '../../features/services/presentation/service_screens.dart';
+import '../../features/shopping/presentation/shopping_screens.dart';
+import '../../features/documents/presentation/documents_screens.dart';
 import '../../features/engage/presentation/engage_screens.dart';
 import '../../features/gamification/presentation/gamification_screens.dart';
 import '../../features/learn/presentation/learn_screens.dart';
@@ -69,6 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/admin/diet-plans', builder: (c, s) => const DietPlanScreen(admin: true)),
       GoRoute(path: '/admin/meals', builder: (c, s) => const MealPhotoScreen(admin: true)),
       GoRoute(path: '/admin/settings', builder: (c, s) => const SettingsScreen()),
+      GoRoute(path: '/admin/home-theme', builder: (c, s) => const HomeThemeEditorScreen()),
       GoRoute(path: '/app/blog', builder: (c, s) => const BlogListScreen()),
       GoRoute(path: '/app/services', builder: (c, s) => const ServicesScreen()),
       GoRoute(path: '/app/chat', builder: (c, s) => const ChatListScreen()),
@@ -80,6 +87,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/app/check-in', builder: (c, s) => const CheckInScreen()),
       GoRoute(path: '/app/eat-out', builder: (c, s) => const EatOutScreen()),
       GoRoute(path: '/app/story', builder: (c, s) => const StoryCardScreen()),
+      GoRoute(path: '/app/fasting', builder: (c, s) => const FastingScreen()),
       GoRoute(path: '/app/reports', builder: (c, s) => const ReportsScreen()),
       GoRoute(path: '/app/badges', builder: (c, s) => const BadgesScreen()),
       GoRoute(path: '/app/learn', builder: (c, s) => const LearnHubScreen()),

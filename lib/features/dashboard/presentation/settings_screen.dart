@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../app/theme/theme_controller.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
@@ -45,13 +46,34 @@ class SettingsScreen extends ConsumerWidget {
                     showSelectedIcon: false,
                     style: ButtonStyle(
                       visualDensity: VisualDensity.compact,
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            context.isModern ? 18 : (context.isLuxury ? 10 : 14),
+                          ),
+                        ),
+                      ),
+                      side: WidgetStateProperty.resolveWith((states) {
+                        if (context.isModern) {
+                          return BorderSide(
+                            color: states.contains(WidgetState.selected)
+                                ? AppColors.primary.withValues(alpha: 0.35)
+                                : AppColors.modernLine,
+                          );
+                        }
+                        return null;
+                      }),
                       foregroundColor: WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.selected)) return Colors.white;
                         return Theme.of(context).colorScheme.onSurface;
                       }),
                       backgroundColor: WidgetStateProperty.resolveWith((states) {
-                        if (states.contains(WidgetState.selected)) return AppColors.primary;
-                        return Theme.of(context).colorScheme.surface;
+                        if (states.contains(WidgetState.selected)) {
+                          return Theme.of(context).colorScheme.primary;
+                        }
+                        return context.isModern
+                            ? AppColors.lightSurface
+                            : Theme.of(context).colorScheme.surface;
                       }),
                     ),
                     segments: const [
@@ -63,14 +85,35 @@ class SettingsScreen extends ConsumerWidget {
                     onSelectionChanged: (value) => ref.read(themeControllerProvider.notifier).setMode(value.first),
                   ),
                 ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  secondary: const StyleIcon(icon: Icons.auto_awesome, emoji: '🎨', size: 22),
-                  title: const Text('Karikatür tema'),
-                  subtitle: const Text('Pastel sticker’lar, tatlı doodle ikonlar ve yumuşak gölgeler'),
-                  value: theme.style == VisualStyle.cartoon,
-                  onChanged: (v) => ref.read(themeControllerProvider.notifier).setStyle(v ? VisualStyle.cartoon : VisualStyle.modern),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const StyleIcon(icon: Icons.auto_awesome, emoji: '🎨', size: 22),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Görsel stil',
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Modern, karikatür veya lüks atölye görünümü',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 12),
+                _VisualStylePicker(
+                  selected: theme.style,
+                  onChanged: (style) => ref.read(themeControllerProvider.notifier).setStyle(style),
+                ),
+                const SizedBox(height: 8),
                 ListTile(
                   title: Text('settings.language'.tr()),
                   trailing: DropdownButton<String>(
@@ -271,6 +314,221 @@ class SettingsScreen extends ConsumerWidget {
             onPressed: () => ref.read(authControllerProvider.notifier).logout(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _VisualStylePicker extends StatelessWidget {
+  const _VisualStylePicker({required this.selected, required this.onChanged});
+
+  final VisualStyle selected;
+  final ValueChanged<VisualStyle> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final options = const [
+      (
+        VisualStyle.modern,
+        'Modern',
+        'Yumuşak wellness & sage',
+        Icons.dashboard_customize_rounded,
+        '✨',
+      ),
+      (
+        VisualStyle.cartoon,
+        'Karikatür',
+        'Krem & mercan yumuşak kawaii',
+        Icons.sentiment_satisfied_alt_rounded,
+        '🎨',
+      ),
+      (
+        VisualStyle.luxury,
+        'Lüks',
+        'Metalik bakır atölye',
+        Icons.diamond_rounded,
+        '🥂',
+      ),
+    ];
+
+    return Column(
+      children: [
+        for (final opt in options) ...[
+          _VisualStyleOption(
+            style: opt.$1,
+            title: opt.$2,
+            subtitle: opt.$3,
+            icon: opt.$4,
+            emoji: opt.$5,
+            selected: selected == opt.$1,
+            onTap: () => onChanged(opt.$1),
+          ),
+          if (opt != options.last) SizedBox(height: context.isModern ? 10 : 8),
+        ],
+      ],
+    );
+  }
+}
+
+class _VisualStyleOption extends StatelessWidget {
+  const _VisualStyleOption({
+    required this.style,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.emoji,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final VisualStyle style;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final String emoji;
+  final bool selected;
+  final VoidCallback onTap;
+
+  Color get _accent => switch (style) {
+        VisualStyle.modern => AppColors.primary,
+        VisualStyle.cartoon => AppColors.kawaiiLeaf,
+        VisualStyle.luxury => AppColors.luxuryCopper,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isLuxuryOpt = style == VisualStyle.luxury;
+    final isModernOpt = style == VisualStyle.modern;
+    final isCartoonOpt = style == VisualStyle.cartoon;
+    final softUi = context.isModern;
+    final radius = isCartoonOpt
+        ? 28.0
+        : (isLuxuryOpt ? 12.0 : (isModernOpt || softUi ? 20.0 : 14.0));
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(radius),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.fromLTRB(
+            isCartoonOpt ? 16 : (softUi ? 14 : 12),
+            isCartoonOpt ? 16 : (softUi ? 14 : 12),
+            14,
+            isCartoonOpt ? 16 : (softUi ? 14 : 12),
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius),
+            color: selected
+                ? (isModernOpt
+                    ? AppColors.modernWash.withValues(alpha: 0.95)
+                    : isCartoonOpt
+                        ? AppColors.kawaiiCream
+                        : _accent.withValues(alpha: isLuxuryOpt ? 0.14 : 0.12))
+                : (softUi
+                    ? AppColors.lightSurface
+                    : isCartoonOpt
+                        ? AppColors.kawaiiBubble.withValues(alpha: 0.7)
+                        : scheme.surfaceContainerHighest.withValues(alpha: 0.45)),
+            border: Border.all(
+              color: selected
+                  ? (isLuxuryOpt
+                      ? AppColors.luxuryCopper
+                      : isModernOpt
+                          ? AppColors.primary.withValues(alpha: 0.45)
+                          : AppColors.kawaiiLeaf.withValues(alpha: 0.35))
+                  : (softUi
+                      ? AppColors.modernLine
+                      : isCartoonOpt
+                          ? AppColors.kawaiiOutline.withValues(alpha: 0.35)
+                          : scheme.outline.withValues(alpha: 0.45)),
+              width: selected ? 1.2 : 1,
+            ),
+            boxShadow: selected && softUi
+                ? const [
+                    BoxShadow(
+                      color: AppColors.modernSoftShadow,
+                      blurRadius: 14,
+                      offset: Offset(0, 6),
+                    ),
+                  ]
+                : selected && isCartoonOpt
+                    ? const [
+                        BoxShadow(
+                          color: AppColors.kawaiiGlow,
+                          blurRadius: 18,
+                          offset: Offset(0, 6),
+                        ),
+                        BoxShadow(
+                          color: AppColors.kawaiiShadow,
+                          blurRadius: 14,
+                          offset: Offset(0, 8),
+                        ),
+                      ]
+                    : null,
+            gradient: selected && isLuxuryOpt
+                ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.luxuryPlate,
+                      AppColors.luxuryCopper.withValues(alpha: 0.22),
+                    ],
+                  )
+                : selected && isModernOpt
+                    ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.modernWash,
+                          AppColors.modernSageSoft.withValues(alpha: 0.75),
+                        ],
+                      )
+                    : selected && isCartoonOpt
+                        ? const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.kawaiiCream,
+                              AppColors.kawaiiBubble,
+                              AppColors.kawaiiRose,
+                            ],
+                          )
+                        : null,
+          ),
+          child: Row(
+            children: [
+              StyleIcon(icon: icon, emoji: emoji, size: isCartoonOpt ? 26 : 22, color: _accent, selected: selected),
+              SizedBox(width: isCartoonOpt ? 14 : 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: isLuxuryOpt ? 0.35 : -0.1,
+                        color: selected ? _accent : scheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ),
+              ),
+              if (selected)
+                Icon(
+                  Icons.check_circle_rounded,
+                  color: isLuxuryOpt
+                      ? AppColors.luxuryCopperBright
+                      : (isModernOpt ? AppColors.primary : AppColors.kawaiiLeaf),
+                  size: isCartoonOpt ? 24 : 22,
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,20 +1,16 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/diyetsel_assets.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
@@ -24,8 +20,8 @@ import '../../../core/utils/engage_logic.dart';
 import '../../../core/utils/reminder_service.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/cartoon_glyph.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
-import '../../../core/widgets/kawaii_doodle.dart';
 import '../../../core/widgets/module_gate.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -145,7 +141,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
             emoji: '📷',
             title: 'Rafa bakmadan karar ver',
             subtitle: 'Ürünü tara; 100 g kalorisi bugünkü kalan bütçenle kıyaslanır.',
-            trailing: StatusChip(label: '$budget kcal', color: AppColors.primary),
+            trailing: StatusChip(label: '$budget kcal', color: context.brandPrimary),
           ),
           const SizedBox(height: 12),
           Row(
@@ -156,7 +152,14 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const StyleIcon(icon: Icons.local_fire_department_rounded, emoji: '🔥', size: 18, color: AppColors.primary),
+                      StyleIcon(
+                        icon: Icons.local_fire_department_rounded,
+                        emoji: '🔥',
+                        size: 18,
+                        color: context.isLuxury
+                            ? context.brandPrimary
+                            : (context.isCartoon ? AppColors.kawaiiCoral : AppColors.modernFire),
+                      ),
                       const SizedBox(height: 8),
                       Text('$remaining', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
                       Text('Kalan gün', style: Theme.of(context).textTheme.bodySmall),
@@ -171,7 +174,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const StyleIcon(icon: Icons.cookie_rounded, emoji: '🍪', size: 18, color: AppColors.peachDeep),
+                      StyleIcon(icon: Icons.cookie_rounded, emoji: '🍪', size: 18, color: context.brandPrimary),
                       const SizedBox(height: 8),
                       Text('$budget', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
                       Text('Ara öğün tavanı', style: Theme.of(context).textTheme.bodySmall),
@@ -196,7 +199,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
           const SizedBox(height: 12),
           if (_canScanCamera)
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(context.isCartoon ? 26 : 20),
               child: SizedBox(
                 height: 220,
                 child: MobileScanner(
@@ -247,7 +250,11 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
           if (_product != null) ...[
             const SizedBox(height: 16),
             DiyetselCard(
-              color: stampColor(stamp).withValues(alpha: context.isCartoon ? 0.16 : 0.08),
+              color: context.isCartoon
+                  ? (stamp == 'uygun'
+                      ? AppColors.kawaiiMint.withValues(alpha: 0.75)
+                      : AppColors.kawaiiRose.withValues(alpha: 0.75))
+                  : stampColor(stamp).withValues(alpha: 0.08),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -295,248 +302,18 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
   }
 }
 
-class CheckInScreen extends ConsumerStatefulWidget {
-  const CheckInScreen({super.key});
-
-  @override
-  ConsumerState<CheckInScreen> createState() => _CheckInScreenState();
-}
-
-class _CheckInScreenState extends ConsumerState<CheckInScreen> {
-  final _weight = TextEditingController();
-  final _waist = TextEditingController();
-  final _note = TextEditingController();
-  int _mood = 3;
-  String? _photo;
-
-  @override
-  void dispose() {
-    _weight.dispose();
-    _waist.dispose();
-    _note.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final locked = lockedIfOff(ref, module: AppModule.checkIn, title: 'Haftalık check-in');
-    if (locked != null) return locked;
-    final user = ref.watch(authControllerProvider).user!;
-    final store = ref.watch(appStoreProvider);
-    final logs = (ref.watch(checkInsProvider).valueOrNull ?? []).where((e) => e.userId == user.id).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    final last = logs.firstOrNull;
-    final prev = logs.length >= 2 ? logs[1] : null;
-    final weightDelta = last?.weight != null && prev?.weight != null ? last!.weight! - prev!.weight! : null;
-    const moods = [
-      (Icons.sentiment_very_dissatisfied_rounded, 'Zor', '😞'),
-      (Icons.sentiment_dissatisfied_rounded, 'Eh işte', '😐'),
-      (Icons.sentiment_neutral_rounded, 'Normal', '🙂'),
-      (Icons.sentiment_satisfied_rounded, 'İyi', '😊'),
-      (Icons.sentiment_very_satisfied_rounded, 'Harika', '🤩'),
-    ];
-
-    return AppPage(
-      title: 'Haftalık check-in',
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.favorite_rounded,
-            emoji: '❤️',
-            color: AppColors.accent,
-            title: 'Bu haftanın raporu',
-            subtitle: last == null
-                ? 'Kilo, bel ve ruh halini gönder; diyetisyenin paneline düşer.'
-                : 'Son kayıt ${DateFormat('d MMMM', 'tr').format(last.createdAt)}',
-          ),
-          if (weightDelta != null) ...[
-            const SizedBox(height: 12),
-            DiyetselCard(
-              color: (weightDelta <= 0 ? AppColors.success : AppColors.warning).withValues(alpha: 0.1),
-              child: Row(
-                children: [
-                  StyleIcon(
-                    icon: weightDelta <= 0 ? Icons.trending_down_rounded : Icons.trending_up_rounded,
-                    emoji: weightDelta <= 0 ? '📉' : '📈',
-                    size: 22,
-                    color: weightDelta <= 0 ? AppColors.success : AppColors.warning,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      weightDelta <= 0
-                          ? 'Son check-in’e göre ${weightDelta.abs().toStringAsFixed(1)} kg düşüş'
-                          : 'Son check-in’e göre +${weightDelta.toStringAsFixed(1)} kg',
-                      style: const TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          if (last?.dietitianNote != null) ...[
-            const SizedBox(height: 12),
-            DiyetselCard(
-              color: AppColors.primary.withValues(alpha: context.isCartoon ? 0.12 : 0.08),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const StyleIcon(icon: Icons.chat_bubble_rounded, emoji: '💬', size: 24, color: AppColors.primary),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Diyetisyenin notu', style: TextStyle(fontWeight: FontWeight.w900)),
-                        const SizedBox(height: 4),
-                        Text(last!.dietitianNote!),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionHeader(title: 'Ölçümler', subtitle: 'Sabah, tuvalet sonrası daha tutarlıdır.'),
-                TextField(
-                  controller: _weight,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Kilo (kg)',
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: StyleIcon(icon: Icons.monitor_weight_rounded, emoji: '⚖️', size: 18, sticker: false),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _waist,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Bel çevresi (cm)',
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: StyleIcon(icon: Icons.straighten_rounded, emoji: '📏', size: 18, sticker: false),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Text('Ruh hali', style: TextStyle(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (var i = 0; i < moods.length; i++)
-                      ChoiceChip(
-                        selected: _mood == i + 1,
-                        avatar: StyleIcon(icon: moods[i].$1, emoji: moods[i].$3, size: 16, sticker: false, color: AppColors.accent),
-                        label: Text(moods[i].$2),
-                        onSelected: (_) => setState(() => _mood = i + 1),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _note,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Not (uyku, spor, zorlandığın öğün…)',
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextButton.icon(
-                  onPressed: () async {
-                    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
-                    if (file != null) setState(() => _photo = file.path);
-                  },
-                  icon: const StyleIcon(icon: Icons.photo_rounded, emoji: '📷', size: 18, sticker: false),
-                  label: Text(_photo == null ? 'İsteğe bağlı foto ekle' : 'Foto seçildi'),
-                ),
-                DiyetselButton(
-                  label: 'Check-in gönder',
-                  icon: Icons.send,
-                  onPressed: () async {
-                    await store.saveCheckIn(
-                      WeeklyCheckIn(
-                        id: newId(),
-                        userId: user.id,
-                        userName: user.displayName,
-                        createdAt: DateTime.now(),
-                        weight: double.tryParse(_weight.text.replaceAll(',', '.')),
-                        waist: double.tryParse(_waist.text.replaceAll(',', '.')),
-                        mood: _mood,
-                        note: _note.text.trim(),
-                        photoPath: _photo,
-                      ),
-                    );
-                    await AchievementService.instance.checkAndAward(store, user.id);
-                    if (context.mounted) {
-                      await maybeShowBadgeCelebrations(context, ref, user.id);
-                    }
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Check-in diyetisyen paneline düştü.')),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          const TipCard(
-            title: 'Neden her hafta?',
-            body: 'Günlük tartı dalgalanır. Haftalık ritim hem seni hem diyetisyenini gerçek trende bakmaya alıştırır.',
-            icon: Icons.calendar_month_rounded,
-            emoji: '📅',
-          ),
-          const SectionHeader(title: 'Geçmiş'),
-          if (logs.isEmpty)
-            const EmptyState(icon: Icons.favorite, emoji: '❤️', title: 'Henüz check-in yok', subtitle: 'İlk kaydın burada birikmeye başlar.')
-          else
-            for (final log in logs)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: DiyetselCard(
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: StyleIcon(
-                      icon: moods[(log.mood - 1).clamp(0, 4)].$1,
-                      emoji: moods[(log.mood - 1).clamp(0, 4)].$3,
-                      size: 22,
-                      color: AppColors.accent,
-                    ),
-                    title: Text(DateFormat('d MMMM y', 'tr').format(log.createdAt)),
-                    subtitle: Text(
-                      [
-                        if (log.weight != null) '${log.weight} kg',
-                        if (log.waist != null) 'bel ${log.waist} cm',
-                        moods[(log.mood - 1).clamp(0, 4)].$2,
-                        if (log.note.isNotEmpty) log.note,
-                      ].join(' • '),
-                    ),
-                  ),
-                ),
-              ),
-        ],
-      ),
-    );
-  }
-}
-
-class EatOutScreen extends ConsumerWidget {
+class EatOutScreen extends ConsumerStatefulWidget {
   const EatOutScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EatOutScreen> createState() => _EatOutScreenState();
+}
+
+class _EatOutScreenState extends ConsumerState<EatOutScreen> {
+  String _filter = 'Tümü';
+
+  @override
+  Widget build(BuildContext context) {
     final locked = lockedIfOff(ref, module: AppModule.eatOut, title: 'Dışarıda ne yesem?');
     if (locked != null) return locked;
     final user = ref.watch(authControllerProvider).user!;
@@ -545,7 +322,129 @@ class EatOutScreen extends ConsumerWidget {
     final remaining = store.remainingKcal(user.id);
     final fits = eatOutMenu.where((e) => e.kcal <= remaining + 40).toList();
     final tight = remaining < 200;
-    final shown = fits.isEmpty ? eatOutMenu.where((e) => e.kcal <= 120).toList() : fits;
+    final pool = fits.isEmpty ? eatOutMenu.where((e) => e.kcal <= 120).toList() : fits;
+    final categories = ['Tümü', ...{for (final e in eatOutMenu) e.category}];
+    final shown = _filter == 'Tümü' ? pool : pool.where((e) => e.category == _filter).toList();
+    final cartoon = context.isCartoon;
+
+    if (cartoon) {
+      return AppPage(
+        title: 'Dışarıda ne yesem?',
+        padding: EdgeInsets.zero,
+        child: ColoredBox(
+          color: AppColors.kawaiiSurfaceCream,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+            children: [
+              _EatOutHero(remaining: remaining, tight: tight)
+                  .animate()
+                  .fadeIn(duration: 300.ms)
+                  .slideY(begin: -0.05, curve: Curves.easeOutCubic),
+              const SizedBox(height: 14),
+              _EatOutRulesCard()
+                  .animate()
+                  .fadeIn(delay: 60.ms, duration: 300.ms)
+                  .slideY(begin: 0.04, curve: Curves.easeOutCubic),
+              const SizedBox(height: 16),
+              Text(
+                fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler',
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${shown.length} seçenek · kalan $remaining kcal',
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) {
+                    final c = categories.elementAt(i);
+                    final selected = c == _filter;
+                    return FilterChip(
+                      selected: selected,
+                      showCheckmark: false,
+                      label: Text(
+                        c,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12.5,
+                          color: selected ? Colors.white : AppColors.kawaiiInk,
+                        ),
+                      ),
+                      selectedColor: AppColors.kawaiiLeaf,
+                      backgroundColor: Colors.white,
+                      side: BorderSide(color: selected ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
+                      onSelected: (_) => setState(() => _filter = c),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 14),
+              for (var i = 0; i < shown.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _CartoonEatOutCard(
+                    idea: shown[i],
+                    remaining: remaining,
+                    onOpen: () => _openDetail(context, shown[i], remaining),
+                  )
+                      .animate()
+                      .fadeIn(delay: (40 * i).ms, duration: 300.ms)
+                      .slideY(begin: 0.06, curve: Curves.easeOutCubic)
+                      .scale(begin: const Offset(0.97, 0.97), curve: Curves.easeOutBack, duration: 400.ms),
+                ),
+              if (shown.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    'Bu kategoride uyan seçenek yok — filtreyi değiştir.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
+                  ),
+                ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                  border: Border.all(color: AppColors.kawaiiOutline),
+                  boxShadow: AppSpacing.soft,
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.chat_bubble_rounded, color: AppColors.kawaiiCoral, size: 22),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sos konuşması',
+                            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.',
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.4, color: AppColors.kawaiiMuted),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ).animate().fadeIn(delay: 200.ms, duration: 320.ms),
+            ],
+          ),
+        ),
+      );
+    }
 
     return AppPage(
       title: 'Dışarıda ne yesem?',
@@ -554,12 +453,12 @@ class EatOutScreen extends ConsumerWidget {
           FeatureBanner(
             icon: Icons.restaurant_menu_rounded,
             emoji: '🍽️',
-            color: AppColors.peachDeep,
+            color: context.brandPrimary,
             title: tight ? 'Bütçe dar — hafif seç' : 'Kalan $remaining kcal',
             subtitle: tight
                 ? 'Kahve, çorba veya paylaşım porsiyonu daha güvenli.'
                 : 'Menüden bunlara sığanları öne çıkardık. Sosu ayrı iste, pilavı çıkar.',
-            trailing: StatusChip(label: '$remaining kcal', color: AppColors.peachDeep),
+            trailing: StatusChip(label: '$remaining kcal', color: context.brandPrimary),
           ),
           const SizedBox(height: 12),
           const DiyetselCard(
@@ -582,10 +481,11 @@ class EatOutScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: DiyetselCard(
+                onTap: () => _openDetail(context, idea, remaining),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    StyleIcon(icon: idea.icon, emoji: idea.emoji, size: 24, color: AppColors.peachDeep),
+                    StyleIcon(icon: idea.icon, emoji: idea.emoji, size: 24, color: context.brandPrimary),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -595,7 +495,7 @@ class EatOutScreen extends ConsumerWidget {
                           const SizedBox(height: 2),
                           Text('${idea.place} • ${idea.kcal} kcal', style: Theme.of(context).textTheme.bodySmall),
                           const SizedBox(height: 6),
-                          Text(idea.tip),
+                          Text(idea.blurb.isNotEmpty ? idea.blurb : idea.tip),
                         ],
                       ),
                     ),
@@ -617,175 +517,516 @@ class EatOutScreen extends ConsumerWidget {
       ),
     );
   }
+
+  void _openDetail(BuildContext context, EatOutIdea idea, int remaining) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _EatOutDetailSheet(idea: idea, remaining: remaining),
+    );
+  }
 }
 
-class StoryCardScreen extends ConsumerStatefulWidget {
-  const StoryCardScreen({super.key});
+class _EatOutHero extends StatelessWidget {
+  const _EatOutHero({required this.remaining, required this.tight});
+  final int remaining;
+  final bool tight;
 
   @override
-  ConsumerState<StoryCardScreen> createState() => _StoryCardScreenState();
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 12, 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: tight
+              ? [AppColors.kawaiiPeach, AppColors.kawaiiSurfaceCream]
+              : [AppColors.kawaiiMint, AppColors.kawaiiSurfaceCream],
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
+        border: Border.all(color: AppColors.kawaiiOutline),
+        boxShadow: AppSpacing.softLift,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.88),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                  ),
+                  child: Text(
+                    tight ? 'Bütçe dar' : 'Bugünkü kalan',
+                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiInk),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  tight ? 'Hafif seç, sonra teşekkür et' : '$remaining kcal kaldı',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    color: AppColors.kawaiiInk,
+                    height: 1.15,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  tight
+                      ? 'Kahve, çorba veya paylaşım porsiyonu daha güvenli.'
+                      : 'Sığan menüleri öne çıkardık. Sos ayrı, pilavı çıkar.',
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 6),
+          Image.asset(
+            DiyetselAssets.foodSaladBowl,
+            width: 88,
+            height: 88,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) => const Icon(Icons.restaurant_menu_rounded, size: 48, color: AppColors.kawaiiLeaf),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
-  final _boundary = GlobalKey();
-  int _template = 0;
-
-  Future<void> _share() async {
-    final boundary = _boundary.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-    if (boundary == null) return;
-    final image = await boundary.toImage(pixelRatio: 3);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (bytes == null) return;
-    final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/diyetsel-hikaye.png');
-    await file.writeAsBytes(bytes.buffer.asUint8List());
-    await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)], text: 'Diyetsel serim'),
+class _EatOutRulesCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    const rules = [
+      (Icons.outdoor_grill_rounded, AppColors.kawaiiCoral, 'Izgara / buğulama seç'),
+      (Icons.no_meals_rounded, AppColors.kawaiiPurple, 'Sos ve ekmeği ayrı iste'),
+      (Icons.water_drop_rounded, AppColors.kawaiiSkyBlue, 'Yanına ayran veya salata'),
+    ];
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+        border: Border.all(color: AppColors.kawaiiOutline),
+        boxShadow: AppSpacing.soft,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '3 sipariş kuralı',
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
+          ),
+          const SizedBox(height: 12),
+          for (var i = 0; i < rules.length; i++) ...[
+            if (i > 0) const SizedBox(height: 8),
+            Row(
+              children: [
+                CartoonGlyph(icon: rules[i].$1, accent: rules[i].$2, size: 40, radius: 12, iconSize: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    '${i + 1}. ${rules[i].$3}',
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5, color: AppColors.kawaiiInk),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
     );
+  }
+}
+
+class _CartoonEatOutCard extends StatelessWidget {
+  const _CartoonEatOutCard({
+    required this.idea,
+    required this.remaining,
+    required this.onOpen,
+  });
+
+  final EatOutIdea idea;
+  final int remaining;
+  final VoidCallback onOpen;
+
+  bool get _fits => idea.kcal <= remaining + 40;
+
+  Color get _tint {
+    switch (idea.category) {
+      case 'Salata':
+        return AppColors.kawaiiMint;
+      case 'Balık':
+        return AppColors.kawaiiSky;
+      case 'Kafe':
+        return AppColors.kawaiiPeach;
+      case 'Kahvaltı':
+        return AppColors.kawaiiLemon;
+      case 'Izgara':
+        return AppColors.kawaiiLilac;
+      default:
+        return AppColors.kawaiiSurfaceCream;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final locked = lockedIfOff(ref, module: AppModule.story, title: 'Hikaye kartı');
-    if (locked != null) return locked;
-    final user = ref.watch(authControllerProvider).user!;
-    final store = ref.watch(appStoreProvider);
-    ref.watch(streaksProvider);
-    ref.watch(waterLogsProvider);
-    ref.watch(measurementsProvider);
-    final streak = store.streak(user.id);
-    final water = store.waterLog(user.id, DateTime.now());
-    final measures = store.measurements(user.id);
-    final delta = measures.length >= 2 && measures.last.weight != null && measures[measures.length - 2].weight != null
-        ? measures.last.weight! - measures[measures.length - 2].weight!
-        : null;
-    final dietitian = store.users().where((u) => u.isAdmin).firstOrNull?.displayName ?? 'Diyetisyen';
-    final cartoon = context.isCartoon;
-    final templates = [
-      (
-        colors: const [Color(0xFFFF7A18), Color(0xFFFFB347)],
-        kind: KawaiiKind.fire,
-        title: '${streak.current} günlük seri',
-        subtitle: 'En iyi ${streak.best} gün',
-        foot: streak.freezeUsed ? 'Bu ay dondurma kullanıldı' : 'Planına sadık gün',
-        chip: 'Seri',
-        icon: Icons.local_fire_department_rounded,
-      ),
-      (
-        colors: const [Color(0xFF2EC4B6), Color(0xFF4D96FF)],
-        kind: KawaiiKind.water,
-        title: 'Su %${(water.progress * 100).round()}',
-        subtitle: '${water.amountMl} / ${water.goalMl} ml',
-        foot: water.progress >= 1 ? 'Hedef doldu' : 'Bir bardak daha',
-        chip: 'Su',
-        icon: Icons.water_drop_rounded,
-      ),
-      (
-        colors: const [Color(0xFFFF5C8A), Color(0xFF7C5CFF)],
-        kind: KawaiiKind.heart,
-        title: delta == null
-            ? 'İlerleme kartı'
-            : (delta <= 0 ? '${delta.abs().toStringAsFixed(1)} kg düşüş' : '+${delta.toStringAsFixed(1)} kg'),
-        subtitle: 'Diyetisyen: $dietitian',
-        foot: 'Diyetsel ile devam',
-        chip: 'İlerleme',
-        icon: Icons.favorite_rounded,
-      ),
-    ];
-    final t = templates[_template];
-
-    return AppPage(
-      title: 'Hikaye kartı',
-      actions: [
-        IconButton(
-          onPressed: _share,
-          icon: const StyleIcon(icon: Icons.ios_share_rounded, emoji: '✨', size: 18, sticker: false),
-        ),
-      ],
-      child: ListView(
-        children: [
-          const FeatureBanner(
-            icon: Icons.auto_awesome_rounded,
-            emoji: '✨',
-            title: 'Paylaşılabilir kart',
-            subtitle: 'Şablon seç, kartı kaydet veya hikâyene koy. Marka ve ismin üstte durur.',
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onOpen,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
+            border: Border.all(color: AppColors.kawaiiOutline),
+            boxShadow: AppSpacing.softLift,
           ),
-          const SizedBox(height: 12),
-          const DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SectionHeader(title: 'Nasıl paylaşılır'),
-                HowToStep(index: 1, text: 'Seri, su veya ilerleme şablonunu seç.', icon: Icons.palette_rounded, emoji: '🎨'),
-                HowToStep(index: 2, text: 'Kartı önizle — rakamlar senin verinden gelir.', icon: Icons.visibility_rounded, emoji: '👀'),
-                HowToStep(index: 3, text: 'Paylaş ile PNG olarak gönder.', icon: Icons.ios_share_rounded, emoji: '✨'),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (var i = 0; i < templates.length; i++)
-                ChoiceChip(
-                  selected: _template == i,
-                  avatar: StyleIcon(icon: templates[i].icon, emoji: '✨', size: 16, sticker: false),
-                  label: Text(templates[i].chip),
-                  onSelected: (_) => setState(() => _template = i),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: RepaintBoundary(
-              key: _boundary,
-              child: Container(
-                width: 320,
-                padding: const EdgeInsets.all(24),
+              Container(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: t.colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(color: t.colors.first.withValues(alpha: 0.35), blurRadius: 24, offset: const Offset(0, 12)),
-                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.lerp(_tint, Colors.white, 0.2)!,
+                      Color.lerp(_tint, AppColors.kawaiiCream, 0.45)!,
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusHero - 1)),
                 ),
-                child: Column(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (cartoon)
-                          KawaiiTile(kind: t.kind, size: 54)
-                        else
-                          ModernIconTile(kind: t.kind, color: Colors.white, size: 48, inverted: true),
-                        const Spacer(),
-                        const Text('DİYETSEL', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w900, letterSpacing: 2)),
-                      ],
+                    CartoonGlyph(icon: idea.icon, accent: AppColors.kawaiiLeafDeep, size: 48, radius: 16, iconSize: 24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  idea.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16.5,
+                                    height: 1.2,
+                                    color: AppColors.kawaiiInk,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: _fits ? AppColors.kawaiiLeaf : AppColors.kawaiiCoral,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _fits ? 'sığar' : 'dikkat',
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${idea.place} · ${idea.category}',
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    Text(user.displayName, style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900)),
-                    Text('Diyetisyen: $dietitian', style: const TextStyle(color: Colors.white)),
-                    const SizedBox(height: 18),
-                    Text(t.title, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-                    Text(t.subtitle, style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 16),
-                    Text(t.foot, style: const TextStyle(color: Colors.white70)),
                   ],
                 ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        height: 1.35,
+                        color: AppColors.kawaiiInk.withValues(alpha: 0.78),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        _MiniPill(label: 'kcal', value: '${idea.kcal}', color: AppColors.kawaiiCoral),
+                        if (idea.proteinG > 0)
+                          _MiniPill(label: 'protein', value: '${idea.proteinG}g', color: AppColors.kawaiiLeaf),
+                        for (final t in idea.tags.take(2))
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.kawaiiCream,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: AppColors.kawaiiOutline),
+                            ),
+                            child: Text(t, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiInk)),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline_rounded, size: 16, color: AppColors.kawaiiWarmYellow),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            idea.tip,
+                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: AppColors.kawaiiMuted),
+                          ),
+                        ),
+                        Text(
+                          'Detay',
+                          style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep, fontSize: 13),
+                        ),
+                        Icon(Icons.chevron_right_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          DiyetselButton(label: 'Paylaş', icon: Icons.share, onPressed: _share),
-          const SizedBox(height: 12),
-          const TipCard(
-            title: 'Gizlilik',
-            body: 'Kartta sadece ismin, serin ve seçtiğin özet görünür. Kilo grafiğin veya sohbetin paylaşılmaz.',
-            icon: Icons.lock_rounded,
-            emoji: '🔒',
-          ),
-        ],
+        ),
       ),
+    );
+  }
+}
+
+class _MiniPill extends StatelessWidget {
+  const _MiniPill({required this.label, required this.value, required this.color});
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: Color.lerp(color, Colors.white, 0.78),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: '$value ', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: color)),
+            TextSpan(text: label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EatOutDetailSheet extends StatelessWidget {
+  const _EatOutDetailSheet({required this.idea, required this.remaining});
+  final EatOutIdea idea;
+  final int remaining;
+
+  bool get _fits => idea.kcal <= remaining + 40;
+
+  @override
+  Widget build(BuildContext context) {
+    final cartoon = context.isCartoon;
+    final bg = cartoon ? AppColors.kawaiiCream : Theme.of(context).colorScheme.surface;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.82,
+      minChildSize: 0.45,
+      maxChildSize: 0.95,
+      builder: (context, scroll) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: ListView(
+            controller: scroll,
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 32),
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                    color: cartoon ? AppColors.kawaiiOutline : Theme.of(context).dividerColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              if (cartoon)
+                Center(
+                  child: CartoonGlyph(icon: idea.icon, accent: AppColors.kawaiiLeaf, size: 72, radius: 22, iconSize: 34),
+                ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack),
+              if (!cartoon)
+                Center(child: StyleIcon(icon: idea.icon, emoji: idea.emoji, size: 40, selected: true)),
+              const SizedBox(height: 14),
+              Text(
+                idea.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 22,
+                  color: cartoon ? AppColors.kawaiiInk : null,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '${idea.place} · ${idea.category}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: cartoon ? AppColors.kawaiiMuted : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _MiniPill(label: 'kcal', value: '${idea.kcal}', color: cartoon ? AppColors.kawaiiCoral : context.brandPrimary),
+                  if (idea.proteinG > 0)
+                    _MiniPill(label: 'protein', value: '${idea.proteinG}g', color: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: _fits
+                          ? (cartoon ? AppColors.kawaiiLeaf : AppColors.success)
+                          : (cartoon ? AppColors.kawaiiCoral : AppColors.warning),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      _fits ? 'Bütçene sığar' : 'Dikkatli ol',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  height: 1.45,
+                  fontSize: 14,
+                  color: cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.85) : null,
+                ),
+              ),
+              if (idea.orderLine.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                Text(
+                  'Garsona söyle',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: cartoon ? AppColors.kawaiiInk : null),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: cartoon ? Colors.white : Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(16),
+                    border: cartoon ? Border.all(color: AppColors.kawaiiOutline) : null,
+                  ),
+                  child: Text(
+                    '“${idea.orderLine}”',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      height: 1.4,
+                      fontStyle: FontStyle.italic,
+                      color: cartoon ? AppColors.kawaiiLeafDeep : context.brandPrimary,
+                    ),
+                  ),
+                ),
+              ],
+              if (idea.swaps.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                Text(
+                  'Akıllı değişimler',
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: cartoon ? AppColors.kawaiiInk : null),
+                ),
+                const SizedBox(height: 10),
+                for (var i = 0; i < idea.swaps.length; i++)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: cartoon ? Colors.white : Theme.of(context).colorScheme.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(14),
+                      border: cartoon ? Border.all(color: AppColors.kawaiiOutline) : null,
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary,
+                          child: Text('${i + 1}', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            idea.swaps[i],
+                            style: TextStyle(fontWeight: FontWeight.w700, color: cartoon ? AppColors.kawaiiInk : null),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      .animate()
+                      .fadeIn(delay: (50 * i).ms, duration: 260.ms)
+                      .slideX(begin: 0.04, curve: Curves.easeOutCubic),
+              ],
+              if (idea.tags.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final t in idea.tags)
+                      Chip(
+                        label: Text(t, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: cartoon ? AppColors.kawaiiInk : null)),
+                        backgroundColor: cartoon ? AppColors.kawaiiMint : null,
+                        side: cartoon ? const BorderSide(color: AppColors.kawaiiOutline) : null,
+                      ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -803,6 +1044,8 @@ class FastingScreen extends ConsumerWidget {
     final session = store.fasting(user.id);
     final hours = session.elapsed.inHours;
     final mins = session.elapsed.inMinutes % 60;
+    final brand = context.brandPrimary;
+    final brandDeep = context.brandDeep;
     final phase = hours < 4
         ? (title: 'Sindirim', body: 'Son öğün hâlâ işleniyor. Su iç, kafein istersen sade tut.')
         : hours < 12
@@ -821,7 +1064,7 @@ class FastingScreen extends ConsumerWidget {
           FeatureBanner(
             icon: Icons.hourglass_bottom_rounded,
             emoji: '⏳',
-            color: AppColors.primaryDeep,
+            color: brandDeep,
             title: '16:8 penceresi',
             subtitle: '16 saat oruç, 8 saat yeme. Diyet planın yeme penceresine sığmalı.',
           ),
@@ -841,8 +1084,8 @@ class FastingScreen extends ConsumerWidget {
                         child: CircularProgressIndicator(
                           value: session.active ? session.progress : 0,
                           strokeWidth: 12,
-                          color: AppColors.primaryDeep,
-                          backgroundColor: AppColors.primaryDeep.withValues(alpha: 0.12),
+                          color: brandDeep,
+                          backgroundColor: brandDeep.withValues(alpha: 0.12),
                         ),
                       ),
                       Column(
@@ -852,7 +1095,7 @@ class FastingScreen extends ConsumerWidget {
                             icon: session.active ? Icons.hourglass_top_rounded : Icons.play_circle_rounded,
                             emoji: '⏳',
                             size: 22,
-                            color: AppColors.primaryDeep,
+                            color: brandDeep,
                           ),
                           const SizedBox(height: 6),
                           Text(
@@ -898,7 +1141,7 @@ class FastingScreen extends ConsumerWidget {
                           icon: hours >= p.$1 && session.active ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
                           emoji: hours >= p.$1 && session.active ? '✅' : '⚪',
                           size: 18,
-                          color: hours >= p.$1 && session.active ? AppColors.success : AppColors.primary,
+                          color: hours >= p.$1 && session.active ? AppColors.success : brand,
                         ),
                         const SizedBox(width: 10),
                         Text(p.$2, style: const TextStyle(fontWeight: FontWeight.w800)),

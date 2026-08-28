@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
@@ -31,31 +33,41 @@ class ClientCareScreen extends ConsumerWidget {
     }
     final clinic = store.settings().clinicModules;
     final liters = client.waterGoalMl / 1000;
+    final cartoon = context.isCartoon;
 
     return AppPage(
       title: client.displayName,
       child: ListView(
         children: [
-          DiyetselCard(
-            child: Row(
-              children: [
-                CartoonAvatar(name: client.displayName, size: 56),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(client.displayName, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
-                      Text(client.email, style: Theme.of(context).textTheme.bodySmall),
-                    ],
+          () {
+            final header = DiyetselCard(
+              color: cartoon ? AppColors.kawaiiCream : null,
+              child: Row(
+                children: [
+                  CartoonAvatar(name: client.displayName, size: 56),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(client.displayName, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+                        Text(client.email, style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ),
                   ),
-                ),
-                StatusChip(label: client.isActive ? 'aktif' : 'pasif', color: client.isActive ? AppColors.success : AppColors.danger),
-              ],
-            ),
-          ),
+                  StatusChip(label: client.isActive ? 'aktif' : 'pasif', color: client.isActive ? AppColors.success : AppColors.danger),
+                ],
+              ),
+            );
+            if (!cartoon) return header;
+            return header
+                .animate()
+                .fadeIn(duration: 280.ms)
+                .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOutBack, duration: 400.ms);
+          }(),
           const SizedBox(height: 12),
           DiyetselCard(
+            color: cartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : null,
             child: SwitchListTile(
               contentPadding: EdgeInsets.zero,
               secondary: const StyleIcon(icon: Icons.verified_user, emoji: '✅', size: 22),
@@ -67,13 +79,14 @@ class ClientCareScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           DiyetselCard(
+            color: cartoon ? AppColors.kawaiiSky.withValues(alpha: 0.65) : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionHeader(title: 'Günlük su hedefi', subtitle: 'Litre cinsinden. Anasayfa ve su takibi buna göre dolar.'),
                 Row(
                   children: [
-                    StyleIcon(icon: Icons.water_drop_rounded, emoji: '💧', size: 24, color: AppColors.accent),
+                    StyleIcon(icon: Icons.water_drop_rounded, emoji: '💧', size: 24, color: context.brandPrimary),
                     const SizedBox(width: 10),
                     Text(
                       '${liters.toStringAsFixed(2)} L  •  ${client.waterGoalMl} ml',
@@ -104,10 +117,11 @@ class ClientCareScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           DiyetselCard(
+            color: cartoon ? AppColors.kawaiiMint.withValues(alpha: 0.65) : null,
             onTap: () => context.push('/admin/reports?clientId=${client.id}'),
             child: Row(
               children: [
-                const StyleIcon(icon: Icons.insights_rounded, emoji: '📊', size: 24, color: AppColors.primary),
+                StyleIcon(icon: Icons.insights_rounded, emoji: '📊', size: 24, color: context.brandPrimary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -124,6 +138,7 @@ class ClientCareScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           DiyetselCard(
+            color: cartoon ? AppColors.kawaiiLilac.withValues(alpha: 0.55) : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -143,6 +158,7 @@ class ClientCareScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           DiyetselCard(
+            color: cartoon ? AppColors.kawaiiRose.withValues(alpha: 0.45) : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -184,7 +200,11 @@ class ClientCareScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, controller.text.trim()), child: const Text('Gönder')),
+          DiyetselButton(
+            label: 'Gönder',
+            expanded: false,
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+          ),
         ],
       ),
     );

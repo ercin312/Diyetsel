@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart' show DateUtils;
+
 import '../data/app_store.dart';
 import '../models/enums.dart';
 import '../models/models.dart';
@@ -8,7 +10,7 @@ class SmartNotificationService {
   SmartNotificationService._();
   static final instance = SmartNotificationService._();
 
-  static const _mealIds = [101, 102, 103, 104];
+  static const _mealIds = [101, 102, 103, 104, 105];
   static const _waterBaseId = 110;
   static const _appointmentId = 120;
   static const _missYouId = 130;
@@ -31,7 +33,7 @@ class SmartNotificationService {
     }
 
     if (prefs.smartReminders) {
-      await _scheduleMeals(prefs);
+      await _scheduleMeals(store, user, prefs);
       await _scheduleWater(prefs);
       if (prefs.appointmentReminders) await _scheduleAppointment(store, user.id);
     }
@@ -59,12 +61,40 @@ class SmartNotificationService {
     );
   }
 
-  Future<void> _scheduleMeals(NotificationPrefs prefs) async {
+  Future<void> _scheduleMeals(AppStore store, UserProfile user, NotificationPrefs prefs) async {
+    final plan = store.dietPlanForClient(user.id);
+    final today = plan?.days.where((d) => DateUtils.isSameDay(d.date, DateTime.now())).firstOrNull ??
+        plan?.days.firstOrNull;
+
+    if (today != null && today.meals.isNotEmpty) {
+      final seen = <MealType>{};
+      for (final meal in today.meals) {
+        if (seen.contains(meal.type)) continue;
+        seen.add(meal.type);
+        final parts = meal.effectiveReminderTime.split(':');
+        if (parts.length < 2) continue;
+        final hour = int.tryParse(parts[0]);
+        final minute = int.tryParse(parts[1]);
+        if (hour == null || minute == null) continue;
+        await ReminderService.instance.scheduleDaily(
+          id: meal.type.notificationId,
+          hour: hour,
+          minute: minute,
+          title: '${meal.type.tr} zamanı ${meal.type.emoji}',
+          body: meal.description.isNotEmpty
+              ? meal.description.split('\n').first
+              : '${meal.name} — planına göz at ve işaretle.',
+        );
+      }
+      return;
+    }
+
+    // Fallback: global prefs slots when no plan meals exist.
     final slots = [
-      (101, prefs.breakfast, 'Kahvaltı zamanı ☀️', 'Planındaki kahvaltıya göz at ve işaretle.'),
-      (102, prefs.lunch, 'Öğle molası 🥗', 'Öğle öğününü unutma — bir dokunuşla işaretle.'),
-      (103, prefs.snack, 'Ara öğün 🍎', 'Küçük bir ara öğün enerjini dengeler.'),
-      (104, prefs.dinner, 'Akşam sofrası 🌙', 'Akşam yemeğini planına göre tamamla.'),
+      (MealType.breakfast.notificationId, prefs.breakfast, 'Kahvaltı zamanı ☀️', 'Planındaki kahvaltıya göz at.'),
+      (MealType.lunch.notificationId, prefs.lunch, 'Öğle molası 🥗', 'Öğle öğününü unutma.'),
+      (MealType.morningSnack.notificationId, prefs.snack, 'Ara öğün 🍎', 'Küçük bir ara öğün enerjini dengeler.'),
+      (MealType.dinner.notificationId, prefs.dinner, 'Akşam sofrası 🌙', 'Akşam yemeğini planına göre tamamla.'),
     ];
     for (final slot in slots) {
       final parts = slot.$2.split(':');

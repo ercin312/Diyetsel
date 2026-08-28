@@ -258,6 +258,10 @@ class ServicePackage {
     required this.durationMinutes,
     required this.bullets,
     this.active = true,
+    this.category = 'Paket',
+    this.tagline = '',
+    this.tags = const [],
+    this.imageUrl,
   });
 
   final String id;
@@ -267,6 +271,10 @@ class ServicePackage {
   final int durationMinutes;
   final List<String> bullets;
   final bool active;
+  final String category;
+  final String tagline;
+  final List<String> tags;
+  final String? imageUrl;
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -276,6 +284,10 @@ class ServicePackage {
         'durationMinutes': durationMinutes,
         'bullets': bullets,
         'active': active,
+        'category': category,
+        'tagline': tagline,
+        'tags': tags,
+        'imageUrl': imageUrl,
       };
 
   factory ServicePackage.fromMap(Map<String, dynamic> map) => ServicePackage(
@@ -286,6 +298,10 @@ class ServicePackage {
         durationMinutes: _i(map['durationMinutes'], 45),
         bullets: (map['bullets'] as List?)?.map((e) => '$e').toList() ?? const [],
         active: _b(map['active'], true),
+        category: _s(map['category'], 'Paket'),
+        tagline: _s(map['tagline']),
+        tags: (map['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
+        imageUrl: map['imageUrl'] as String?,
       );
 }
 
@@ -365,6 +381,7 @@ class DietMeal {
     required this.fat,
     this.consumed = false,
     this.ingredients = const [],
+    this.reminderTime,
   });
 
   final String id;
@@ -377,18 +394,30 @@ class DietMeal {
   final int fat;
   final bool consumed;
   final List<Ingredient> ingredients;
+  /// Optional daily reminder `HH:mm`. Falls back to [MealTypeX.defaultReminderTime].
+  final String? reminderTime;
 
-  DietMeal copyWith({bool? consumed}) => DietMeal(
+  String get effectiveReminderTime => reminderTime ?? type.defaultReminderTime;
+
+  DietMeal copyWith({
+    bool? consumed,
+    String? name,
+    String? description,
+    String? reminderTime,
+    bool clearReminderTime = false,
+  }) =>
+      DietMeal(
         id: id,
         type: type,
-        name: name,
-        description: description,
+        name: name ?? this.name,
+        description: description ?? this.description,
         calories: calories,
         protein: protein,
         carbs: carbs,
         fat: fat,
         consumed: consumed ?? this.consumed,
         ingredients: ingredients,
+        reminderTime: clearReminderTime ? null : (reminderTime ?? this.reminderTime),
       );
 
   Map<String, dynamic> toMap() => {
@@ -402,6 +431,7 @@ class DietMeal {
         'fat': fat,
         'consumed': consumed,
         'ingredients': ingredients.map((e) => e.toMap()).toList(),
+        if (reminderTime != null) 'reminderTime': reminderTime,
       };
 
   factory DietMeal.fromMap(Map<String, dynamic> map) => DietMeal(
@@ -422,6 +452,7 @@ class DietMeal {
                 .map((e) => Ingredient.fromMap(Map<String, dynamic>.from(e)))
                 .toList() ??
             const [],
+        reminderTime: map['reminderTime'] == null ? null : _s(map['reminderTime']),
       );
 }
 
@@ -796,6 +827,12 @@ class Recipe {
     required this.category,
     this.imageUrl,
     this.proteinGrams = 0,
+    this.carbsGrams = 0,
+    this.fatGrams = 0,
+    this.servings = 1,
+    this.cookMinutes = 0,
+    this.tags = const [],
+    this.tips = const [],
   });
 
   final String id;
@@ -809,6 +846,14 @@ class Recipe {
   final String category;
   final String? imageUrl;
   final int proteinGrams;
+  final int carbsGrams;
+  final int fatGrams;
+  final int servings;
+  final int cookMinutes;
+  final List<String> tags;
+  final List<String> tips;
+
+  int get totalMinutes => prepMinutes + (cookMinutes > 0 ? cookMinutes : 0);
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -822,6 +867,12 @@ class Recipe {
         'category': category,
         'imageUrl': imageUrl,
         'proteinGrams': proteinGrams,
+        'carbsGrams': carbsGrams,
+        'fatGrams': fatGrams,
+        'servings': servings,
+        'cookMinutes': cookMinutes,
+        'tags': tags,
+        'tips': tips,
       };
 
   factory Recipe.fromMap(Map<String, dynamic> map) => Recipe(
@@ -840,6 +891,12 @@ class Recipe {
         category: _s(map['category']),
         imageUrl: map['imageUrl'] as String?,
         proteinGrams: _i(map['proteinGrams']),
+        carbsGrams: _i(map['carbsGrams']),
+        fatGrams: _i(map['fatGrams']),
+        servings: _i(map['servings'], 1).clamp(1, 99),
+        cookMinutes: _i(map['cookMinutes']),
+        tags: (map['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
+        tips: (map['tips'] as List?)?.map((e) => '$e').toList() ?? const [],
       );
 }
 
@@ -924,6 +981,10 @@ class VaultFile {
     required this.path,
     required this.mime,
     required this.uploadedAt,
+    this.category = 'other',
+    this.note = '',
+    this.sizeBytes = 0,
+    this.ownerName = '',
   });
 
   final String id;
@@ -932,6 +993,32 @@ class VaultFile {
   final String path;
   final String mime;
   final DateTime uploadedAt;
+  final String category;
+  final String note;
+  final int sizeBytes;
+  final String ownerName;
+
+  VaultFile copyWith({
+    String? name,
+    String? path,
+    String? mime,
+    String? category,
+    String? note,
+    int? sizeBytes,
+    String? ownerName,
+  }) =>
+      VaultFile(
+        id: id,
+        userId: userId,
+        name: name ?? this.name,
+        path: path ?? this.path,
+        mime: mime ?? this.mime,
+        uploadedAt: uploadedAt,
+        category: category ?? this.category,
+        note: note ?? this.note,
+        sizeBytes: sizeBytes ?? this.sizeBytes,
+        ownerName: ownerName ?? this.ownerName,
+      );
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -940,6 +1027,10 @@ class VaultFile {
         'path': path,
         'mime': mime,
         'uploadedAt': uploadedAt.toIso8601String(),
+        'category': category,
+        'note': note,
+        'sizeBytes': sizeBytes,
+        'ownerName': ownerName,
       };
 
   factory VaultFile.fromMap(Map<String, dynamic> map) => VaultFile(
@@ -949,6 +1040,10 @@ class VaultFile {
         path: _s(map['path']),
         mime: _s(map['mime']),
         uploadedAt: _dt(map['uploadedAt']),
+        category: _s(map['category'], 'other'),
+        note: _s(map['note']),
+        sizeBytes: _i(map['sizeBytes']),
+        ownerName: _s(map['ownerName']),
       );
 }
 
@@ -1001,36 +1096,80 @@ class PaymentRecord {
 
 class ShoppingItem {
   const ShoppingItem({
+    this.id = '',
     required this.name,
     required this.amount,
     required this.category,
     this.checked = false,
+    this.tip = '',
+    this.note = '',
+    this.aisle = '',
+    this.imageUrl,
+    this.priority = false,
   });
 
+  final String id;
   final String name;
   final String amount;
   final String category;
   final bool checked;
+  final String tip;
+  final String note;
+  final String aisle;
+  final String? imageUrl;
+  final bool priority;
 
-  ShoppingItem copyWith({bool? checked}) => ShoppingItem(
-        name: name,
-        amount: amount,
-        category: category,
+  String get key => id.isNotEmpty ? id : '$category|$name|$amount';
+
+  ShoppingItem copyWith({
+    String? id,
+    String? name,
+    String? amount,
+    String? category,
+    bool? checked,
+    String? tip,
+    String? note,
+    String? aisle,
+    String? imageUrl,
+    bool? priority,
+  }) =>
+      ShoppingItem(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        amount: amount ?? this.amount,
+        category: category ?? this.category,
         checked: checked ?? this.checked,
+        tip: tip ?? this.tip,
+        note: note ?? this.note,
+        aisle: aisle ?? this.aisle,
+        imageUrl: imageUrl ?? this.imageUrl,
+        priority: priority ?? this.priority,
       );
 
   Map<String, dynamic> toMap() => {
+        'id': id,
         'name': name,
         'amount': amount,
         'category': category,
         'checked': checked,
+        'tip': tip,
+        'note': note,
+        'aisle': aisle,
+        'imageUrl': imageUrl,
+        'priority': priority,
       };
 
   factory ShoppingItem.fromMap(Map<String, dynamic> map) => ShoppingItem(
+        id: _s(map['id']),
         name: _s(map['name']),
         amount: _s(map['amount']),
         category: _s(map['category'], 'other'),
         checked: _b(map['checked']),
+        tip: _s(map['tip']),
+        note: _s(map['note']),
+        aisle: _s(map['aisle']),
+        imageUrl: map['imageUrl'] as String?,
+        priority: _b(map['priority']),
       );
 }
 
@@ -1244,8 +1383,12 @@ class WeeklyCheckIn {
     this.weight,
     this.waist,
     this.mood = 3,
+    this.energy = 3,
+    this.adherence = 3,
+    this.sleepHours,
     this.note = '',
     this.photoPath,
+    this.tags = const [],
     this.dietitianNote,
     this.dietitianNoteAt,
   });
@@ -1257,12 +1400,25 @@ class WeeklyCheckIn {
   final double? weight;
   final double? waist;
   final int mood;
+  final int energy;
+  final int adherence;
+  final double? sleepHours;
   final String note;
   final String? photoPath;
+  final List<String> tags;
   final String? dietitianNote;
   final DateTime? dietitianNoteAt;
 
   WeeklyCheckIn copyWith({
+    double? weight,
+    double? waist,
+    int? mood,
+    int? energy,
+    int? adherence,
+    double? sleepHours,
+    String? note,
+    String? photoPath,
+    List<String>? tags,
     String? dietitianNote,
     DateTime? dietitianNoteAt,
   }) =>
@@ -1271,11 +1427,15 @@ class WeeklyCheckIn {
         userId: userId,
         userName: userName,
         createdAt: createdAt,
-        weight: weight,
-        waist: waist,
-        mood: mood,
-        note: note,
-        photoPath: photoPath,
+        weight: weight ?? this.weight,
+        waist: waist ?? this.waist,
+        mood: mood ?? this.mood,
+        energy: energy ?? this.energy,
+        adherence: adherence ?? this.adherence,
+        sleepHours: sleepHours ?? this.sleepHours,
+        note: note ?? this.note,
+        photoPath: photoPath ?? this.photoPath,
+        tags: tags ?? this.tags,
         dietitianNote: dietitianNote ?? this.dietitianNote,
         dietitianNoteAt: dietitianNoteAt ?? this.dietitianNoteAt,
       );
@@ -1288,8 +1448,12 @@ class WeeklyCheckIn {
         'weight': weight,
         'waist': waist,
         'mood': mood,
+        'energy': energy,
+        'adherence': adherence,
+        'sleepHours': sleepHours,
         'note': note,
         'photoPath': photoPath,
+        'tags': tags,
         'dietitianNote': dietitianNote,
         'dietitianNoteAt': dietitianNoteAt?.toIso8601String(),
       };
@@ -1302,8 +1466,12 @@ class WeeklyCheckIn {
         weight: map['weight'] == null ? null : _d(map['weight']),
         waist: map['waist'] == null ? null : _d(map['waist']),
         mood: _i(map['mood'], 3),
+        energy: _i(map['energy'], 3),
+        adherence: _i(map['adherence'], 3),
+        sleepHours: map['sleepHours'] == null ? null : _d(map['sleepHours']),
         note: _s(map['note']),
         photoPath: map['photoPath'] as String?,
+        tags: (map['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
         dietitianNote: map['dietitianNote'] as String?,
         dietitianNoteAt: map['dietitianNoteAt'] == null ? null : _dt(map['dietitianNoteAt']),
       );

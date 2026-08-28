@@ -60,7 +60,7 @@ class LessonCatalog {
     title: 'Etiket Okuma',
     subtitle: '7 günde markette bilinçli seçim',
     emoji: '🔍',
-    gradient: [0xFFE85D04, 0xFF0F766E],
+    gradient: [0xFF1F6B5A, 0xFF2F8A74],
     badgeId: 'lesson_labels',
     days: [
       LessonDay(
@@ -190,7 +190,7 @@ class LessonCatalog {
     title: 'Porsiyon Sanatı',
     subtitle: '7 günde tabağı gözünle ölç',
     emoji: '🥄',
-    gradient: [0xFFFF8A4C, 0xFFFFC56D],
+    gradient: [0xFF2F8A74, 0xFF7A9B84],
     badgeId: 'lesson_portions',
     days: [
       LessonDay(

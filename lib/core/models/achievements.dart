@@ -48,7 +48,7 @@ class BadgeCatalog {
       subtitle: '10 öğün fotoğrafı paylaş',
       emoji: '📷',
       target: 10,
-      tint: AppColors.peachDeep,
+      tint: AppColors.primaryBright,
     ),
     BadgeDef(
       id: 'streak_7',
@@ -56,7 +56,7 @@ class BadgeCatalog {
       subtitle: '7 günlük aktiflik serisi yakala',
       emoji: '🔥',
       target: 7,
-      tint: AppColors.primary,
+      tint: AppColors.modernFire,
     ),
     BadgeDef(
       id: 'lesson_labels',

@@ -27,7 +27,15 @@ class DiyetselButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
-    final color = accent ? AppColors.accent : AppColors.primary;
+    final luxury = context.isLuxury;
+    final color = accent
+        ? (luxury ? AppColors.luxuryCopperBright : AppColors.modernSage)
+        : context.brandPrimary;
+    final radius = cartoon ? 26.0 : (luxury ? 10.0 : 28.0);
+    final labelStyle = TextStyle(
+      fontWeight: luxury ? FontWeight.w600 : FontWeight.w700,
+      letterSpacing: luxury ? 0.7 : -0.1,
+    );
     final child = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: expanded ? MainAxisSize.max : MainAxisSize.min,
@@ -39,54 +47,133 @@ class DiyetselButton extends StatelessWidget {
             Icon(icon, size: 20, color: tonal ? color : Colors.white),
           const SizedBox(width: 8),
         ],
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.1)),
+        Text(label, style: labelStyle),
       ],
     );
 
     if (cartoon) {
       return Container(
         decoration: BoxDecoration(
-          color: tonal ? color.withValues(alpha: 0.14) : color,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.32),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          color: tonal ? AppColors.kawaiiMint : color,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: tonal
+              ? const [
+                  BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 12, offset: Offset(0, 4)),
+                ]
+              : [
+                  BoxShadow(
+                    color: AppColors.kawaiiGlow,
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                  const BoxShadow(
+                    color: AppColors.kawaiiShadow,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
         ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onPressed,
-              borderRadius: BorderRadius.circular(22),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(28),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 15),
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: tonal ? AppColors.kawaiiLeafDeep : Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
+                child: IconTheme.merge(
+                  data: IconThemeData(color: tonal ? AppColors.kawaiiLeafDeep : Colors.white),
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (tonal) {
+      if (!cartoon && !luxury) {
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(radius),
+            child: Ink(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius),
+                color: color.withValues(alpha: 0.1),
+                boxShadow: const [
+                  BoxShadow(color: AppColors.modernSoftShadow, blurRadius: 10, offset: Offset(0, 4)),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
                 child: DefaultTextStyle.merge(
-                  style: TextStyle(color: tonal ? color : Colors.white),
+                  style: TextStyle(color: color, fontWeight: FontWeight.w700),
                   child: IconTheme.merge(
-                    data: IconThemeData(color: tonal ? color : Colors.white),
+                    data: IconThemeData(color: color),
                     child: child,
                   ),
                 ),
               ),
             ),
           ),
-      );
-    }
-
-    if (tonal) {
+        );
+      }
       return FilledButton.tonal(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: color.withValues(alpha: 0.1),
+          backgroundColor: color.withValues(alpha: luxury ? 0.12 : 0.1),
           foregroundColor: color,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius),
+            side: luxury
+                ? BorderSide(color: AppColors.luxuryCopperBright.withValues(alpha: 0.45), width: 0.9)
+                : BorderSide.none,
+          ),
         ),
         child: child,
+      );
+    }
+
+    if (!cartoon && !luxury) {
+      return Material(
+        color: Colors.transparent,
+        elevation: 0,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(radius),
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(radius),
+              color: AppColors.primary,
+              boxShadow: const [
+                BoxShadow(
+                  color: AppColors.modernSoftShadow,
+                  blurRadius: 16,
+                  offset: Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: expanded ? 24 : 20, vertical: 15),
+              child: DefaultTextStyle.merge(
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                child: IconTheme.merge(
+                  data: const IconThemeData(color: Colors.white),
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        ),
       );
     }
 
@@ -94,16 +181,37 @@ class DiyetselButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(radius),
         child: Ink(
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(radius),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.luxuryCopperBright,
+                AppColors.luxuryCopper,
+                AppColors.luxuryCopperDeep,
+              ],
+              stops: [0, 0.45, 1],
+            ),
+            border: Border.all(color: AppColors.luxuryCopperBright.withValues(alpha: 0.55), width: 0.9),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.luxuryCopperDeep.withValues(alpha: 0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: expanded ? 22 : 18, vertical: 14),
             child: DefaultTextStyle.merge(
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                letterSpacing: luxury ? 0.7 : 0,
+              ),
               child: IconTheme.merge(
                 data: const IconThemeData(color: Colors.white),
                 child: child,
@@ -133,26 +241,50 @@ class DiyetselCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
     final scheme = Theme.of(context).colorScheme;
+    final radius = cartoon ? 28.0 : (luxury ? 10.0 : 22.0);
     final card = AnimatedContainer(
       duration: 220.ms,
       padding: padding,
       decoration: BoxDecoration(
-        color: color ?? scheme.surface,
-        borderRadius: BorderRadius.circular(cartoon ? 28 : 16),
-        border: Border.all(
-          color: cartoon ? Colors.transparent : scheme.outline.withValues(alpha: 0.65),
-          width: cartoon ? 0 : 1,
-        ),
+        color: color ??
+            (luxury
+                ? AppColors.luxuryPlate
+                : (cartoon ? AppColors.kawaiiBubble : scheme.surface)),
+        borderRadius: BorderRadius.circular(radius),
+        border: cartoon
+            ? null
+            : Border.all(
+                color: luxury
+                    ? AppColors.luxuryCopper.withValues(alpha: 0.5)
+                    : AppColors.modernLine.withValues(alpha: 0.65),
+                width: luxury ? 0.9 : 0.6,
+              ),
         boxShadow: cartoon
             ? const [
                 BoxShadow(
                   color: AppColors.kawaiiShadow,
                   offset: Offset(0, 8),
-                  blurRadius: 16,
+                  blurRadius: 24,
+                  spreadRadius: 0,
                 ),
               ]
-            : null,
+            : luxury
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.45),
+                      offset: const Offset(0, 8),
+                      blurRadius: 18,
+                    ),
+                  ]
+                : const [
+                    BoxShadow(
+                      color: AppColors.modernSoftShadow,
+                      offset: Offset(0, 8),
+                      blurRadius: 24,
+                    ),
+                  ],
       ),
       child: child,
     );
@@ -160,7 +292,7 @@ class DiyetselCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(cartoon ? 28 : 16),
+        borderRadius: BorderRadius.circular(radius),
         onTap: onTap,
         child: card,
       ),
@@ -177,15 +309,17 @@ class CartoonContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
     return DiyetselCard(
-      color: cartoon ? AppColors.peach.withValues(alpha: 0.55) : AppColors.modernWarm.withValues(alpha: 0.65),
+      color: cartoon
+          ? AppColors.kawaiiMint.withValues(alpha: 0.45)
+          : luxury
+              ? AppColors.luxuryWash
+              : AppColors.modernSageSoft.withValues(alpha: 0.65),
       child: Row(
         children: [
           if (emoji != null) ...[
-            if (cartoon)
-              KawaiiTile(kind: KawaiiKindX.from(emoji: emoji), size: 52)
-            else
-              ModernIconTile(kind: KawaiiKindX.from(emoji: emoji), size: 44, selected: true),
+            StyleIcon(icon: Icons.auto_awesome, emoji: emoji!, size: 22, selected: true),
             const SizedBox(width: 12),
           ],
           Expanded(child: child),
@@ -204,6 +338,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final luxury = context.isLuxury;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12, top: 8),
       child: Row(
@@ -214,10 +349,18 @@ class SectionHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: luxury ? FontWeight.w600 : FontWeight.w800,
+                        letterSpacing: luxury ? 0.35 : null,
+                      ),
                 ),
                 if (subtitle != null)
-                  Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    subtitle!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          letterSpacing: luxury ? 0.25 : null,
+                        ),
+                  ),
               ],
             ),
           ),
@@ -254,15 +397,20 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (context.isCartoon)
-              KawaiiTile(kind: KawaiiKindX.from(icon: icon, emoji: _sticker), size: 86)
-            else
-              ModernIconTile(
-                kind: KawaiiKindX.from(icon: icon, emoji: _sticker),
-                size: 64,
-              ),
+            StyleIcon(
+              icon: icon,
+              emoji: _sticker,
+              size: context.isCartoon ? 32 : 24,
+              selected: true,
+            ),
             const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: context.isLuxury ? FontWeight.w600 : FontWeight.w800,
+                    letterSpacing: context.isLuxury ? 0.3 : null,
+                  ),
+            ),
             if (subtitle != null) ...[
               const SizedBox(height: 6),
               Text(
@@ -288,16 +436,35 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final luxury = context.isLuxury;
+    final cartoon = context.isCartoon;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: luxury ? 11 : (cartoon ? 12 : 10),
+        vertical: luxury ? 5 : (cartoon ? 6 : 4),
+      ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(20),
-        border: context.isCartoon ? Border.all(color: color, width: 1.6) : null,
+        color: color.withValues(alpha: luxury ? 0.1 : (cartoon ? 0.2 : 0.14)),
+        borderRadius: BorderRadius.circular(luxury ? 8 : (cartoon ? 18 : 20)),
+        border: cartoon
+            ? null
+            : luxury
+                ? Border.all(color: color.withValues(alpha: 0.35), width: 0.8)
+                : null,
+        boxShadow: cartoon
+            ? const [
+                BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 8, offset: Offset(0, 3)),
+              ]
+            : null,
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 12),
+        style: TextStyle(
+          color: cartoon ? AppColors.kawaiiInk : color,
+          fontWeight: luxury ? FontWeight.w600 : FontWeight.w800,
+          fontSize: 12,
+          letterSpacing: luxury ? 0.4 : 0,
+        ),
       ),
     );
   }
@@ -323,18 +490,60 @@ class FeatureBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tint = color == AppColors.primary ? context.brandPrimary : color;
     if (context.isCartoon) {
       return DiyetselCard(
-        color: color.withValues(alpha: 0.16),
+        color: Color.lerp(AppColors.kawaiiBubble, tint, 0.22),
         child: Row(
           children: [
-            StyleIcon(icon: icon, emoji: emoji, size: 28, color: color),
+            StyleIcon(icon: icon, emoji: emoji, size: 28, color: tint),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, height: 1.2)),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                      height: 1.2,
+                      color: AppColors.kawaiiInk,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.kawaiiInk.withValues(alpha: 0.72),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            trailing ?? const SizedBox.shrink(),
+          ],
+        ),
+      );
+    }
+    if (context.isLuxury) {
+      return DiyetselCard(
+        color: AppColors.luxuryWash,
+        child: Row(
+          children: [
+            StyleIcon(icon: icon, emoji: emoji, size: 24, color: tint),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.25,
+                        ),
+                  ),
                   const SizedBox(height: 4),
                   Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
                 ],
@@ -351,13 +560,13 @@ class FeatureBanner extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(width: 4, color: color),
+            Container(width: 4, color: tint),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Row(
                   children: [
-                    Icon(icon, color: color, size: 26),
+                    Icon(icon, color: tint, size: 26),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
@@ -431,20 +640,36 @@ class HowToStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brand = context.brandPrimary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundColor: AppColors.primary.withValues(alpha: 0.14),
-            foregroundColor: AppColors.primary,
-            child: Text('$index', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
+            backgroundColor: brand.withValues(alpha: 0.14),
+            foregroundColor: brand,
+            child: Text(
+              '$index',
+              style: TextStyle(
+                fontWeight: context.isLuxury ? FontWeight.w600 : FontWeight.w900,
+                fontSize: 13,
+                letterSpacing: context.isLuxury ? 0.4 : 0,
+              ),
+            ),
           ),
           const SizedBox(width: 10),
-          StyleIcon(icon: icon, emoji: emoji, size: 18, color: AppColors.primary, sticker: false),
+          StyleIcon(icon: icon, emoji: emoji, size: 18, color: brand, sticker: false),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: const TextStyle(fontWeight: FontWeight.w700))),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontWeight: context.isLuxury ? FontWeight.w600 : FontWeight.w700,
+                letterSpacing: context.isLuxury ? 0.15 : 0,
+              ),
+            ),
+          ),
         ],
       ),
     );

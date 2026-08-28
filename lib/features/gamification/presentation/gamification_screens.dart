@@ -18,6 +18,7 @@ import '../../auth/presentation/auth_controller.dart';
 class BadgeCelebration {
   static Future<void> show(BuildContext context, BadgeDef badge) {
     final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -40,20 +41,42 @@ class BadgeCelebration {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: cartoon
-                          ? [badge.tint.withValues(alpha: 0.95), AppColors.peach.withValues(alpha: 0.92)]
-                          : [const Color(0xFF1C1917), const Color(0xFF292524)],
+                          ? const [AppColors.kawaiiLemon, AppColors.kawaiiPeach, AppColors.kawaiiRose]
+                          : luxury
+                              ? [AppColors.luxuryCopperDeep, AppColors.luxuryPlate]
+                              : [AppColors.primaryDeep, AppColors.modernTealCard],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(cartoon ? 28 : 22),
+                    borderRadius: BorderRadius.circular(cartoon ? 30 : (luxury ? 14 : 22)),
+                    border: cartoon
+                        ? null
+                        : luxury
+                            ? Border.all(color: AppColors.luxuryCopper.withValues(alpha: 0.5))
+                            : null,
                     boxShadow: [
-                      BoxShadow(color: badge.tint.withValues(alpha: 0.45), blurRadius: 28, offset: const Offset(0, 12)),
+                      BoxShadow(
+                        color: luxury
+                            ? AppColors.luxuryCopper.withValues(alpha: 0.45)
+                            : cartoon
+                                ? AppColors.kawaiiGlow
+                                : AppColors.modernSoftShadow,
+                        blurRadius: cartoon || luxury ? 28 : 24,
+                        offset: const Offset(0, 12),
+                      ),
                     ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Yeni rozet!', style: TextStyle(color: cartoon ? AppColors.lightInk : Colors.white70, fontWeight: FontWeight.w800)),
+                      Text(
+                        'Yeni rozet!',
+                        style: TextStyle(
+                          color: cartoon ? AppColors.kawaiiInk : Colors.white70,
+                          fontWeight: luxury ? FontWeight.w600 : FontWeight.w800,
+                          letterSpacing: luxury ? 0.4 : null,
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       if (cartoon)
                         KawaiiDoodle(kind: KawaiiKind.sparkle, size: 88)
@@ -64,16 +87,21 @@ class BadgeCelebration {
                         badge.title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: cartoon ? AppColors.lightInk : Colors.white,
-                          fontWeight: FontWeight.w900,
+                          color: cartoon ? AppColors.kawaiiInk : Colors.white,
+                          fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
                           fontSize: 24,
+                          letterSpacing: luxury ? 0.2 : null,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         badge.subtitle,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: cartoon ? AppColors.lightInk.withValues(alpha: 0.75) : Colors.white70),
+                        style: TextStyle(
+                          color: cartoon
+                              ? AppColors.kawaiiInk.withValues(alpha: 0.75)
+                              : Colors.white70,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       DiyetselButton(
@@ -86,8 +114,9 @@ class BadgeCelebration {
                   ),
                 ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
                       begin: const Offset(1, 1),
-                      end: const Offset(1.02, 1.02),
-                      duration: 900.ms,
+                      end: const Offset(1.03, 1.03),
+                      duration: cartoon ? 700.ms : 900.ms,
+                      curve: cartoon ? Curves.easeInOut : Curves.linear,
                     ),
               ),
             ),
@@ -117,7 +146,7 @@ class BadgesScreen extends ConsumerWidget {
           DiyetselCard(
             child: Row(
               children: [
-                const StyleIcon(icon: Icons.emoji_events_rounded, emoji: '🏆', size: 36, color: AppColors.primary),
+                StyleIcon(icon: Icons.emoji_events_rounded, emoji: '🏆', size: 36, color: context.brandPrimary),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -139,7 +168,11 @@ class BadgesScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: _BadgeCard(item: item),
-            ).animate().fadeIn(delay: (badges.indexOf(item) * 60).ms),
+            ).animate().fadeIn(delay: (badges.indexOf(item) * 60).ms).scale(
+                  begin: context.isCartoon ? const Offset(0.94, 0.94) : const Offset(1, 1),
+                  curve: Curves.easeOutBack,
+                  duration: context.isCartoon ? 400.ms : 0.ms,
+                ),
         ],
       ),
     );
@@ -154,7 +187,9 @@ class _BadgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = item.badge;
     final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
     return DiyetselCard(
+      color: cartoon ? AppColors.kawaiiBubble : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -164,8 +199,20 @@ class _BadgeCard extends StatelessWidget {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: b.tint.withValues(alpha: cartoon ? 0.18 : 0.12),
-                  borderRadius: BorderRadius.circular(cartoon ? 18 : 14),
+                  color: cartoon
+                      ? Color.lerp(b.tint, AppColors.kawaiiPeach, 0.55)!.withValues(alpha: 0.85)
+                      : b.tint.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(cartoon ? 24 : (luxury ? 10 : 20)),
+                  border: null,
+                  boxShadow: cartoon
+                      ? const [
+                          BoxShadow(
+                            color: AppColors.kawaiiShadow,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ]
+                      : null,
                 ),
                 alignment: Alignment.center,
                 child: Text(b.emoji, style: const TextStyle(fontSize: 26)),
@@ -192,7 +239,9 @@ class _BadgeCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: item.ratio,
               minHeight: 8,
-              backgroundColor: b.tint.withValues(alpha: 0.12),
+              backgroundColor: cartoon
+                  ? AppColors.kawaiiCream.withValues(alpha: 0.55)
+                  : b.tint.withValues(alpha: 0.12),
               color: b.tint,
             ),
           ),

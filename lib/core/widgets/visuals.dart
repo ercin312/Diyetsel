@@ -62,6 +62,7 @@ class _WaterWaveState extends State<WaterWave> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final luxury = context.isLuxury;
     final reaction = widget.progress >= 1
         ? '🥳'
         : widget.progress > 0.7
@@ -80,6 +81,7 @@ class _WaterWaveState extends State<WaterWave> with TickerProviderStateMixin {
               progress: _currentProgress,
               phase: _wave.value * math.pi * 2,
               cartoon: widget.cartoon,
+              luxury: luxury,
             ),
             child: widget.cartoon
                 ? Center(child: Text(reaction, style: TextStyle(fontSize: widget.size * 0.19)))
@@ -188,12 +190,35 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFF3C4),
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 3))],
+                        borderRadius: BorderRadius.circular(
+                          widget.cartoon
+                              ? 22
+                              : (context.isLuxury ? 10 : 22),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.cartoon
+                                ? AppColors.kawaiiGlow
+                                : (!widget.cartoon && !context.isLuxury)
+                                    ? AppColors.modernSoftShadow
+                                    : const Color(0x33000000),
+                            blurRadius: widget.cartoon
+                                ? 14
+                                : (!widget.cartoon && !context.isLuxury)
+                                    ? 12
+                                    : 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Text(
                         widget.sipLabel,
-                        style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF2A6F97)),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: widget.cartoon
+                              ? AppColors.kawaiiInk
+                              : (context.isLuxury ? AppColors.luxuryInk : AppColors.primaryDeep),
+                        ),
                       ),
                     ),
                   ),
@@ -201,10 +226,17 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
               Positioned(
                 bottom: 0,
                 child: Material(
-                  color: AppColors.accent,
+                  color: context.isLuxury
+                      ? context.brandPrimary
+                      : (widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.primary),
                   shape: const CircleBorder(),
-                  elevation: 4,
-                  shadowColor: AppColors.accent.withValues(alpha: 0.45),
+                  elevation: (!widget.cartoon && !context.isLuxury) ? 2 : 4,
+                  shadowColor: (!widget.cartoon && !context.isLuxury)
+                      ? AppColors.modernSoftShadow
+                      : (context.isLuxury
+                              ? context.brandPrimary
+                              : (widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.accent))
+                          .withValues(alpha: 0.45),
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: _sip,
@@ -243,11 +275,17 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
 }
 
 class _WavePainter extends CustomPainter {
-  _WavePainter({required this.progress, required this.phase, required this.cartoon});
+  _WavePainter({
+    required this.progress,
+    required this.phase,
+    required this.cartoon,
+    this.luxury = false,
+  });
 
   final double progress;
   final double phase;
   final bool cartoon;
+  final bool luxury;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -255,31 +293,46 @@ class _WavePainter extends CustomPainter {
     final radius = size.shortestSide / 2;
     final center = size.center(Offset.zero);
     final clip = Path()..addOval(Rect.fromCircle(center: center, radius: radius - 6));
+    final rim = luxury
+        ? AppColors.luxuryCopper
+        : cartoon
+            ? AppColors.kawaiiSkyBlue.withValues(alpha: 0.75)
+            : AppColors.accent;
     canvas.drawCircle(
       center,
       radius,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = cartoon ? 5 : 3
-        ..color = AppColors.accent,
+        ..strokeWidth = cartoon ? 7 : (luxury ? 2.2 : 3)
+        ..color = rim,
     );
     canvas.save();
     canvas.clipPath(clip);
     final waterTop = size.height * (1 - progress);
     final path = Path()..moveTo(0, waterTop);
     for (double x = 0; x <= size.width; x++) {
-      final y = waterTop + math.sin((x / size.width * math.pi * 2) + phase) * 8;
+      final y = waterTop + math.sin((x / size.width * math.pi * 2) + phase) * (cartoon ? 10 : 8);
       path.lineTo(x, y);
     }
     path
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
+    final topWater = luxury
+        ? AppColors.luxuryCopperBright.withValues(alpha: 0.72)
+        : cartoon
+            ? const Color(0xFF9ADAFF).withValues(alpha: 0.9)
+            : AppColors.accent.withValues(alpha: 0.75);
+    final deepWater = luxury
+        ? AppColors.luxuryCopperDeep
+        : cartoon
+            ? AppColors.kawaiiSkyBlue
+            : const Color(0xFF0077B6);
     final paint = Paint()
       ..shader = ui.Gradient.linear(
         Offset(0, waterTop),
         Offset(0, size.height),
-        [AppColors.accent.withValues(alpha: 0.75), const Color(0xFF0077B6)],
+        [topWater, deepWater],
       );
     canvas.drawPath(path, paint);
     canvas.restore();
@@ -288,7 +341,10 @@ class _WavePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _WavePainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.phase != phase;
+      oldDelegate.progress != progress ||
+      oldDelegate.phase != phase ||
+      oldDelegate.cartoon != cartoon ||
+      oldDelegate.luxury != luxury;
 }
 
 class BeforeAfterSlider extends StatefulWidget {
@@ -306,60 +362,136 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
 
   @override
   Widget build(BuildContext context) {
+    final brand = context.brandPrimary;
+    final cartoon = context.isCartoon;
+    final luxury = context.isLuxury;
+    final modern = !cartoon && !luxury;
+    final radius = cartoon ? 32.0 : (luxury ? 14.0 : 22.0);
+    final slider = ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              ColoredBox(
+                color: luxury
+                    ? AppColors.luxuryPlate
+                    : modern
+                        ? AppColors.modernWash
+                        : AppColors.kawaiiCream,
+                child: widget.after == null
+                    ? Center(
+                        child: Text(
+                          'Sonra',
+                          style: TextStyle(
+                            color: context.isLuxury
+                                ? AppColors.luxuryChampagne
+                                : cartoon
+                                    ? AppColors.kawaiiInk
+                                    : null,
+                          ),
+                        ),
+                      )
+                    : Image(image: widget.after!, fit: BoxFit.cover),
+              ),
+              ClipRect(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: _value,
+                  child: SizedBox(
+                    width: c.maxWidth,
+                    child: widget.before == null
+                        ? ColoredBox(
+                            color: context.isLuxury
+                                ? AppColors.luxuryWash
+                                : cartoon
+                                    ? AppColors.kawaiiCream.withValues(alpha: 0.9)
+                                    : brand.withValues(alpha: 0.2),
+                            child: Center(
+                              child: Text(
+                                'Önce',
+                                style: TextStyle(
+                                  color: context.isLuxury
+                                      ? AppColors.luxuryChampagne
+                                      : cartoon
+                                          ? AppColors.kawaiiInk
+                                          : null,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Image(image: widget.before!, fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: c.maxWidth * _value - 1,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: context.isLuxury ? 2 : (cartoon ? 4 : 3),
+                  color: context.isLuxury
+                      ? AppColors.luxuryCopperBright
+                      : cartoon
+                          ? AppColors.kawaiiCoral
+                          : Colors.white,
+                ),
+              ),
+              Positioned.fill(
+                child: SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 0,
+                    overlayShape: SliderComponentShape.noOverlay,
+                    thumbColor: cartoon ? AppColors.kawaiiCoral : brand,
+                  ),
+                  child: Slider(
+                    value: _value,
+                    onChanged: (v) => setState(() => _value = v),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
     return AspectRatio(
       aspectRatio: 4 / 3,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(context.isCartoon ? 28 : 20),
-        child: LayoutBuilder(
-          builder: (context, c) {
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                ColoredBox(
-                  color: AppColors.peach.withValues(alpha: 0.4),
-                  child: widget.after == null
-                      ? const Center(child: Text('Sonra'))
-                      : Image(image: widget.after!, fit: BoxFit.cover),
-                ),
-                ClipRect(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: _value,
-                    child: SizedBox(
-                      width: c.maxWidth,
-                      child: widget.before == null
-                          ? ColoredBox(
-                              color: AppColors.primary.withValues(alpha: 0.2),
-                              child: const Center(child: Text('Önce')),
-                            )
-                          : Image(image: widget.before!, fit: BoxFit.cover),
-                    ),
+      child: modern
+          ? DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius),
+                boxShadow: const [
+                  BoxShadow(
+                    color: AppColors.modernSoftShadow,
+                    blurRadius: 18,
+                    offset: Offset(0, 8),
                   ),
-                ),
-                Positioned(
-                  left: c.maxWidth * _value - 1,
-                  top: 0,
-                  bottom: 0,
-                  child: Container(width: 3, color: Colors.white),
-                ),
-                Positioned.fill(
-                  child: SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      trackHeight: 0,
-                      overlayShape: SliderComponentShape.noOverlay,
-                      thumbColor: AppColors.primary,
-                    ),
-                    child: Slider(
-                      value: _value,
-                      onChanged: (v) => setState(() => _value = v),
-                    ),
+                ],
+              ),
+              child: slider,
+            )
+          : cartoon
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(radius),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.kawaiiGlow,
+                        blurRadius: 20,
+                        offset: Offset(0, 8),
+                      ),
+                      BoxShadow(
+                        color: AppColors.kawaiiShadow,
+                        blurRadius: 18,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+                  child: slider,
+                )
+              : slider,
     );
   }
 }

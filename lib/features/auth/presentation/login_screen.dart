@@ -11,6 +11,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/kawaii_doodle.dart';
+import '../../../core/widgets/luxury_glyph.dart';
 import '../../../core/widgets/style_icon.dart';
 import 'auth_controller.dart';
 
@@ -33,9 +34,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  Widget _brandMark(BuildContext context) {
+    final brand = context.brandPrimary;
+    if (context.isLuxury) {
+      return Column(
+        children: [
+          const LuxuryIconTile(kind: KawaiiKind.orange, size: 56),
+          const SizedBox(height: 12),
+          Text(
+            'Diyetsel',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: brand,
+                  letterSpacing: 1.4,
+                ),
+          ),
+        ],
+      );
+    }
+    return Column(
+      children: [
+        Icon(Icons.eco_rounded, size: 42, color: brand),
+        const SizedBox(height: 10),
+        Text(
+          'Diyetsel',
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: brand,
+                letterSpacing: -0.8,
+              ),
+        ),
+      ],
+    );
+  }
+
   Widget _formCard(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
+    final modern = context.isModern;
     return DiyetselCard(
+      color: modern
+          ? AppColors.lightSurface
+          : (context.isCartoon ? AppColors.kawaiiBubble : null),
+      padding: modern
+          ? const EdgeInsets.fromLTRB(24, 28, 24, 22)
+          : (context.isCartoon ? const EdgeInsets.fromLTRB(22, 26, 22, 22) : const EdgeInsets.all(18)),
       child: Form(
         key: _form,
         child: Column(
@@ -44,45 +86,59 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             if (!context.isDesktopLayout) ...[
               Center(
                 child: context.isCartoon
-                    ? const KawaiiTile(kind: KawaiiKind.orange, size: 84)
-                    : Column(
-                        children: [
-                          const Icon(Icons.eco_rounded, size: 40, color: AppColors.primary),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Diyetsel',
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.primary,
-                                  letterSpacing: -0.8,
-                                ),
-                          ),
-                        ],
-                      ),
+                    ? Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.kawaiiCream,
+                          borderRadius: BorderRadius.circular(36),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: AppColors.kawaiiGlow,
+                              blurRadius: 22,
+                              offset: Offset(0, 8),
+                            ),
+                            BoxShadow(
+                              color: AppColors.kawaiiShadow,
+                              blurRadius: 18,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: const KawaiiTile(kind: KawaiiKind.orange, size: 96),
+                      )
+                    : _brandMark(context),
               ),
               if (context.isCartoon) ...[
+                const SizedBox(height: 16),
                 Text(
                   'Diyetsel',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
+                        color: AppColors.kawaiiInk,
                       ),
                 ),
               ],
-              const SizedBox(height: 4),
+              SizedBox(height: context.isCartoon ? 12 : (modern ? 8 : 4)),
               Text(
                 'auth.tagline'.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.isCartoon
+                          ? AppColors.kawaiiInk.withValues(alpha: 0.65)
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                      letterSpacing: context.isLuxury ? 0.2 : null,
+                      fontWeight: context.isCartoon ? FontWeight.w600 : null,
                     ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: context.isCartoon ? 32 : (modern ? 28 : 24)),
             ] else ...[
               Text(
                 'auth.login'.tr(),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: context.isLuxury ? FontWeight.w600 : FontWeight.w700,
+                      letterSpacing: context.isLuxury ? 0.6 : null,
+                    ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -91,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: modern ? 28 : 24),
             ],
             TextFormField(
               controller: _email,
@@ -104,7 +160,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               validator: (v) => v != null && v.contains('@') ? null : 'auth.emailInvalid'.tr(),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: modern ? 14 : 12),
             TextFormField(
               controller: _password,
               obscureText: true,
@@ -121,7 +177,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 12),
               Text(auth.error!, style: const TextStyle(color: AppColors.danger)),
             ],
-            const SizedBox(height: 20),
+            SizedBox(height: modern ? 24 : 20),
             DiyetselButton(
               label: auth.loading ? '...' : 'auth.login'.tr(),
               icon: Icons.login_rounded,
@@ -133,7 +189,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       }
                     },
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: modern ? 12 : 10),
             DiyetselButton(
               label: 'auth.demoDietitian'.tr(),
               tonal: true,
@@ -143,10 +199,99 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ref.read(authControllerProvider.notifier).login(_email.text, _password.text);
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: modern ? 18 : 16),
             TextButton(
               onPressed: () => context.go('/register'),
               child: Text('auth.noAccount'.tr()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Color> _mobileGradient(BuildContext context) {
+    if (Theme.of(context).brightness == Brightness.dark) {
+      return context.isLuxury
+          ? const [AppColors.luxuryDarkCanvas, AppColors.luxuryDarkSurface, Color(0xFF2A1C14)]
+          : const [AppColors.dark, AppColors.darkCard];
+    }
+    if (context.isCartoon) {
+      return const [AppColors.kawaiiCream, AppColors.kawaiiBubble, AppColors.kawaiiMint];
+    }
+    if (context.isLuxury) {
+      return const [
+        Color(0xFF0A0807),
+        AppColors.luxuryCanvas,
+        AppColors.luxuryCopperDeep,
+        Color(0xFF2A1C14),
+      ];
+    }
+    return const [
+      AppColors.modernWash,
+      AppColors.lightBg,
+      AppColors.modernSageSoft,
+    ];
+  }
+
+  Widget _desktopHero(BuildContext context) {
+    final luxury = context.isLuxury;
+    final colors = luxury
+        ? const [
+            Color(0xFF1A120E),
+            AppColors.luxuryCopperDeep,
+            Color(0xFF3D2416),
+            AppColors.luxuryBronze,
+          ]
+        : const [
+            AppColors.primaryBright,
+            AppColors.primary,
+            AppColors.modernSageDeep,
+          ];
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: colors,
+          stops: luxury ? const [0, 0.35, 0.7, 1] : const [0, 0.55, 1],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(48, 48, 40, 48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (luxury)
+              const LuxuryIconTile(kind: KawaiiKind.orange, size: 44, inverted: true)
+            else
+              const Icon(Icons.eco_rounded, color: Colors.white, size: 36),
+            const SizedBox(height: 16),
+            Text(
+              'Diyetsel',
+              style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: luxury ? AppColors.luxuryGoldSoft : Colors.white,
+                    fontWeight: luxury ? FontWeight.w600 : FontWeight.w700,
+                    letterSpacing: luxury ? 1.6 : -1,
+                  ),
+            ),
+            const Spacer(),
+            Text(
+              'Diyetisyen ve danışan yönetimi\niçin masaüstü deneyimi',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white.withValues(alpha: luxury ? 0.92 : 0.95),
+                    height: 1.35,
+                    fontWeight: luxury ? FontWeight.w500 : FontWeight.w600,
+                    letterSpacing: luxury ? 0.3 : null,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Klinik paneli · Plan takibi · Raporlar',
+              style: TextStyle(
+                color: luxury ? AppColors.luxuryChampagne.withValues(alpha: 0.85) : Colors.white.withValues(alpha: 0.8),
+                letterSpacing: luxury ? 0.6 : null,
+              ),
             ),
           ],
         ),
@@ -162,62 +307,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             Expanded(
               flex: 5,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFFF8A3D),
-                      Color(0xFFFF6B00),
-                      Color(0xFF0F766E),
-                    ],
-                    stops: [0, 0.5, 1],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(48, 48, 40, 48),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.eco_rounded, color: Colors.white, size: 36),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Diyetsel',
-                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: -1,
-                            ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        'Diyetisyen ve danışan yönetimi\niçin masaüstü deneyimi',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.95),
-                              height: 1.35,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Klinik paneli · Plan takibi · Raporlar',
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              child: _desktopHero(context),
             ),
             Expanded(
               flex: 4,
               child: ColoredBox(
-                color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                color: context.isLuxury
+                    ? (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.luxuryDarkCanvas
+                        : AppColors.luxuryCanvas)
+                    : context.isModern
+                        ? AppColors.lightBg
+                        : Theme.of(context).colorScheme.surfaceContainerLowest,
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(32),
+                      padding: EdgeInsets.all(context.isModern ? 40 : 32),
                       child: _formCard(context).animate().fadeIn(duration: 280.ms),
                     ),
                   ),
@@ -229,28 +335,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     }
 
+    final luxury = context.isLuxury;
+    final modern = context.isModern;
+    final cartoon = context.isCartoon;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: Theme.of(context).brightness == Brightness.dark
-                ? const [AppColors.dark, AppColors.darkCard]
-                : context.isCartoon
-                    ? const [AppColors.kawaiiMint, Colors.white, AppColors.kawaiiCream]
-                    : const [
-                        Color(0xFFFFE8D6),
-                        AppColors.lightBg,
-                        Color(0xFFE8E4DE),
-                      ],
+            colors: _mobileGradient(context),
+            stops: luxury && !dark
+                ? const [0, 0.4, 0.72, 1]
+                : (cartoon && !dark
+                    ? const [0, 0.45, 1]
+                    : (modern && !dark ? const [0, 0.5, 1] : null)),
           ),
         ),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(cartoon ? 28 : (modern ? 28 : 24)),
               child: _formCard(context).animate().fadeIn().slideY(begin: 0.05, duration: 400.ms),
             ),
           ),
