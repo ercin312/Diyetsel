@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../core/constants/diyetsel_assets.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/report_logic.dart';
@@ -49,7 +50,6 @@ class StoryVisuals {
     required AppStore store,
     required UserProfile user,
     required bool cartoon,
-    required bool luxury,
   }) {
     final streak = store.streak(user.id);
     final water = store.waterLog(user.id, DateTime.now());
@@ -72,16 +72,13 @@ class StoryVisuals {
         kind: KawaiiKind.fire,
         colors: cartoon
             ? const [AppColors.kawaiiRose, AppColors.kawaiiLemon]
-            : luxury
-                ? const [AppColors.luxuryCopperDeep, Color(0xFF3D2314)]
-                : const [AppColors.modernFire, AppColors.modernFireBright],
+            : const [AppColors.modernFire, AppColors.modernFireBright],
         title: '${streak.current} günlük seri',
         subtitle: 'En iyi ${streak.best} gün',
         foot: streak.freezeUsed ? 'Bu ay dondurma kullanıldı' : 'Planına sadık gün',
         caption: '${streak.current} gündür Diyetsel ritmimdeyim 🔥',
         statLabel: 'Seri',
-        statValue: '${streak.current}',
-      ),
+        statValue: '${streak.current}'),
       StoryTemplate(
         id: 'water',
         chip: 'Su',
@@ -89,16 +86,13 @@ class StoryVisuals {
         kind: KawaiiKind.water,
         colors: cartoon
             ? const [AppColors.kawaiiSky, AppColors.kawaiiMint]
-            : luxury
-                ? const [AppColors.luxuryBronze, AppColors.luxuryCopper]
-                : const [AppColors.primaryBright, AppColors.accent],
+            : const [AppColors.primaryBright, AppColors.accent],
         title: 'Su %${(water.progress * 100).round()}',
         subtitle: '${water.amountMl} / ${water.goalMl} ml',
         foot: water.progress >= 1 ? 'Hedef doldu 💧' : 'Bir bardak daha',
         caption: 'Bugün ${(water.amountMl / 1000).toStringAsFixed(1)} L su — hidrasyon check ✓',
         statLabel: 'Su',
-        statValue: '%${(water.progress * 100).round()}',
-      ),
+        statValue: '%${(water.progress * 100).round()}'),
       StoryTemplate(
         id: 'progress',
         chip: 'İlerleme',
@@ -106,9 +100,7 @@ class StoryVisuals {
         kind: KawaiiKind.heart,
         colors: cartoon
             ? const [AppColors.kawaiiLilac, AppColors.kawaiiMint]
-            : luxury
-                ? const [Color(0xFF2A1F18), AppColors.luxuryCopperDeep]
-                : const [AppColors.primaryDeep, AppColors.modernSageDeep],
+            : const [AppColors.primaryDeep, AppColors.modernSageDeep],
         title: delta == null
             ? 'İlerleme kartı'
             : (delta <= 0 ? '${delta.abs().toStringAsFixed(1)} kg düşüş' : '+${delta.toStringAsFixed(1)} kg'),
@@ -120,8 +112,7 @@ class StoryVisuals {
                 ? 'Son ölçüme göre ${delta.abs().toStringAsFixed(1)} kg — sabır işe yarıyor'
                 : 'Ölçüm dalgalandı; trend önemli, panik yok'),
         statLabel: 'Δ kg',
-        statValue: delta == null ? '—' : '${delta <= 0 ? '' : '+'}${delta.toStringAsFixed(1)}',
-      ),
+        statValue: delta == null ? '—' : '${delta <= 0 ? '' : '+'}${delta.toStringAsFixed(1)}'),
       StoryTemplate(
         id: 'mood',
         chip: 'Ruh hali',
@@ -129,9 +120,7 @@ class StoryVisuals {
         kind: KawaiiKind.sparkle,
         colors: cartoon
             ? const [AppColors.kawaiiPeach, AppColors.kawaiiLilac]
-            : luxury
-                ? const [AppColors.luxuryCopper, Color(0xFF4A2C1A)]
-                : const [Color(0xFF2F8A74), AppColors.accent],
+            : const [Color(0xFF2F8A74), AppColors.accent],
         title: lastCheck == null ? 'Haftalık check-in' : _moodTitle(lastCheck.mood),
         subtitle: lastCheck == null
             ? 'İlk check-in’ini gönder'
@@ -141,8 +130,7 @@ class StoryVisuals {
             ? 'Bu hafta kendimi dinliyorum — Diyetsel check-in'
             : 'Bu hafta ruh halim: ${_moodTitle(lastCheck.mood)}',
         statLabel: 'Mood',
-        statValue: lastCheck == null ? '—' : '${lastCheck.mood}/5',
-      ),
+        statValue: lastCheck == null ? '—' : '${lastCheck.mood}/5'),
       StoryTemplate(
         id: 'diet',
         chip: 'Diyet',
@@ -150,9 +138,7 @@ class StoryVisuals {
         kind: KawaiiKind.plate,
         colors: cartoon
             ? const [AppColors.kawaiiMint, AppColors.kawaiiLemon]
-            : luxury
-                ? const [Color(0xFF1F1612), AppColors.luxuryBronze]
-                : const [AppColors.modernSageDeep, AppColors.primaryBright],
+            : const [AppColors.modernSageDeep, AppColors.primaryBright],
         title: weekly.dietMealsTotal == 0
             ? 'Plan takipte'
             : 'Uyumu %${(weekly.dietCompliance * 100).round()}',
@@ -164,8 +150,7 @@ class StoryVisuals {
             ? 'Diyetsel planımla ilerliyorum'
             : 'Bu hafta diyet uyumum %${(weekly.dietCompliance * 100).round()} 🥗',
         statLabel: 'Uyumu',
-        statValue: weekly.dietMealsTotal == 0 ? '—' : '%${(weekly.dietCompliance * 100).round()}',
-      ),
+        statValue: weekly.dietMealsTotal == 0 ? '—' : '%${(weekly.dietCompliance * 100).round()}'),
       StoryTemplate(
         id: 'badges',
         chip: 'Rozet',
@@ -173,9 +158,7 @@ class StoryVisuals {
         kind: KawaiiKind.gift,
         colors: cartoon
             ? const [AppColors.kawaiiLemon, AppColors.kawaiiPeach]
-            : luxury
-                ? const [AppColors.luxuryGold, AppColors.luxuryCopperDeep]
-                : const [AppColors.modernFireBright, AppColors.peachDeep],
+            : const [AppColors.modernFireBright, AppColors.peachDeep],
         title: badgeCount == 0 ? 'İlk rozet yolda' : '$badgeCount rozet',
         subtitle: badgeCount == 0 ? 'Küçük alışkanlıklar birikir' : 'Koleksiyon büyüyor',
         foot: 'Diyetsel başarıları',
@@ -183,8 +166,7 @@ class StoryVisuals {
             ? 'Diyetsel yolculuğum başladı ✨'
             : 'Diyetsel’de $badgeCount rozet kazandım 🏆',
         statLabel: 'Rozet',
-        statValue: '$badgeCount',
-      ),
+        statValue: '$badgeCount'),
     ];
   }
 
@@ -201,5 +183,46 @@ class StoryVisuals {
         2 => 'Rakamlar senin verinden gelir; başlığı ve alt yazıyı önizle.',
         3 => 'Paylaşım metnini seç, PNG olarak hikâyene veya sohbete gönder.',
         _ => '',
+      };
+
+  static String tipOfDay(int daySeed) {
+    const tips = [
+      'Canlı verinden kart üret — story’de paylaş, motivasyonu yayı.',
+      'Su ve seri şablonları en çok etkileşim alır.',
+      'Paylaşım metnini değiştir; aynı kart farklı ton taşır.',
+      'Kartta sadece seçtiğin özet görünür — gizlilik korunur.',
+      'Haftalık ilerleme kartı diyetisyeninle de paylaşılabilir.',
+    ];
+    return tips[daySeed.abs() % tips.length];
+  }
+
+  static Color softAccentFor(String id) => switch (id) {
+        'streak' => const Color(0xFFE07A5F),
+        'water' => const Color(0xFF5BA3C9),
+        'progress' => AppColors.primary,
+        'mood' => const Color(0xFF7B6BB0),
+        'diet' => AppColors.primary,
+        'badges' => const Color(0xFFD4A017),
+        _ => AppColors.primary,
+      };
+
+  static Color softTintFor(String id) => switch (id) {
+        'streak' => const Color(0xFFFFF0E8),
+        'water' => const Color(0xFFE3F2F8),
+        'progress' => const Color(0xFFE8F5F0),
+        'mood' => const Color(0xFFF0EEF8),
+        'diet' => const Color(0xFFE8F5F0),
+        'badges' => const Color(0xFFFFF8E8),
+        _ => const Color(0xFFE8F5F0),
+      };
+
+  static String softAssetFor(String id) => switch (id) {
+        'streak' => DiyetselAssets.modernIconStreak,
+        'water' => DiyetselAssets.modernIconWaterDrop,
+        'progress' => DiyetselAssets.modernIconDietScale,
+        'mood' => DiyetselAssets.modernIconCheck,
+        'diet' => DiyetselAssets.modernIconPlan,
+        'badges' => DiyetselAssets.modernIconStory,
+        _ => DiyetselAssets.modernIconStory,
       };
 }

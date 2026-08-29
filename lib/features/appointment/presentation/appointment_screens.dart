@@ -15,6 +15,8 @@ import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'client_care_screen.dart';
+import 'soft_calendar_screen.dart';
+import 'soft_clients_screen.dart';
 
 class AppointmentCalendarScreen extends ConsumerStatefulWidget {
   const AppointmentCalendarScreen({super.key, this.admin = false});
@@ -31,6 +33,10 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return SoftCalendarScreen(admin: widget.admin);
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final all = ref.watch(appointmentsProvider).valueOrNull ?? [];
     final items = all.where((a) => widget.admin || a.clientId == user.id).toList();
@@ -76,9 +82,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
                 todayDecoration: BoxDecoration(
                   color: context.isCartoon
                       ? AppColors.kawaiiRose.withValues(alpha: 0.85)
-                      : context.isLuxury
-                          ? AppColors.luxuryCopper.withValues(alpha: 0.28)
-                          : AppColors.modernSageSoft.withValues(
+                      : AppColors.modernSageSoft.withValues(
                               alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.95,
                             ),
                   shape: BoxShape.circle,
@@ -262,6 +266,8 @@ class ClientsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) return const SoftClientsScreen();
+
     final users = (ref.watch(usersProvider).valueOrNull ?? []).where((u) => !u.isAdmin).toList();
     return AppPage(
       title: 'Danışanlar',

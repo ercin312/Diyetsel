@@ -31,7 +31,10 @@ class ThemeController extends Notifier<ThemeState> {
         'dark' => ThemeMode.dark,
         _ => ThemeMode.light,
       },
-      style: settings.visualStyle,
+      // Former "luxury" preference maps to modern (style removed).
+      style: settings.visualStyle == VisualStyle.cartoon
+          ? VisualStyle.cartoon
+          : VisualStyle.modern,
     );
   }
 

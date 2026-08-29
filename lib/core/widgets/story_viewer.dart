@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
 import 'kawaii_doodle.dart';
-import 'luxury_glyph.dart';
 import 'modern_glyph.dart';
 import 'style_icon.dart';
 
@@ -85,13 +84,9 @@ class StoryRail extends StatelessWidget {
                 context,
                 items: watchable,
                 initialId: item.id,
-                onSeen: onSeen,
-              );
-            },
-          );
-        },
-      ),
-    );
+                onSeen: onSeen);
+            });
+        }));
   }
 }
 
@@ -105,30 +100,18 @@ class _StoryAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
     final modern = context.isModern;
     final brand = context.brandPrimary;
     final List<Color> ring;
     if (item.isMine) {
-      ring = luxury
-          ? [AppColors.luxuryCopper, AppColors.luxuryCopperBright, AppColors.luxuryChampagne]
-          : cartoon
+      ring = cartoon
               ? [AppColors.kawaiiCoral, AppColors.kawaiiMint, AppColors.kawaiiSky]
               : [AppColors.primary, AppColors.modernSage, AppColors.primaryBright];
     } else if (seen) {
-      ring = luxury
-          ? const [AppColors.luxuryLine, AppColors.luxuryBronze]
-          : cartoon
+      ring = cartoon
               ? const [AppColors.kawaiiOutline, AppColors.kawaiiSage]
               : const [AppColors.modernLine, AppColors.modernSageSoft];
-    } else if (luxury) {
-      ring = const [
-        AppColors.luxuryCopperBright,
-        AppColors.luxuryCopper,
-        AppColors.luxuryCopperDeep,
-        AppColors.luxuryChampagne,
-      ];
-    } else if (cartoon) {
+    }  else if (cartoon) {
       ring = const [
         AppColors.kawaiiRose,
         AppColors.kawaiiMint,
@@ -147,9 +130,7 @@ class _StoryAvatar extends StatelessWidget {
     Widget tile;
     if (cartoon) {
       tile = KawaiiTile(kind: item.kind, size: 54);
-    } else if (luxury) {
-      tile = LuxuryIconTile(kind: item.kind, size: 54);
-    } else {
+    }  else {
       tile = ModernIconTile(kind: item.kind, color: ModernPalette.accent(item.kind), size: 54);
     }
 
@@ -172,8 +153,7 @@ class _StoryAvatar extends StatelessWidget {
                     gradient: SweepGradient(colors: [...ring, ring.first]),
                     border: cartoon
                         ? Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.25), width: 1)
-                        : null,
-                  ),
+                        : null),
                   child: Container(
                     padding: EdgeInsets.all(innerPad),
                     decoration: BoxDecoration(
@@ -181,11 +161,8 @@ class _StoryAvatar extends StatelessWidget {
                       color: cartoon ? AppColors.kawaiiBubble : Theme.of(context).colorScheme.surface,
                       border: cartoon
                           ? Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.3), width: 1)
-                          : null,
-                    ),
-                    child: ClipOval(child: tile),
-                  ),
-                ),
+                          : null),
+                    child: ClipOval(child: tile))),
                 if (item.isMine)
                   Positioned(
                     right: 0,
@@ -197,19 +174,14 @@ class _StoryAvatar extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: brand,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
-                      ),
+                        border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2)),
                       child: cartoon
                           ? const KawaiiDoodle(kind: KawaiiKind.sparkle, size: 14)
                           : Icon(
                               Icons.add_rounded,
                               size: 14,
-                              color: luxury ? AppColors.luxuryInk : Colors.white,
-                            ),
-                    ),
-                  ),
-              ],
-            ),
+                              color: Colors.white))),
+              ]),
             const SizedBox(height: 6),
             Text(
               item.label,
@@ -218,15 +190,10 @@ class _StoryAvatar extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
-                fontWeight: luxury ? FontWeight.w600 : (modern ? FontWeight.w600 : FontWeight.w800),
-                letterSpacing: luxury ? 0.3 : null,
-                color: seen ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55) : null,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                fontWeight: (modern ? FontWeight.w600 : FontWeight.w800),
+                letterSpacing: null,
+                color: seen ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55) : null)),
+          ])));
   }
 }
 
@@ -256,11 +223,8 @@ class StoryViewer extends StatefulWidget {
         pageBuilder: (context, animation, secondaryAnimation) => StoryViewer(
           items: items,
           initialIndex: index < 0 ? 0 : index,
-          onSeen: onSeen,
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
-      ),
-    );
+          onSeen: onSeen),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child)));
   }
 
   @override
@@ -331,21 +295,11 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
     _goBundle(_index - 1);
   }
 
-  List<Color> _pageColors(StoryPageData page, {required bool luxury}) {
-    if (!luxury) return page.colors;
-    if (page.colors.length < 2) {
-      return const [AppColors.luxuryCopperDeep, AppColors.luxuryBronze];
-    }
-    return [
-      Color.lerp(page.colors.first, AppColors.luxuryCopperDeep, 0.55)!,
-      Color.lerp(page.colors.last, AppColors.luxuryBronze, 0.45)!,
-    ];
-  }
+  List<Color> _pageColors(StoryPageData page) => page.colors;
 
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -377,7 +331,7 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
             itemBuilder: (context, i) {
               final bundle = widget.items[i];
               final page = bundle.pages[i == _index ? _page.clamp(0, bundle.pages.length - 1) : 0];
-              final colors = _pageColors(page, luxury: luxury);
+              final colors = _pageColors(page);
               return Stack(
                 fit: StackFit.expand,
                 children: [
@@ -386,34 +340,12 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                       gradient: LinearGradient(
                         colors: colors,
                         begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                  ),
+                        end: Alignment.bottomRight))),
                   if (cartoon)
                     const Positioned(
                       top: 88,
                       right: -18,
-                      child: KawaiiDoodle(kind: KawaiiKind.sparkle, size: 72),
-                    ),
-                  if (luxury)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withValues(alpha: 0.12),
-                                Colors.transparent,
-                                Colors.black.withValues(alpha: 0.28),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                      child: KawaiiDoodle(kind: KawaiiKind.sparkle, size: 72)),
                   SafeArea(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
@@ -438,32 +370,21 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                                                     : 0.0;
                                         return ClipRRect(
                                           borderRadius: BorderRadius.circular(
-                                            luxury ? 2 : (cartoon ? 8 : 6),
-                                          ),
+                                            (cartoon ? 8 : 6)),
                                           child: LinearProgressIndicator(
                                             value: v,
-                                            minHeight: luxury ? 2.5 : (cartoon ? 4 : 3.5),
+                                            minHeight: (cartoon ? 4 : 3.5),
                                             backgroundColor: Colors.white24,
-                                            color: luxury
-                                                ? AppColors.luxuryCopperBright
-                                                : cartoon
+                                            color: cartoon
                                                     ? AppColors.kawaiiLemon
-                                                    : Colors.white,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
+                                                    : Colors.white));
+                                      }))),
+                            ]),
                           const SizedBox(height: 12),
                           Row(
                             children: [
                               if (cartoon)
                                 KawaiiTile(kind: bundle.kind, size: 42)
-                              else if (luxury)
-                                LuxuryIconTile(kind: bundle.kind, color: Colors.white, size: 42, inverted: true)
                               else
                                 ModernIconTile(kind: bundle.kind, color: Colors.white, size: 42, inverted: true),
                               const SizedBox(width: 10),
@@ -472,82 +393,59 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                                   bundle.label,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
+                                    fontWeight: FontWeight.w900,
                                     fontSize: 16,
-                                    letterSpacing: luxury ? 0.6 : null,
-                                  ),
-                                ),
-                              ),
+                                    letterSpacing: null))),
                               IconButton(
                                 onPressed: () => Navigator.pop(context),
-                                icon: const Icon(Icons.close_rounded, color: Colors.white),
-                              ),
-                            ],
-                          ),
+                                icon: const Icon(Icons.close_rounded, color: Colors.white)),
+                            ]),
                           const Spacer(),
                           Center(
                             child: cartoon
                                 ? KawaiiTile(kind: page.kind, size: 120)
-                                : luxury
-                                    ? LuxuryIconTile(kind: page.kind, color: Colors.white, size: 96, inverted: true)
-                                    : ModernIconTile(kind: page.kind, color: Colors.white, size: 96, inverted: true),
-                          ),
+                                : ModernIconTile(kind: page.kind, color: Colors.white, size: 96, inverted: true)),
                           const SizedBox(height: 28),
                           Text(
                             page.title,
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
-                              fontSize: luxury ? 30 : 32,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 32,
                               height: 1.1,
-                              letterSpacing: luxury ? 0.8 : null,
-                            ),
-                          ),
+                              letterSpacing: null)),
                           const SizedBox(height: 8),
                           Text(
                             page.subtitle,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.92),
-                              fontSize: luxury ? 17 : 18,
-                              fontWeight: luxury ? FontWeight.w500 : FontWeight.w700,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
                               height: 1.3,
-                              letterSpacing: luxury ? 0.2 : null,
-                            ),
-                          ),
+                              letterSpacing: null)),
                           if (page.detail != null) ...[
                             const SizedBox(height: 10),
                             Text(
                               page.detail!,
-                              style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15, height: 1.35),
-                            ),
+                              style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15, height: 1.35)),
                           ],
                           const SizedBox(height: 28),
                           if (page.ctaLabel != null && page.ctaRoute != null)
                             FilledButton(
                               style: FilledButton.styleFrom(
-                                backgroundColor: luxury
-                                    ? AppColors.luxuryPlate
-                                    : cartoon
+                                backgroundColor: cartoon
                                         ? AppColors.kawaiiCoral
                                         : Colors.white,
-                                foregroundColor: luxury
-                                    ? AppColors.luxuryCopperBright
-                                    : cartoon
+                                foregroundColor: cartoon
                                         ? Colors.white
                                         : colors.first,
                                 padding: EdgeInsets.symmetric(
                                   horizontal: cartoon ? 24 : 22,
-                                  vertical: cartoon ? 15 : 14,
-                                ),
+                                  vertical: cartoon ? 15 : 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
-                                    luxury ? 12 : (cartoon ? 28 : 28),
-                                  ),
-                                  side: luxury
-                                      ? BorderSide(color: AppColors.luxuryCopper.withValues(alpha: 0.65))
-                                      : BorderSide.none,
-                                ),
-                              ),
+                                    (cartoon ? 28 : 28)),
+                                  side: BorderSide.none)),
                               onPressed: () {
                                 Navigator.pop(context);
                                 context.push(page.ctaRoute!);
@@ -555,30 +453,17 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                               child: Text(
                                 page.ctaLabel!,
                                 style: TextStyle(
-                                  fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
-                                  letterSpacing: luxury ? 0.5 : null,
-                                ),
-                              ),
-                            ),
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: null))),
                           const SizedBox(height: 12),
                           Text(
                             'Basılı tut  •  sağ / sol dokun',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.55),
                               fontSize: 12,
-                              letterSpacing: luxury ? 0.4 : null,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
+                              letterSpacing: null)),
+                        ]))),
+                ]);
+            }))));
   }
 }

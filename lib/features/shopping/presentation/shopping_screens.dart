@@ -10,11 +10,11 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
-import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/marketplace.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../domain/shopping_visuals.dart';
+import 'soft_shopping_screen.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -29,11 +29,14 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return const SoftShoppingScreen();
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     ref.watch(shoppingListsProvider);
     final items = store.shoppingList(user.id);
-    final cartoon = context.isCartoon;
 
     final done = items.where((e) => e.checked).length;
     final total = items.length;
@@ -54,263 +57,178 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
       });
     final checked = shown.where((e) => e.checked).toList();
 
-    if (cartoon) {
-      return AppPage(
-        title: 'Alışveriş',
-        padding: EdgeInsets.zero,
-        actions: [
-          IconButton(
-            tooltip: 'Ürün ekle',
-            onPressed: () => _openAddSheet(context, store, user.id, items),
-            icon: const Icon(Icons.add_rounded, color: AppColors.kawaiiLeafDeep, size: 26),
-          ),
-        ],
-        child: ColoredBox(
-          color: AppColors.kawaiiSurfaceCream,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
-            children: [
-              _ShoppingHero(
-                done: done,
-                total: total,
-                tip: ShoppingVisuals.tipOfDay(DateTime.now().day),
-              )
-                  .animate()
-                  .fadeIn(duration: 300.ms)
-                  .slideY(begin: -0.04, curve: Curves.easeOutCubic),
-              const SizedBox(height: 14),
-              _ActionRow(
-                onGenerate: () => _generateFromDiet(context, store, user.id, items),
-                onAdd: () => _openAddSheet(context, store, user.id, items),
-                onClearChecked: done == 0
-                    ? null
-                    : () async {
-                        final next = items.where((e) => !e.checked).toList();
-                        await store.saveShoppingList(user.id, next);
-                      },
-                hideChecked: _hideChecked,
-                onToggleHide: () => setState(() => _hideChecked = !_hideChecked),
-              ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
-              const SizedBox(height: 14),
-              SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, i) {
-                    final c = categories[i];
-                    final selected = c == _filter;
-                    final label = c == 'Tümü' ? 'Tümü' : ShoppingVisuals.label(c);
-                    return FilterChip(
-                      selected: selected,
-                      showCheckmark: false,
-                      avatar: c == 'Tümü'
-                          ? null
-                          : Icon(
-                              ShoppingVisuals.iconFor(c),
-                              size: 16,
-                              color: selected ? Colors.white : ShoppingVisuals.accentFor(c),
-                            ),
-                      label: Text(
-                        label,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12.5,
-                          color: selected ? Colors.white : AppColors.kawaiiInk,
-                        ),
-                      ),
-                      selectedColor: AppColors.kawaiiLeaf,
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: selected ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
-                      onSelected: (_) => setState(() => _filter = c),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (items.isEmpty)
-                _EmptyShopping(
-                  onGenerate: () => _generateFromDiet(context, store, user.id, items),
-                  onAdd: () => _openAddSheet(context, store, user.id, items),
-                ).animate().fadeIn(duration: 320.ms).scale(begin: const Offset(0.96, 0.96))
-              else if (shown.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(28),
-                  child: Text(
-                    'Bu filtrede ürün yok.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
-                  ),
-                )
-              else ...[
-                if (priority.isNotEmpty) ...[
-                  const _SectionLabel(title: 'Önce bunları al', emojiIcon: Icons.priority_high_rounded),
-                  const SizedBox(height: 8),
-                  for (var i = 0; i < priority.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _CartoonShopCard(
-                        item: priority[i],
-                        onToggle: () => _toggle(store, user.id, items, priority[i]),
-                        onOpen: () => _openDetail(context, store, user.id, items, priority[i]),
-                      )
-                          .animate()
-                          .fadeIn(delay: (40 * i).ms, duration: 280.ms)
-                          .slideY(begin: 0.04, curve: Curves.easeOutCubic),
-                    ),
-                  const SizedBox(height: 6),
-                ],
-                if (open.isNotEmpty) ...[
-                  _SectionLabel(
-                    title: _filter == 'Tümü' ? 'Listen' : ShoppingVisuals.label(_filter),
-                    emojiIcon: Icons.checklist_rounded,
-                  ),
-                  const SizedBox(height: 8),
-                  for (var i = 0; i < open.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _CartoonShopCard(
-                        item: open[i],
-                        onToggle: () => _toggle(store, user.id, items, open[i]),
-                        onOpen: () => _openDetail(context, store, user.id, items, open[i]),
-                      )
-                          .animate()
-                          .fadeIn(delay: (35 * i).ms, duration: 280.ms)
-                          .slideY(begin: 0.04, curve: Curves.easeOutCubic),
-                    ),
-                ],
-                if (checked.isNotEmpty && !_hideChecked) ...[
-                  const SizedBox(height: 8),
-                  _SectionLabel(
-                    title: 'Sepete gidenler ($done)',
-                    emojiIcon: Icons.check_circle_rounded,
-                  ),
-                  const SizedBox(height: 8),
-                  for (var i = 0; i < checked.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _CartoonShopCard(
-                        item: checked[i],
-                        onToggle: () => _toggle(store, user.id, items, checked[i]),
-                        onOpen: () => _openDetail(context, store, user.id, items, checked[i]),
-                      ).animate().fadeIn(delay: (25 * i).ms, duration: 240.ms),
-                    ),
-                ],
-              ],
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-                  border: Border.all(color: AppColors.kawaiiOutline),
-                  boxShadow: AppSpacing.soft,
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.lightbulb_outline_rounded, color: AppColors.kawaiiLeafDeep),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                          height: 1.35,
-                          color: AppColors.kawaiiMuted,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ).animate().fadeIn(delay: 160.ms, duration: 300.ms),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // Modern / luxury fallback — richer than plain checkboxes
     return AppPage(
-      title: 'Alışveriş listesi',
+      title: 'Alışveriş',
+      padding: EdgeInsets.zero,
       actions: [
-        TextButton(
-          onPressed: () => _generateFromDiet(context, store, user.id, items),
-          child: const Text('Diyetten üret'),
-        ),
         IconButton(
+          tooltip: 'Ürün ekle',
           onPressed: () => _openAddSheet(context, store, user.id, items),
-          icon: const Icon(Icons.add_rounded),
+          icon: const Icon(Icons.add_rounded, color: AppColors.kawaiiLeafDeep, size: 26),
         ),
       ],
-      child: ListView(
-        children: [
-          DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  total == 0 ? 'Liste boş' : '$done / $total alındı',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: total == 0 ? 0 : done / total,
-                    minHeight: 8,
-                    backgroundColor: context.brandPrimary.withValues(alpha: 0.12),
-                    color: context.brandPrimary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  ShoppingVisuals.tipOfDay(DateTime.now().day),
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.35),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (items.isEmpty)
-            const EmptyState(icon: Icons.shopping_cart_outlined, title: 'Henüz ürün yok', subtitle: 'Diyetten üret veya elle ekle')
-          else
-            for (final cat in ShoppingVisuals.categoryOrder)
-              if (items.any((e) => e.category == cat)) ...[
-                SectionHeader(title: ShoppingVisuals.label(cat)),
-                ...items.where((e) => e.category == cat).map(
-                      (e) => DiyetselCard(
-                        onTap: () => _openDetail(context, store, user.id, items, e),
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              value: e.checked,
-                              onChanged: (_) => _toggle(store, user.id, items, e),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    e.name,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      decoration: e.checked ? TextDecoration.lineThrough : null,
-                                    ),
-                                  ),
-                                  Text('${e.amount}${e.tip.isEmpty ? '' : ' · ${e.tip}'}', maxLines: 2, overflow: TextOverflow.ellipsis),
-                                ],
-                              ),
-                            ),
-                            if (e.priority)
-                              Icon(Icons.star_rounded, color: context.brandPrimary, size: 20),
-                          ],
-                        ),
+      child: ColoredBox(
+        color: AppColors.kawaiiSurfaceCream,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+          children: [
+            _ShoppingHero(
+              done: done,
+              total: total,
+              tip: ShoppingVisuals.tipOfDay(DateTime.now().day),
+            )
+                .animate()
+                .fadeIn(duration: 300.ms)
+                .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+            const SizedBox(height: 14),
+            _ActionRow(
+              onGenerate: () => _generateFromDiet(context, store, user.id, items),
+              onAdd: () => _openAddSheet(context, store, user.id, items),
+              onClearChecked: done == 0
+                  ? null
+                  : () async {
+                      final next = items.where((e) => !e.checked).toList();
+                      await store.saveShoppingList(user.id, next);
+                    },
+              hideChecked: _hideChecked,
+              onToggleHide: () => setState(() => _hideChecked = !_hideChecked),
+            ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            const SizedBox(height: 14),
+            SizedBox(
+              height: 40,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                itemBuilder: (context, i) {
+                  final c = categories[i];
+                  final selected = c == _filter;
+                  final label = c == 'Tümü' ? 'Tümü' : ShoppingVisuals.label(c);
+                  return FilterChip(
+                    selected: selected,
+                    showCheckmark: false,
+                    avatar: c == 'Tümü'
+                        ? null
+                        : Icon(
+                            ShoppingVisuals.iconFor(c),
+                            size: 16,
+                            color: selected ? Colors.white : ShoppingVisuals.accentFor(c),
+                          ),
+                    label: Text(
+                      label,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12.5,
+                        color: selected ? Colors.white : AppColors.kawaiiInk,
                       ),
                     ),
+                    selectedColor: AppColors.kawaiiLeaf,
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: selected ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
+                    onSelected: (_) => setState(() => _filter = c),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (items.isEmpty)
+              _EmptyShopping(
+                onGenerate: () => _generateFromDiet(context, store, user.id, items),
+                onAdd: () => _openAddSheet(context, store, user.id, items),
+              ).animate().fadeIn(duration: 320.ms).scale(begin: const Offset(0.96, 0.96))
+            else if (shown.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(28),
+                child: Text(
+                  'Bu filtrede ürün yok.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
+                ),
+              )
+            else ...[
+              if (priority.isNotEmpty) ...[
+                const _SectionLabel(title: 'Önce bunları al', emojiIcon: Icons.priority_high_rounded),
+                const SizedBox(height: 8),
+                for (var i = 0; i < priority.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _CartoonShopCard(
+                      item: priority[i],
+                      onToggle: () => _toggle(store, user.id, items, priority[i]),
+                      onOpen: () => _openDetail(context, store, user.id, items, priority[i]),
+                    )
+                        .animate()
+                        .fadeIn(delay: (40 * i).ms, duration: 280.ms)
+                        .slideY(begin: 0.04, curve: Curves.easeOutCubic),
+                  ),
+                const SizedBox(height: 6),
               ],
-        ],
+              if (open.isNotEmpty) ...[
+                _SectionLabel(
+                  title: _filter == 'Tümü' ? 'Listen' : ShoppingVisuals.label(_filter),
+                  emojiIcon: Icons.checklist_rounded,
+                ),
+                const SizedBox(height: 8),
+                for (var i = 0; i < open.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _CartoonShopCard(
+                      item: open[i],
+                      onToggle: () => _toggle(store, user.id, items, open[i]),
+                      onOpen: () => _openDetail(context, store, user.id, items, open[i]),
+                    )
+                        .animate()
+                        .fadeIn(delay: (35 * i).ms, duration: 280.ms)
+                        .slideY(begin: 0.04, curve: Curves.easeOutCubic),
+                  ),
+              ],
+              if (checked.isNotEmpty && !_hideChecked) ...[
+                const SizedBox(height: 8),
+                _SectionLabel(
+                  title: 'Sepete gidenler ($done)',
+                  emojiIcon: Icons.check_circle_rounded,
+                ),
+                const SizedBox(height: 8),
+                for (var i = 0; i < checked.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _CartoonShopCard(
+                      item: checked[i],
+                      onToggle: () => _toggle(store, user.id, items, checked[i]),
+                      onOpen: () => _openDetail(context, store, user.id, items, checked[i]),
+                    ).animate().fadeIn(delay: (25 * i).ms, duration: 240.ms),
+                  ),
+              ],
+            ],
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                border: Border.all(color: AppColors.kawaiiOutline),
+                boxShadow: AppSpacing.soft,
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.lightbulb_outline_rounded, color: AppColors.kawaiiLeafDeep),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        height: 1.35,
+                        color: AppColors.kawaiiMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn(delay: 160.ms, duration: 300.ms),
+          ],
+        ),
       ),
     );
   }

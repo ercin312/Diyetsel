@@ -25,36 +25,42 @@ class _SoftTapState extends State<SoftTap> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = AnimatedScale(
+      scale: _down ? 0.97 : 1,
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOut,
+      child: widget.child,
+    );
+    if (widget.borderRadius != null) {
+      child = ClipRRect(borderRadius: widget.borderRadius!, child: child);
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       onTapDown: widget.onTap == null ? null : (_) => setState(() => _down = true),
       onTapCancel: () => setState(() => _down = false),
       onTapUp: widget.onTap == null ? null : (_) => setState(() => _down = false),
-      child: AnimatedScale(
-        scale: _down ? 0.97 : 1,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        child: widget.child,
-      ),
+      child: child,
     );
   }
 }
 
 class DiyetselLogoMark extends StatelessWidget {
-  const DiyetselLogoMark({super.key, this.height = 36});
+  const DiyetselLogoMark({super.key, this.height = 36, this.rounded = true});
 
   final double height;
+  final bool rounded;
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
+    final image = Image.asset(
       DiyetselAssets.logo,
       height: height,
-      fit: BoxFit.contain,
+      width: height,
+      fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
       errorBuilder: (_, _, _) => Text(
-        'Diyetsel',
+        'e-Diyet',
         style: TextStyle(
           fontSize: height * 0.72,
           fontWeight: FontWeight.w900,
@@ -63,6 +69,11 @@ class DiyetselLogoMark extends StatelessWidget {
           height: 1,
         ),
       ),
+    );
+    if (!rounded) return image;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(height * 0.22),
+      child: image,
     );
   }
 }

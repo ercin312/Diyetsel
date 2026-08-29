@@ -14,6 +14,7 @@ import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
+import 'soft_client_care_screen.dart';
 
 class ClientCareScreen extends ConsumerWidget {
   const ClientCareScreen({super.key, required this.clientId});
@@ -22,6 +23,8 @@ class ClientCareScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) return SoftClientCareScreen(clientId: clientId);
+
     ref.watch(usersProvider);
     ref.watch(settingsProvider);
     ref.watch(waterLogsProvider);

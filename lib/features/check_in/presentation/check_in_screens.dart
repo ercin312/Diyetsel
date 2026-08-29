@@ -15,13 +15,13 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
-import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/module_gate.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../../gamification/presentation/gamification_screens.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../domain/check_in_visuals.dart';
+import 'soft_check_in_screen.dart';
 
 class CheckInScreen extends ConsumerStatefulWidget {
   const CheckInScreen({super.key});
@@ -72,6 +72,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   Widget build(BuildContext context) {
     final locked = lockedIfOff(ref, module: AppModule.checkIn, title: 'Haftalık check-in');
     if (locked != null) return locked;
+
+    if (context.isModern) {
+      return const SoftCheckInScreen();
+    }
 
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
@@ -176,100 +180,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
       );
     }
 
-    // Modern / luxury fallback — richer form
-    return AppPage(
-      title: 'Haftalık check-in',
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.favorite_rounded,
-            emoji: '❤️',
-            title: due ? 'Bu haftanın check-in’i bekliyor' : 'İlerlemen kayda geçiyor',
-            subtitle: last == null
-                ? 'Kilo, bel, uyku ve ruh halini gönder; diyetisyenin paneline düşer.'
-                : 'Son kayıt ${DateFormat('d MMMM', 'tr').format(last.createdAt)}',
-          ),
-          const SizedBox(height: 12),
-          DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionHeader(title: 'Ölçümler', subtitle: 'Sabah, tuvalet sonrası daha tutarlıdır.'),
-                TextField(
-                  controller: _weight,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Kilo (kg)'),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _waist,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Bel çevresi (cm)'),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _sleep,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Uyku (saat)'),
-                ),
-                const SizedBox(height: 12),
-                const Text('Ruh hali', style: TextStyle(fontWeight: FontWeight.w800)),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    for (var i = 0; i < CheckInVisuals.moods.length; i++)
-                      ChoiceChip(
-                        selected: _mood == i + 1,
-                        label: Text(CheckInVisuals.moods[i].$2),
-                        onSelected: (_) => setState(() => _mood = i + 1),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text('Enerji: ${CheckInVisuals.energyLabels[_energy - 1]}'),
-                Slider(
-                  value: _energy.toDouble(),
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  onChanged: (v) => setState(() => _energy = v.round()),
-                ),
-                Text('Diyet uyumu: ${CheckInVisuals.adherenceLabels[_adherence - 1]}'),
-                Slider(
-                  value: _adherence.toDouble(),
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  onChanged: (v) => setState(() => _adherence = v.round()),
-                ),
-                TextField(controller: _note, maxLines: 3, decoration: const InputDecoration(labelText: 'Not')),
-                const SizedBox(height: 8),
-                DiyetselButton(
-                  label: _saving ? 'Gönderiliyor…' : 'Check-in gönder',
-                  icon: Icons.send,
-                  onPressed: () {
-                    if (!_saving) _submit(context, store, user);
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SectionHeader(title: 'Geçmiş'),
-          if (logs.isEmpty)
-            const EmptyState(icon: Icons.favorite, title: 'Henüz check-in yok')
-          else
-            for (final log in logs)
-              DiyetselCard(
-                onTap: () => _openDetail(context, log, null),
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(DateFormat('d MMMM y', 'tr').format(log.createdAt)),
-                  subtitle: Text(CheckInVisuals.summaryLine(log)),
-                ),
-              ),
-        ],
-      ),
-    );
+    return const SoftCheckInScreen();
   }
 
   Future<void> _submit(BuildContext context, AppStore store, UserProfile user) async {

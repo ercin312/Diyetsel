@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
+import '../../../core/network/cloud_sync_service.dart';
 import '../../../core/utils/smart_notification_service.dart';
 
 class AuthState {
@@ -22,6 +23,10 @@ class AuthController extends Notifier<AuthState> {
   AuthState build() {
     final store = ref.watch(appStoreProvider);
     final id = store.settings().sessionUserId;
+    // Resume cloud sync if a session is already restored.
+    if (id != null && store.user(id) != null) {
+      Future.microtask(() => _startSync());
+    }
     return AuthState(user: id == null ? null : store.user(id));
   }
 
@@ -59,6 +64,7 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> logout() async {
     final store = ref.read(appStoreProvider);
+    await ref.read(cloudSyncServiceProvider).stop();
     await store.logout();
     await store.saveSettings(store.settings().copyWith(clearSession: true));
     state = const AuthState();
@@ -74,6 +80,16 @@ class AuthController extends Notifier<AuthState> {
     await store.saveSettings(store.settings().copyWith(sessionUserId: user.id));
     state = AuthState(user: user);
     await SmartNotificationService.instance.sync(store, user);
+    await _startSync();
+  }
+
+  Future<void> _startSync() async {
+    final sync = ref.read(cloudSyncServiceProvider);
+    try {
+      await sync.start();
+    } catch (e) {
+      debugPrint('Cloud sync start failed: $e');
+    }
   }
 }
 

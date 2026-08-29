@@ -21,7 +21,7 @@ class DiyetselApp extends ConsumerWidget {
     final dark = AppTheme.build(brightness: Brightness.dark, style: theme.style);
     return AppLifecycleSync(
       child: MaterialApp.router(
-        title: 'Diyetsel',
+        title: 'e-Diyet',
         debugShowCheckedModeBanner: false,
         theme: light,
         darkTheme: dark,

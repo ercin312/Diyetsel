@@ -41,6 +41,23 @@ class ShoppingVisuals {
         _ => AppColors.kawaiiPurple,
       };
 
+  /// Soft modern wash tint.
+  static Color softTintFor(String cat) => switch (cat) {
+        'vegetable' => const Color(0xFFE8F5F0),
+        'protein' => const Color(0xFFFFF0E8),
+        'dairy' => const Color(0xFFE3F2F8),
+        'grain' => const Color(0xFFFFF8E8),
+        _ => const Color(0xFFF0EEF8),
+      };
+
+  static Color softAccentFor(String cat) => switch (cat) {
+        'vegetable' => AppColors.primary,
+        'protein' => const Color(0xFFE07A5F),
+        'dairy' => const Color(0xFF5BA3C9),
+        'grain' => const Color(0xFFD4A017),
+        _ => const Color(0xFF7B6BB0),
+      };
+
   static String? imageFor(ShoppingItem item) {
     final url = item.imageUrl?.trim();
     if (url != null && url.isNotEmpty) return url;

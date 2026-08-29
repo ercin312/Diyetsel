@@ -19,7 +19,6 @@ class DiyetselThemeExt extends ThemeExtension<DiyetselThemeExt> {
   final Offset stickerOffset;
 
   bool get isCartoon => style == VisualStyle.cartoon;
-  bool get isLuxury => style == VisualStyle.luxury;
   bool get isModern => style == VisualStyle.modern;
 
   @override
@@ -51,24 +50,10 @@ class AppTheme {
   }) {
     final isDark = brightness == Brightness.dark;
     final isCartoon = style == VisualStyle.cartoon;
-    final isLuxury = style == VisualStyle.luxury;
 
-    final Color brand;
-    final Color brandDeep;
-    if (isLuxury) {
-      brand = AppColors.luxuryCopper;
-      brandDeep = AppColors.luxuryCopperDeep;
-    } else if (isCartoon) {
-      brand = AppColors.kawaiiLeaf;
-      brandDeep = AppColors.kawaiiLeafDeep;
-    } else {
-      brand = AppColors.primary;
-      brandDeep = AppColors.primaryDeep;
-    }
-
-    final Color tertiary = isLuxury
-        ? AppColors.luxuryCopperBright
-        : (isCartoon ? AppColors.kawaiiSalmon : AppColors.modernSage);
+    final Color brand = isCartoon ? AppColors.kawaiiLeaf : AppColors.primary;
+    final Color brandDeep = isCartoon ? AppColors.kawaiiLeafDeep : AppColors.primaryDeep;
+    final Color tertiary = isCartoon ? AppColors.kawaiiSalmon : AppColors.modernSage;
 
     final Color ink;
     final Color muted;
@@ -77,14 +62,7 @@ class AppTheme {
     final Color wash;
     final Color line;
 
-    if (isLuxury) {
-      ink = AppColors.luxuryInk;
-      muted = AppColors.luxuryMuted;
-      surface = isDark ? AppColors.luxuryDarkSurface : AppColors.luxurySurface;
-      canvas = isDark ? AppColors.luxuryDarkCanvas : AppColors.luxuryCanvas;
-      wash = AppColors.luxuryWash;
-      line = AppColors.luxuryLine;
-    } else if (isCartoon) {
+    if (isCartoon) {
       ink = isDark ? AppColors.darkInk : AppColors.kawaiiInk;
       muted = isDark ? AppColors.darkMuted : AppColors.kawaiiMuted;
       surface = isDark ? AppColors.darkCard : AppColors.kawaiiBubble;
@@ -102,7 +80,7 @@ class AppTheme {
 
     final scheme = ColorScheme.fromSeed(
       seedColor: brand,
-      brightness: isLuxury ? Brightness.dark : brightness,
+      brightness: brightness,
       primary: brand,
       onPrimary: Colors.white,
       secondary: isCartoon ? AppColors.kawaiiWarmYellow : brandDeep,
@@ -118,35 +96,19 @@ class AppTheme {
       surfaceContainerLowest: canvas,
       surfaceContainerHighest: wash,
       outline: line,
-      outlineVariant: isLuxury
-          ? const Color(0xFF2E2620)
-          : (isDark
-              ? const Color(0xFF3F3F46)
-              : (isCartoon ? AppColors.kawaiiOutline : AppColors.modernLine)),
-      primaryContainer: isLuxury
-          ? Color.lerp(surface, brand, 0.2)
-          : (isCartoon ? AppColors.kawaiiMint.withValues(alpha: 0.55) : AppColors.modernSageSoft),
+      outlineVariant: isDark
+          ? const Color(0xFF3F3F46)
+          : (isCartoon ? AppColors.kawaiiOutline : AppColors.modernLine),
+      primaryContainer:
+          isCartoon ? AppColors.kawaiiMint.withValues(alpha: 0.55) : AppColors.modernSageSoft,
     );
 
     final TextTheme rawText;
     if (isCartoon) {
       rawText = GoogleFonts.nunitoTextTheme();
-    } else if (isLuxury) {
-      final display = GoogleFonts.cormorantGaramondTextTheme();
-      final body = GoogleFonts.outfitTextTheme();
-      rawText = body.copyWith(
-        displayLarge: display.displayLarge,
-        displayMedium: display.displayMedium,
-        displaySmall: display.displaySmall,
-        headlineLarge: display.headlineLarge?.copyWith(fontWeight: FontWeight.w600),
-        headlineMedium: display.headlineMedium?.copyWith(fontWeight: FontWeight.w600),
-        headlineSmall: display.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-        titleLarge: display.titleLarge?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.2),
-      );
     } else {
-      // Soft wellness: serif display/logo + Sora body
       final display = GoogleFonts.cormorantGaramondTextTheme();
-      final body = GoogleFonts.soraTextTheme();
+      final body = GoogleFonts.nunitoTextTheme();
       rawText = body.copyWith(
         displayLarge: display.displayLarge,
         displayMedium: display.displayMedium,
@@ -159,58 +121,34 @@ class AppTheme {
     }
 
     final textTheme = rawText.apply(bodyColor: ink, displayColor: ink).copyWith(
-          bodySmall: rawText.bodySmall?.copyWith(
-            color: muted,
-            height: 1.5,
-            letterSpacing: isLuxury ? 0.35 : 0.15,
-          ),
-          bodyMedium: rawText.bodyMedium?.copyWith(color: ink, height: 1.55, letterSpacing: isLuxury ? 0.15 : 0.05),
+          bodySmall: rawText.bodySmall?.copyWith(color: muted, height: 1.5, letterSpacing: 0.15),
+          bodyMedium: rawText.bodyMedium?.copyWith(color: ink, height: 1.55, letterSpacing: 0.05),
           bodyLarge: rawText.bodyLarge?.copyWith(color: ink, height: 1.55),
-          titleSmall: rawText.titleSmall?.copyWith(
-            color: ink,
-            fontWeight: FontWeight.w600,
-            letterSpacing: isLuxury ? 0.6 : -0.15,
-          ),
-          titleMedium: rawText.titleMedium?.copyWith(
-            color: ink,
-            fontWeight: FontWeight.w600,
-            letterSpacing: isLuxury ? 0.2 : -0.25,
-          ),
+          titleSmall: rawText.titleSmall?.copyWith(color: ink, fontWeight: FontWeight.w600, letterSpacing: -0.15),
+          titleMedium: rawText.titleMedium?.copyWith(color: ink, fontWeight: FontWeight.w600, letterSpacing: -0.25),
           titleLarge: rawText.titleLarge?.copyWith(
             color: ink,
-            fontWeight: isLuxury || !isCartoon ? FontWeight.w600 : FontWeight.w700,
-            letterSpacing: isLuxury ? 0.15 : (isCartoon ? -0.2 : 0.1),
+            fontWeight: isCartoon ? FontWeight.w700 : FontWeight.w600,
+            letterSpacing: isCartoon ? -0.2 : 0.1,
           ),
           headlineSmall: rawText.headlineSmall?.copyWith(
             color: ink,
-            fontWeight: isLuxury || !isCartoon ? FontWeight.w600 : FontWeight.w700,
-            letterSpacing: isLuxury ? 0.1 : (isCartoon ? -0.3 : 0),
+            fontWeight: isCartoon ? FontWeight.w700 : FontWeight.w600,
+            letterSpacing: isCartoon ? -0.3 : 0,
           ),
           headlineMedium: rawText.headlineMedium?.copyWith(
             color: ink,
-            fontWeight: isLuxury || !isCartoon ? FontWeight.w600 : FontWeight.w700,
-            letterSpacing: isLuxury ? 0 : (isCartoon ? -0.4 : -0.2),
+            fontWeight: isCartoon ? FontWeight.w700 : FontWeight.w600,
+            letterSpacing: isCartoon ? -0.4 : -0.2,
           ),
-          displaySmall: rawText.displaySmall?.copyWith(
-            color: ink,
-            fontWeight: isLuxury ? FontWeight.w500 : FontWeight.w700,
-            letterSpacing: isLuxury ? 0.4 : -0.8,
-          ),
-          labelLarge: rawText.labelLarge?.copyWith(
-            color: ink,
-            fontWeight: FontWeight.w600,
-            letterSpacing: isLuxury ? 1.2 : 0.1,
-          ),
-          labelMedium: rawText.labelMedium?.copyWith(
-            color: muted,
-            fontWeight: FontWeight.w500,
-            letterSpacing: isLuxury ? 0.8 : 0,
-          ),
+          displaySmall: rawText.displaySmall?.copyWith(color: ink, fontWeight: FontWeight.w700, letterSpacing: -0.8),
+          labelLarge: rawText.labelLarge?.copyWith(color: ink, fontWeight: FontWeight.w600, letterSpacing: 0.1),
+          labelMedium: rawText.labelMedium?.copyWith(color: muted, fontWeight: FontWeight.w500),
         );
 
-    final radius = isCartoon ? 28.0 : (isLuxury ? 10.0 : 22.0);
-    final inputRadius = isCartoon ? 28.0 : (isLuxury ? 8.0 : 28.0);
-    final chipRadius = isCartoon ? 20.0 : (isLuxury ? 6.0 : 16.0);
+    final radius = isCartoon ? 28.0 : 22.0;
+    final inputRadius = isCartoon ? 28.0 : 28.0;
+    final chipRadius = isCartoon ? 20.0 : 16.0;
 
     return ThemeData(
       useMaterial3: true,
@@ -219,10 +157,10 @@ class AppTheme {
       textTheme: textTheme,
       primaryTextTheme: textTheme,
       scaffoldBackgroundColor: canvas,
-      iconTheme: IconThemeData(color: ink, size: isLuxury ? 20 : 22),
+      iconTheme: IconThemeData(color: ink, size: 22),
       primaryIconTheme: IconThemeData(color: brand),
       dividerColor: scheme.outlineVariant,
-      dividerTheme: DividerThemeData(color: scheme.outlineVariant, thickness: isLuxury ? 0.8 : 1, space: 1),
+      dividerTheme: DividerThemeData(color: scheme.outlineVariant, thickness: 1, space: 1),
       appBarTheme: AppBarTheme(
         backgroundColor: isCartoon ? Colors.transparent : canvas,
         foregroundColor: ink,
@@ -247,52 +185,39 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: isCartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : wash,
         selectedColor: brand.withValues(alpha: isCartoon ? 0.18 : 0.14),
-        labelStyle: TextStyle(
-          color: ink,
-          fontWeight: FontWeight.w700,
-          letterSpacing: isLuxury ? 0.4 : 0,
-        ),
+        labelStyle: TextStyle(color: ink, fontWeight: FontWeight.w700),
         secondaryLabelStyle: TextStyle(color: ink),
-        padding: EdgeInsets.symmetric(horizontal: isLuxury ? 12 : 10, vertical: isLuxury ? 5 : 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(chipRadius),
           side: BorderSide(
-            color: isCartoon
-                ? AppColors.kawaiiOutline.withValues(alpha: 0.7)
-                : (isLuxury ? AppColors.luxuryCopperBright.withValues(alpha: 0.4) : AppColors.modernLine),
-            width: isLuxury ? 0.9 : 0.8,
+            color: isCartoon ? AppColors.kawaiiOutline.withValues(alpha: 0.7) : AppColors.modernLine,
+            width: 0.8,
           ),
         ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
         color: surface,
-        shadowColor: isLuxury ? Colors.transparent : (isCartoon ? AppColors.kawaiiShadow : AppColors.modernSoftShadow),
+        shadowColor: isCartoon ? AppColors.kawaiiShadow : AppColors.modernSoftShadow,
         surfaceTintColor: Colors.transparent,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
           side: isCartoon
               ? BorderSide.none
-              : BorderSide(
-                  color: isLuxury
-                      ? AppColors.luxuryCopper.withValues(alpha: 0.45)
-                      : AppColors.modernLine.withValues(alpha: 0.7),
-                  width: isLuxury ? 0.9 : 0.6,
-                ),
+              : BorderSide(color: AppColors.modernLine.withValues(alpha: 0.7), width: 0.6),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isLuxury
-            ? AppColors.luxuryPlate
-            : (isDark
-                ? const Color(0xFF2A2A2A)
-                : (isCartoon ? AppColors.kawaiiBubble : AppColors.modernWash)),
-        labelStyle: TextStyle(color: muted, letterSpacing: isLuxury ? 0.4 : 0),
+        fillColor: isDark
+            ? const Color(0xFF2A2A2A)
+            : (isCartoon ? AppColors.kawaiiBubble : AppColors.modernWash),
+        labelStyle: TextStyle(color: muted),
         hintStyle: TextStyle(color: muted.withValues(alpha: 0.9)),
         prefixIconColor: muted,
-        contentPadding: EdgeInsets.symmetric(horizontal: isCartoon || isLuxury ? 16 : 18, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: isCartoon ? 16 : 18, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(inputRadius),
           borderSide: BorderSide(color: line.withValues(alpha: 0.6), width: 1),
@@ -303,15 +228,13 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(inputRadius),
-          borderSide: BorderSide(color: brand, width: isLuxury ? 1.4 : 1.5),
+          borderSide: BorderSide(color: brand, width: 1.5),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         elevation: 0,
-        indicatorColor: isCartoon ? Colors.transparent : brand.withValues(alpha: isLuxury ? 0.14 : 0.12),
-        indicatorShape: isCartoon || isLuxury
-            ? null
-            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        indicatorColor: isCartoon ? Colors.transparent : brand.withValues(alpha: 0.12),
+        indicatorShape: isCartoon ? null : RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         backgroundColor: isCartoon ? AppColors.kawaiiCream : surface,
         surfaceTintColor: Colors.transparent,
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -324,19 +247,19 @@ class AppTheme {
           return TextStyle(
             color: selected ? brand : muted,
             fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-            fontSize: isCartoon ? 11.5 : (isLuxury ? 10.5 : 11),
-            letterSpacing: isLuxury ? 0.6 : -0.1,
+            fontSize: isCartoon ? 11.5 : 11,
+            letterSpacing: -0.1,
           );
         }),
-        height: isCartoon ? 72 : (isLuxury ? 62 : 70),
+        height: isCartoon ? 72 : 70,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: isLuxury ? AppColors.luxuryPlate : surface,
+        backgroundColor: surface,
         indicatorColor: brand.withValues(alpha: 0.14),
         unselectedIconTheme: IconThemeData(color: muted),
         selectedIconTheme: IconThemeData(color: brand),
-        unselectedLabelTextStyle: TextStyle(color: muted, fontWeight: FontWeight.w500, letterSpacing: isLuxury ? 0.4 : 0),
-        selectedLabelTextStyle: TextStyle(color: brand, fontWeight: FontWeight.w700, letterSpacing: isLuxury ? 0.4 : 0),
+        unselectedLabelTextStyle: TextStyle(color: muted, fontWeight: FontWeight.w500),
+        selectedLabelTextStyle: TextStyle(color: brand, fontWeight: FontWeight.w700),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith((states) {
@@ -356,23 +279,18 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: brand,
           foregroundColor: Colors.white,
-          elevation: isCartoon || isLuxury ? 0 : 2,
+          elevation: isCartoon ? 0 : 2,
           shadowColor: isCartoon ? AppColors.kawaiiGlow : AppColors.modernSoftShadow,
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: isLuxury ? 14 : 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(isCartoon ? 28 : (isLuxury ? 10 : 28)),
-          ),
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            letterSpacing: isLuxury ? 0.8 : -0.1,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: -0.1),
         ),
       ),
       extensions: [
         DiyetselThemeExt(
           style: style,
           cardRadius: radius,
-          borderWidth: isCartoon ? 0 : (isLuxury ? 0.9 : 0.6),
+          borderWidth: isCartoon ? 0 : 0.6,
           stickerOffset: isCartoon ? const Offset(0, 6) : Offset.zero,
         ),
       ],
@@ -391,20 +309,13 @@ extension ThemeX on BuildContext {
       );
 
   bool get isCartoon => diyetselTheme.isCartoon;
-  bool get isLuxury => diyetselTheme.isLuxury;
   bool get isModern => diyetselTheme.isModern;
   bool get isWide => MediaQuery.sizeOf(this).width >= AppConstants.desktopBreakpoint;
 
-  /// Brand by visual style: teal (modern), leaf green (cartoon), copper (luxury).
-  Color get brandPrimary => isLuxury
-      ? AppColors.luxuryCopper
-      : (isCartoon ? AppColors.kawaiiLeaf : AppColors.primary);
-  Color get brandDeep => isLuxury
-      ? AppColors.luxuryCopperDeep
-      : (isCartoon ? AppColors.kawaiiLeafDeep : AppColors.primaryDeep);
-  Color get brandBright => isLuxury
-      ? AppColors.luxuryCopperBright
-      : (isCartoon ? AppColors.kawaiiLeafBright : AppColors.primaryBright);
+  /// Brand by visual style: teal (modern) or leaf green (cartoon).
+  Color get brandPrimary => isCartoon ? AppColors.kawaiiLeaf : AppColors.primary;
+  Color get brandDeep => isCartoon ? AppColors.kawaiiLeafDeep : AppColors.primaryDeep;
+  Color get brandBright => isCartoon ? AppColors.kawaiiLeafBright : AppColors.primaryBright;
 }
 
 /// Compact Material density + scrollbar for desktop shells.

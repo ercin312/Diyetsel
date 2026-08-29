@@ -6,11 +6,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../constants/app_constants.dart';
+
+/// Collections that stay on-device only (never pushed to / pulled from Firestore).
+const Set<String> kLocalOnlyCollections = {
+  FirestorePaths.credentials,
+  'settings',
+};
+
 class LocalDatabase {
   LocalDatabase(this._box);
 
   final Box<String> _box;
   final _controller = StreamController<String>.broadcast();
+  bool _applyingRemote = false;
 
   Stream<String> get changes => _controller.stream;
 
@@ -25,18 +34,58 @@ class LocalDatabase {
     return jsonDecode(raw) as Map<String, dynamic>;
   }
 
-  Future<void> put(String collection, String id, Map<String, dynamic> data) async {
+  Future<void> put(
+    String collection,
+    String id,
+    Map<String, dynamic> data, {
+    bool syncCloud = true,
+  }) async {
     final payload = {...data, 'id': id};
-    await _box.put(_key(collection, id), jsonEncode(payload));
+    final encoded = jsonEncode(payload);
+    final previous = _box.get(_key(collection, id));
+    if (previous == encoded) return;
+
+    await _box.put(_key(collection, id), encoded);
     _controller.add(collection);
-    unawaited(_syncCloud(collection, id, payload));
+    if (syncCloud && !_applyingRemote && !kLocalOnlyCollections.contains(collection)) {
+      unawaited(_syncCloud(collection, id, payload));
+    }
   }
 
-  Future<void> delete(String collection, String id) async {
-    await _box.delete(_key(collection, id));
+  /// Apply a remote Firestore document into Hive without echoing back to the cloud.
+  Future<void> applyRemote(String collection, String id, Map<String, dynamic>? data) async {
+    if (kLocalOnlyCollections.contains(collection)) return;
+    _applyingRemote = true;
+    try {
+      if (data == null) {
+        final key = _key(collection, id);
+        if (_box.containsKey(key)) {
+          await _box.delete(key);
+          _controller.add(collection);
+        }
+        return;
+      }
+      final sanitized = _sanitizeForLocal(data);
+      await put(collection, id, sanitized, syncCloud: false);
+    } finally {
+      _applyingRemote = false;
+    }
+  }
+
+  Future<void> delete(String collection, String id, {bool syncCloud = true}) async {
+    final key = _key(collection, id);
+    if (!_box.containsKey(key)) return;
+    await _box.delete(key);
     _controller.add(collection);
-    if (Firebase.apps.isNotEmpty) {
-      unawaited(FirebaseFirestore.instance.collection(collection).doc(id).delete());
+    if (syncCloud &&
+        !_applyingRemote &&
+        !kLocalOnlyCollections.contains(collection) &&
+        Firebase.apps.isNotEmpty) {
+      unawaited(() async {
+        try {
+          await FirebaseFirestore.instance.collection(collection).doc(id).delete();
+        } catch (_) {}
+      }());
     }
   }
 
@@ -46,6 +95,19 @@ class LocalDatabase {
         .where((k) => k.toString().startsWith(prefix))
         .map((k) => jsonDecode(_box.get(k)!) as Map<String, dynamic>)
         .toList();
+  }
+
+  Map<String, dynamic> _sanitizeForLocal(Map<String, dynamic> data) {
+    dynamic walk(dynamic value) {
+      if (value is Timestamp) return value.toDate().toIso8601String();
+      if (value is Map) {
+        return value.map((k, v) => MapEntry('$k', walk(v)));
+      }
+      if (value is List) return value.map(walk).toList();
+      return value;
+    }
+
+    return Map<String, dynamic>.from(walk(data) as Map);
   }
 
   Future<void> _syncCloud(String collection, String id, Map<String, dynamic> data) async {

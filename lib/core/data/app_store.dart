@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,7 +40,8 @@ class AppStore {
     return raw == null ? const AppSettings() : AppSettings.fromMap(raw);
   }
 
-  Future<void> saveSettings(AppSettings value) => db.put('settings', 'app', value.toMap());
+  Future<void> saveSettings(AppSettings value) =>
+      db.put('settings', 'app', value.toMap(), syncCloud: false);
 
   HomeThemeConfig homeThemeConfig() {
     final raw = db.get('home_theme', 'cartoon');
@@ -508,25 +510,92 @@ class AppStore {
     );
     await saveUser(profile);
     await saveCredential(email, hashPassword(password));
+    await _mirrorAuthIdentity(profile);
     return profile;
   }
 
   Future<UserProfile> login(String email, String password) async {
+    final normalized = email.trim().toLowerCase();
+    final local = userByEmail(normalized);
+    final localOk = local != null && verifyPassword(normalized, password);
+
     if (Firebase.apps.isNotEmpty) {
+      final firebaseUser =
+          await _ensureFirebaseSession(normalized, password, localOk: localOk);
+      if (firebaseUser != null) {
+        final profile = user(firebaseUser.uid) ?? userByEmail(normalized) ?? local;
+        if (profile != null) {
+          await _mirrorAuthIdentity(profile);
+          return profile;
+        }
+      }
+    }
+
+    if (local == null || !localOk) {
+      throw StateError('E-posta veya şifre hatalı');
+    }
+    await _mirrorAuthIdentity(local);
+    return local;
+  }
+
+  /// Sign in (or create) Firebase Auth so Firestore rules see request.auth.
+  Future<User?> _ensureFirebaseSession(
+    String email,
+    String password, {
+    required bool localOk,
+  }) async {
+    try {
+      final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return cred.user;
+    } on FirebaseAuthException catch (e) {
+      final missing = e.code == 'user-not-found' ||
+          e.code == 'invalid-credential' ||
+          e.code == 'INVALID_LOGIN_CREDENTIALS';
+      if (!localOk || !missing) return FirebaseAuth.instance.currentUser;
+
       try {
-        final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        final created = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        final local = user(cred.user!.uid) ?? userByEmail(email);
-        if (local != null) return local;
-      } catch (_) {}
+        return created.user;
+      } on FirebaseAuthException catch (createErr) {
+        if (createErr.code == 'email-already-in-use') {
+          // Cloud password differs from local demo hash — stay local-only.
+          return null;
+        }
+        return null;
+      }
+    } catch (_) {
+      return null;
     }
-    final profile = userByEmail(email);
-    if (profile == null || !verifyPassword(email, password)) {
-      throw StateError('E-posta veya şifre hatalı');
+  }
+
+  /// Write users/{authUid} so security rules can resolve role for the signed-in user.
+  Future<void> _mirrorAuthIdentity(UserProfile profile) async {
+    if (Firebase.apps.isEmpty) return;
+    final authUser = FirebaseAuth.instance.currentUser;
+    if (authUser == null) return;
+    final mirror = {
+      ...profile.toMap(),
+      'id': authUser.uid,
+      'email': profile.email.toLowerCase(),
+      'legacyId': profile.id,
+      'role': profile.role.name,
+    };
+    try {
+      await FirebaseFirestore.instance
+          .collection(FirestorePaths.users)
+          .doc(authUser.uid)
+          .set(mirror, SetOptions(merge: true));
+    } catch (_) {}
+    // Keep the legacy/demo profile doc too so existing FKs (admin-demo, client-demo) stay valid.
+    if (profile.id != authUser.uid) {
+      await saveUser(profile);
     }
-    return profile;
   }
 
   Future<void> logout() async {
@@ -687,6 +756,56 @@ class AppStore {
   Future<void> queueFeedbackNotification(String clientId, String message) async {
     final progress = userProgress(clientId);
     await saveUserProgress(progress.copyWith(pendingFeedbackNote: message));
+  }
+
+  List<AdminBroadcast> adminBroadcasts() {
+    final items = _map(FirestorePaths.adminBroadcasts, AdminBroadcast.fromMap)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items;
+  }
+
+  Future<void> saveAdminBroadcast(AdminBroadcast item) =>
+      db.put(FirestorePaths.adminBroadcasts, item.id, item.toMap());
+
+  /// Queues a custom admin notification for target clients and stores history.
+  Future<AdminBroadcast> sendAdminBroadcast({
+    required String adminId,
+    required String title,
+    required String body,
+    String route = '',
+    bool targetAll = true,
+    List<String> targetUserIds = const [],
+  }) async {
+    final clients = users().where((u) => !u.isAdmin).toList();
+    final targets = targetAll
+        ? clients
+        : clients.where((u) => targetUserIds.contains(u.id)).toList();
+
+    for (final client in targets) {
+      final progress = userProgress(client.id);
+      await saveUserProgress(
+        progress.copyWith(
+          pendingAdminTitle: title.trim(),
+          pendingAdminBody: body.trim(),
+          pendingAdminRoute: route.trim(),
+        ),
+      );
+    }
+
+    final broadcast = AdminBroadcast(
+      id: 'bcast_${DateTime.now().millisecondsSinceEpoch}',
+      title: title.trim(),
+      body: body.trim(),
+      createdAt: DateTime.now(),
+      createdBy: adminId,
+      targetAll: targetAll,
+      targetUserIds: targets.map((e) => e.id).toList(),
+      targetLabels: targets.map((e) => e.displayName).toList(),
+      route: route.trim(),
+      recipientCount: targets.length,
+    );
+    await saveAdminBroadcast(broadcast);
+    return broadcast;
   }
 }
 

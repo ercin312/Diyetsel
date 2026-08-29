@@ -40,12 +40,12 @@ class PdfReport {
         header: (_) => pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text('DIYETSEL', style: pw.TextStyle(color: _orange, fontSize: 20, fontWeight: pw.FontWeight.bold)),
+            pw.Text('E-DIYET', style: pw.TextStyle(color: _orange, fontSize: 20, fontWeight: pw.FontWeight.bold)),
             pw.Text(DateFormat('d MMM yyyy', 'tr').format(DateTime.now()), style: pw.TextStyle(color: _muted, fontSize: 10)),
           ],
         ),
         footer: (_) => pw.Center(
-          child: pw.Text('Diyetsel • $title', style: pw.TextStyle(color: _muted, fontSize: 9)),
+          child: pw.Text('e-Diyet • $title', style: pw.TextStyle(color: _muted, fontSize: 9)),
         ),
         build: (ctx) => [
           pw.Text(title, style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
@@ -112,7 +112,7 @@ class PdfReport {
           ],
           pw.SizedBox(height: 8),
           pw.Text(
-            'Bu rapor Diyetsel uygulamasındaki kayıtlardan otomatik üretilmiştir.',
+            'Bu rapor e-Diyet uygulamasındaki kayıtlardan otomatik üretilmiştir.',
             style: pw.TextStyle(color: _muted, fontSize: 9),
           ),
         ],
@@ -139,7 +139,7 @@ class PdfReport {
         header: (_) => pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text('DIYETSEL', style: pw.TextStyle(color: _orange, fontSize: 22, fontWeight: pw.FontWeight.bold)),
+            pw.Text('E-DIYET', style: pw.TextStyle(color: _orange, fontSize: 22, fontWeight: pw.FontWeight.bold)),
             pw.Text(DateFormat('d MMMM yyyy', 'tr').format(DateTime.now())),
           ],
         ),
@@ -208,7 +208,7 @@ class PdfReport {
         build: (ctx) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Diyetsel Klinik Özeti', style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
+            pw.Text('e-Diyet Klinik Özeti', style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 12),
             pw.Text('Danışan sayısı: ${clients.length}'),
             pw.Text('Randevu sayısı: ${appointments.length}'),

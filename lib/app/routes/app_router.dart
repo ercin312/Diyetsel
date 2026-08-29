@@ -12,6 +12,7 @@ import '../../features/story/presentation/story_screens.dart';
 import '../../features/check_in/presentation/check_in_screens.dart';
 import '../../features/chat/presentation/chat_screens.dart';
 import '../../features/more/presentation/more_screens.dart';
+import '../../features/dashboard/presentation/admin_notifications_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screens.dart';
 import '../../features/dashboard/presentation/home_theme_editor_screen.dart';
 import '../../features/dashboard/presentation/settings_screen.dart';
@@ -76,6 +77,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/admin/meals', builder: (c, s) => const MealPhotoScreen(admin: true)),
       GoRoute(path: '/admin/settings', builder: (c, s) => const SettingsScreen()),
       GoRoute(path: '/admin/home-theme', builder: (c, s) => const HomeThemeEditorScreen()),
+      GoRoute(path: '/admin/notifications', builder: (c, s) => const AdminNotificationsScreen()),
       GoRoute(path: '/app/blog', builder: (c, s) => const BlogListScreen()),
       GoRoute(path: '/app/services', builder: (c, s) => const ServicesScreen()),
       GoRoute(path: '/app/chat', builder: (c, s) => const ChatListScreen()),
@@ -88,6 +90,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/app/eat-out', builder: (c, s) => const EatOutScreen()),
       GoRoute(path: '/app/story', builder: (c, s) => const StoryCardScreen()),
       GoRoute(path: '/app/fasting', builder: (c, s) => const FastingScreen()),
+      GoRoute(path: '/app/water-shortcut', builder: (c, s) => const WaterShortcutScreen()),
       GoRoute(path: '/app/reports', builder: (c, s) => const ReportsScreen()),
       GoRoute(path: '/app/badges', builder: (c, s) => const BadgesScreen()),
       GoRoute(path: '/app/learn', builder: (c, s) => const LearnHubScreen()),

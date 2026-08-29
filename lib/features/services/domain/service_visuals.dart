@@ -38,6 +38,37 @@ class ServiceVisuals {
     }
   }
 
+  /// Soft modern wash tint (cream / teal family).
+  static Color softTintFor(ServicePackage s) {
+    switch (s.category) {
+      case 'Online':
+        return const Color(0xFFE3F2F8);
+      case 'Klinik':
+        return const Color(0xFFE8F5F0);
+      case 'Program':
+        return const Color(0xFFFFF8E8);
+      case 'Spor':
+        return const Color(0xFFFFF0E8);
+      default:
+        return const Color(0xFFE8F5F0);
+    }
+  }
+
+  static Color softAccentFor(ServicePackage s) {
+    switch (s.category) {
+      case 'Online':
+        return const Color(0xFF5BA3C9);
+      case 'Klinik':
+        return AppColors.primary;
+      case 'Program':
+        return const Color(0xFFD4A017);
+      case 'Spor':
+        return const Color(0xFFE07A5F);
+      default:
+        return AppColors.primary;
+    }
+  }
+
   static IconData iconFor(ServicePackage s) {
     switch (s.category) {
       case 'Online':

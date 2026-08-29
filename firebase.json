@@ -24,7 +24,7 @@
     "providers": {
       "emailPassword": true,
       "googleSignIn": {
-        "oAuthBrandDisplayName": "Diyetsel",
+        "oAuthBrandDisplayName": "e-Diyet",
         "supportEmail": "ercin312@gmail.com"
       }
     }

@@ -1,6 +1,6 @@
-# diyetsel
+# e-Diyet
 
-Diyetsel - Diyetisyen ve Danisan Yonetim Platformu
+e-Diyet - Diyetisyen ve Danisan Yonetim Platformu
 
 ## Getting Started
 

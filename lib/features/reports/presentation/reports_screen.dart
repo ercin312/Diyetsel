@@ -15,6 +15,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
+import 'soft_reports_screen.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key, this.clientId});
@@ -30,6 +31,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return SoftReportsScreen(clientId: widget.clientId);
+    }
+
     final auth = ref.watch(authControllerProvider);
     final store = ref.watch(appStoreProvider);
     ref.watch(waterLogsProvider);
@@ -47,204 +52,101 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final monthly = buildPeriodReport(store: store, user: subject, period: ReportPeriod.monthly);
     final report = _period == ReportPeriod.weekly ? weekly : monthly;
     final isAdminView = widget.clientId != null;
-    final cartoon = context.isCartoon;
 
-    if (cartoon) {
-      return AppPage(
-        title: isAdminView ? '${subject.displayName} — raporlar' : 'Raporlar',
-        padding: EdgeInsets.zero,
-        child: ColoredBox(
-          color: AppColors.kawaiiSurfaceCream,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
-            children: [
-              _ReportsHero(report: report, adminName: isAdminView ? subject.displayName : null)
-                  .animate()
-                  .fadeIn(duration: 300.ms)
-                  .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+    return AppPage(
+      title: isAdminView ? '${subject.displayName} — raporlar' : 'Raporlar',
+      padding: EdgeInsets.zero,
+      child: ColoredBox(
+        color: AppColors.kawaiiSurfaceCream,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+          children: [
+            _ReportsHero(report: report, adminName: isAdminView ? subject.displayName : null)
+                .animate()
+                .fadeIn(duration: 300.ms)
+                .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+            const SizedBox(height: 14),
+            _PeriodToggle(
+              period: _period,
+              onChanged: (p) => setState(() => _period = p),
+            ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            const SizedBox(height: 16),
+            _MetricGrid(report: report)
+                .animate()
+                .fadeIn(delay: 60.ms, duration: 300.ms)
+                .slideY(begin: 0.04, curve: Curves.easeOutCubic),
+            const SizedBox(height: 14),
+            _WaterChartCard(report: report)
+                .animate()
+                .fadeIn(delay: 90.ms, duration: 300.ms),
+            const SizedBox(height: 14),
+            _SecondaryStats(report: report)
+                .animate()
+                .fadeIn(delay: 110.ms, duration: 300.ms),
+            if (report.highlights.isNotEmpty) ...[
               const SizedBox(height: 14),
-              _PeriodToggle(
-                period: _period,
-                onChanged: (p) => setState(() => _period = p),
-              ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
-              const SizedBox(height: 16),
-              _MetricGrid(report: report)
+              _InsightsCard(highlights: report.highlights)
                   .animate()
-                  .fadeIn(delay: 60.ms, duration: 300.ms)
-                  .slideY(begin: 0.04, curve: Curves.easeOutCubic),
-              const SizedBox(height: 14),
-              _WaterChartCard(report: report)
-                  .animate()
-                  .fadeIn(delay: 90.ms, duration: 300.ms),
-              const SizedBox(height: 14),
-              _SecondaryStats(report: report)
-                  .animate()
-                  .fadeIn(delay: 110.ms, duration: 300.ms),
-              if (report.highlights.isNotEmpty) ...[
-                const SizedBox(height: 14),
-                _InsightsCard(highlights: report.highlights)
-                    .animate()
-                    .fadeIn(delay: 130.ms, duration: 300.ms),
-              ],
-              const SizedBox(height: 14),
-              SoftTap(
-                onTap: () => PdfReport.sharePeriodReport(report),
-                borderRadius: BorderRadius.circular(18),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  decoration: BoxDecoration(
-                    color: AppColors.kawaiiLeaf,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: AppSpacing.soft,
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.ios_share_rounded, color: Colors.white, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        'PDF indir / paylaş',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
-                      ),
-                    ],
-                  ),
-                ),
-              ).animate().fadeIn(delay: 150.ms, duration: 280.ms),
-              const SizedBox(height: 12),
-              _FullHistoryCard(
-                onTap: () => PdfReport.shareClientReport(
-                  user: subject,
-                  plan: store.dietPlanForClient(subject.id),
-                  measurements: store.measurements(subject.id),
-                  appointments: store.appointments().where((a) => a.clientId == subject.id).toList(),
-                ),
-              ).animate().fadeIn(delay: 170.ms, duration: 280.ms),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(14),
+                  .fadeIn(delay: 130.ms, duration: 300.ms),
+            ],
+            const SizedBox(height: 14),
+            SoftTap(
+              onTap: () => PdfReport.sharePeriodReport(report),
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-                  border: Border.all(color: AppColors.kawaiiOutline),
+                  color: AppColors.kawaiiLeaf,
+                  borderRadius: BorderRadius.circular(18),
                   boxShadow: AppSpacing.soft,
                 ),
                 child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.info_outline_rounded, color: AppColors.kawaiiLeafDeep),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
-                      ),
+                    Icon(Icons.ios_share_rounded, color: Colors.white, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'PDF indir / paylaş',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
                     ),
                   ],
                 ),
-              ).animate().fadeIn(delay: 190.ms, duration: 280.ms),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // Modern / luxury — still richer than before
-    return AppPage(
-      title: isAdminView ? '${subject.displayName} — raporlar' : 'Raporlarım',
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.insights_rounded,
-            emoji: '📊',
-            title: isAdminView ? 'Danışan özeti' : 'İlerlemen tek bakışta',
-            subtitle: 'Haftalık ve aylık skor, su, diyet, kilo ve içgörüler.',
-          ),
-          const SizedBox(height: 12),
-          SegmentedButton<ReportPeriod>(
-            segments: const [
-              ButtonSegment(value: ReportPeriod.weekly, label: Text('Haftalık'), icon: Icon(Icons.date_range_rounded)),
-              ButtonSegment(value: ReportPeriod.monthly, label: Text('Aylık'), icon: Icon(Icons.calendar_month_rounded)),
-            ],
-            selected: {_period},
-            onSelectionChanged: (s) => setState(() => _period = s.first),
-          ),
-          const SizedBox(height: 14),
-          DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(report.periodLabel, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
-                Text(
-                  '${DateFormat('d MMM', 'tr').format(report.start)} – ${DateFormat('d MMM y', 'tr').format(report.end)}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Skor ${report.wellnessScore} · ${report.scoreLabel}',
-                  style: TextStyle(fontWeight: FontWeight.w800, color: context.brandPrimary, fontSize: 16),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _ModernChip(label: 'Su ort.', value: report.waterDays == 0 ? '—' : '${(report.avgWaterMl / 1000).toStringAsFixed(1)} L'),
-                    _ModernChip(label: 'Su hedefi', value: '${report.waterGoalDays}/${report.waterDays}'),
-                    _ModernChip(label: 'Diyet', value: report.dietMealsTotal == 0 ? '—' : '%${(report.dietCompliance * 100).round()}'),
-                    _ModernChip(label: 'Seri', value: '${report.streakCurrent} gün'),
-                    if (report.weightDelta != null)
-                      _ModernChip(
-                        label: 'Kilo',
-                        value: '${report.weightDelta! <= 0 ? '' : '+'}${report.weightDelta!.toStringAsFixed(1)} kg',
-                      ),
-                    _ModernChip(label: 'Check-in', value: '${report.checkIns}'),
-                    _ModernChip(label: 'Seans', value: '${report.appointments}'),
-                    if (report.avgMood != null) _ModernChip(label: 'Ruh hali', value: '${report.avgMood!.toStringAsFixed(1)}/5'),
-                  ],
-                ),
-                if (report.highlights.isNotEmpty) ...[
-                  const SizedBox(height: 14),
-                  const Text('Öne çıkanlar', style: TextStyle(fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 6),
-                  for (final h in report.highlights)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Text('• $h', style: const TextStyle(height: 1.35)),
+              ),
+            ).animate().fadeIn(delay: 150.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            _FullHistoryCard(
+              onTap: () => PdfReport.shareClientReport(
+                user: subject,
+                plan: store.dietPlanForClient(subject.id),
+                measurements: store.measurements(subject.id),
+                appointments: store.appointments().where((a) => a.clientId == subject.id).toList(),
+              ),
+            ).animate().fadeIn(delay: 170.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                border: Border.all(color: AppColors.kawaiiOutline),
+                boxShadow: AppSpacing.soft,
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: AppColors.kawaiiLeafDeep),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.',
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                     ),
-                ],
-                const SizedBox(height: 14),
-                DiyetselButton(
-                  label: 'PDF indir / paylaş',
-                  icon: Icons.ios_share_rounded,
-                  onPressed: () => PdfReport.sharePeriodReport(report),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionHeader(
-                  title: 'Tam geçmiş raporu',
-                  subtitle: 'Tüm diyet planı, ölçümler ve klinik notları.',
-                ),
-                DiyetselButton(
-                  label: 'Tam PDF oluştur',
-                  icon: Icons.picture_as_pdf_rounded,
-                  tonal: true,
-                  onPressed: () => PdfReport.shareClientReport(
-                    user: subject,
-                    plan: store.dietPlanForClient(subject.id),
-                    measurements: store.measurements(subject.id),
-                    appointments: store.appointments().where((a) => a.clientId == subject.id).toList(),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                ],
+              ),
+            ).animate().fadeIn(delay: 190.ms, duration: 280.ms),
+          ],
+        ),
       ),
     );
   }
@@ -767,32 +669,6 @@ class _FullHistoryCard extends StatelessWidget {
               ),
             ),
             const Icon(Icons.arrow_forward_rounded, color: AppColors.kawaiiLeafDeep),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ModernChip extends StatelessWidget {
-  const _ModernChip({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: context.brandPrimary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(text: '$label: ', style: Theme.of(context).textTheme.bodySmall),
-            TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w800)),
           ],
         ),
       ),

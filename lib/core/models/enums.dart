@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 enum UserRole { admin, client }
 
-enum VisualStyle { modern, cartoon, luxury }
+enum VisualStyle { modern, cartoon }
 
 enum AppointmentStatus { pending, approved, rejected, rescheduled, completed }
 

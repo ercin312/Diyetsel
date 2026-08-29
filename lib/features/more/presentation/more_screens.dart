@@ -11,14 +11,12 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/models/models.dart';
-import '../../../core/utils/desktop.dart';
 import '../../../core/utils/reminder_service.dart';
 import '../../../core/utils/report_logic.dart';
 import '../../../core/widgets/app_page.dart';
-import '../../../core/widgets/diyetsel_widgets.dart';
-import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
+import 'soft_more_screen.dart';
 
 class _MoreItem {
   const _MoreItem({
@@ -103,9 +101,18 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
           accent: AppColors.kawaiiSkyBlue,
         ),
         _MoreItem(
+          icon: Icons.notifications_active_rounded,
+          title: 'Bildirimler',
+          subtitle: 'Danışanlara özel bildirim gönder',
+          route: '/admin/notifications',
+          section: 'Klinik',
+          tint: AppColors.kawaiiPeach,
+          accent: AppColors.kawaiiCoralDeep,
+        ),
+        _MoreItem(
           icon: Icons.palette_outlined,
           title: 'Ana sayfa teması',
-          subtitle: 'Karikatür JSON düzenleyici',
+          subtitle: 'Modern slider & karikatür JSON',
           route: '/admin/home-theme',
           section: 'Sistem',
           tint: AppColors.kawaiiRose,
@@ -283,6 +290,10 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return SoftMoreScreen(admin: widget.admin);
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     ref.watch(settingsProvider);
@@ -376,65 +387,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
       );
     }
 
-    // Modern / luxury
-    return AppPage(
-      title: 'Daha fazla',
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.grid_view_rounded,
-            emoji: '✨',
-            title: widget.admin ? 'Klinik araçları' : 'Tüm kısayollar',
-            subtitle: widget.admin
-                ? 'İçerik, plan ve sistem ayarlarına tek yerden ulaş.'
-                : 'Keşfet, takip, plan ve araçlar — aramayla filtrele.',
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            decoration: const InputDecoration(
-              hintText: 'Ara…',
-              prefixIcon: Icon(Icons.search_rounded),
-            ),
-            onChanged: (v) => setState(() => _query = v),
-          ),
-          const SizedBox(height: 12),
-          for (final section in sections) ...[
-            SectionHeader(title: section),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: context.isDesktopLayout ? 4 : (context.isWide ? 3 : 2),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.05,
-              children: [
-                for (final item in filtered.where((e) => e.section == section))
-                  DiyetselCard(
-                    onTap: () => _open(context, store, user, item),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        StyleIcon(icon: item.icon, emoji: '✨', size: 26),
-                        const SizedBox(height: 8),
-                        Text(item.title, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w800)),
-                        const SizedBox(height: 4),
-                        Text(
-                          item.subtitle,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-          ],
-        ],
-      ),
-    );
+    return SoftMoreScreen(admin: widget.admin);
   }
 
   Future<void> _open(BuildContext context, AppStore store, UserProfile user, _MoreItem item) async {

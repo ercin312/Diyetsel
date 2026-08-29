@@ -40,6 +40,7 @@ class SmartNotificationService {
 
     await _evaluateImmediate(store, user, prefs);
     if (!user.isAdmin && prefs.feedbackAlerts) await _deliverFeedback(store, user);
+    if (!user.isAdmin) await _deliverAdminBroadcast(store, user);
     await AchievementService.instance.checkAndAward(store, user.id);
   }
 
@@ -49,6 +50,21 @@ class SmartNotificationService {
     if (note == null || note.isEmpty) return;
     await notifyDietitianFeedback(note);
     await store.saveUserProgress(progress.copyWith(clearFeedback: true));
+  }
+
+  Future<void> _deliverAdminBroadcast(AppStore store, UserProfile user) async {
+    final progress = store.userProgress(user.id);
+    final title = progress.pendingAdminTitle?.trim();
+    final body = progress.pendingAdminBody?.trim();
+    if (title == null || title.isEmpty || body == null || body.isEmpty) return;
+    await ReminderService.instance.showSmart(
+      id: 220,
+      title: title,
+      body: body,
+      channel: 'diyetsel_admin',
+      channelName: 'Diyetisyen bildirimleri',
+    );
+    await store.saveUserProgress(progress.copyWith(clearAdminNotification: true));
   }
 
   Future<void> notifyDietitianFeedback(String note) async {

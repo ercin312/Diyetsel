@@ -1,9 +1,9 @@
-; Diyetsel Windows Installer — Inno Setup 6
+; e-Diyet Windows Installer — Inno Setup 6
 ; Build: installer\build_setup.ps1  or  ISCC.exe installer\diyetsel.iss
 
-#define MyAppName "Diyetsel"
+#define MyAppName "e-Diyet"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "Diyetsel"
+#define MyAppPublisher "e-Diyet"
 #define MyAppURL "https://diyetsel.app"
 #define MyAppExeName "diyetsel.exe"
 #define MyAppId "{{A7C3E91B-4F2D-4B8A-9E1C-6D5F8A2B3C40}"
@@ -22,7 +22,7 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 ; Output next to project installer folder
 OutputDir=..\dist
-OutputBaseFilename=Diyetsel-Setup-{#MyAppVersion}
+OutputBaseFilename=e-Diyet-Setup-{#MyAppVersion}
 SetupIconFile=..\windows\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64

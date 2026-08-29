@@ -32,6 +32,8 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../domain/diet_interaction.dart';
 import '../domain/meal_display.dart';
+import 'soft_admin_diet_screen.dart';
+import 'soft_diet_screen.dart';
 import 'widgets/meal_section_card.dart';
 
 class DietPlanScreen extends ConsumerStatefulWidget {
@@ -60,6 +62,11 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
     ref.watch(streaksProvider);
 
     if (widget.admin) {
+      if (context.isModern) {
+        return SoftAdminDietScreen(
+          onOpenUpload: () => _openUploadSheet(context),
+        );
+      }
       return _AdminDietHub(
         onOpenUpload: () => _openUploadSheet(context),
       );
@@ -67,6 +74,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
 
     final plan = store.dietPlanForClient(user.id);
     if (plan == null) {
+      if (context.isModern) return const SoftDietEmptyScreen();
       return AppPage(
         title: 'Diyet listesi',
         child: EmptyState(
@@ -264,6 +272,10 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
       );
     }
 
+    if (context.isModern) {
+      return SoftDietScreen(plan: plan);
+    }
+
     return AppPage(
       title: plan.title,
       child: ListView(
@@ -284,9 +296,9 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
             const SizedBox(height: 12),
           ],
           Text(
-            context.isLuxury ? 'HAFTA' : 'Haftanın günü',
+            'Haftanın günü',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  letterSpacing: context.isLuxury ? 1.2 : 0,
+                  letterSpacing: 0,
                   fontWeight: FontWeight.w800,
                 ),
           ),
@@ -1176,7 +1188,7 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
-          cartoon ? 28 : (context.isLuxury ? 14 : 22),
+          cartoon ? 28 : (22),
         ),
         border: Border.all(
           color: cartoon

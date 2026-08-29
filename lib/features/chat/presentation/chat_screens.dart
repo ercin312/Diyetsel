@@ -15,12 +15,17 @@ import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'soft_chat_screen.dart';
 
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) {
+      return const SoftChatListScreen();
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final threads = ref.watch(chatsProvider(user.id)).valueOrNull ?? [];
     return AppPage(
@@ -75,6 +80,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return SoftChatRoomScreen(thread: widget.thread);
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final messages = ref.watch(messagesProvider(widget.thread.id)).valueOrNull ?? [];
     return Scaffold(
@@ -89,7 +98,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 final m = messages[i];
                 final mine = m.senderId == user.id;
                 final cartoon = context.isCartoon;
-                final bubbleRadius = cartoon ? 26.0 : (context.isLuxury ? 10.0 : 20.0);
+                final bubbleRadius = cartoon ? 26.0 : (20.0);
                 Widget bubble = Container(
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   padding: const EdgeInsets.all(12),
@@ -112,15 +121,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               offset: Offset(0, 4),
                             ),
                           ]
-                        : context.isModern
-                            ? const [
-                                BoxShadow(
-                                  color: AppColors.modernSoftShadow,
-                                  blurRadius: 12,
-                                  offset: Offset(0, 4),
-                                ),
-                              ]
-                            : null,
+                        : null,
                   ),
                   child: m.type == ChatMediaType.text
                       ? Text(

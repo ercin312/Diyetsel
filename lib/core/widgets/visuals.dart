@@ -62,7 +62,6 @@ class _WaterWaveState extends State<WaterWave> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final luxury = context.isLuxury;
     final reaction = widget.progress >= 1
         ? '🥳'
         : widget.progress > 0.7
@@ -80,16 +79,12 @@ class _WaterWaveState extends State<WaterWave> with TickerProviderStateMixin {
             painter: _WavePainter(
               progress: _currentProgress,
               phase: _wave.value * math.pi * 2,
-              cartoon: widget.cartoon,
-              luxury: luxury,
+              cartoon: widget.cartoon
             ),
             child: widget.cartoon
                 ? Center(child: Text(reaction, style: TextStyle(fontSize: widget.size * 0.19)))
-                : null,
-          );
-        },
-      ),
-    );
+                : null);
+        }));
   }
 }
 
@@ -170,17 +165,14 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
                 scale: bounce,
                 child: GestureDetector(
                   onTap: _sip,
-                  child: WaterWave(progress: widget.progress, cartoon: widget.cartoon, size: size),
-                ),
-              ),
+                  child: WaterWave(progress: widget.progress, cartoon: widget.cartoon, size: size))),
               for (var i = 0; i < _seeds.length; i++)
                 if (_burst.value > 0 && _burst.value < 1)
                   _fallingDrop(
                     index: i,
                     size: size,
                     t: burst,
-                    seed: _seeds[i],
-                  ),
+                    seed: _seeds[i]),
               if (burst > 0 && burst < 1)
                 Opacity(
                   opacity: (1 - burst).clamp(0, 1),
@@ -193,65 +185,46 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
                         borderRadius: BorderRadius.circular(
                           widget.cartoon
                               ? 22
-                              : (context.isLuxury ? 10 : 22),
-                        ),
+                              : (22)),
                         boxShadow: [
                           BoxShadow(
                             color: widget.cartoon
                                 ? AppColors.kawaiiGlow
-                                : (!widget.cartoon && !context.isLuxury)
+                                : (!widget.cartoon)
                                     ? AppColors.modernSoftShadow
                                     : const Color(0x33000000),
                             blurRadius: widget.cartoon
                                 ? 14
-                                : (!widget.cartoon && !context.isLuxury)
+                                : (!widget.cartoon)
                                     ? 12
                                     : 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
+                            offset: const Offset(0, 3)),
+                        ]),
                       child: Text(
                         widget.sipLabel,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           color: widget.cartoon
                               ? AppColors.kawaiiInk
-                              : (context.isLuxury ? AppColors.luxuryInk : AppColors.primaryDeep),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                              : (AppColors.primaryDeep)))))),
               Positioned(
                 bottom: 0,
                 child: Material(
-                  color: context.isLuxury
-                      ? context.brandPrimary
-                      : (widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.primary),
+                  color: (widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.primary),
                   shape: const CircleBorder(),
-                  elevation: (!widget.cartoon && !context.isLuxury) ? 2 : 4,
-                  shadowColor: (!widget.cartoon && !context.isLuxury)
+                  elevation: (!widget.cartoon) ? 2 : 4,
+                  shadowColor: (!widget.cartoon)
                       ? AppColors.modernSoftShadow
-                      : (context.isLuxury
-                              ? context.brandPrimary
-                              : (widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.accent))
+                      : ((widget.cartoon ? AppColors.kawaiiSkyBlue : AppColors.accent))
                           .withValues(alpha: 0.45),
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: _sip,
                     child: const Padding(
                       padding: EdgeInsets.all(14),
-                      child: Icon(Icons.add_rounded, color: Colors.white, size: 28),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+                      child: Icon(Icons.add_rounded, color: Colors.white, size: 28))))),
+            ]);
+        }));
   }
 
   Widget _fallingDrop({required int index, required double size, required double t, required double seed}) {
@@ -267,10 +240,7 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
         opacity: opacity,
         child: Transform.scale(
           scale: scale * (1.1 - t * 0.3),
-          child: const Text('💧', style: TextStyle(fontSize: 22, height: 1)),
-        ),
-      ),
-    );
+          child: const Text('💧', style: TextStyle(fontSize: 22, height: 1)))));
   }
 }
 
@@ -279,13 +249,11 @@ class _WavePainter extends CustomPainter {
     required this.progress,
     required this.phase,
     required this.cartoon,
-    this.luxury = false,
   });
 
   final double progress;
   final double phase;
   final bool cartoon;
-  final bool luxury;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -293,9 +261,7 @@ class _WavePainter extends CustomPainter {
     final radius = size.shortestSide / 2;
     final center = size.center(Offset.zero);
     final clip = Path()..addOval(Rect.fromCircle(center: center, radius: radius - 6));
-    final rim = luxury
-        ? AppColors.luxuryCopper
-        : cartoon
+    final rim = cartoon
             ? AppColors.kawaiiSkyBlue.withValues(alpha: 0.75)
             : AppColors.accent;
     canvas.drawCircle(
@@ -303,9 +269,8 @@ class _WavePainter extends CustomPainter {
       radius,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = cartoon ? 7 : (luxury ? 2.2 : 3)
-        ..color = rim,
-    );
+        ..strokeWidth = cartoon ? 7 : (3)
+        ..color = rim);
     canvas.save();
     canvas.clipPath(clip);
     final waterTop = size.height * (1 - progress);
@@ -318,22 +283,17 @@ class _WavePainter extends CustomPainter {
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
-    final topWater = luxury
-        ? AppColors.luxuryCopperBright.withValues(alpha: 0.72)
-        : cartoon
+    final topWater = cartoon
             ? const Color(0xFF9ADAFF).withValues(alpha: 0.9)
             : AppColors.accent.withValues(alpha: 0.75);
-    final deepWater = luxury
-        ? AppColors.luxuryCopperDeep
-        : cartoon
+    final deepWater = cartoon
             ? AppColors.kawaiiSkyBlue
             : const Color(0xFF0077B6);
     final paint = Paint()
       ..shader = ui.Gradient.linear(
         Offset(0, waterTop),
         Offset(0, size.height),
-        [topWater, deepWater],
-      );
+        [topWater, deepWater]);
     canvas.drawPath(path, paint);
     canvas.restore();
     canvas.drawRect(rect, Paint()..color = Colors.transparent);
@@ -343,8 +303,7 @@ class _WavePainter extends CustomPainter {
   bool shouldRepaint(covariant _WavePainter oldDelegate) =>
       oldDelegate.progress != progress ||
       oldDelegate.phase != phase ||
-      oldDelegate.cartoon != cartoon ||
-      oldDelegate.luxury != luxury;
+      oldDelegate.cartoon != cartoon;
 }
 
 class BeforeAfterSlider extends StatefulWidget {
@@ -364,9 +323,8 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
   Widget build(BuildContext context) {
     final brand = context.brandPrimary;
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
-    final modern = !cartoon && !luxury;
-    final radius = cartoon ? 32.0 : (luxury ? 14.0 : 22.0);
+    final modern = !cartoon;
+    final radius = cartoon ? 32.0 : (22.0);
     final slider = ClipRRect(
       borderRadius: BorderRadius.circular(radius),
       child: LayoutBuilder(
@@ -375,9 +333,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
             fit: StackFit.expand,
             children: [
               ColoredBox(
-                color: luxury
-                    ? AppColors.luxuryPlate
-                    : modern
+                color: modern
                         ? AppColors.modernWash
                         : AppColors.kawaiiCream,
                 child: widget.after == null
@@ -385,16 +341,10 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                         child: Text(
                           'Sonra',
                           style: TextStyle(
-                            color: context.isLuxury
-                                ? AppColors.luxuryChampagne
-                                : cartoon
+                            color: cartoon
                                     ? AppColors.kawaiiInk
-                                    : null,
-                          ),
-                        ),
-                      )
-                    : Image(image: widget.after!, fit: BoxFit.cover),
-              ),
+                                    : null)))
+                    : Image(image: widget.after!, fit: BoxFit.cover)),
               ClipRect(
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -403,59 +353,37 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                     width: c.maxWidth,
                     child: widget.before == null
                         ? ColoredBox(
-                            color: context.isLuxury
-                                ? AppColors.luxuryWash
-                                : cartoon
+                            color: cartoon
                                     ? AppColors.kawaiiCream.withValues(alpha: 0.9)
                                     : brand.withValues(alpha: 0.2),
                             child: Center(
                               child: Text(
                                 'Önce',
                                 style: TextStyle(
-                                  color: context.isLuxury
-                                      ? AppColors.luxuryChampagne
-                                      : cartoon
+                                  color: cartoon
                                           ? AppColors.kawaiiInk
-                                          : null,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Image(image: widget.before!, fit: BoxFit.cover),
-                  ),
-                ),
-              ),
+                                          : null))))
+                        : Image(image: widget.before!, fit: BoxFit.cover)))),
               Positioned(
                 left: c.maxWidth * _value - 1,
                 top: 0,
                 bottom: 0,
                 child: Container(
-                  width: context.isLuxury ? 2 : (cartoon ? 4 : 3),
-                  color: context.isLuxury
-                      ? AppColors.luxuryCopperBright
-                      : cartoon
+                  width: (cartoon ? 4 : 3),
+                  color: cartoon
                           ? AppColors.kawaiiCoral
-                          : Colors.white,
-                ),
-              ),
+                          : Colors.white)),
               Positioned.fill(
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 0,
                     overlayShape: SliderComponentShape.noOverlay,
-                    thumbColor: cartoon ? AppColors.kawaiiCoral : brand,
-                  ),
+                    thumbColor: cartoon ? AppColors.kawaiiCoral : brand),
                   child: Slider(
                     value: _value,
-                    onChanged: (v) => setState(() => _value = v),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+                    onChanged: (v) => setState(() => _value = v)))),
+            ]);
+        }));
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: modern
@@ -466,12 +394,9 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                   BoxShadow(
                     color: AppColors.modernSoftShadow,
                     blurRadius: 18,
-                    offset: Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: slider,
-            )
+                    offset: Offset(0, 8)),
+                ]),
+              child: slider)
           : cartoon
               ? DecoratedBox(
                   decoration: BoxDecoration(
@@ -480,18 +405,13 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                       BoxShadow(
                         color: AppColors.kawaiiGlow,
                         blurRadius: 20,
-                        offset: Offset(0, 8),
-                      ),
+                        offset: Offset(0, 8)),
                       BoxShadow(
                         color: AppColors.kawaiiShadow,
                         blurRadius: 18,
-                        offset: Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: slider,
-                )
-              : slider,
-    );
+                        offset: Offset(0, 10)),
+                    ]),
+                  child: slider)
+              : slider);
   }
 }

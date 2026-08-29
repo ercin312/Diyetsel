@@ -25,9 +25,8 @@ class AppPage extends StatelessWidget {
     final desktop = context.isDesktopLayout;
     final pad = padding ?? context.pagePadding;
     final scheme = Theme.of(context).colorScheme;
-    final luxury = context.isLuxury;
     final cartoon = context.isCartoon;
-    final modern = !cartoon && !luxury;
+    final modern = !cartoon;
 
     if (desktop) {
       return Scaffold(
@@ -36,40 +35,34 @@ class AppPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Material(
-              color: luxury
-                  ? AppColors.luxuryPlate
-                  : cartoon
+              color: cartoon
                       ? AppColors.kawaiiBubble
                       : scheme.surface,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: luxury
-                          ? AppColors.luxuryCopper.withValues(alpha: 0.45)
-                          : cartoon
+                      color: cartoon
                               ? AppColors.kawaiiOutline.withValues(alpha: 0.4)
                               : modern
                                   ? AppColors.modernLine
                                   : scheme.outlineVariant.withValues(alpha: 0.85),
-                      width: luxury ? 0.9 : 1,
+                      width: 1,
                     ),
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(luxury ? 30 : 28, 14, 20, 14),
+                  padding: EdgeInsets.fromLTRB(28, 14, 20, 14),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
                           title,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: luxury
-                                    ? FontWeight.w600
-                                    : cartoon
+                                fontWeight: cartoon
                                         ? FontWeight.w900
                                         : FontWeight.w700,
-                                letterSpacing: luxury ? 0.45 : (cartoon ? 0.1 : -0.4),
+                                letterSpacing: (cartoon ? 0.1 : -0.4),
                                 color: cartoon ? AppColors.kawaiiInk : null,
                               ),
                         ),
@@ -98,12 +91,7 @@ class AppPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
-          style: luxury
-              ? Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.4,
-                  )
-              : cartoon
+          style: cartoon
                   ? Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
                         color: AppColors.kawaiiInk,

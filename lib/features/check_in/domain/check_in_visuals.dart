@@ -67,4 +67,35 @@ class CheckInVisuals {
         return AppColors.kawaiiLemon;
     }
   }
+
+  /// Soft modern wash / accent for mood (cream–teal family).
+  static Color softTintForMood(int mood) {
+    switch (mood) {
+      case 1:
+        return const Color(0xFFFFF0E8);
+      case 2:
+        return const Color(0xFFFFF6E9);
+      case 3:
+        return const Color(0xFFE3F2F8);
+      case 4:
+        return const Color(0xFFE8F5F0);
+      default:
+        return const Color(0xFFFFF8E8);
+    }
+  }
+
+  static Color softAccentForMood(int mood) {
+    switch (mood) {
+      case 1:
+        return const Color(0xFFE07A5F);
+      case 2:
+        return const Color(0xFFE07A5F);
+      case 3:
+        return const Color(0xFF5BA3C9);
+      case 4:
+        return AppColors.primary;
+      default:
+        return const Color(0xFFD4A017);
+    }
+  }
 }

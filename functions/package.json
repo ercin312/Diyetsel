@@ -1,6 +1,6 @@
 {
   "name": "diyetsel-functions",
-  "description": "Diyetsel Cloud Functions for FCM reminders",
+  "description": "e-Diyet Cloud Functions for FCM reminders",
   "engines": {
     "node": "20"
   },

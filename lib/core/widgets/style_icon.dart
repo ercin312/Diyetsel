@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
 import 'kawaii_doodle.dart';
-import 'luxury_glyph.dart';
 import 'modern_glyph.dart';
 
 class StyleIcon extends StatelessWidget {
@@ -30,17 +29,6 @@ class StyleIcon extends StatelessWidget {
     if (context.isCartoon) {
       if (!sticker) return KawaiiDoodle(kind: kind, size: size);
       return KawaiiTile(kind: kind, size: size + 22, selected: selected);
-    }
-    if (context.isLuxury) {
-      if (!sticker) {
-        return LuxuryGlyph(kind: kind, size: size, color: color);
-      }
-      return LuxuryIconTile(
-        kind: kind,
-        color: color,
-        size: size + 16,
-        selected: selected,
-      );
     }
     if (!sticker) {
       return ModernGlyph(kind: kind, size: size, color: color);
@@ -170,39 +158,6 @@ class CartoonAvatar extends StatelessWidget {
         child: KawaiiDoodle(kind: KawaiiKind.people, size: size * 0.72),
       );
     }
-    if (context.isLuxury) {
-      return Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.luxuryCopperBright,
-              AppColors.luxuryCopper,
-              AppColors.luxuryCopperDeep,
-            ],
-            stops: [0, 0.5, 1],
-          ),
-          border: Border.all(color: AppColors.luxuryChampagne.withValues(alpha: 0.45), width: 1),
-          boxShadow: [
-            BoxShadow(color: AppColors.luxuryCopper.withValues(alpha: 0.28), blurRadius: 12, offset: const Offset(0, 4)),
-          ],
-        ),
-        child: Text(
-          name.isEmpty ? '?' : name.substring(0, 1).toUpperCase(),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: size * 0.34,
-            letterSpacing: 0.4,
-          ),
-        ),
-      );
-    }
     return Container(
       width: size,
       height: size,
@@ -254,25 +209,6 @@ class DoodleBadge extends StatelessWidget {
             fontWeight: FontWeight.w800,
             fontSize: 11,
             color: AppColors.kawaiiInk,
-          ),
-        ),
-      );
-    }
-    if (context.isLuxury) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
-        decoration: BoxDecoration(
-          color: AppColors.luxuryPlate,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppColors.luxuryCopper.withValues(alpha: 0.55), width: 0.9),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 11,
-            color: AppColors.luxuryGoldSoft,
-            letterSpacing: 0.6,
           ),
         ),
       );

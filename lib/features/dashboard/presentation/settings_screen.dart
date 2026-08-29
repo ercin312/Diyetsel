@@ -15,12 +15,17 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'soft_settings_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) {
+      return const SoftSettingsScreen();
+    }
+
     final theme = ref.watch(themeControllerProvider);
     final auth = ref.watch(authControllerProvider);
     final user = auth.user!;
@@ -49,7 +54,7 @@ class SettingsScreen extends ConsumerWidget {
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                            context.isModern ? 18 : (context.isLuxury ? 10 : 14),
+                            context.isModern ? 18 : 14,
                           ),
                         ),
                       ),
@@ -100,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'Modern, karikatür veya lüks atölye görünümü',
+                            'Modern veya karikatür görünümü',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -342,13 +347,6 @@ class _VisualStylePicker extends StatelessWidget {
         Icons.sentiment_satisfied_alt_rounded,
         '🎨',
       ),
-      (
-        VisualStyle.luxury,
-        'Lüks',
-        'Metalik bakır atölye',
-        Icons.diamond_rounded,
-        '🥂',
-      ),
     ];
 
     return Column(
@@ -392,19 +390,15 @@ class _VisualStyleOption extends StatelessWidget {
   Color get _accent => switch (style) {
         VisualStyle.modern => AppColors.primary,
         VisualStyle.cartoon => AppColors.kawaiiLeaf,
-        VisualStyle.luxury => AppColors.luxuryCopper,
       };
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isLuxuryOpt = style == VisualStyle.luxury;
     final isModernOpt = style == VisualStyle.modern;
     final isCartoonOpt = style == VisualStyle.cartoon;
     final softUi = context.isModern;
-    final radius = isCartoonOpt
-        ? 28.0
-        : (isLuxuryOpt ? 12.0 : (isModernOpt || softUi ? 20.0 : 14.0));
+    final radius = isCartoonOpt ? 28.0 : (isModernOpt || softUi ? 20.0 : 14.0);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -425,7 +419,7 @@ class _VisualStyleOption extends StatelessWidget {
                     ? AppColors.modernWash.withValues(alpha: 0.95)
                     : isCartoonOpt
                         ? AppColors.kawaiiCream
-                        : _accent.withValues(alpha: isLuxuryOpt ? 0.14 : 0.12))
+                        : _accent.withValues(alpha: 0.12))
                 : (softUi
                     ? AppColors.lightSurface
                     : isCartoonOpt
@@ -433,11 +427,9 @@ class _VisualStyleOption extends StatelessWidget {
                         : scheme.surfaceContainerHighest.withValues(alpha: 0.45)),
             border: Border.all(
               color: selected
-                  ? (isLuxuryOpt
-                      ? AppColors.luxuryCopper
-                      : isModernOpt
-                          ? AppColors.primary.withValues(alpha: 0.45)
-                          : AppColors.kawaiiLeaf.withValues(alpha: 0.35))
+                  ? (isModernOpt
+                      ? AppColors.primary.withValues(alpha: 0.45)
+                      : AppColors.kawaiiLeaf.withValues(alpha: 0.35))
                   : (softUi
                       ? AppColors.modernLine
                       : isCartoonOpt
@@ -467,35 +459,26 @@ class _VisualStyleOption extends StatelessWidget {
                         ),
                       ]
                     : null,
-            gradient: selected && isLuxuryOpt
+            gradient: selected && isModernOpt
                 ? LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppColors.luxuryPlate,
-                      AppColors.luxuryCopper.withValues(alpha: 0.22),
+                      AppColors.modernWash,
+                      AppColors.modernSageSoft.withValues(alpha: 0.75),
                     ],
                   )
-                : selected && isModernOpt
-                    ? LinearGradient(
+                : selected && isCartoonOpt
+                    ? const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColors.modernWash,
-                          AppColors.modernSageSoft.withValues(alpha: 0.75),
+                          AppColors.kawaiiCream,
+                          AppColors.kawaiiBubble,
+                          AppColors.kawaiiRose,
                         ],
                       )
-                    : selected && isCartoonOpt
-                        ? const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.kawaiiCream,
-                              AppColors.kawaiiBubble,
-                              AppColors.kawaiiRose,
-                            ],
-                          )
-                        : null,
+                    : null,
           ),
           child: Row(
             children: [
@@ -509,7 +492,7 @@ class _VisualStyleOption extends StatelessWidget {
                       title,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        letterSpacing: isLuxuryOpt ? 0.35 : -0.1,
+                        letterSpacing: -0.1,
                         color: selected ? _accent : scheme.onSurface,
                       ),
                     ),
@@ -521,9 +504,7 @@ class _VisualStyleOption extends StatelessWidget {
               if (selected)
                 Icon(
                   Icons.check_circle_rounded,
-                  color: isLuxuryOpt
-                      ? AppColors.luxuryCopperBright
-                      : (isModernOpt ? AppColors.primary : AppColors.kawaiiLeaf),
+                  color: isModernOpt ? AppColors.primary : AppColors.kawaiiLeaf,
                   size: isCartoonOpt ? 24 : 22,
                 ),
             ],

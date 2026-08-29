@@ -26,6 +26,10 @@ import '../../../core/widgets/module_gate.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../gamification/presentation/gamification_screens.dart';
+import 'soft_eat_out_screen.dart';
+import 'soft_barcode_screen.dart';
+import 'soft_fasting_screen.dart';
+import 'soft_water_shortcut_screen.dart';
 
 bool get _canScanCamera {
   if (kIsWeb) return false;
@@ -86,7 +90,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
     });
     try {
       final uri = Uri.parse('https://world.openfoodfacts.org/api/v2/product/$code.json');
-      final res = await http.get(uri, headers: {'User-Agent': 'Diyetsel/1.0 (Flutter; diet-app)'});
+      final res = await http.get(uri, headers: {'User-Agent': 'e-Diyet/1.0 (Flutter; diet-app)'});
       if (res.statusCode != 200) {
         setState(() => _error = 'Ürün bulunamadı (${res.statusCode}).');
         return;
@@ -118,6 +122,10 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return const SoftBarcodeScreen();
+    }
+
     final locked = lockedIfOff(ref, module: AppModule.barcode, title: 'Barkod');
     if (locked != null) return locked;
     final user = ref.watch(authControllerProvider).user!;
@@ -156,9 +164,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                         icon: Icons.local_fire_department_rounded,
                         emoji: '🔥',
                         size: 18,
-                        color: context.isLuxury
-                            ? context.brandPrimary
-                            : (context.isCartoon ? AppColors.kawaiiCoral : AppColors.modernFire),
+                        color: (context.isCartoon ? AppColors.kawaiiCoral : AppColors.modernFire),
                       ),
                       const SizedBox(height: 8),
                       Text('$remaining', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
@@ -316,6 +322,11 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
   Widget build(BuildContext context) {
     final locked = lockedIfOff(ref, module: AppModule.eatOut, title: 'Dışarıda ne yesem?');
     if (locked != null) return locked;
+
+    if (context.isModern) {
+      return const SoftEatOutScreen();
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     ref.watch(dietPlansProvider);
@@ -446,76 +457,7 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
       );
     }
 
-    return AppPage(
-      title: 'Dışarıda ne yesem?',
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.restaurant_menu_rounded,
-            emoji: '🍽️',
-            color: context.brandPrimary,
-            title: tight ? 'Bütçe dar — hafif seç' : 'Kalan $remaining kcal',
-            subtitle: tight
-                ? 'Kahve, çorba veya paylaşım porsiyonu daha güvenli.'
-                : 'Menüden bunlara sığanları öne çıkardık. Sosu ayrı iste, pilavı çıkar.',
-            trailing: StatusChip(label: '$remaining kcal', color: context.brandPrimary),
-          ),
-          const SizedBox(height: 12),
-          const DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SectionHeader(title: 'Sipariş kuralı'),
-                HowToStep(index: 1, text: 'Izgara / buğulama seç, kızartmayı bırak.', icon: Icons.outdoor_grill_rounded, emoji: '🔥'),
-                HowToStep(index: 2, text: 'Sos, mayonez ve ekmeği ayrı veya yarım iste.', icon: Icons.no_meals_rounded, emoji: '🚫'),
-                HowToStep(index: 3, text: 'Yanına ayran, salata veya maden suyu koy.', icon: Icons.water_drop_rounded, emoji: '💧'),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          SectionHeader(
-            title: fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler',
-            subtitle: '${shown.length} seçenek',
-          ),
-          for (final idea in shown)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: DiyetselCard(
-                onTap: () => _openDetail(context, idea, remaining),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    StyleIcon(icon: idea.icon, emoji: idea.emoji, size: 24, color: context.brandPrimary),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(idea.title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
-                          const SizedBox(height: 2),
-                          Text('${idea.place} • ${idea.kcal} kcal', style: Theme.of(context).textTheme.bodySmall),
-                          const SizedBox(height: 6),
-                          Text(idea.blurb.isNotEmpty ? idea.blurb : idea.tip),
-                        ],
-                      ),
-                    ),
-                    StatusChip(
-                      label: idea.kcal <= remaining + 40 ? 'sığar' : 'dikkat',
-                      color: idea.kcal <= remaining + 40 ? AppColors.success : AppColors.warning,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          const TipCard(
-            title: 'Sos konuşması',
-            body: '“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.',
-            icon: Icons.chat_rounded,
-            emoji: '💬',
-          ),
-        ],
-      ),
-    );
+    return const SoftEatOutScreen();
   }
 
   void _openDetail(BuildContext context, EatOutIdea idea, int remaining) {
@@ -1036,6 +978,10 @@ class FastingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) {
+      return const SoftFastingScreen();
+    }
+
     final locked = lockedIfOff(ref, module: AppModule.fasting, title: 'Aralıklı oruç');
     if (locked != null) return locked;
     final user = ref.watch(authControllerProvider).user!;
@@ -1210,6 +1156,44 @@ class WaterShortcutTile extends ConsumerWidget {
         title: const Text('Su kısayolu', style: TextStyle(fontWeight: FontWeight.w800)),
         subtitle: Text(prefs.waterShortcut ? 'Açık' : 'Kapalı — Android bildirim / +250 ml'),
         trailing: Switch(value: prefs.waterShortcut, onChanged: (_) {}),
+      ),
+    );
+  }
+}
+
+class WaterShortcutScreen extends ConsumerWidget {
+  const WaterShortcutScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) {
+      return const SoftWaterShortcutScreen();
+    }
+
+    final locked = lockedIfOff(ref, module: AppModule.water, title: 'Su kısayolu');
+    if (locked != null) return locked;
+
+    final user = ref.watch(authControllerProvider).user!;
+    final store = ref.watch(appStoreProvider);
+    ref.watch(waterLogsProvider);
+    final log = store.waterLog(user.id, DateTime.now());
+
+    return AppPage(
+      title: 'Su kısayolu',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const WaterShortcutTile(),
+          const SizedBox(height: 12),
+          TipCard(
+            title: 'Bugün ${log.amountMl} / ${log.goalMl} ml',
+            body: ReminderService.instance.supportsNative
+                ? 'Android’de kalıcı bildirim açıkken kilit ekranından su ekleyebilirsin.'
+                : 'Bu cihazda kalıcı bildirim yok; su takibinden ml ekleyebilirsin.',
+            icon: Icons.water_drop_rounded,
+            emoji: '💧',
+          ),
+        ],
       ),
     );
   }

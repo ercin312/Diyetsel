@@ -10,10 +10,10 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/cartoon_glyph.dart';
-import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/marketplace.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/service_visuals.dart';
+import 'soft_service_screen.dart';
 
 class ServicesScreen extends ConsumerStatefulWidget {
   const ServicesScreen({super.key, this.admin = false});
@@ -28,6 +28,10 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return SoftServicesScreen(admin: widget.admin);
+    }
+
     final services = ref.watch(servicesProvider).valueOrNull ?? [];
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
@@ -143,56 +147,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
       );
     }
 
-    return AppPage(
-      title: 'Hizmetlerim',
-      fab: widget.admin
-          ? FloatingActionButton(
-              onPressed: () => _edit(context, store),
-              child: const Icon(Icons.add),
-            )
-          : null,
-      child: ListView(
-        children: [
-          for (final s in shown)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: DiyetselCard(
-                onTap: () => _openDetail(context, store, user, s),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: diyetselFoodPhoto(
-                        url: ServiceVisuals.imageFor(s),
-                        width: 72,
-                        height: 72,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(s.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
-                          const SizedBox(height: 4),
-                          Text(s.description, maxLines: 2, overflow: TextOverflow.ellipsis),
-                          const SizedBox(height: 6),
-                          Text(
-                            '₺${s.price.toStringAsFixed(0)} · ${s.durationMinutes} dk',
-                            style: TextStyle(color: context.brandPrimary, fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+    return SoftServicesScreen(admin: widget.admin);
   }
 
   void _openDetail(BuildContext context, AppStore store, UserProfile user, ServicePackage service) {

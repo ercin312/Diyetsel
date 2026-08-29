@@ -23,6 +23,8 @@ import '../../../core/widgets/module_gate.dart';
 import '../../../core/widgets/visuals.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../engage/presentation/engage_screens.dart';
+import 'soft_admin_meals_screen.dart';
+import 'soft_tracker_screen.dart';
 
 class TrackerHubScreen extends ConsumerStatefulWidget {
   const TrackerHubScreen({super.key});
@@ -53,6 +55,10 @@ class _TrackerHubScreenState extends ConsumerState<TrackerHubScreen> with Single
   Widget build(BuildContext context) {
     final locked = lockedIfOff(ref, module: AppModule.water, title: 'Takip');
     if (locked != null) return locked;
+
+    if (context.isModern) {
+      return const SoftTrackerHubScreen();
+    }
 
     final cartoon = context.isCartoon;
     if (!cartoon) {
@@ -928,6 +934,10 @@ class MealPhotoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (admin && context.isModern && !embedded) {
+      return const SoftAdminMealsScreen();
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     final logs = (ref.watch(mealLogsProvider).valueOrNull ?? []).where((e) => admin || e.clientId == user.id).toList();
@@ -1111,7 +1121,7 @@ class _MealLogCard extends StatelessWidget {
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(
-              cartoon ? AppSpacing.radiusCard : (context.isLuxury ? 8 : 20),
+              cartoon ? AppSpacing.radiusCard : (20),
             ),
             child: Image.file(
               File(log.photoPath),

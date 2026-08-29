@@ -13,7 +13,7 @@ exports.onBlogPublished = functions.firestore
     return admin.messaging().send({
       topic: 'clients',
       notification: {
-        title: 'Yeni Diyetsel yazısı',
+        title: 'Yeni e-Diyet yazısı',
         body: after.title || 'Yeni bir içerik yayınlandı',
       },
     });

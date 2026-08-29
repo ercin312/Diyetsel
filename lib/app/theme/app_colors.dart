@@ -5,29 +5,33 @@ import 'package:flutter/material.dart';
 /// Cartoon: Premium Cartoon Wellness (leaf green + cream + pastel accents).
 /// Luxury: dark copper atelier.
 class AppColors {
-  // Modern brand — deep forest / teal
-  static const Color primary = Color(0xFF1F6B5A);
-  static const Color primaryBright = Color(0xFF2F8A74);
-  static const Color primaryDeep = Color(0xFF0F4A3E);
+  // Modern brand — soft premium cream wellness (reference mockup)
+  static const Color primary = Color(0xFF1A4F45);
+  static const Color primaryBright = Color(0xFF2A6B5E);
+  static const Color primaryDeep = Color(0xFF0F332D);
   static const Color peach = Color(0xFFFFE8D6);
   static const Color peachDeep = Color(0xFFFFA040);
-  static const Color accent = Color(0xFF14B8A6);
+  static const Color accent = Color(0xFF6DBF67);
 
-  static const Color modernFire = Color(0xFFFF6B00);
-  static const Color modernFireBright = Color(0xFFFF8A2B);
+  static const Color modernFire = Color(0xFFFF7A45);
+  static const Color modernFireBright = Color(0xFFFF9468);
 
-  static const Color lightBg = Color(0xFFF5F9F6);
+  static const Color lightBg = Color(0xFFFCFAF5);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightInk = Color(0xFF1A1F1C);
-  static const Color lightMuted = Color(0xFF6B736E);
-  static const Color modernLine = Color(0xFFE2EBE5);
-  static const Color modernWash = Color(0xFFEEF5F0);
-  static const Color modernWarm = Color(0xFFFFF4EC);
-  static const Color modernSage = Color(0xFF7A9B84);
-  static const Color modernSageDeep = Color(0xFF4F6F5A);
-  static const Color modernSageSoft = Color(0xFFDCE8E0);
-  static const Color modernSoftShadow = Color(0x14000000);
+  static const Color lightInk = Color(0xFF202A25);
+  static const Color lightMuted = Color(0xFF707873);
+  static const Color modernLine = Color(0xFFE8E5DC);
+  static const Color modernWash = Color(0xFFFFF6E9);
+  static const Color modernWarm = Color(0xFFFFF0E0);
+  static const Color modernSage = Color(0xFF6DBF67);
+  static const Color modernSageDeep = Color(0xFF276A43);
+  static const Color modernSageSoft = Color(0xFFE8F6E6);
+  static const Color modernSoftShadow = Color(0x12000000);
   static const Color modernTealCard = Color(0xFF1A4F45);
+  static const Color modernMint = Color(0xFFE8F6E6);
+  static const Color modernSky = Color(0xFFD6F0FF);
+  static const Color modernCoralSoft = Color(0xFFFFE0D4);
+  static const Color modernLemon = Color(0xFFFFF0C8);
 
   static const Color dark = Color(0xFF121212);
   static const Color darkCard = Color(0xFF1E1E1E);

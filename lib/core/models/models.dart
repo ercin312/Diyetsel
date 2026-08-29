@@ -57,6 +57,8 @@ class UserProfile {
   bool get isAdmin => role == UserRole.admin;
 
   UserProfile copyWith({
+    String? id,
+    String? email,
     String? displayName,
     String? photoUrl,
     String? phone,
@@ -70,8 +72,8 @@ class UserProfile {
     Map<String, bool>? moduleOverrides,
   }) {
     return UserProfile(
-      id: id,
-      email: email,
+      id: id ?? this.id,
+      email: email ?? this.email,
       displayName: displayName ?? this.displayName,
       role: role ?? this.role,
       photoUrl: photoUrl ?? this.photoUrl,
@@ -1520,6 +1522,9 @@ class UserProgress {
     this.pendingCelebrations = const [],
     this.lastNotificationKeys = const {},
     this.pendingFeedbackNote,
+    this.pendingAdminTitle,
+    this.pendingAdminBody,
+    this.pendingAdminRoute,
   });
 
   final String userId;
@@ -1528,6 +1533,9 @@ class UserProgress {
   final List<String> pendingCelebrations;
   final Map<String, String> lastNotificationKeys;
   final String? pendingFeedbackNote;
+  final String? pendingAdminTitle;
+  final String? pendingAdminBody;
+  final String? pendingAdminRoute;
 
   UserProgress copyWith({
     List<String>? earnedBadgeIds,
@@ -1536,6 +1544,10 @@ class UserProgress {
     Map<String, String>? lastNotificationKeys,
     String? pendingFeedbackNote,
     bool clearFeedback = false,
+    String? pendingAdminTitle,
+    String? pendingAdminBody,
+    String? pendingAdminRoute,
+    bool clearAdminNotification = false,
   }) =>
       UserProgress(
         userId: userId,
@@ -1544,6 +1556,9 @@ class UserProgress {
         pendingCelebrations: pendingCelebrations ?? this.pendingCelebrations,
         lastNotificationKeys: lastNotificationKeys ?? this.lastNotificationKeys,
         pendingFeedbackNote: clearFeedback ? null : (pendingFeedbackNote ?? this.pendingFeedbackNote),
+        pendingAdminTitle: clearAdminNotification ? null : (pendingAdminTitle ?? this.pendingAdminTitle),
+        pendingAdminBody: clearAdminNotification ? null : (pendingAdminBody ?? this.pendingAdminBody),
+        pendingAdminRoute: clearAdminNotification ? null : (pendingAdminRoute ?? this.pendingAdminRoute),
       );
 
   Map<String, dynamic> toMap() => {
@@ -1553,6 +1568,9 @@ class UserProgress {
         'pendingCelebrations': pendingCelebrations,
         'lastNotificationKeys': lastNotificationKeys,
         'pendingFeedbackNote': pendingFeedbackNote,
+        'pendingAdminTitle': pendingAdminTitle,
+        'pendingAdminBody': pendingAdminBody,
+        'pendingAdminRoute': pendingAdminRoute,
       };
 
   factory UserProgress.fromMap(Map<String, dynamic> map) => UserProgress(
@@ -1565,5 +1583,61 @@ class UserProgress {
         pendingCelebrations: (map['pendingCelebrations'] as List?)?.map((e) => '$e').toList() ?? const [],
         lastNotificationKeys: (map['lastNotificationKeys'] as Map?)?.map((k, v) => MapEntry('$k', '$v')) ?? const {},
         pendingFeedbackNote: map['pendingFeedbackNote'] as String?,
+        pendingAdminTitle: map['pendingAdminTitle'] as String?,
+        pendingAdminBody: map['pendingAdminBody'] as String?,
+        pendingAdminRoute: map['pendingAdminRoute'] as String?,
+      );
+}
+
+/// Admin-composed push / in-app notification history entry.
+class AdminBroadcast {
+  const AdminBroadcast({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.createdAt,
+    required this.createdBy,
+    this.targetAll = true,
+    this.targetUserIds = const [],
+    this.targetLabels = const [],
+    this.route = '',
+    this.recipientCount = 0,
+  });
+
+  final String id;
+  final String title;
+  final String body;
+  final DateTime createdAt;
+  final String createdBy;
+  final bool targetAll;
+  final List<String> targetUserIds;
+  final List<String> targetLabels;
+  final String route;
+  final int recipientCount;
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'body': body,
+        'createdAt': createdAt.toIso8601String(),
+        'createdBy': createdBy,
+        'targetAll': targetAll,
+        'targetUserIds': targetUserIds,
+        'targetLabels': targetLabels,
+        'route': route,
+        'recipientCount': recipientCount,
+      };
+
+  factory AdminBroadcast.fromMap(Map<String, dynamic> map) => AdminBroadcast(
+        id: _s(map['id']),
+        title: _s(map['title']),
+        body: _s(map['body']),
+        createdAt: _dt(map['createdAt']),
+        createdBy: _s(map['createdBy']),
+        targetAll: _b(map['targetAll'], true),
+        targetUserIds: (map['targetUserIds'] as List?)?.map((e) => '$e').toList() ?? const [],
+        targetLabels: (map['targetLabels'] as List?)?.map((e) => '$e').toList() ?? const [],
+        route: _s(map['route']),
+        recipientCount: _i(map['recipientCount']),
       );
 }

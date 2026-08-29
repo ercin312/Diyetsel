@@ -15,13 +15,14 @@ Color? parseHexColor(String? raw) {
 /// Dynamic cartoon home theme — admin/JSON driven.
 class HomeThemeConfig {
   const HomeThemeConfig({
-    this.logoTitle = 'Diyetsel',
+    this.logoTitle = 'e-Diyet',
     this.userAvatarUrl = '',
     this.welcomeMessage = 'Merhaba, {{userName}}! 👋',
     this.welcomeSubtitle = 'Bugün için tatlı bir plan seni bekliyor',
     this.searchHint = 'Tarif, yazı veya hizmet ara',
     this.categories = const [],
     this.mainPlan = const HomeMainPlanConfig(),
+    this.heroSlides = const [],
     this.quickActions = const [],
     this.mealSuggestion = const HomeMealSuggestionConfig(),
     this.miniCards = const [],
@@ -38,6 +39,8 @@ class HomeThemeConfig {
   final String searchHint;
   final List<HomeCategoryConfig> categories;
   final HomeMainPlanConfig mainPlan;
+  /// Soft modern home hero carousel — admin editable.
+  final List<HomeHeroSlideConfig> heroSlides;
   final List<HomeQuickActionConfig> quickActions;
   final HomeMealSuggestionConfig mealSuggestion;
   final List<HomeMiniCardConfig> miniCards;
@@ -57,6 +60,7 @@ class HomeThemeConfig {
     String? searchHint,
     List<HomeCategoryConfig>? categories,
     HomeMainPlanConfig? mainPlan,
+    List<HomeHeroSlideConfig>? heroSlides,
     List<HomeQuickActionConfig>? quickActions,
     HomeMealSuggestionConfig? mealSuggestion,
     List<HomeMiniCardConfig>? miniCards,
@@ -73,6 +77,7 @@ class HomeThemeConfig {
       searchHint: searchHint ?? this.searchHint,
       categories: categories ?? this.categories,
       mainPlan: mainPlan ?? this.mainPlan,
+      heroSlides: heroSlides ?? this.heroSlides,
       quickActions: quickActions ?? this.quickActions,
       mealSuggestion: mealSuggestion ?? this.mealSuggestion,
       miniCards: miniCards ?? this.miniCards,
@@ -91,6 +96,7 @@ class HomeThemeConfig {
         'searchHint': searchHint,
         'categories': categories.map((e) => e.toMap()).toList(),
         'mainPlan': mainPlan.toMap(),
+        'heroSlides': heroSlides.map((e) => e.toMap()).toList(),
         'quickActions': quickActions.map((e) => e.toMap()).toList(),
         'mealSuggestion': mealSuggestion.toMap(),
         'miniCards': miniCards.map((e) => e.toMap()).toList(),
@@ -110,7 +116,7 @@ class HomeThemeConfig {
     }
 
     return HomeThemeConfig(
-      logoTitle: map['logoTitle']?.toString() ?? 'Diyetsel',
+      logoTitle: map['logoTitle']?.toString() ?? 'e-Diyet',
       userAvatarUrl: map['userAvatarUrl']?.toString() ?? '',
       welcomeMessage: map['welcomeMessage']?.toString() ?? 'Merhaba, {{userName}}! 👋',
       welcomeSubtitle: map['welcomeSubtitle']?.toString() ?? '',
@@ -119,6 +125,9 @@ class HomeThemeConfig {
       mainPlan: HomeMainPlanConfig.fromMap(
         map['mainPlan'] is Map ? Map<String, dynamic>.from(map['mainPlan'] as Map) : const {},
       ),
+      heroSlides: listOf('heroSlides').isEmpty
+          ? HomeHeroSlideConfig.defaults()
+          : listOf('heroSlides').map(HomeHeroSlideConfig.fromMap).toList(),
       quickActions: listOf('quickActions').map(HomeQuickActionConfig.fromMap).toList(),
       mealSuggestion: HomeMealSuggestionConfig.fromMap(
         map['mealSuggestion'] is Map
@@ -142,19 +151,19 @@ class HomeThemeConfig {
   }
 
   /// Reference-matching mock — admin can override via JSON.
-  factory HomeThemeConfig.defaults() => const HomeThemeConfig(
-        logoTitle: 'Diyetsel',
+  factory HomeThemeConfig.defaults() => HomeThemeConfig(
+        logoTitle: 'e-Diyet',
         welcomeMessage: 'Merhaba, {{userName}}! 👋',
         welcomeSubtitle: 'Bugün için tatlı bir plan seni bekliyor',
         searchHint: 'Tarif, yazı veya hizmet ara',
-        categories: [
+        categories: const [
           HomeCategoryConfig(id: 'story', title: 'Hikayem', iconKey: 'star', bgColor: '#FFF9E5', route: '/app/story'),
           HomeCategoryConfig(id: 'streak', title: 'Seri', iconKey: 'fire', bgColor: '#FFE8D6', route: '/app/story'),
           HomeCategoryConfig(id: 'water', title: 'Su', iconKey: 'water', bgColor: '#D1EFFF', route: '/app/track'),
           HomeCategoryConfig(id: 'plan', title: 'Plan', iconKey: 'plan', bgColor: '#FFF8F0', route: '/app/diet'),
           HomeCategoryConfig(id: 'all', title: 'Tümü', iconKey: 'more', bgColor: '#F5F0E8', route: '/app/more'),
         ],
-        mainPlan: HomeMainPlanConfig(
+        mainPlan: const HomeMainPlanConfig(
           title: 'Bugünkü plan tamam 🎉',
           description: 'Kampanyalar ve tarifler aşağıda seni bekliyor',
           buttonText: 'Diyetim',
@@ -162,13 +171,14 @@ class HomeThemeConfig {
           imageKey: 'bowl',
           bgColor: '#E8F5E9',
         ),
-        quickActions: [
+        heroSlides: HomeHeroSlideConfig.defaults(),
+        quickActions: const [
           HomeQuickActionConfig(id: 'diet', title: 'Diyet', iconKey: 'scale', route: '/app/diet'),
           HomeQuickActionConfig(id: 'water', title: 'Su', iconKey: 'bottle', route: '/app/track'),
           HomeQuickActionConfig(id: 'appt', title: 'Randevu', iconKey: 'calendar', route: '/app/appointments'),
           HomeQuickActionConfig(id: 'service', title: 'Hizmet', iconKey: 'headset', route: '/app/services'),
         ],
-        mealSuggestion: HomeMealSuggestionConfig(
+        mealSuggestion: const HomeMealSuggestionConfig(
           title: 'Mercimek çorbası',
           description: 'Bugün protein hedefine yaklaş — sıcak bir kase!',
           bgColor: '#FFE8D6',
@@ -180,7 +190,7 @@ class HomeThemeConfig {
             HomeMealStatConfig(type: 'protein', value: '+18g', icon: '🌿'),
           ],
         ),
-        miniCards: [
+        miniCards: const [
           HomeMiniCardConfig(
             id: 'lesson',
             title: 'Mini ders',
@@ -203,12 +213,12 @@ class HomeThemeConfig {
             route: '/app/story',
           ),
         ],
-        statusChips: [
+        statusChips: const [
           HomeStatusChipConfig(id: 'streak', label: '3 gün Seri', iconKey: 'fire', bgColor: '#FFE4CC'),
           HomeStatusChipConfig(id: 'water', label: '%30 Su', iconKey: 'water', bgColor: '#D1EFFF'),
           HomeStatusChipConfig(id: 'meal', label: 'Tamam Öğün', iconKey: 'avocado', bgColor: '#E8F5E9'),
         ],
-        sections: [
+        sections: const [
           HomeSectionConfig(
             id: 'campaigns',
             title: 'Kampanyalar',
@@ -271,14 +281,14 @@ class HomeThemeConfig {
             ],
           ),
         ],
-        tabs: [
+        tabs: const [
           HomeTabConfig(id: 'home', title: 'Ana Sayfa', iconKey: 'home', route: '/app'),
           HomeTabConfig(id: 'diet', title: 'Diyetim', iconKey: 'apple', route: '/app/diet'),
           HomeTabConfig(id: 'add', title: '+', iconKey: 'add', route: '/app/track'),
           HomeTabConfig(id: 'calendar', title: 'Takvim', iconKey: 'calendar', route: '/app/appointments'),
           HomeTabConfig(id: 'profile', title: 'Profil', iconKey: 'profile', route: '/app/more'),
         ],
-        colors: HomeThemeColors(
+        colors: const HomeThemeColors(
           canvas: '#FDFBF5',
           primary: '#74B46E',
           ink: '#3D342C',
@@ -398,6 +408,114 @@ class HomeMainPlanConfig {
         imageKey: map['imageKey']?.toString() ?? 'bowl',
         bgColor: map['bgColor']?.toString() ?? '#E8F5E9',
       );
+}
+
+/// Soft modern home hero carousel slide (admin editable).
+class HomeHeroSlideConfig {
+  const HomeHeroSlideConfig({
+    required this.id,
+    required this.title,
+    this.description = '',
+    this.buttonText = 'Keşfet',
+    this.buttonRoute = '/app/diet',
+    this.imageUrl = '',
+    this.imageKey = 'bowl',
+    this.bgColor = '#E8F5F0',
+  });
+
+  final String id;
+  final String title;
+  final String description;
+  final String buttonText;
+  final String buttonRoute;
+  final String imageUrl;
+  final String imageKey;
+  final String bgColor;
+
+  Color get background => parseHexColor(bgColor) ?? const Color(0xFFE8F5F0);
+
+  HomeHeroSlideConfig copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? buttonText,
+    String? buttonRoute,
+    String? imageUrl,
+    String? imageKey,
+    String? bgColor,
+  }) {
+    return HomeHeroSlideConfig(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      buttonText: buttonText ?? this.buttonText,
+      buttonRoute: buttonRoute ?? this.buttonRoute,
+      imageUrl: imageUrl ?? this.imageUrl,
+      imageKey: imageKey ?? this.imageKey,
+      bgColor: bgColor ?? this.bgColor,
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'buttonText': buttonText,
+        'buttonRoute': buttonRoute,
+        'imageUrl': imageUrl,
+        'imageKey': imageKey,
+        'bgColor': bgColor,
+      };
+
+  factory HomeHeroSlideConfig.fromMap(Map<String, dynamic> map) => HomeHeroSlideConfig(
+        id: map['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        title: map['title']?.toString() ?? '',
+        description: map['description']?.toString() ?? '',
+        buttonText: map['buttonText']?.toString() ?? 'Keşfet',
+        buttonRoute: map['buttonRoute']?.toString() ?? '/app/diet',
+        imageUrl: map['imageUrl']?.toString() ?? '',
+        imageKey: map['imageKey']?.toString() ?? 'bowl',
+        bgColor: map['bgColor']?.toString() ?? '#E8F5F0',
+      );
+
+  static List<HomeHeroSlideConfig> defaults() => const [
+        HomeHeroSlideConfig(
+          id: 'plan',
+          title: 'Bugünkü plan tamam 🎉',
+          description: 'Kampanyalar ve tarifler aşağıda, günün tek kartta.',
+          buttonText: 'Diyetim',
+          buttonRoute: '/app/diet',
+          imageKey: 'bowl',
+          bgColor: '#E8F5F0',
+        ),
+        HomeHeroSlideConfig(
+          id: 'water',
+          title: 'Su hedefini yakala',
+          description: 'Küçük yudumlar büyük fark yaratır — bir bardak ekle.',
+          buttonText: 'Su ekle',
+          buttonRoute: '/app/track',
+          imageKey: 'smoothie',
+          bgColor: '#E3F2F8',
+        ),
+        HomeHeroSlideConfig(
+          id: 'recipe',
+          title: 'Akşam için sıcak bir kase',
+          description: 'Mercimek çorbası — protein hedefine nazik yaklaşım.',
+          buttonText: 'Tarife bak',
+          buttonRoute: '/app/recipes',
+          imageKey: 'soup',
+          bgColor: '#FFF0E8',
+        ),
+        HomeHeroSlideConfig(
+          id: 'checkin',
+          title: 'Haftalık check-in',
+          description: 'Ruh hali, kilo ve uyumu birkaç dakikada paylaş.',
+          buttonText: 'Check-in',
+          buttonRoute: '/app/check-in',
+          imageKey: 'bowl',
+          bgColor: '#FFF8E8',
+        ),
+      ];
 }
 
 class HomeQuickActionConfig {

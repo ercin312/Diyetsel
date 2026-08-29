@@ -17,14 +17,13 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/widgets/app_page.dart';
-import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/kawaii_doodle.dart';
-import '../../../core/widgets/luxury_glyph.dart';
 import '../../../core/widgets/module_gate.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../domain/story_visuals.dart';
+import 'soft_story_screen.dart';
 
 class StoryCardScreen extends ConsumerStatefulWidget {
   const StoryCardScreen({super.key});
@@ -51,8 +50,7 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
       final file = File('${dir.path}/diyetsel-hikaye.png');
       await file.writeAsBytes(bytes.buffer.asUint8List());
       await SharePlus.instance.share(
-        ShareParams(files: [XFile(file.path)], text: caption),
-      );
+        ShareParams(files: [XFile(file.path)], text: caption));
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -60,6 +58,10 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isModern) {
+      return const SoftStoryScreen();
+    }
+
     final locked = lockedIfOff(ref, module: AppModule.story, title: 'Hikaye kartı');
     if (locked != null) return locked;
 
@@ -70,31 +72,25 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
     ref.watch(measurementsProvider);
     ref.watch(checkInsProvider);
     ref.watch(dietPlansProvider);
-    // badges / progress live in store; refresh via streaks + check-ins is enough
 
-    final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
     final templates = StoryVisuals.buildTemplates(
       store: store,
       user: user,
-      cartoon: cartoon,
-      luxury: luxury,
+      cartoon: true,
     );
     final t = templates[_template.clamp(0, templates.length - 1)];
     final captions = StoryVisuals.captionIdeas(t);
     final caption = captions[_captionIndex.clamp(0, captions.length - 1)];
     final dietitian = store.users().where((u) => u.isAdmin).firstOrNull?.displayName ?? 'Diyetisyen';
 
-    if (cartoon) {
-      return AppPage(
+    return AppPage(
         title: 'Hikaye kartı',
         padding: EdgeInsets.zero,
         actions: [
           IconButton(
             tooltip: 'Paylaş',
             onPressed: _sharing ? null : () => _share(caption),
-            icon: const Icon(Icons.ios_share_rounded, color: AppColors.kawaiiLeafDeep),
-          ),
+            icon: const Icon(Icons.ios_share_rounded, color: AppColors.kawaiiLeafDeep)),
         ],
         child: ColoredBox(
           color: AppColors.kawaiiSurfaceCream,
@@ -110,8 +106,7 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
               const SizedBox(height: 14),
               const Text(
                 'Şablon seç',
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk),
-              ),
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk)),
               const SizedBox(height: 8),
               SizedBox(
                 height: 44,
@@ -127,27 +122,21 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                       avatar: Icon(
                         templates[i].icon,
                         size: 16,
-                        color: selected ? Colors.white : AppColors.kawaiiLeafDeep,
-                      ),
+                        color: selected ? Colors.white : AppColors.kawaiiLeafDeep),
                       label: Text(
                         templates[i].chip,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
-                          color: selected ? Colors.white : AppColors.kawaiiInk,
-                        ),
-                      ),
+                          color: selected ? Colors.white : AppColors.kawaiiInk)),
                       selectedColor: AppColors.kawaiiLeaf,
                       backgroundColor: Colors.white,
                       side: BorderSide(color: selected ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
                       onSelected: (_) => setState(() {
                         _template = i;
                         _captionIndex = 0;
-                      }),
-                    );
-                  },
-                ),
-              ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+                      }));
+                  })).animate().fadeIn(delay: 60.ms, duration: 280.ms),
               const SizedBox(height: 12),
               _SnapshotStrip(
                 templates: templates,
@@ -155,8 +144,7 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                 onSelect: (i) => setState(() {
                   _template = i;
                   _captionIndex = 0;
-                }),
-              )
+                }))
                   .animate()
                   .fadeIn(delay: 80.ms, duration: 280.ms),
               const SizedBox(height: 18),
@@ -167,19 +155,15 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                     template: t,
                     userName: user.displayName,
                     dietitian: dietitian,
-                    cartoon: true,
-                    luxury: false,
+                    cartoon: true
                   )
                       .animate(key: ValueKey(t.id))
                       .fadeIn(duration: 280.ms)
-                      .scale(begin: const Offset(0.94, 0.94), curve: Curves.easeOutBack, duration: 420.ms),
-                ),
-              ),
+                      .scale(begin: const Offset(0.94, 0.94), curve: Curves.easeOutBack, duration: 420.ms))),
               const SizedBox(height: 16),
               const Text(
                 'Paylaşım metni',
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
-              ),
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -193,16 +177,12 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
-                          color: _captionIndex == i ? Colors.white : AppColors.kawaiiInk,
-                        ),
-                      ),
+                          color: _captionIndex == i ? Colors.white : AppColors.kawaiiInk)),
                       selectedColor: AppColors.kawaiiLeaf,
                       backgroundColor: Colors.white,
                       side: BorderSide(color: _captionIndex == i ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
-                      onSelected: (_) => setState(() => _captionIndex = i),
-                    ),
-                ],
-              ),
+                      onSelected: (_) => setState(() => _captionIndex = i)),
+                ]),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -210,13 +190,10 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.kawaiiOutline),
-                ),
+                  border: Border.all(color: AppColors.kawaiiOutline)),
                 child: Text(
                   caption,
-                  style: const TextStyle(fontWeight: FontWeight.w600, height: 1.35, color: AppColors.kawaiiMuted),
-                ),
-              ),
+                  style: const TextStyle(fontWeight: FontWeight.w600, height: 1.35, color: AppColors.kawaiiMuted))),
               const SizedBox(height: 14),
               SoftTap(
                 onTap: _sharing ? null : () => _share(caption),
@@ -227,8 +204,7 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                   decoration: BoxDecoration(
                     color: _sharing ? AppColors.kawaiiLeaf.withValues(alpha: 0.6) : AppColors.kawaiiLeaf,
                     borderRadius: BorderRadius.circular(18),
-                    boxShadow: AppSpacing.soft,
-                  ),
+                    boxShadow: AppSpacing.soft),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -236,86 +212,14 @@ class _StoryCardScreenState extends ConsumerState<StoryCardScreen> {
                       const SizedBox(width: 8),
                       Text(
                         _sharing ? 'Hazırlanıyor…' : 'PNG paylaş',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15)),
+                    ]))),
               const SizedBox(height: 12),
               _PrivacyCard().animate().fadeIn(delay: 140.ms, duration: 280.ms),
             ],
           ),
         ),
       );
-    }
-
-    return AppPage(
-      title: 'Hikaye kartı',
-      actions: [
-        IconButton(
-          onPressed: _sharing ? null : () => _share(caption),
-          icon: const StyleIcon(icon: Icons.ios_share_rounded, emoji: '✨', size: 18, sticker: false),
-        ),
-      ],
-      child: ListView(
-        children: [
-          const FeatureBanner(
-            icon: Icons.auto_awesome_rounded,
-            emoji: '✨',
-            title: 'Paylaşılabilir kart',
-            subtitle: 'Şablon seç, metni ayarla, PNG olarak hikâyene koy.',
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (var i = 0; i < templates.length; i++)
-                ChoiceChip(
-                  selected: _template == i,
-                  avatar: StyleIcon(icon: templates[i].icon, emoji: '✨', size: 16, sticker: false),
-                  label: Text(templates[i].chip),
-                  onSelected: (_) => setState(() {
-                    _template = i;
-                    _captionIndex = 0;
-                  }),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: RepaintBoundary(
-              key: _boundary,
-              child: _ShareableCard(
-                template: t,
-                userName: user.displayName,
-                dietitian: dietitian,
-                cartoon: false,
-                luxury: luxury,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(caption, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 12),
-          DiyetselButton(
-            label: _sharing ? 'Hazırlanıyor…' : 'Paylaş',
-            icon: Icons.share,
-            onPressed: () {
-              if (!_sharing) _share(caption);
-            },
-          ),
-          const SizedBox(height: 12),
-          const TipCard(
-            title: 'Gizlilik',
-            body: 'Kartta sadece ismin ve seçtiğin özet görünür. Sohbet veya detaylı grafik paylaşılmaz.',
-            icon: Icons.lock_rounded,
-            emoji: '🔒',
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -332,12 +236,10 @@ class _StoryHero extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.kawaiiLemon, AppColors.kawaiiSurfaceCream, AppColors.kawaiiLilac],
-        ),
+          colors: [AppColors.kawaiiLemon, AppColors.kawaiiSurfaceCream, AppColors.kawaiiLilac]),
         borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
         border: Border.all(color: AppColors.kawaiiOutline),
-        boxShadow: AppSpacing.soft,
-      ),
+        boxShadow: AppSpacing.soft),
       child: Row(
         children: [
           Expanded(
@@ -348,30 +250,21 @@ class _StoryHero extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.85),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                    borderRadius: BorderRadius.circular(20)),
                   child: const Text(
                     'Paylaşılabilir hikaye',
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
-                  ),
-                ),
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep))),
                 const SizedBox(height: 10),
                 Text(
                   'Merhaba $name',
-                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, height: 1.15, color: AppColors.kawaiiInk),
-                ),
+                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, height: 1.15, color: AppColors.kawaiiInk)),
                 const SizedBox(height: 6),
                 const Text(
                   'Canlı verinden kart üret — Instagram story, WhatsApp veya galeri için PNG.',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
-                ),
-              ],
-            ),
-          ),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted)),
+              ])),
           Image.asset(DiyetselAssets.mascotCarrot, height: 84, fit: BoxFit.contain),
-        ],
-      ),
-    );
+        ]));
   }
 }
 
@@ -384,8 +277,7 @@ class _HowItWorksCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: AppColors.kawaiiOutline),
-        boxShadow: AppSpacing.soft,
-      ),
+        boxShadow: AppSpacing.soft),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -402,23 +294,16 @@ class _HowItWorksCard extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: AppColors.kawaiiMint,
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Text('$i', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: AppColors.kawaiiLeafDeep)),
-                ),
+                    borderRadius: BorderRadius.circular(9)),
+                  child: Text('$i', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: AppColors.kawaiiLeafDeep))),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     StoryVisuals.howItWorks(i),
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiInk),
-                  ),
-                ),
-              ],
-            ),
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiInk))),
+              ]),
           ],
-        ],
-      ),
-    );
+        ]));
   }
 }
 
@@ -453,8 +338,7 @@ class _SnapshotStrip extends StatelessWidget {
               decoration: BoxDecoration(
                 color: on ? AppColors.kawaiiMint : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: on ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline, width: on ? 1.5 : 1),
-              ),
+                border: Border.all(color: on ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline, width: on ? 1.5 : 1)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -462,15 +346,9 @@ class _SnapshotStrip extends StatelessWidget {
                   const Spacer(),
                   Text(
                     t.statValue ?? '—',
-                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk)),
+                ])));
+        }));
   }
 }
 
@@ -480,20 +358,17 @@ class _ShareableCard extends StatelessWidget {
     required this.userName,
     required this.dietitian,
     required this.cartoon,
-    required this.luxury,
   });
 
   final StoryTemplate template;
   final String userName;
   final String dietitian;
   final bool cartoon;
-  final bool luxury;
 
   @override
   Widget build(BuildContext context) {
     final onCard = cartoon ? AppColors.kawaiiInk : Colors.white;
     final onCardMuted = cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.72) : Colors.white70;
-    final brand = context.brandPrimary;
     final date = DateFormat('d MMM y', 'tr').format(DateTime.now());
 
     return Container(
@@ -503,26 +378,19 @@ class _ShareableCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: template.colors,
           begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(cartoon ? 30 : (luxury ? 14 : 22)),
+          end: Alignment.bottomRight),
+        borderRadius: BorderRadius.circular(cartoon ? 30 : (22)),
         border: cartoon
             ? Border.all(color: Colors.white.withValues(alpha: 0.55), width: 2)
-            : luxury
-                ? Border.all(color: AppColors.luxuryCopper.withValues(alpha: 0.55))
-                : null,
+            : null,
         boxShadow: [
           BoxShadow(
-            color: luxury
-                ? brand.withValues(alpha: 0.35)
-                : cartoon
+            color: cartoon
                     ? AppColors.kawaiiGlow
                     : AppColors.modernSoftShadow,
             blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
+            offset: const Offset(0, 12)),
+        ]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -530,8 +398,6 @@ class _ShareableCard extends StatelessWidget {
             children: [
               if (cartoon)
                 KawaiiTile(kind: template.kind, size: 54)
-              else if (luxury)
-                LuxuryIconTile(kind: template.kind, color: Colors.white, size: 48, inverted: true)
               else
                 ModernIconTile(kind: template.kind, color: Colors.white, size: 48, inverted: true),
               const Spacer(),
@@ -542,38 +408,29 @@ class _ShareableCard extends StatelessWidget {
                     'DİYETSEL',
                     style: TextStyle(
                       color: onCardMuted,
-                      fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
-                      letterSpacing: luxury ? 2.4 : 2,
-                      fontSize: 12,
-                    ),
-                  ),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                      fontSize: 12)),
                   Text(date, style: TextStyle(color: onCardMuted, fontWeight: FontWeight.w600, fontSize: 11)),
-                ],
-              ),
-            ],
-          ),
+                ]),
+            ]),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: cartoon ? Colors.white.withValues(alpha: 0.75) : Colors.white.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(20),
-            ),
+              borderRadius: BorderRadius.circular(20)),
             child: Text(
               template.chip,
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: onCard),
-            ),
-          ),
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: onCard))),
           const SizedBox(height: 12),
           Text(
             userName,
             style: TextStyle(
               color: onCard,
               fontSize: 24,
-              fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
-              letterSpacing: luxury ? 0.2 : -0.3,
-            ),
-          ),
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.3)),
           Text('Diyetisyen: $dietitian', style: TextStyle(color: onCardMuted, fontWeight: FontWeight.w600, fontSize: 13)),
           const SizedBox(height: 18),
           Text(
@@ -581,11 +438,9 @@ class _ShareableCard extends StatelessWidget {
             style: TextStyle(
               color: onCard,
               fontSize: 26,
-              fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
+              fontWeight: FontWeight.w900,
               height: 1.15,
-              letterSpacing: luxury ? 0.15 : -0.4,
-            ),
-          ),
+              letterSpacing: -0.4)),
           const SizedBox(height: 6),
           Text(
             template.subtitle,
@@ -593,23 +448,17 @@ class _ShareableCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: onCardMuted,
-              fontWeight: luxury ? FontWeight.w500 : FontWeight.w700,
-              height: 1.35,
-            ),
-          ),
+              fontWeight: FontWeight.w700,
+              height: 1.35)),
           const SizedBox(height: 18),
           Row(
             children: [
               Expanded(
-                child: Text(template.foot, style: TextStyle(color: onCardMuted, fontWeight: FontWeight.w600, fontSize: 12.5)),
-              ),
+                child: Text(template.foot, style: TextStyle(color: onCardMuted, fontWeight: FontWeight.w600, fontSize: 12.5))),
               if (cartoon)
                 Image.asset(DiyetselAssets.mascotAvocado, height: 44, fit: BoxFit.contain),
-            ],
-          ),
-        ],
-      ),
-    );
+            ]),
+        ]));
   }
 }
 
@@ -622,8 +471,7 @@ class _PrivacyCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: AppColors.kawaiiOutline),
-        boxShadow: AppSpacing.soft,
-      ),
+        boxShadow: AppSpacing.soft),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -632,11 +480,7 @@ class _PrivacyCard extends StatelessWidget {
           Expanded(
             child: Text(
               'Kartta yalnızca ismin, diyetisyen adı ve seçtiğin özet görünür. Sohbet, lab PDF’leri veya detaylı kilo grafiği paylaşılmaz.',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
-            ),
-          ),
-        ],
-      ),
-    );
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted))),
+        ]));
   }
 }

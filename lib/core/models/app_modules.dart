@@ -114,6 +114,7 @@ class AppModule {
     if (route.startsWith('/app/eat-out')) return eatOut;
     if (route.startsWith('/app/story')) return story;
     if (route.startsWith('/app/fasting')) return fasting;
+    if (route.startsWith('/app/water-shortcut')) return water;
     if (route.startsWith('/app/recipes')) return recipes;
     if (route.startsWith('/app/blog')) return blog;
     if (route.startsWith('/app/shopping')) return shopping;

@@ -4,6 +4,8 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/constants/diyetsel_assets.dart';
 import '../../../core/models/models.dart';
 
+const blogCategories = ['Keto', 'Aralıklı Oruç', 'Vegan', 'Akdeniz', 'Detoks', 'Spor'];
+
 /// Display helpers for Premium Cartoon blog UI.
 class BlogVisuals {
   BlogVisuals._();
@@ -50,6 +52,45 @@ class BlogVisuals {
         return const Color(0xFFFFE0D4);
       default:
         return AppColors.kawaiiSurfaceCream;
+    }
+  }
+
+  /// Soft modern wash tint (cream / teal family — not kawaii pastels).
+  static Color softTintFor(BlogPost post) {
+    switch (post.category) {
+      case 'Keto':
+        return const Color(0xFFFFF0E8);
+      case 'Aralıklı Oruç':
+        return const Color(0xFFE3F2F8);
+      case 'Vegan':
+        return const Color(0xFFE8F5F0);
+      case 'Akdeniz':
+        return const Color(0xFFFFF8E8);
+      case 'Detoks':
+        return const Color(0xFFE8F2F8);
+      case 'Spor':
+        return const Color(0xFFFFF0E8);
+      default:
+        return const Color(0xFFE8F5F0);
+    }
+  }
+
+  static Color softAccentFor(BlogPost post) {
+    switch (post.category) {
+      case 'Keto':
+        return const Color(0xFFE07A5F);
+      case 'Aralıklı Oruç':
+        return const Color(0xFF5BA3C9);
+      case 'Vegan':
+        return AppColors.primary;
+      case 'Akdeniz':
+        return const Color(0xFFD4A017);
+      case 'Detoks':
+        return const Color(0xFF5BA3C9);
+      case 'Spor':
+        return const Color(0xFFE07A5F);
+      default:
+        return AppColors.primary;
     }
   }
 

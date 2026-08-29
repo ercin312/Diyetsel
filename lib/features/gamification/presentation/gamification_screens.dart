@@ -14,11 +14,13 @@ import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/kawaii_doodle.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'soft_badges_screen.dart';
+import 'widgets/soft_badges_widgets.dart';
 
 class BadgeCelebration {
   static Future<void> show(BuildContext context, BadgeDef badge) {
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
+    final modern = context.isModern;
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -28,6 +30,23 @@ class BadgeCelebration {
       pageBuilder: (ctx, a1, a2) => const SizedBox.shrink(),
       transitionBuilder: (ctx, anim, _, child) {
         final curve = CurvedAnimation(parent: anim, curve: Curves.easeOutBack);
+        if (modern) {
+          return Opacity(
+            opacity: anim.value,
+            child: Transform.scale(
+              scale: 0.88 + curve.value * 0.12,
+              child: Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: SoftBadgeCelebrationCard(
+                    badge: badge,
+                    onClose: () => Navigator.pop(ctx),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
         return Opacity(
           opacity: anim.value,
           child: Transform.scale(
@@ -42,26 +61,15 @@ class BadgeCelebration {
                     gradient: LinearGradient(
                       colors: cartoon
                           ? const [AppColors.kawaiiLemon, AppColors.kawaiiPeach, AppColors.kawaiiRose]
-                          : luxury
-                              ? [AppColors.luxuryCopperDeep, AppColors.luxuryPlate]
-                              : [AppColors.primaryDeep, AppColors.modernTealCard],
+                          : [AppColors.primaryDeep, AppColors.modernTealCard],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(cartoon ? 30 : (luxury ? 14 : 22)),
-                    border: cartoon
-                        ? null
-                        : luxury
-                            ? Border.all(color: AppColors.luxuryCopper.withValues(alpha: 0.5))
-                            : null,
+                    borderRadius: BorderRadius.circular(cartoon ? 30 : (22)),
                     boxShadow: [
                       BoxShadow(
-                        color: luxury
-                            ? AppColors.luxuryCopper.withValues(alpha: 0.45)
-                            : cartoon
-                                ? AppColors.kawaiiGlow
-                                : AppColors.modernSoftShadow,
-                        blurRadius: cartoon || luxury ? 28 : 24,
+                        color: cartoon ? AppColors.kawaiiGlow : AppColors.modernSoftShadow,
+                        blurRadius: cartoon ? 28 : 24,
                         offset: const Offset(0, 12),
                       ),
                     ],
@@ -73,8 +81,7 @@ class BadgeCelebration {
                         'Yeni rozet!',
                         style: TextStyle(
                           color: cartoon ? AppColors.kawaiiInk : Colors.white70,
-                          fontWeight: luxury ? FontWeight.w600 : FontWeight.w800,
-                          letterSpacing: luxury ? 0.4 : null,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -88,9 +95,8 @@ class BadgeCelebration {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: cartoon ? AppColors.kawaiiInk : Colors.white,
-                          fontWeight: luxury ? FontWeight.w600 : FontWeight.w900,
+                          fontWeight: FontWeight.w900,
                           fontSize: 24,
-                          letterSpacing: luxury ? 0.2 : null,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -132,6 +138,10 @@ class BadgesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (context.isModern) {
+      return const SoftBadgesScreen();
+    }
+
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     ref.watch(userProgressProvider(user.id));
@@ -187,7 +197,6 @@ class _BadgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = item.badge;
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
     return DiyetselCard(
       color: cartoon ? AppColors.kawaiiBubble : null,
       child: Column(
@@ -202,7 +211,7 @@ class _BadgeCard extends StatelessWidget {
                   color: cartoon
                       ? Color.lerp(b.tint, AppColors.kawaiiPeach, 0.55)!.withValues(alpha: 0.85)
                       : b.tint.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(cartoon ? 24 : (luxury ? 10 : 20)),
+                  borderRadius: BorderRadius.circular(cartoon ? 24 : (20)),
                   border: null,
                   boxShadow: cartoon
                       ? const [

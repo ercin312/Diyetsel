@@ -240,4 +240,84 @@ class HomeFeedData {
           accent: AppColors.kawaiiCoral,
         ),
       ];
+
+  /// Soft modern home shortcuts — pastel circles + modern_icon_* assets.
+  static List<HomeShortcutModel> modernShortcuts() => const [
+        HomeShortcutModel(
+          id: 'story',
+          title: 'Hikayem',
+          route: '/app/story',
+          accent: Color(0xFFFFE8B8),
+          iconAsset: DiyetselAssets.modernIconStory,
+          icon: Icons.auto_awesome_rounded,
+        ),
+        HomeShortcutModel(
+          id: 'streak',
+          title: 'Seri',
+          route: '/app/story',
+          accent: Color(0xFFFFD4C8),
+          iconAsset: DiyetselAssets.modernIconStreak,
+          icon: Icons.local_fire_department_rounded,
+        ),
+        HomeShortcutModel(
+          id: 'water',
+          title: 'Su',
+          route: '/app/track',
+          accent: Color(0xFFD4EEF8),
+          iconAsset: DiyetselAssets.modernIconWaterDrop,
+          icon: Icons.water_drop_rounded,
+        ),
+        HomeShortcutModel(
+          id: 'plan',
+          title: 'Plan',
+          route: '/app/diet',
+          accent: Color(0xFFE4DCF5),
+          iconAsset: DiyetselAssets.modernIconPlan,
+          icon: Icons.assignment_rounded,
+        ),
+        HomeShortcutModel(
+          id: 'all',
+          title: 'Tümü',
+          route: '/app/more',
+          accent: Color(0xFFD8F0E4),
+          iconAsset: DiyetselAssets.modernIconAppsAll,
+          icon: Icons.apps_rounded,
+        ),
+      ];
+
+  /// Soft modern quick actions — dark teal glyph circles.
+  static List<HomeQuickActionModel> modernQuickActions() => const [
+        HomeQuickActionModel(
+          id: 'diet',
+          title: 'Diyet',
+          route: '/app/diet',
+          iconAsset: DiyetselAssets.modernIconDietScale,
+          icon: Icons.monitor_weight_outlined,
+          accent: AppColors.primary,
+        ),
+        HomeQuickActionModel(
+          id: 'water',
+          title: 'Su',
+          route: '/app/track',
+          iconAsset: DiyetselAssets.modernIconWaterBottle,
+          icon: Icons.water_drop_outlined,
+          accent: AppColors.primary,
+        ),
+        HomeQuickActionModel(
+          id: 'appt',
+          title: 'Randevu',
+          route: '/app/appointments',
+          iconAsset: DiyetselAssets.modernIconCalendar,
+          icon: Icons.event_available_outlined,
+          accent: AppColors.primary,
+        ),
+        HomeQuickActionModel(
+          id: 'svc',
+          title: 'Hizmet',
+          route: '/app/services',
+          iconAsset: DiyetselAssets.modernIconService,
+          icon: Icons.support_agent_outlined,
+          accent: AppColors.primary,
+        ),
+      ];
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../features/documents/domain/vault_io.dart';
@@ -825,44 +826,47 @@ class SeedData {
       );
     }
 
-    await seedVaultPdf(
-      id: 'doc-lab-demo',
-      fileName: 'Kan_tahlili_ozet.pdf',
-      title: 'Kan tahlili özeti (örnek)',
-      category: 'lab',
-      note: 'Mart kontrol — D vitamini ve demir',
-      daysAgo: 12,
-      lines: const [
-        'Bu örnek PDF belge kasasını denemek içindir.',
-        'Gerçek lab sonuçlarını buraya yükleyebilirsin.',
-        'D vitamini, ferritin ve B12 değerlerini diyetisyeninle paylaş.',
-      ],
-    );
-    await seedVaultPdf(
-      id: 'doc-plan-demo',
-      fileName: 'Haftalik_menu_notu.pdf',
-      title: 'Haftalık menü notu (örnek)',
-      category: 'plan',
-      note: 'Ev için pratik menü özeti',
-      daysAgo: 5,
-      lines: const [
-        'Kahvaltı: protein + sebze ağırlıklı.',
-        'Öğle: kase veya ızgara protein.',
-        'Akşam: hafif çorba veya balık + sebze.',
-      ],
-    );
-    await seedVaultPdf(
-      id: 'doc-form-demo',
-      fileName: 'Onam_formu_ornek.pdf',
-      title: 'Danışan onam formu (örnek)',
-      category: 'form',
-      note: 'İlk seans evrakı',
-      daysAgo: 20,
-      lines: const [
-        'Kişisel verilerin diyet takibi amacıyla işlenmesine onay.',
-        'Bu dosya yalnızca demo amaçlıdır.',
-      ],
-    );
+    // path_provider / dart:io vault is not available on web preview.
+    if (!kIsWeb) {
+      await seedVaultPdf(
+        id: 'doc-lab-demo',
+        fileName: 'Kan_tahlili_ozet.pdf',
+        title: 'Kan tahlili özeti (örnek)',
+        category: 'lab',
+        note: 'Mart kontrol — D vitamini ve demir',
+        daysAgo: 12,
+        lines: const [
+          'Bu örnek PDF belge kasasını denemek içindir.',
+          'Gerçek lab sonuçlarını buraya yükleyebilirsin.',
+          'D vitamini, ferritin ve B12 değerlerini diyetisyeninle paylaş.',
+        ],
+      );
+      await seedVaultPdf(
+        id: 'doc-plan-demo',
+        fileName: 'Haftalik_menu_notu.pdf',
+        title: 'Haftalık menü notu (örnek)',
+        category: 'plan',
+        note: 'Ev için pratik menü özeti',
+        daysAgo: 5,
+        lines: const [
+          'Kahvaltı: protein + sebze ağırlıklı.',
+          'Öğle: kase veya ızgara protein.',
+          'Akşam: hafif çorba veya balık + sebze.',
+        ],
+      );
+      await seedVaultPdf(
+        id: 'doc-form-demo',
+        fileName: 'Onam_formu_ornek.pdf',
+        title: 'Danışan onam formu (örnek)',
+        category: 'form',
+        note: 'İlk seans evrakı',
+        daysAgo: 20,
+        lines: const [
+          'Kişisel verilerin diyet takibi amacıyla işlenmesine onay.',
+          'Bu dosya yalnızca demo amaçlıdır.',
+        ],
+      );
+    }
 
     await store.saveCheckIn(
       WeeklyCheckIn(

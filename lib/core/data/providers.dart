@@ -122,6 +122,11 @@ final fastingProvider = StreamProvider<List<FastingSession>>((ref) {
   return _watch(store, FirestorePaths.fasting, store.fastingSessions);
 });
 
+final adminBroadcastsProvider = StreamProvider<List<AdminBroadcast>>((ref) {
+  final store = ref.watch(appStoreProvider);
+  return _watch(store, FirestorePaths.adminBroadcasts, store.adminBroadcasts);
+});
+
 final settingsProvider = StreamProvider<AppSettings>((ref) {
   final store = ref.watch(appStoreProvider);
   return _watch(store, 'settings', store.settings);

@@ -9,7 +9,6 @@ import '../../../../core/models/enums.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/widgets/cartoon_asset_icon.dart';
 import '../../../../core/widgets/diyetsel_widgets.dart';
-import '../../../../core/widgets/luxury_glyph.dart';
 import '../../../../core/widgets/style_icon.dart';
 import '../../domain/meal_display.dart';
 
@@ -37,7 +36,6 @@ class MealSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartoon = context.isCartoon;
-    final luxury = context.isLuxury;
     Widget card;
     if (cartoon) {
       card = _CartoonMealCard(
@@ -47,14 +45,6 @@ class MealSectionCard extends StatelessWidget {
         adminPreview: adminPreview,
         onEdit: onEditDescription,
         isNext: isNext,
-      );
-    } else if (luxury) {
-      card = _LuxuryMealCard(
-        meal: meal,
-        onToggle: onToggleConsumed,
-        onPickReminder: onPickReminder,
-        adminPreview: adminPreview,
-        onEdit: onEditDescription,
       );
     } else {
       card = _ModernMealCard(
@@ -507,90 +497,6 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
   }
 }
 
-class _LuxuryMealCard extends StatelessWidget {
-  const _LuxuryMealCard({
-    required this.meal,
-    required this.onToggle,
-    required this.onPickReminder,
-    required this.adminPreview,
-    this.onEdit,
-  });
-
-  final DietMeal meal;
-  final VoidCallback onToggle;
-  final VoidCallback onPickReminder;
-  final bool adminPreview;
-  final VoidCallback? onEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    final headline = MealDisplay.headline(meal);
-    final hook = MealDisplay.hook(meal);
-    return LuxurySheen(
-      borderRadius: BorderRadius.circular(10),
-      child: DiyetselCard(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                StyleIcon(icon: meal.type.icon, emoji: meal.type.emoji, size: 24, selected: meal.consumed),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        meal.type.tr.toUpperCase(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.4,
-                          fontSize: 11,
-                          color: AppColors.luxuryGoldSoft,
-                        ),
-                      ),
-                      Text(
-                        headline,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.2,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                _ReminderChip(time: meal.effectiveReminderTime, onTap: onPickReminder, luxury: true),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(height: 0.8, color: AppColors.luxuryCopper.withValues(alpha: 0.35)),
-            const SizedBox(height: 12),
-            Text(
-              hook,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.55, letterSpacing: 0.15),
-            ),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                if (!adminPreview)
-                  Expanded(
-                    child: DiyetselButton(
-                      label: meal.consumed ? 'Tamamlandı' : 'Tamamla',
-                      onPressed: onToggle,
-                      tonal: meal.consumed,
-                    ),
-                  ),
-                if (onEdit != null) IconButton(onPressed: onEdit, icon: const Icon(Icons.edit_outlined)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _IngredientChip extends StatelessWidget {
   const _IngredientChip({required this.label, this.soft = false});
 
@@ -699,13 +605,11 @@ class _ReminderChip extends StatelessWidget {
     required this.time,
     required this.onTap,
     this.playful = false,
-    this.luxury = false,
   });
 
   final String time;
   final VoidCallback onTap;
   final bool playful;
-  final bool luxury;
 
   @override
   Widget build(BuildContext context) {
@@ -752,35 +656,35 @@ class _ReminderChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(luxury ? 8 : 20),
+        borderRadius: BorderRadius.circular(20),
         child: Ink(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(luxury ? 8 : 20),
-            color: luxury ? AppColors.luxuryPlate : brand.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            color: brand.withValues(alpha: 0.1),
             border: Border.all(
-              color: luxury ? AppColors.luxuryCopper.withValues(alpha: 0.55) : brand.withValues(alpha: 0.35),
+              color: brand.withValues(alpha: 0.35),
             ),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: luxury ? Colors.black.withValues(alpha: 0.25) : AppColors.modernSoftShadow,
-                blurRadius: luxury ? 6 : 12,
-                offset: Offset(0, luxury ? 2 : 4),
+                color: AppColors.modernSoftShadow,
+                blurRadius: 12,
+                offset: Offset(0, 4),
               ),
             ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.notifications_active_rounded, size: 16, color: luxury ? AppColors.luxuryGoldSoft : brand),
+              Icon(Icons.notifications_active_rounded, size: 16, color: brand),
               const SizedBox(width: 6),
               Text(
                 time,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
-                  color: luxury ? AppColors.luxuryInk : brand,
-                  letterSpacing: luxury ? 0.6 : 0,
+                  color: brand,
+                  letterSpacing: 0,
                 ),
               ),
             ],
