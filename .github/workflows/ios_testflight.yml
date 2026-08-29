@@ -189,10 +189,15 @@ jobs:
           EXPECTED="${{ steps.build.outputs.build_number }}"
           TMP=$(mktemp -d)
           unzip -q "$IPA" -d "$TMP"
-          APP=$(find "$TMP" -name 'Info.plist' -path '*/Payload/*.app/*' | head -1)
-          test -n "$APP"
-          ACTUAL=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP")
-          SHORT=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP")
+          # Prefer the main .app Info.plist — not nested frameworks/extensions.
+          APP=$(ls -1d "$TMP"/Payload/*.app 2>/dev/null | head -1)
+          test -n "${APP:-}"
+          PLIST="$APP/Info.plist"
+          test -f "$PLIST"
+          # Binary plists are fine with PlistBuddy / plutil.
+          ACTUAL=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$PLIST")
+          SHORT=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")
+          echo "App bundle: $(basename "$APP")"
           echo "IPA CFBundleShortVersionString=$SHORT"
           echo "IPA CFBundleVersion=$ACTUAL (expected $EXPECTED)"
           if [ "$ACTUAL" != "$EXPECTED" ]; then
