@@ -144,16 +144,29 @@ jobs:
           exit 1
 
       - name: Build IPA
+        id: build
         run: |
           set -euo pipefail
           VERSION_LINE=$(grep -E '^version:' pubspec.yaml | head -1 | awk '{print $2}' | tr -d ' \r')
           BUILD_NAME="${VERSION_LINE%%+*}"
           PUBSPEC_BUILD="${VERSION_LINE##*+}"
-          BUILD_NUMBER="${PUBSPEC_BUILD}"
-          if [ "${{ github.run_number }}" -gt "$BUILD_NUMBER" ] 2>/dev/null; then
-            BUILD_NUMBER="${{ github.run_number }}"
+          RUN_NUMBER="${{ github.run_number }}"
+          RUN_ATTEMPT="${{ github.run_attempt }}"
+          # App Store Connect already has CFBundleVersion 12 — never reuse ≤12.
+          MIN_BUILD=20
+          BUILD_NUMBER="$PUBSPEC_BUILD"
+          if [ "$RUN_NUMBER" -gt "$BUILD_NUMBER" ] 2>/dev/null; then
+            BUILD_NUMBER="$RUN_NUMBER"
           fi
-          echo "Building $BUILD_NAME+$BUILD_NUMBER"
+          if [ "$MIN_BUILD" -gt "$BUILD_NUMBER" ] 2>/dev/null; then
+            BUILD_NUMBER="$MIN_BUILD"
+          fi
+          if [ "$RUN_ATTEMPT" -gt 1 ] 2>/dev/null; then
+            BUILD_NUMBER=$((BUILD_NUMBER + RUN_ATTEMPT - 1))
+          fi
+          echo "Building $BUILD_NAME+$BUILD_NUMBER (pubspec=$PUBSPEC_BUILD run=$RUN_NUMBER attempt=$RUN_ATTEMPT)"
+          echo "build_name=$BUILD_NAME" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
           flutter build ipa --release \
             --build-name="$BUILD_NAME" \
             --build-number="$BUILD_NUMBER" \
@@ -166,8 +179,30 @@ jobs:
           IPA=$(ls -t build/ios/ipa/*.ipa | head -1)
           test -f "$IPA"
           echo "path=$IPA" >> "$GITHUB_OUTPUT"
-          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | tr -d ' ')
+          VERSION="${{ steps.build.outputs.build_name }}+${{ steps.build.outputs.build_number }}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify IPA CFBundleVersion
+        run: |
+          set -euo pipefail
+          IPA="${{ steps.ipa.outputs.path }}"
+          EXPECTED="${{ steps.build.outputs.build_number }}"
+          TMP=$(mktemp -d)
+          unzip -q "$IPA" -d "$TMP"
+          APP=$(find "$TMP" -name 'Info.plist' -path '*/Payload/*.app/*' | head -1)
+          test -n "$APP"
+          ACTUAL=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP")
+          SHORT=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP")
+          echo "IPA CFBundleShortVersionString=$SHORT"
+          echo "IPA CFBundleVersion=$ACTUAL (expected $EXPECTED)"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::IPA CFBundleVersion is '$ACTUAL' but build used '$EXPECTED'"
+            exit 1
+          fi
+          if [ "$ACTUAL" -le 12 ] 2>/dev/null; then
+            echo "::error::CFBundleVersion $ACTUAL must be > 12 (already on App Store Connect)"
+            exit 1
+          fi
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
