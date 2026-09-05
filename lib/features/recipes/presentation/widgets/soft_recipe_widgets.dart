@@ -10,6 +10,8 @@ import '../../../../core/widgets/marketplace.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/recipe_visuals.dart';
+import '../../../../core/widgets/nav_back.dart';
+
 
 class SoftRecipesHeader extends StatelessWidget {
   const SoftRecipesHeader({super.key, required this.admin});
@@ -20,24 +22,7 @@ class SoftRecipesHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SoftTap(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.modernLine),
-              boxShadow: AppSpacing.soft,
-            ),
-            child: Icon(
-              Icons.arrow_back_rounded,
-              color: AppColors.primary.withValues(alpha: 0.75),
-            ),
-          ),
-        ),
+        const SoftNavBackButton(),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -54,7 +39,7 @@ class SoftRecipesHeader extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                admin ? 'Danışanlara özel tarifler' : 'Ölçülü, adım adım yemekler',
+                admin ? 'Danışanlara özel tarifler oluştur ve yayınla' : 'Mutfakta yanındayız · ölçülü porsiyon, sıcak lezzet',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -135,7 +120,7 @@ class SoftRecipesHero extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Ölçülü tarifler',
+                  'Protein odaklı mutfak',
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -146,7 +131,7 @@ class SoftRecipesHero extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '$count tarif · $categories kategori · makro net',
+                  '$count tarif · $categories kategori · adım adım & makro net',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -756,7 +741,10 @@ class SoftRecipeMacroPill extends StatelessWidget {
 }
 
 class SoftRecipesEmpty extends StatelessWidget {
-  const SoftRecipesEmpty({super.key});
+  const SoftRecipesEmpty({super.key, this.admin = false, this.onAdd});
+
+  final bool admin;
+  final VoidCallback? onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -777,10 +765,10 @@ class SoftRecipesEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Bu kategoride tarif yok',
+          Text(
+            admin ? 'Henüz tarif yok' : 'Bu kategoride tarif yok',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
               color: AppColors.primaryDeep,
@@ -788,7 +776,9 @@ class SoftRecipesEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Başka bir kategori seç veya tümünü görüntüle.',
+            admin
+                ? 'Danışanlara göstereceğin ilk tarifi ekle.'
+                : 'Başka bir kategori seç veya tümünü görüntüle.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -796,16 +786,54 @@ class SoftRecipesEmpty extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.5),
             ),
           ),
+          if (admin && onAdd != null) ...[
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Yeni tarif ekle'),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
+class SoftRecipesFab extends StatelessWidget {
+  const SoftRecipesFab({super.key, required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: onPressed,
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      elevation: 2,
+      icon: const Icon(Icons.add_rounded),
+      label: const Text(
+        'Yeni tarif',
+        style: TextStyle(fontWeight: FontWeight.w800),
+      ),
+    );
+  }
+}
+
 class SoftRecipeDetailSheet extends StatefulWidget {
-  const SoftRecipeDetailSheet({super.key, required this.recipe});
+  const SoftRecipeDetailSheet({
+    super.key,
+    required this.recipe,
+    this.admin = false,
+    this.onEdit,
+    this.onDelete,
+  });
 
   final Recipe recipe;
+  final bool admin;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   @override
   State<SoftRecipeDetailSheet> createState() => _SoftRecipeDetailSheetState();
@@ -909,6 +937,34 @@ class _SoftRecipeDetailSheetState extends State<SoftRecipeDetailSheet> {
                         color: AppColors.primary.withValues(alpha: 0.6),
                       ),
                     ),
+                    if (widget.admin) ...[
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: widget.onEdit,
+                              icon: const Icon(Icons.edit_rounded, size: 18),
+                              label: const Text('Düzenle'),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: widget.onDelete,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.danger,
+                                side: BorderSide(
+                                  color: AppColors.danger.withValues(alpha: 0.45),
+                                ),
+                              ),
+                              icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                              label: const Text('Sil'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

@@ -13,6 +13,7 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_chat_widgets.dart';
 
@@ -73,7 +74,13 @@ class SoftChatListScreen extends ConsumerWidget {
                 .animate()
                 .fadeIn(delay: 70.ms, duration: 280.ms),
             const SizedBox(height: 14),
-            const SoftChatTipsCard().animate().fadeIn(delay: 90.ms, duration: 280.ms),
+            SoftTipCard(
+              title: 'Net soru, hızlı yanıt',
+              body: 'Öğün fotoğrafı, tartı ekranı veya lab sonucu paylaş — diyetisyenin bağlamı görünce daha net yönlendirir.',
+              icon: Icons.tips_and_updates_outlined,
+              accent: const Color(0xFF5BA3C9),
+              tint: const Color(0xFFE3F2F8),
+            ).animate().fadeIn(delay: 90.ms, duration: 280.ms),
             const SizedBox(height: 18),
             Row(
               children: [
@@ -107,10 +114,15 @@ class SoftChatListScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             if (sorted.isEmpty)
-              SoftChatEmpty(
-                isAdmin: user.isAdmin,
-                onStart: user.isAdmin ? null : startChat,
-              )
+              SoftEmptyRich(
+                title: user.isAdmin ? 'Henüz danışan mesajı yok' : 'Henüz sohbet yok',
+                body: user.isAdmin
+                    ? 'Danışanlar yazmaya başladığında konuşmalar burada toplanır.'
+                    : 'Diyetisyeninle güvenli mesajlaşmaya buradan başla — fotoğraf ve dosya da gönderebilirsin.',
+                icon: Icons.chat_bubble_outline_rounded,
+                actionLabel: user.isAdmin ? null : 'Sohbeti başlat',
+                onAction: user.isAdmin ? null : startChat,
+              ).animate().fadeIn(duration: 300.ms)
             else
               for (var i = 0; i < sorted.length; i++)
                 Padding(
@@ -187,7 +199,14 @@ class _SoftChatRoomScreenState extends ConsumerState<SoftChatRoomScreen> {
           SoftChatRoomAppBar(title: title),
           Expanded(
             child: messages.isEmpty
-                ? const SoftChatRoomEmpty()
+                ? const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: SoftEmptyRich(
+                      title: 'Konuşmaya başla',
+                      body: 'İlk mesajını yaz veya fotoğraf / dosya ekle — net bağlam hızlı yanıt getirir.',
+                      icon: Icons.forum_outlined,
+                    ),
+                  )
                 : ListView.builder(
                     controller: _scroll,
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),

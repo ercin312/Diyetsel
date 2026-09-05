@@ -8,6 +8,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_admin_notifications_widgets.dart';
 
@@ -168,6 +169,14 @@ class _SoftAdminNotificationsScreenState
                 clientCount: clients.length,
                 sentCount: history.length,
               ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: 'Mesaj tonu',
+                body: 'Kısa, net ve nazik yaz. Tek bir eylem çağrısı (check-in / randevu / su) dönüş oranını artırır.',
+                icon: Icons.campaign_outlined,
+                accent: const Color(0xFFE07A5F),
+                tint: const Color(0xFFFFF0E8),
+              ),
               const SizedBox(height: 14),
               if (desktop)
                 Row(

@@ -24,6 +24,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
   late final TabController _tabs;
   late final TextEditingController _jsonController;
   late List<HomeHeroSlideConfig> _slides;
+  late Map<String, bool> _homeBlocks;
   String? _error;
   bool _saving = false;
 
@@ -48,12 +49,18 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 2, vsync: this);
+    _tabs = TabController(length: 3, vsync: this);
     final config = ref.read(appStoreProvider).homeThemeConfig();
     _jsonController = TextEditingController(text: config.toJson());
     _slides = List<HomeHeroSlideConfig>.from(
       config.heroSlides.isEmpty ? HomeHeroSlideConfig.defaults() : config.heroSlides,
     );
+    _homeBlocks = Map<String, bool>.from(
+      config.homeBlocks.isEmpty ? HomeThemeConfig.defaultHomeBlocks() : config.homeBlocks,
+    );
+    for (final id in HomeThemeConfig.homeBlockIds) {
+      _homeBlocks.putIfAbsent(id, () => true);
+    }
   }
 
   @override
@@ -61,6 +68,31 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
     _tabs.dispose();
     _jsonController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveHomeBlocks() async {
+    setState(() {
+      _error = null;
+      _saving = true;
+    });
+    try {
+      final store = ref.read(appStoreProvider);
+      final current = store.homeThemeConfig();
+      final next = current.copyWith(homeBlocks: Map<String, bool>.from(_homeBlocks));
+      await store.saveHomeThemeConfig(next);
+      _jsonController.text = next.toJson();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ana sayfa bölümleri kaydedildi'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      setState(() => _error = 'Kayıt hatası: $e');
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   Future<void> _saveSlides() async {
@@ -115,6 +147,12 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
         _slides = List<HomeHeroSlideConfig>.from(
           config.heroSlides.isEmpty ? HomeHeroSlideConfig.defaults() : config.heroSlides,
         );
+        _homeBlocks = Map<String, bool>.from(
+          config.homeBlocks.isEmpty ? HomeThemeConfig.defaultHomeBlocks() : config.homeBlocks,
+        );
+        for (final id in HomeThemeConfig.homeBlockIds) {
+          _homeBlocks.putIfAbsent(id, () => true);
+        }
       });
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -137,6 +175,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
     setState(() {
       _jsonController.text = defaults.toJson();
       _slides = List<HomeHeroSlideConfig>.from(defaults.heroSlides);
+      _homeBlocks = Map<String, bool>.from(HomeThemeConfig.defaultHomeBlocks());
       _error = null;
     });
   }
@@ -172,7 +211,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
   Widget build(BuildContext context) {
     final soft = context.isModern;
     return AppPage(
-      title: soft ? 'Ana sayfa slider' : 'Ana sayfa teması',
+      title: soft ? 'Danışan ana sayfa' : 'Ana sayfa teması',
       actions: [
         TextButton(onPressed: _saving ? null : _reset, child: const Text('Sıfırla')),
       ],
@@ -192,10 +231,13 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
                   ),
                   child: TabBar(
                     controller: _tabs,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
                     labelColor: soft ? AppColors.primaryDeep : null,
                     unselectedLabelColor: soft ? AppColors.primary.withValues(alpha: 0.45) : null,
                     indicatorColor: soft ? AppColors.primary : null,
                     tabs: const [
+                      Tab(text: 'Bölümler'),
                       Tab(text: 'Modern slider'),
                       Tab(text: 'Karikatür JSON'),
                     ],
@@ -213,6 +255,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
                   child: TabBarView(
                     controller: _tabs,
                     children: [
+                      _buildBlocksEditor(soft),
                       _buildSliderEditor(soft),
                       _buildJsonEditor(soft),
                     ],
@@ -223,6 +266,74 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
           );
         },
       ),
+    );
+  }
+
+  Widget _buildBlocksEditor(bool soft) {
+    final visibleCount = HomeThemeConfig.homeBlockIds.where((id) => _homeBlocks[id] ?? true).length;
+    return ListView(
+      children: [
+        Text(
+          'Danışan ana sayfasında hangi blokların görüneceğini seç. Kapattığın bölümler hem modern hem karikatür temada gizlenir.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '$visibleCount / ${HomeThemeConfig.homeBlockIds.length} bölüm açık',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: soft ? AppColors.primaryDeep : AppColors.kawaiiLeaf,
+          ),
+        ),
+        const SizedBox(height: 14),
+        for (final id in HomeThemeConfig.homeBlockIds) ...[
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: soft ? Colors.white : Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: soft ? AppColors.modernLine : Theme.of(context).colorScheme.outline.withValues(alpha: 0.25),
+              ),
+              boxShadow: soft ? AppSpacing.soft : null,
+            ),
+            child: SwitchListTile.adaptive(
+              contentPadding: const EdgeInsets.fromLTRB(16, 4, 10, 4),
+              title: Text(
+                HomeThemeConfig.homeBlockLabels[id] ?? id,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: soft ? AppColors.primaryDeep : null,
+                ),
+              ),
+              subtitle: Text(
+                HomeThemeConfig.homeBlockSubtitles[id] ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: soft ? AppColors.primary.withValues(alpha: 0.55) : null,
+                ),
+              ),
+              value: _homeBlocks[id] ?? true,
+              activeThumbColor: soft ? AppColors.primary : AppColors.kawaiiLeaf,
+              onChanged: (v) => setState(() => _homeBlocks[id] = v),
+            ),
+          ),
+        ],
+        const SizedBox(height: 8),
+        DiyetselButton(
+          label: _saving ? 'Kaydediliyor…' : 'Bölümleri kaydet',
+          onPressed: _saving ? null : _saveHomeBlocks,
+          icon: Icons.visibility_rounded,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Kayıt sonrası danışan cihazlarında bulut senkronu açıksa güncelleme görünür.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 

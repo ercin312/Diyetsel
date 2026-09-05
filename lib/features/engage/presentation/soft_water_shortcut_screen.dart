@@ -12,6 +12,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/utils/reminder_service.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../tracker/presentation/widgets/soft_tracker_widgets.dart';
 import '../domain/water_shortcut_visuals.dart';
@@ -119,6 +120,18 @@ class _SoftWaterShortcutScreenState extends ConsumerState<SoftWaterShortcutScree
               progress: log.progress,
               sipMl: AppConstants.waterSipMl,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: enabled ? 'Kısayol açık' : 'Tek dokunuşla su',
+                  body: enabled
+                  ? 'Bildirimden veya buradan +${AppConstants.waterSipMl} ml ekle. Hedefe $remaining ml kaldı.'
+                  : 'Kalıcı bildirimi aç; yoğun günde bile su hedefini unutma.',
+              icon: Icons.notifications_active_outlined,
+              accent: const Color(0xFF5BA3C9),
+              tint: const Color(0xFFE3F2F8),
+              onTap: () => context.push('/app/track'),
+              actionLabel: 'Tam takip ekranı →',
+            ),
             const SizedBox(height: 14),
             SoftWaterShortcutToggleCard(
               enabled: enabled,

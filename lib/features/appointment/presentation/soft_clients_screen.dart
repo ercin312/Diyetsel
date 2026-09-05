@@ -8,6 +8,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import 'client_care_screen.dart';
 import 'widgets/soft_clients_widgets.dart';
 
@@ -78,6 +79,16 @@ class _SoftClientsScreenState extends ConsumerState<SoftClientsScreen> {
                     curve: Curves.easeOutCubic,
                     duration: 380.ms,
                   ),
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: 'Klinik odak',
+                body: active < clients.length
+                    ? '${clients.length - active} pasif danışan var. Sessiz kalanlara kısa bir check-in mesajı dönüşü hızlandırır.'
+                    : 'Tüm danışanlar aktif. Bu hafta ölçüm gelmeyenleri “Sessizler” listesinden takip et.',
+                icon: Icons.groups_rounded,
+                accent: AppColors.primary,
+                tint: AppColors.modernMint,
+              ),
               const SizedBox(height: 12),
               const SoftClientsQuickLinks()
                   .animate()

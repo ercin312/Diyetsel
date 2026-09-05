@@ -11,6 +11,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 
@@ -23,6 +24,95 @@ class LearnHubScreen extends ConsumerWidget {
     final store = ref.watch(appStoreProvider);
     ref.watch(userProgressProvider(user.id));
     final progress = store.userProgress(user.id);
+    final modern = context.isModern;
+    final totalDone = progress.completedLessonDays.values.fold<int>(0, (s, e) => s + e.length);
+
+    if (modern) {
+      return AppPage(
+        title: 'Mini dersler',
+        padding: EdgeInsets.zero,
+        child: SoftWashBackground(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+            children: [
+              SoftSurfaceCard(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                color: AppColors.modernMint,
+                child: Row(
+                  children: [
+                    SoftProgressRing(
+                      progress: (totalDone / 14).clamp(0.0, 1.0),
+                      color: AppColors.primary,
+                      child: Text(
+                        '$totalDone',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16,
+                          color: AppColors.primaryDeep,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Öğrenme yolculuğun',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                              color: AppColors.primaryDeep,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Her gün 3 dakika — quiz ile pekiştir, rozet kazan.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.5,
+                              color: Color(0x991A4F45),
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ).animate().fadeIn(duration: 280.ms),
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: '3 dakikalık dersler',
+                body: 'Her gün kısa bir mini ders — etiket okuma ve porsiyon bilinci, dışarıda yemek seçimini kolaylaştırır.',
+                icon: Icons.timer_outlined,
+                accent: AppColors.primary,
+                tint: Colors.white,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                '7 günlük seriler',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 17,
+                  color: AppColors.primaryDeep,
+                ),
+              ),
+              const SizedBox(height: 10),
+              for (final series in LessonCatalog.all)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: _SeriesHeroCard(
+                    series: series,
+                    done: progress.completedLessonDays[series.id]?.length ?? 0,
+                    onTap: () => context.push('/app/learn/${series.id}'),
+                  ).animate().fadeIn(delay: (LessonCatalog.all.indexOf(series) * 80).ms),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return AppPage(
       title: 'Mini dersler',

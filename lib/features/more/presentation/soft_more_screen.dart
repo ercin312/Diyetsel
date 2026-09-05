@@ -13,6 +13,7 @@ import '../../../core/models/models.dart';
 import '../../../core/utils/report_logic.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_more_widgets.dart';
 
@@ -106,13 +107,14 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
         ),
         SoftMoreItem(
           icon: Icons.palette_outlined,
-          title: 'Ana sayfa teması',
-          subtitle: 'Modern slider & karikatür JSON',
+          title: 'Ana sayfa düzeni',
+          subtitle: 'Bölümleri göster/gizle, slider, tema',
           route: '/admin/home-theme',
           section: 'Sistem',
           asset: DiyetselAssets.modernIconStory,
           tint: _peach,
           accent: _coral,
+          featured: true,
         ),
         SoftMoreItem(
           icon: Icons.settings_rounded,
@@ -375,6 +377,12 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
                     curve: Curves.easeOutCubic,
                     duration: 380.ms,
                   ),
+              if (!widget.admin) ...[
+                const SizedBox(height: 14),
+                SoftDailyTipBanner(onTap: () => context.push('/app/learn'))
+                    .animate()
+                    .fadeIn(delay: 55.ms, duration: 280.ms),
+              ],
               if (widget.admin) ...[
                 const SizedBox(height: 14),
                 SoftMoreAdminQuickStats(

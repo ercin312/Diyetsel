@@ -64,8 +64,8 @@ class SoftMoreHeader extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 admin
-                    ? 'Merhaba $name — içerik ve sistem'
-                    : 'Merhaba $name — keşfet ve araçlar',
+                    ? 'Merhaba $name — klinik operasyon merkezi'
+                    : 'Merhaba $name — keşfet, takip et, geliş',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,

@@ -7,6 +7,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/models/enums.dart';
 import '../../../../core/models/models.dart';
+import '../../../../core/widgets/soft_ui_kit.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/diet_interaction.dart';
@@ -162,23 +163,28 @@ class SoftDietHero extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.12), width: 2),
-              boxShadow: AppSpacing.soft,
-            ),
-            padding: const EdgeInsets.all(8),
-            child: Image.asset(
-              allDone ? DiyetselAssets.foodGreenSmoothie : DiyetselAssets.foodSaladBowl,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => SoftModernIcon(
-                DiyetselAssets.modernIconDietScale,
-                size: 48,
-                fallback: Icons.restaurant_menu_rounded,
+          SoftProgressRing(
+            progress: ratio,
+            size: 96,
+            stroke: 8,
+            color: allDone ? AppColors.accent : AppColors.primary,
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.08)),
+              ),
+              padding: const EdgeInsets.all(6),
+              child: Image.asset(
+                allDone ? DiyetselAssets.foodGreenSmoothie : DiyetselAssets.foodSaladBowl,
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) => SoftModernIcon(
+                  DiyetselAssets.modernIconDietScale,
+                  size: 40,
+                  fallback: Icons.restaurant_menu_rounded,
+                ),
               ),
             ),
           ),

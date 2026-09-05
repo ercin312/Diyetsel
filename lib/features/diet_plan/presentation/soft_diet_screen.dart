@@ -13,6 +13,7 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/diet_interaction.dart';
 import 'widgets/soft_diet_widgets.dart';
@@ -93,6 +94,20 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
               },
               onShopping: () => context.push('/app/shopping'),
             ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: isToday ? 'Bugünün odağı' : 'Seçili gün',
+              body: doneCount == totalMeals && totalMeals > 0
+                  ? 'Tüm öğünler tamam — harika tempo! Yarın için alışveriş listeni gözden geçir.'
+                  : remaining != null && remaining > 0
+                      ? 'Kalan yaklaşık $remaining kcal. Proteini önce bitir, akşamı hafif tut.'
+                      : 'Öğünleri sırayla işaretle; su hedefini de unutma.',
+              icon: Icons.restaurant_menu_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+              onTap: () => context.push('/app/recipes'),
+              actionLabel: 'Tariflere göz at →',
+            ),
             if (next != null && isToday) ...[
               const SizedBox(height: 12),
               SoftNextMealCard(

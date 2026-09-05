@@ -33,7 +33,11 @@ Write-Host "==> Inno Setup derleniyor..." -ForegroundColor Cyan
 & $Iscc $Iss
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
 
-$Setup = Get-ChildItem $Dist -Filter "Diyetsel-Setup-*.exe" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$Setup = Get-ChildItem $Dist -Filter "e-Diyet-Setup-*.exe" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+if (-not $Setup) {
+  $Setup = Get-ChildItem $Dist -Filter "Diyetsel-Setup-*.exe" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+}
+if (-not $Setup) { throw "Setup exe bulunamadi: $Dist" }
 Write-Host ""
 Write-Host "Setup hazir:" -ForegroundColor Green
 Write-Host "  $($Setup.FullName)"

@@ -7,11 +7,14 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/nav_back.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../domain/blog_visuals.dart' show blogCategories;
 import 'blog_editor_screen.dart';
 import 'widgets/soft_blog_widgets.dart';
+
 
 /// Soft premium modern blog list.
 class SoftBlogListScreen extends ConsumerStatefulWidget {
@@ -65,6 +68,10 @@ class _SoftBlogListScreenState extends ConsumerState<SoftBlogListScreen> {
                 .animate()
                 .fadeIn(duration: 280.ms)
                 .slideY(begin: -0.05, curve: Curves.easeOutCubic),
+            if (!widget.admin) ...[
+              const SizedBox(height: 14),
+              const SoftDailyTipBanner(),
+            ],
             const SizedBox(height: 14),
             SoftBlogHero(count: allPublished.length, categories: categoryCount)
                 .animate()
@@ -180,24 +187,7 @@ class SoftBlogDetailScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                SoftTap(
-                  onTap: () => Navigator.maybePop(context),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.modernLine),
-                      boxShadow: AppSpacing.soft,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_rounded,
-                      color: AppColors.primary.withValues(alpha: 0.75),
-                    ),
-                  ),
-                ),
+                const SoftNavBackButton(),
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Text(

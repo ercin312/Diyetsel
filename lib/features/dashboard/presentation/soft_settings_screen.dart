@@ -12,6 +12,7 @@ import '../../../core/models/app_modules.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/reminder_service.dart';
 import '../../../core/utils/smart_notification_service.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/settings_visuals.dart';
 import 'widgets/soft_settings_widgets.dart';
@@ -80,6 +81,16 @@ class SoftSettingsScreen extends ConsumerWidget {
               styleLabel: SettingsVisuals.visualStyleLabel(theme.style),
               reminderCount: reminderCount,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Bildirim ritmi',
+              body: reminderCount == 0
+                  ? 'Su ve öğün hatırlatıcılarını aç — tutarlılık, iradeden daha çok sistemle gelir.'
+                  : '$reminderCount aktif hatırlatıcı var. Sessiz saatlerini ayarlardan kişiselleştir.',
+              icon: Icons.notifications_outlined,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ),
             const SizedBox(height: 16),
             SoftSettingsCard(
               child: Column(

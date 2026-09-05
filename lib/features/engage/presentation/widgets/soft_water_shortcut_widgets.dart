@@ -7,6 +7,8 @@ import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/water_shortcut_visuals.dart';
+import '../../../../core/widgets/nav_back.dart';
+
 
 class SoftWaterShortcutHeader extends StatelessWidget {
   const SoftWaterShortcutHeader({super.key});
@@ -15,21 +17,7 @@ class SoftWaterShortcutHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SoftTap(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.modernLine),
-              boxShadow: AppSpacing.soft,
-            ),
-            child: Icon(Icons.arrow_back_rounded, color: AppColors.primary.withValues(alpha: 0.75)),
-          ),
-        ),
+        const SoftNavBackButton(),
         const SizedBox(width: 12),
         const Expanded(
           child: Column(

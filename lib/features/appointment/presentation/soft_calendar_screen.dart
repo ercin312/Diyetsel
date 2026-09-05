@@ -12,6 +12,7 @@ import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_calendar_widgets.dart';
 
@@ -98,6 +99,22 @@ class _SoftCalendarScreenState extends ConsumerState<SoftCalendarScreen> {
               thisWeek: thisWeek,
               pending: pending,
             ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: widget.admin ? 'Klinik ritmi' : 'Randevu ipucu',
+              body: widget.admin
+                  ? (pending > 0
+                      ? '$pending bekleyen talep var — hızlı onay danışan bağlılığını artırır.'
+                      : 'Bu hafta $thisWeek seans. Sessiz danışanlara kısa bir kontrol mesajı at.')
+                  : (next == null
+                      ? 'Düzenli seanslar planı güncel tutar. Müsait bir slot seçip talep gönder.'
+                      : 'Seansından 1 gün önce check-in ve ölçülerini güncelle — görüşme daha verimli olur.'),
+              icon: widget.admin ? Icons.event_available_rounded : Icons.calendar_month_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+              onTap: widget.admin ? null : () => _book(context, store, user),
+              actionLabel: widget.admin ? null : 'Randevu talep et →',
+            ),
             const SizedBox(height: 14),
             SoftFormatToggle(
               format: _format,

@@ -10,6 +10,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/utils/engage_logic.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/barcode_visuals.dart';
 import 'widgets/soft_barcode_widgets.dart';
@@ -131,6 +132,14 @@ class _SoftBarcodeScreenState extends ConsumerState<SoftBarcodeScreen> {
               canScan: _canScanCamera,
               stamp: stamp,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Etiket oku',
+              body: '100 g kalorisine bak; porsiyonu kendi tabağınla kıyasla. Bütçen ~$budget kcal.',
+              icon: Icons.qr_code_scanner_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ),
             const SizedBox(height: 14),
             const SoftBarcodeHowItWorksCard()
                 .animate()

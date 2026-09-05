@@ -19,6 +19,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../engage/presentation/engage_screens.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import 'widgets/soft_tracker_widgets.dart';
 
 /// Soft premium modern tracker hub — separate Su / Vücut / Öğün experiences.
@@ -162,6 +163,20 @@ class SoftWaterTrackerScreen extends ConsumerWidget {
             .animate()
             .fadeIn(delay: 80.ms, duration: 280.ms),
         const SizedBox(height: 14),
+        SoftTipCard(
+          title: log.progress >= 1
+              ? 'Hedef tamam'
+              : remaining > 500
+                  ? 'Hâlâ yolun var'
+                  : 'Son düzlük',
+          body: log.progress >= 1
+              ? 'Bugünkü su hedefini aştın. Fazlasını akşam geç saate bırakma.'
+              : 'Her saat başı 150–200 ml hedefle. Kalan: $remaining ml.',
+          icon: Icons.tips_and_updates_outlined,
+          accent: const Color(0xFF5BA3C9),
+          tint: const Color(0xFFE3F2F8),
+        ),
+        const SizedBox(height: 14),
         SoftWaterWeekStrip(days: week)
             .animate()
             .fadeIn(delay: 120.ms, duration: 300.ms),
@@ -281,6 +296,16 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
             .animate()
             .fadeIn(duration: 300.ms)
             .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+        const SizedBox(height: 12),
+        SoftTipCard(
+          title: 'Ölçüm ritmi',
+          body: latest == null
+              ? 'İlk ölçümünü ekle — aynı tartı, sabah aç karnına, tutarlı bir kıyaslama için.'
+              : 'Haftada 1–2 ölçüm yeter. Günlük tartı dalgalanmalarına takılma; trende bak.',
+          icon: Icons.monitor_weight_outlined,
+          accent: AppColors.primary,
+          tint: AppColors.modernMint,
+        ),
         if (latest != null) ...[
           const SizedBox(height: 12),
           SoftBodyStatRow(
@@ -556,6 +581,14 @@ class SoftMealPhotoTrackerScreen extends ConsumerWidget {
                 ),
               ],
             ).animate().fadeIn(duration: 260.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Net foto = net geri bildirim',
+              body: 'Üstten, iyi ışıkta çek. Porsiyon ve sos görünür olsun — diyetisyenin yorumu daha isabetli olur.',
+              icon: Icons.photo_camera_outlined,
+              accent: const Color(0xFFE07A5F),
+              tint: const Color(0xFFFFF0E8),
+            ),
             const SizedBox(height: 12),
             for (var i = 0; i < logs.length; i++)
               SoftMealPhotoCard(log: logs[i], index: i),

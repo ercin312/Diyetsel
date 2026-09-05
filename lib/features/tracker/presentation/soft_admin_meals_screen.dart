@@ -13,8 +13,11 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../core/widgets/nav_back.dart';
+
 
 /// Soft premium admin meal photo inbox.
 class SoftAdminMealsScreen extends ConsumerWidget {
@@ -45,6 +48,16 @@ class SoftAdminMealsScreen extends ConsumerWidget {
                   .animate()
                   .fadeIn(duration: 280.ms)
                   .slideY(begin: -0.05, curve: Curves.easeOutCubic),
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: pending > 0 ? 'Bekleyen geri bildirim' : 'Öğün kutusu',
+                body: pending > 0
+                    ? '$pending öğün yorum bekliyor — kısa ve net geri bildirim danışanı motive eder.'
+                    : 'Gelen fotoğrafları buradan incele. Porsiyon ve dengeye odaklan.',
+                icon: Icons.photo_camera_outlined,
+                accent: const Color(0xFFE07A5F),
+                tint: const Color(0xFFFFF0E8),
+              ),
               const SizedBox(height: 14),
               _Hero(total: logs.length, pending: pending)
                   .animate()
@@ -92,21 +105,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SoftTap(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.modernLine),
-              boxShadow: AppSpacing.soft,
-            ),
-            child: Icon(Icons.arrow_back_rounded, color: AppColors.primary.withValues(alpha: 0.75)),
-          ),
-        ),
+        const SoftNavBackButton(),
         const SizedBox(width: 12),
         const Expanded(
           child: Column(

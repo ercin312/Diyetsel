@@ -274,6 +274,8 @@ class AppStore {
 
   Future<void> saveRecipe(Recipe item) => db.put(FirestorePaths.recipes, item.id, item.toMap());
 
+  Future<void> deleteRecipe(String id) => db.delete(FirestorePaths.recipes, id);
+
   List<ChatThread> threadsFor(String userId) {
     final items = _map(FirestorePaths.chats, ChatThread.fromMap)
         .where((e) => e.participantIds.contains(userId))

@@ -6,6 +6,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_service_widgets.dart';
 
@@ -69,6 +70,16 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
               categories: catCount,
               fromPrice: fromPrice,
             ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
+            if (!widget.admin) ...[
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: 'Paket seçerken',
+                body: 'İhtiyacına uyan süreyi ve içerikleri oku; talebin diyetisyene iletilir. Düzenli takip paketleri, tek seferlik danışmanlıktan daha kalıcı sonuç verir.',
+                icon: Icons.inventory_2_outlined,
+                accent: AppColors.primary,
+                tint: AppColors.modernMint,
+              ).animate().fadeIn(delay: 80.ms, duration: 280.ms),
+            ],
             const SizedBox(height: 14),
             SizedBox(
               height: 40,
@@ -88,7 +99,13 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
             ).animate().fadeIn(delay: 90.ms, duration: 280.ms),
             const SizedBox(height: 16),
             if (shown.isEmpty)
-              const SoftServicesEmpty()
+              SoftEmptyRich(
+                title: widget.admin ? 'Henüz paket yok' : 'Paket bulunamadı',
+                body: widget.admin
+                    ? 'Yeni bir hizmet paketi ekleyerek danışanlara sunmaya başla.'
+                    : 'Bu kategoride aktif paket yok — Tümü filtresine dön veya biraz sonra tekrar bak.',
+                icon: Icons.inventory_2_outlined,
+              )
             else ...[
               SoftServiceFeaturedCard(
                 service: shown.first,

@@ -6,6 +6,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/utils/achievement_logic.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/badge_visuals.dart';
 import 'widgets/soft_badges_widgets.dart';
@@ -76,6 +77,16 @@ class _SoftBadgesScreenState extends ConsumerState<SoftBadgesScreen> {
               remaining: remaining,
               bestPct: bestPct,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Küçük adım, büyük rozet',
+              body: next != null
+                  ? 'Sıradaki hedefin yakın: ${next.badge.title}. Bugün bir check-in, su veya ders tamamlamak seni öne taşır.'
+                  : 'Tüm rozetler senin — düzenli alışkanlıklar yeni hedefleri açar. Ritmi koru!',
+              icon: Icons.emoji_events_outlined,
+              accent: const Color(0xFFD4A017),
+              tint: const Color(0xFFFFF6E9),
+            ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
             if (next != null) ...[
               const SizedBox(height: 14),
               SoftNextBadgeCard(
@@ -100,9 +111,13 @@ class _SoftBadgesScreenState extends ConsumerState<SoftBadgesScreen> {
             ).animate().fadeIn(delay: 115.ms, duration: 280.ms),
             const SizedBox(height: 14),
             if (filtered.isEmpty)
-              SoftBadgesEmptyFilter(filter: _filter)
-                  .animate()
-                  .fadeIn(duration: 280.ms)
+              SoftEmptyRich(
+                title: 'Bu filtrede rozet yok',
+                body: _filter == 'Kazanılan'
+                    ? 'Henüz rozet kazanmadın — küçük günlük adımlar seni buraya getirir.'
+                    : 'Filtreyi değiştir veya hedeflerine doğru ilerlemeye devam et.',
+                icon: Icons.emoji_events_outlined,
+              ).animate().fadeIn(duration: 280.ms)
             else
               for (var i = 0; i < filtered.length; i++)
                 Padding(

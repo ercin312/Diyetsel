@@ -16,6 +16,7 @@ import '../../../core/widgets/marketplace.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/recipe_visuals.dart';
+import 'recipe_editor_screen.dart';
 import 'soft_recipe_screen.dart';
 
 class RecipeTonightCard extends ConsumerWidget {
@@ -235,12 +236,24 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
 
     if (cartoon) {
       return AppPage(
-        title: 'Tarifler',
+        title: widget.admin ? 'Tarif yönetimi' : 'Tarifler',
         padding: EdgeInsets.zero,
+        fab: widget.admin
+            ? FloatingActionButton.extended(
+                backgroundColor: AppColors.kawaiiLeaf,
+                foregroundColor: Colors.white,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(builder: (_) => const RecipeEditorScreen()),
+                ),
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Yeni tarif', style: TextStyle(fontWeight: FontWeight.w800)),
+              )
+            : null,
         child: ColoredBox(
           color: AppColors.kawaiiSurfaceCream,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+            padding: EdgeInsets.fromLTRB(18, 8, 18, widget.admin ? 100 : 28),
             children: [
               _CartoonRecipesHero(count: recipes.length)
                   .animate()

@@ -10,6 +10,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/fasting_visuals.dart';
 import 'widgets/soft_fasting_widgets.dart';
@@ -86,6 +87,14 @@ class _SoftFastingScreenState extends ConsumerState<SoftFastingScreen> {
               remainingHours: remaining,
               active: session.active,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Oruçta hidrasyon',
+              body: 'Oruç penceresinde kalori yok: su, sade çay ve şekersiz kahve serbest. Susuzluk çoğu zaman açlık gibi hissedilir — yudum yudum iç.',
+              icon: Icons.water_drop_outlined,
+              accent: const Color(0xFF5BA3C9),
+              tint: const Color(0xFFE3F2F8),
+            ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
             const SizedBox(height: 14),
             const SoftFastingWindowCard()
                 .animate()

@@ -111,8 +111,8 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
         ),
         _MoreItem(
           icon: Icons.palette_outlined,
-          title: 'Ana sayfa teması',
-          subtitle: 'Modern slider & karikatür JSON',
+          title: 'Ana sayfa düzeni',
+          subtitle: 'Bölümleri göster/gizle, slider, tema',
           route: '/admin/home-theme',
           section: 'Sistem',
           tint: AppColors.kawaiiRose,

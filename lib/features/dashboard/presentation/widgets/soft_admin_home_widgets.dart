@@ -400,6 +400,14 @@ List<HomeShortcutModel> softAdminShortcuts() => const [
         icon: Icons.article_rounded,
       ),
       HomeShortcutModel(
+        id: 'home',
+        title: 'Ana sayfa',
+        route: '/admin/home-theme',
+        accent: Color(0xFFEDE8F8),
+        iconAsset: DiyetselAssets.modernIconAppsAll,
+        icon: Icons.dashboard_customize_rounded,
+      ),
+      HomeShortcutModel(
         id: 'more',
         title: 'Araçlar',
         route: '/admin/more',

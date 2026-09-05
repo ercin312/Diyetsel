@@ -10,6 +10,7 @@ import '../../../core/models/app_modules.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../gamification/presentation/gamification_screens.dart';
 import '../domain/check_in_visuals.dart';
@@ -102,6 +103,16 @@ class _SoftCheckInScreenState extends ConsumerState<SoftCheckInScreen> {
             SoftCheckInStatsRow(count: logs.length, daysSince: daysSince, due: due)
                 .animate()
                 .fadeIn(delay: 70.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Haftalık tutarlılık',
+              body: due
+                  ? 'Bu haftanın check-in’i bekliyor. Aynı gün ve saatte kayıt, trendleri daha net gösterir.'
+                  : 'Harika tempo — her hafta aynı ritimle ölçüm almak, diyetisyeninin yorumunu güçlendirir.',
+              icon: Icons.calendar_month_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ).animate().fadeIn(delay: 75.ms, duration: 280.ms),
             if (last?.dietitianNote != null) ...[
               const SizedBox(height: 12),
               SoftDietitianNoteCard(note: last!.dietitianNote!, at: last.dietitianNoteAt)

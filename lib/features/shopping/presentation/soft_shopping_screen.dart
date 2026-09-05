@@ -6,6 +6,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/shopping_visuals.dart';
 import 'widgets/soft_shopping_widgets.dart';
@@ -83,6 +84,16 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
               priority: priorityCount,
               categories: catCount,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Akıllı liste',
+              body: total == 0
+                  ? 'Diyetten tek dokunuşla liste üret — reyon sırasına göre alışveriş daha hızlı biter.'
+                  : 'Öncelikli ürünleri önce al; tamamlananları gizleyerek listen sade kalsın.',
+              icon: Icons.shopping_basket_outlined,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
             const SizedBox(height: 14),
             SoftShoppingActionRow(
               onGenerate: () => _generateFromDiet(context, store, user.id, items),
@@ -104,26 +115,47 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
             ).animate().fadeIn(delay: 95.ms, duration: 280.ms),
             const SizedBox(height: 16),
             if (items.isEmpty)
-              SoftShoppingEmpty(
-                onGenerate: () => _generateFromDiet(context, store, user.id, items),
-                onAdd: () => _openAddSheet(context, store, user.id, items),
+              SoftEmptyRich(
+                title: 'Listen henüz boş',
+                body: 'Diyet planından otomatik üret veya birkaç ürün elle ekle — market turu daha sakin geçer.',
+                icon: Icons.shopping_cart_outlined,
+                actionLabel: 'Diyetten üret',
+                onAction: () => _generateFromDiet(context, store, user.id, items),
               )
                   .animate()
                   .fadeIn(duration: 320.ms)
                   .scale(begin: const Offset(0.96, 0.96))
             else if (shown.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(28),
-                child: Text(
-                  'Bu filtrede ürün yok.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primary.withValues(alpha: 0.5),
+              SoftEmptyRich(
+                title: 'Bu filtrede ürün yok',
+                body: 'Başka bir kategori dene veya tamamlananları tekrar göster.',
+                icon: Icons.filter_alt_off_rounded,
+              ).animate().fadeIn(duration: 280.ms)
+            else ...[
+              if (open.length + priority.length <= 2) ...[
+                SoftSurfaceCard(
+                  color: AppColors.modernMint,
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  child: Row(
+                    children: [
+                      Icon(Icons.tips_and_updates_outlined, color: AppColors.primary.withValues(alpha: 0.85), size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Liste kısa görünüyor — eksik kalanları ekle veya diyetten yenile.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.5,
+                            height: 1.35,
+                            color: AppColors.primaryDeep.withValues(alpha: 0.85),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              )
-            else ...[
+                const SizedBox(height: 12),
+              ],
               if (priority.isNotEmpty) ...[
                 const SoftShoppingSectionLabel(
                   title: 'Önce bunları al',

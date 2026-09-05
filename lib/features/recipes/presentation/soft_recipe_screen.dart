@@ -8,7 +8,9 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/recipe_logic.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'recipe_editor_screen.dart';
 import 'widgets/soft_recipe_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 
 /// Soft premium modern recipes hub.
 class SoftRecipesScreen extends ConsumerStatefulWidget {
@@ -22,6 +24,15 @@ class SoftRecipesScreen extends ConsumerStatefulWidget {
 
 class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
   String _filter = 'Tümü';
+
+  Future<void> _openEditor({Recipe? existing}) async {
+    await Navigator.push<Recipe>(
+      context,
+      MaterialPageRoute<Recipe>(
+        builder: (_) => RecipeEditorScreen(existing: existing),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +54,12 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.modernWash,
+      floatingActionButton: widget.admin
+          ? SoftRecipesFab(onPressed: () => _openEditor())
+          : null,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 28),
+          padding: EdgeInsets.fromLTRB(18, 12, 18, widget.admin ? 100 : 28),
           children: [
             SoftRecipesHeader(admin: widget.admin)
                 .animate()
@@ -60,6 +74,18 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
                   curve: Curves.easeOutCubic,
                   duration: 380.ms,
                 ),
+            if (!widget.admin) ...[
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: 'Akşam için pratik',
+                body: '15 dk altı tarifleri filtreleyerek yoğun günlerde bile plandan sapmadan kal.',
+                icon: Icons.timer_outlined,
+                accent: AppColors.primary,
+                tint: AppColors.modernMint,
+                onTap: () => setState(() => _filter = 'Tümü'),
+                actionLabel: 'Tüm tarifleri gör →',
+              ),
+            ],
             const SizedBox(height: 14),
             SoftRecipesStatsRow(
               recipes: recipes.length,
@@ -130,7 +156,10 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
             ).animate().fadeIn(delay: 90.ms, duration: 280.ms),
             const SizedBox(height: 14),
             if (filtered.isEmpty)
-              const SoftRecipesEmpty()
+              SoftRecipesEmpty(
+                admin: widget.admin,
+                onAdd: widget.admin ? () => _openEditor() : null,
+              )
             else ...[
               SoftRecipeFeaturedCard(
                 recipe: filtered.first,
@@ -193,7 +222,34 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => SoftRecipeDetailSheet(recipe: recipe),
+      builder: (ctx) => SoftRecipeDetailSheet(
+        recipe: recipe,
+        admin: widget.admin,
+        onEdit: widget.admin
+            ? () async {
+                Navigator.pop(ctx);
+                await _openEditor(existing: recipe);
+              }
+            : null,
+        onDelete: widget.admin
+            ? () async {
+                final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (dCtx) => AlertDialog(
+                    title: const Text('Tarifi sil'),
+                    content: Text('“${recipe.title}” silinsin mi?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Vazgeç')),
+                      FilledButton(onPressed: () => Navigator.pop(dCtx, true), child: const Text('Sil')),
+                    ],
+                  ),
+                );
+                if (ok != true || !context.mounted) return;
+                await ref.read(appStoreProvider).deleteRecipe(recipe.id);
+                if (ctx.mounted) Navigator.pop(ctx);
+              }
+            : null,
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import '../../../core/utils/pdf_report.dart';
 import '../../../core/utils/report_logic.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_reports_widgets.dart';
 
@@ -79,6 +80,16 @@ class _SoftReportsScreenState extends ConsumerState<SoftReportsScreen> {
               period: _period,
               onChanged: (p) => setState(() => _period = p),
             ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
+            const SizedBox(height: 14),
+            SoftTipCard(
+              title: 'İçgörü ipucu',
+              body: report.wellnessScore >= 70
+                  ? 'Skor güçlü — su ve öğün tutarlılığını koru; küçük sapmalar haftalık ortalamayı bozmaz.'
+                  : 'Skoru yükseltmek için suyu ve check-in’i düzenli tut; PDF’i diyetisyeninle paylaşarak net geri bildirim al.',
+              icon: Icons.insights_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ).animate().fadeIn(delay: 80.ms, duration: 280.ms),
             const SizedBox(height: 16),
             SoftReportsMetricGrid(report: report)
                 .animate()

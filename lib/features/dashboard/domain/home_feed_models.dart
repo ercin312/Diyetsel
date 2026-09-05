@@ -247,7 +247,7 @@ class HomeFeedData {
           id: 'story',
           title: 'Hikayem',
           route: '/app/story',
-          accent: Color(0xFFFFE8B8),
+          accent: Color(0xFFFFE4C4),
           iconAsset: DiyetselAssets.modernIconStory,
           icon: Icons.auto_awesome_rounded,
         ),
@@ -255,7 +255,7 @@ class HomeFeedData {
           id: 'streak',
           title: 'Seri',
           route: '/app/story',
-          accent: Color(0xFFFFD4C8),
+          accent: Color(0xFFFFD8C8),
           iconAsset: DiyetselAssets.modernIconStreak,
           icon: Icons.local_fire_department_rounded,
         ),
@@ -263,7 +263,7 @@ class HomeFeedData {
           id: 'water',
           title: 'Su',
           route: '/app/track',
-          accent: Color(0xFFD4EEF8),
+          accent: Color(0xFFD9EAF5),
           iconAsset: DiyetselAssets.modernIconWaterDrop,
           icon: Icons.water_drop_rounded,
         ),
@@ -271,7 +271,7 @@ class HomeFeedData {
           id: 'plan',
           title: 'Plan',
           route: '/app/diet',
-          accent: Color(0xFFE4DCF5),
+          accent: Color(0xFFFFEDE6),
           iconAsset: DiyetselAssets.modernIconPlan,
           icon: Icons.assignment_rounded,
         ),
@@ -279,13 +279,13 @@ class HomeFeedData {
           id: 'all',
           title: 'Tümü',
           route: '/app/more',
-          accent: Color(0xFFD8F0E4),
+          accent: Color(0xFFFFD5C8),
           iconAsset: DiyetselAssets.modernIconAppsAll,
           icon: Icons.apps_rounded,
         ),
       ];
 
-  /// Soft modern quick actions — dark teal glyph circles.
+  /// Soft modern quick actions — ember glyph circles.
   static List<HomeQuickActionModel> modernQuickActions() => const [
         HomeQuickActionModel(
           id: 'diet',
@@ -293,7 +293,7 @@ class HomeFeedData {
           route: '/app/diet',
           iconAsset: DiyetselAssets.modernIconDietScale,
           icon: Icons.monitor_weight_outlined,
-          accent: AppColors.primary,
+          accent: Color(0xFFE4572E),
         ),
         HomeQuickActionModel(
           id: 'water',
@@ -301,7 +301,7 @@ class HomeFeedData {
           route: '/app/track',
           iconAsset: DiyetselAssets.modernIconWaterBottle,
           icon: Icons.water_drop_outlined,
-          accent: AppColors.primary,
+          accent: Color(0xFF5B8FB8),
         ),
         HomeQuickActionModel(
           id: 'appt',
@@ -309,7 +309,7 @@ class HomeFeedData {
           route: '/app/appointments',
           iconAsset: DiyetselAssets.modernIconCalendar,
           icon: Icons.event_available_outlined,
-          accent: AppColors.primary,
+          accent: Color(0xFFC43B2E),
         ),
         HomeQuickActionModel(
           id: 'svc',
@@ -317,7 +317,7 @@ class HomeFeedData {
           route: '/app/services',
           iconAsset: DiyetselAssets.modernIconService,
           icon: Icons.support_agent_outlined,
-          accent: AppColors.primary,
+          accent: Color(0xFFFF6B3D),
         ),
       ];
 }

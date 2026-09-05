@@ -30,7 +30,55 @@ class HomeThemeConfig {
     this.sections = const [],
     this.tabs = const [],
     this.colors = const HomeThemeColors(),
+    this.homeBlocks = const {},
   });
+
+  /// Stable ids for client home layout blocks (soft + cartoon).
+  static const List<String> homeBlockIds = [
+    'greeting',
+    'search',
+    'shortcuts',
+    'hero',
+    'quickActions',
+    'featuredRecipe',
+    'lessonStreak',
+    'progressChips',
+    'campaigns',
+    'recipes',
+    'articles',
+  ];
+
+  static const Map<String, String> homeBlockLabels = {
+    'greeting': 'Karşılama başlığı',
+    'search': 'Arama çubuğu',
+    'shortcuts': 'Kısayol şeridi',
+    'hero': 'Hero / slider',
+    'quickActions': 'Hızlı işlemler',
+    'featuredRecipe': 'Öne çıkan tarif',
+    'lessonStreak': 'Ders & seri kartları',
+    'progressChips': 'İlerleme chip’leri',
+    'campaigns': 'Kampanyalar',
+    'recipes': 'Tarifler bölümü',
+    'articles': 'Yazılar bölümü',
+  };
+
+  static const Map<String, String> homeBlockSubtitles = {
+    'greeting': 'İsim ve avatar alanı',
+    'search': 'Tarif / yazı arama',
+    'shortcuts': 'Hikaye, su, plan vb.',
+    'hero': 'Üstteki büyük kaydırma alanı',
+    'quickActions': 'Diyet, su, randevu, hizmet',
+    'featuredRecipe': 'Günün tarif kartı',
+    'lessonStreak': 'Mini ders ve ateş serisi',
+    'progressChips': 'Seri / su / öğün özeti',
+    'campaigns': 'Hizmet kampanya kartları',
+    'recipes': 'Yatay tarif listesi',
+    'articles': 'Blog / yazı kartları',
+  };
+
+  static Map<String, bool> defaultHomeBlocks() => {
+        for (final id in homeBlockIds) id: true,
+      };
 
   final String logoTitle;
   final String userAvatarUrl;
@@ -48,9 +96,13 @@ class HomeThemeConfig {
   final List<HomeSectionConfig> sections;
   final List<HomeTabConfig> tabs;
   final HomeThemeColors colors;
+  /// Which client-home blocks are visible. Missing keys default to visible.
+  final Map<String, bool> homeBlocks;
 
   String welcomeFor(String userName) =>
       welcomeMessage.replaceAll('{{userName}}', userName.isEmpty ? 'Dostum' : userName);
+
+  bool isHomeBlockVisible(String id) => homeBlocks[id] ?? true;
 
   HomeThemeConfig copyWith({
     String? logoTitle,
@@ -68,6 +120,7 @@ class HomeThemeConfig {
     List<HomeSectionConfig>? sections,
     List<HomeTabConfig>? tabs,
     HomeThemeColors? colors,
+    Map<String, bool>? homeBlocks,
   }) {
     return HomeThemeConfig(
       logoTitle: logoTitle ?? this.logoTitle,
@@ -85,6 +138,7 @@ class HomeThemeConfig {
       sections: sections ?? this.sections,
       tabs: tabs ?? this.tabs,
       colors: colors ?? this.colors,
+      homeBlocks: homeBlocks ?? this.homeBlocks,
     );
   }
 
@@ -104,6 +158,7 @@ class HomeThemeConfig {
         'sections': sections.map((e) => e.toMap()).toList(),
         'tabs': tabs.map((e) => e.toMap()).toList(),
         'colors': colors.toMap(),
+        'homeBlocks': homeBlocks,
       };
 
   String toJson() => const JsonEncoder.withIndent('  ').convert(toMap());
@@ -113,6 +168,14 @@ class HomeThemeConfig {
       final raw = map[key];
       if (raw is! List) return const [];
       return raw.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+    }
+
+    final blocks = Map<String, bool>.from(defaultHomeBlocks());
+    final rawBlocks = map['homeBlocks'];
+    if (rawBlocks is Map) {
+      rawBlocks.forEach((key, value) {
+        blocks['$key'] = value == true || value == 'true' || value == 1;
+      });
     }
 
     return HomeThemeConfig(
@@ -141,6 +204,7 @@ class HomeThemeConfig {
       colors: HomeThemeColors.fromMap(
         map['colors'] is Map ? Map<String, dynamic>.from(map['colors'] as Map) : const {},
       ),
+      homeBlocks: blocks,
     );
   }
 
@@ -156,6 +220,7 @@ class HomeThemeConfig {
         welcomeMessage: 'Merhaba, {{userName}}! 👋',
         welcomeSubtitle: 'Bugün için tatlı bir plan seni bekliyor',
         searchHint: 'Tarif, yazı veya hizmet ara',
+        homeBlocks: defaultHomeBlocks(),
         categories: const [
           HomeCategoryConfig(id: 'story', title: 'Hikayem', iconKey: 'star', bgColor: '#FFF9E5', route: '/app/story'),
           HomeCategoryConfig(id: 'streak', title: 'Seri', iconKey: 'fire', bgColor: '#FFE8D6', route: '/app/story'),

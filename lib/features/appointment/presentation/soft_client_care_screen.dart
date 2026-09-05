@@ -13,8 +13,11 @@ import '../../../core/models/app_modules.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../core/widgets/nav_back.dart';
+
 
 /// Soft premium client care — modules, water goal, reports.
 class SoftClientCareScreen extends ConsumerWidget {
@@ -40,7 +43,8 @@ class SoftClientCareScreen extends ConsumerWidget {
 
     final clinic = store.settings().clinicModules;
     final liters = client.waterGoalMl / 1000;
-    final checkIns = store.checkIns(userId: client.id);
+    final checkIns = store.checkIns(userId: client.id)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final desktop = context.isDesktopLayout;
     final pad = desktop
         ? EdgeInsets.fromLTRB(0, context.pagePadding.top, 0, context.pagePadding.bottom)
@@ -66,6 +70,16 @@ class SoftClientCareScreen extends ConsumerWidget {
                     curve: Curves.easeOutCubic,
                     duration: 380.ms,
                   ),
+              const SizedBox(height: 12),
+              SoftTipCard(
+                title: 'Danışan bakımı',
+                body: checkIns.isEmpty
+                    ? 'Henüz check-in yok. İlk ölçüm ve ruh hali kaydı için nazik bir hatırlatma gönder.'
+                    : 'Son check-in: ${DateFormat('d MMM', 'tr').format(checkIns.first.createdAt)}. Trend ve raporları düzenli incele.',
+                icon: Icons.favorite_outline_rounded,
+                accent: AppColors.primary,
+                tint: AppColors.modernMint,
+              ),
               const SizedBox(height: 12),
               if (desktop)
                 Row(
@@ -455,21 +469,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SoftTap(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.modernLine),
-              boxShadow: AppSpacing.soft,
-            ),
-            child: Icon(Icons.arrow_back_rounded, color: AppColors.primary.withValues(alpha: 0.75)),
-          ),
-        ),
+        const SoftNavBackButton(),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/constants/diyetsel_assets.dart';
+import '../../../core/data/providers.dart';
+import '../../../core/models/home_theme_config.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/cartoon_asset_icon.dart';
 import '../domain/home_feed_models.dart';
@@ -27,6 +29,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final hPad = width < 360 ? 14.0 : AppSpacing.pageH;
     final name = userName.isEmpty ? 'Dostum' : userName;
+    final config = ref.watch(homeThemeProvider).valueOrNull ?? HomeThemeConfig.defaults();
 
     final featured = HomeRecipeModel(
       id: 'lentil',
@@ -191,77 +194,99 @@ class CartoonConfiguredHome extends ConsumerWidget {
               28,
             ),
             children: [
-              _GreetingHeader(userName: name)
-                  .animate()
-                  .fadeIn(duration: 280.ms)
-                  .slideY(begin: -0.04, curve: Curves.easeOut),
-              const SizedBox(height: 16),
-              PremiumSearchBar(
-                hint: 'Tarif, yazı veya hizmet ara...',
-                onTap: () => context.push('/app/recipes'),
-              ),
-              const SizedBox(height: 18),
-              ShortcutRail(items: HomeFeedData.shortcuts()),
-              const SizedBox(height: 16),
-              const HeroPlanCard(
-                title: 'Bugünkü plan tamam 🎉',
-                subtitle: 'Kampanyalar ve tarifler aşağıda, günün tek kartta.',
-                ctaLabel: 'Diyetim',
-                ctaRoute: '/app/diet',
-              ),
-              const SizedBox(height: 16),
-              QuickActionGrid(items: HomeFeedData.quickActions()),
-              const SizedBox(height: 18),
-              FeaturedRecipeCard(recipe: featured),
-              const SizedBox(height: 14),
-              SizedBox(
-                height: 168,
-                child: Row(
-                  children: [
-                    Expanded(child: LessonCard(lesson: lesson)),
-                    const SizedBox(width: 10),
-                    Expanded(child: StreakCard(streak: streak)),
-                  ],
+              if (config.isHomeBlockVisible('greeting')) ...[
+                _GreetingHeader(userName: name)
+                    .animate()
+                    .fadeIn(duration: 280.ms)
+                    .slideY(begin: -0.04, curve: Curves.easeOut),
+                const SizedBox(height: 16),
+              ],
+              if (config.isHomeBlockVisible('search')) ...[
+                PremiumSearchBar(
+                  hint: 'Tarif, yazı veya hizmet ara...',
+                  onTap: () => context.push('/app/recipes'),
                 ),
-              ),
-              const SizedBox(height: 12),
-              ProgressChipRow(items: chips),
-              const SizedBox(height: 22),
-              SectionHeaderRow(title: 'Kampanyalar', onSeeAll: () => context.push('/app/services')),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 128,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: campaigns.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => CampaignCard(campaign: campaigns[i]),
+                const SizedBox(height: 18),
+              ],
+              if (config.isHomeBlockVisible('shortcuts')) ...[
+                ShortcutRail(items: HomeFeedData.shortcuts()),
+                const SizedBox(height: 16),
+              ],
+              if (config.isHomeBlockVisible('hero')) ...[
+                const HeroPlanCard(
+                  title: 'Bugünkü plan tamam 🎉',
+                  subtitle: 'Kampanyalar ve tarifler aşağıda, günün tek kartta.',
+                  ctaLabel: 'Diyetim',
+                  ctaRoute: '/app/diet',
                 ),
-              ),
-              const SizedBox(height: 20),
-              SectionHeaderRow(title: 'Sana özel tarifler', onSeeAll: () => context.push('/app/recipes')),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 188,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: recipes.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => RecipeThumbCard(recipe: recipes[i]),
+                const SizedBox(height: 16),
+              ],
+              if (config.isHomeBlockVisible('quickActions')) ...[
+                QuickActionGrid(items: HomeFeedData.quickActions()),
+                const SizedBox(height: 18),
+              ],
+              if (config.isHomeBlockVisible('featuredRecipe')) ...[
+                FeaturedRecipeCard(recipe: featured),
+                const SizedBox(height: 14),
+              ],
+              if (config.isHomeBlockVisible('lessonStreak')) ...[
+                SizedBox(
+                  height: 168,
+                  child: Row(
+                    children: [
+                      Expanded(child: LessonCard(lesson: lesson)),
+                      const SizedBox(width: 10),
+                      Expanded(child: StreakCard(streak: streak)),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              SectionHeaderRow(title: 'Öne çıkan yazılar', onSeeAll: () => context.push('/app/blog')),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 128,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: articles.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => ArticleCard(article: articles[i]),
+                const SizedBox(height: 12),
+              ],
+              if (config.isHomeBlockVisible('progressChips')) ...[
+                ProgressChipRow(items: chips),
+                const SizedBox(height: 22),
+              ],
+              if (config.isHomeBlockVisible('campaigns')) ...[
+                SectionHeaderRow(title: 'Kampanyalar', onSeeAll: () => context.push('/app/services')),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 128,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: campaigns.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (_, i) => CampaignCard(campaign: campaigns[i]),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 20),
+              ],
+              if (config.isHomeBlockVisible('recipes')) ...[
+                SectionHeaderRow(title: 'Sana özel tarifler', onSeeAll: () => context.push('/app/recipes')),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 188,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: recipes.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (_, i) => RecipeThumbCard(recipe: recipes[i]),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              if (config.isHomeBlockVisible('articles')) ...[
+                SectionHeaderRow(title: 'Öne çıkan yazılar', onSeeAll: () => context.push('/app/blog')),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 128,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: articles.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (_, i) => ArticleCard(article: articles[i]),
+                  ),
+                ),
+              ],
               const SizedBox(height: 12),
             ],
           ),

@@ -8,6 +8,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/utils/engage_logic.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_eat_out_widgets.dart';
 
@@ -67,6 +68,16 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
               fits: fits.length,
               categories: catCount,
             ).animate().fadeIn(delay: 70.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Restoran seçimi',
+              body: tight
+                  ? 'Kalan kalori dar — ızgara protein + bol salata, sosları ayrı iste. Tatlıyı ertelemek en kolay kazanç.'
+                  : 'Menüde ızgara / fırın tercih et; sos ve ekmek yanını bilinçli seç. Önce proteini bitir.',
+              icon: Icons.restaurant_menu_rounded,
+              accent: const Color(0xFFE07A5F),
+              tint: AppColors.modernCoralSoft,
+            ).animate().fadeIn(delay: 80.ms, duration: 280.ms),
             const SizedBox(height: 14),
             const SoftEatOutRulesCard()
                 .animate()
@@ -108,7 +119,11 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
             ).animate().fadeIn(delay: 100.ms, duration: 280.ms),
             const SizedBox(height: 14),
             if (shown.isEmpty)
-              const SoftEatOutEmpty()
+              SoftEmptyRich(
+                title: 'Bu filtrede seçenek yok',
+                body: 'Kalan kalorine uyan başka bir kategori dene veya menüyü yeniden gözden geçir.',
+                icon: Icons.restaurant_outlined,
+              )
             else ...[
               SoftEatOutFeaturedCard(
                 idea: shown.first,

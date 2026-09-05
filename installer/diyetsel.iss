@@ -2,7 +2,7 @@
 ; Build: installer\build_setup.ps1  or  ISCC.exe installer\diyetsel.iss
 
 #define MyAppName "e-Diyet"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "e-Diyet"
 #define MyAppURL "https://diyetsel.app"
 #define MyAppExeName "diyetsel.exe"

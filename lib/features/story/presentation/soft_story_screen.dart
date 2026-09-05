@@ -13,6 +13,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/widgets/module_gate.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/story_visuals.dart';
 import 'widgets/soft_story_widgets.dart';
@@ -105,6 +106,14 @@ class _SoftStoryScreenState extends ConsumerState<SoftStoryScreen> {
               waterPct: waterPct,
               badges: badgeCount,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'Paylaşım etkisi',
+              body: 'Hikaye kartını hikâyene eklemek sosyal hesap verebilirliği artırır — seriyi bozmamak için ekstra motivasyon.',
+              icon: Icons.auto_awesome_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ),
             const SizedBox(height: 14),
             const SoftStoryHowItWorksCard()
                 .animate()

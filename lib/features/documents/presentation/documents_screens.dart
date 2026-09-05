@@ -13,6 +13,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../domain/vault_io.dart';
@@ -145,48 +146,194 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     return AppPage(
       title: 'Belge kasası',
-      fab: FloatingActionButton(
+      padding: context.isModern ? EdgeInsets.zero : null,
+      fab: FloatingActionButton.extended(
         onPressed: () => _upload(context, store, user),
-        child: const Icon(Icons.upload_file_rounded),
+        icon: const Icon(Icons.upload_file_rounded),
+        label: const Text('Yükle', style: TextStyle(fontWeight: FontWeight.w800)),
       ),
-      child: ListView(
-        children: [
-          FeatureBanner(
-            icon: Icons.folder_special_rounded,
-            emoji: '📁',
-            title: 'Güvenli belge kasası',
-            subtitle: 'Lab sonuçları, diyet planı PDF’leri ve formları burada sakla; dokunarak aç veya paylaş.',
-          ),
-          const SizedBox(height: 12),
-          if (files.isEmpty)
-            EmptyState(
-              icon: Icons.folder_open_rounded,
-              title: 'Henüz belge yok',
-              subtitle: 'Yükle butonuyla PDF, fotoğraf veya Word ekle.',
-            )
-          else
-            for (final f in shown.isEmpty ? files : shown)
-              DiyetselCard(
-                onTap: () => VaultIO.open(context, f),
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(VaultVisuals.iconForFile(f), color: context.brandPrimary),
-                  title: Text(f.name, style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text(
-                    [
-                      VaultVisuals.label(f.category),
-                      DateFormat('d MMM y HH:mm', 'tr').format(f.uploadedAt),
-                      if (user.isAdmin && f.ownerName.isNotEmpty) f.ownerName,
-                    ].join(' · '),
+      child: context.isModern
+          ? SoftWashBackground(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 100),
+                children: [
+                  SoftSurfaceCard(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                    color: AppColors.modernMint,
+                    child: Row(
+                      children: [
+                        SoftProgressRing(
+                          progress: files.isEmpty ? 0 : 1,
+                          color: AppColors.primary,
+                          child: Text(
+                            '${files.length}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                              color: AppColors.primaryDeep,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.isAdmin ? 'Klinik belge kasası' : 'Güvenli belge kasası',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                  color: AppColors.primaryDeep,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Lab, plan PDF ve formlar — tek yerde sakla, aç, paylaş.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12.5,
+                                  color: AppColors.primary.withValues(alpha: 0.55),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn(duration: 280.ms),
+                  const SizedBox(height: 12),
+                  SoftTipCard(
+                    title: 'Dosya ipucu',
+                    body: 'PDF ve net fotoğraflar en iyi sonucu verir. Kategori etiketi eklemek aramayı kolaylaştırır.',
+                    icon: Icons.folder_special_outlined,
+                    accent: AppColors.primary,
+                    tint: Colors.white,
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.more_horiz_rounded),
-                    onPressed: () => _openDetail(context, store, user, f),
+                  const SizedBox(height: 14),
+                  SoftChipRail(
+                    labels: [
+                      for (final c in categories) c == 'Tümü' ? 'Tümü' : VaultVisuals.label(c),
+                    ],
+                    selectedIndex: categories.indexOf(_filter).clamp(0, categories.length - 1),
+                    onSelected: (i) => setState(() => _filter = categories[i]),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  if (files.isEmpty)
+                    SoftEmptyRich(
+                      title: 'Henüz belge yok',
+                      body: 'Lab sonucu veya diyet planı PDF’ini yükleyerek başla.',
+                      icon: Icons.folder_open_rounded,
+                      actionLabel: 'Belge yükle',
+                      onAction: () => _upload(context, store, user),
+                    )
+                  else if (shown.isEmpty)
+                    SoftEmptyRich(
+                      title: 'Bu kategoride yok',
+                      body: 'Başka bir filtre dene veya yeni belge yükle.',
+                      icon: Icons.filter_alt_outlined,
+                    )
+                  else
+                    for (var i = 0; i < shown.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: SoftSurfaceCard(
+                          onTap: () => VaultIO.open(context, shown[i]),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: AppColors.modernMint,
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Icon(
+                                  VaultVisuals.iconForFile(shown[i]),
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      shown[i].name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.primaryDeep,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      [
+                                        VaultVisuals.label(shown[i].category),
+                                        DateFormat('d MMM y', 'tr').format(shown[i].uploadedAt),
+                                        if (user.isAdmin && shown[i].ownerName.isNotEmpty) shown[i].ownerName,
+                                      ].join(' · '),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                        color: AppColors.primary.withValues(alpha: 0.5),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => _openDetail(context, store, user, shown[i]),
+                                icon: const Icon(Icons.more_horiz_rounded),
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: (30 * i).ms, duration: 260.ms),
+                      ),
+                ],
               ),
-        ],
-      ),
+            )
+          : ListView(
+              children: [
+                FeatureBanner(
+                  icon: Icons.folder_special_rounded,
+                  emoji: '📁',
+                  title: 'Güvenli belge kasası',
+                  subtitle:
+                      'Lab sonuçları, diyet planı PDF’leri ve formları burada sakla; dokunarak aç veya paylaş.',
+                ),
+                const SizedBox(height: 12),
+                if (files.isEmpty)
+                  EmptyState(
+                    icon: Icons.folder_open_rounded,
+                    title: 'Henüz belge yok',
+                    subtitle: 'Yükle butonuyla PDF, fotoğraf veya Word ekle.',
+                  )
+                else
+                  for (final f in shown.isEmpty ? files : shown)
+                    DiyetselCard(
+                      onTap: () => VaultIO.open(context, f),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(VaultVisuals.iconForFile(f), color: context.brandPrimary),
+                        title: Text(f.name, style: const TextStyle(fontWeight: FontWeight.w800)),
+                        subtitle: Text(
+                          [
+                            VaultVisuals.label(f.category),
+                            DateFormat('d MMM y HH:mm', 'tr').format(f.uploadedAt),
+                            if (user.isAdmin && f.ownerName.isNotEmpty) f.ownerName,
+                          ].join(' · '),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.more_horiz_rounded),
+                          onPressed: () => _openDetail(context, store, user, f),
+                        ),
+                      ),
+                    ),
+              ],
+            ),
     );
   }
 

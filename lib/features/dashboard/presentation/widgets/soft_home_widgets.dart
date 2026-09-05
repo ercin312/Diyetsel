@@ -1,18 +1,18 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/models/home_theme_config.dart';
 import '../../domain/home_feed_models.dart';
-import 'premium_home_widgets.dart' show SoftTap, DiyetselLogoMark;
+import 'premium_home_widgets.dart' show SoftTap;
+import 'soft_home_palette.dart';
 
-/// Soft modern home widgets — cream / teal palette; modern_icon_* assets.
-/// Does not alter cartoon [premium_home_widgets] defaults.
+/// Soft modern home widgets — warm ember / orange-red wellness language.
 
 class SoftModernIcon extends StatelessWidget {
   const SoftModernIcon(
@@ -39,7 +39,7 @@ class SoftModernIcon extends StatelessWidget {
       errorBuilder: (_, _, _) => Icon(
         fallback,
         size: size * 0.85,
-        color: fallbackColor ?? AppColors.primary,
+        color: fallbackColor ?? SoftHomeColors.ember,
       ),
     );
   }
@@ -51,46 +51,140 @@ class SoftSearchBar extends StatelessWidget {
   final String hint;
   final VoidCallback? onTap;
 
+  void _openQuickSearch(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final items = [
+          (Icons.menu_book_rounded, 'Tarifler', '/app/recipes', SoftHomeColors.blushSoft),
+          (Icons.article_outlined, 'Blog', '/app/blog', SoftHomeColors.amberSoft),
+          (Icons.restaurant_rounded, 'Diyet planım', '/app/diet', SoftHomeColors.blush),
+          (Icons.water_drop_rounded, 'Su takibi', '/app/track', SoftHomeColors.waterSoft),
+          (Icons.storefront_outlined, 'Hizmetler', '/app/services', SoftHomeColors.blushSoft),
+          (Icons.school_outlined, 'Mini dersler', '/app/learn', SoftHomeColors.amberSoft),
+          (Icons.shopping_cart_outlined, 'Alışveriş', '/app/shopping', SoftHomeColors.blush),
+          (Icons.insights_rounded, 'Raporlar', '/app/reports', SoftHomeColors.waterSoft),
+        ];
+        return Container(
+          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+          decoration: BoxDecoration(
+            color: SoftHomeColors.cream,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: SoftHomeColors.line),
+            boxShadow: SoftHomeColors.liftShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: SoftHomeColors.line,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text('Hızlı keşfet', style: SoftHomeColors.display(size: 20)),
+              const SizedBox(height: 4),
+              Text('Nereye gitmek istiyorsun?', style: SoftHomeColors.body()),
+              const SizedBox(height: 14),
+              for (final item in items)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SoftTap(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      context.push(item.$3);
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: item.$4,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: SoftHomeColors.line.withValues(alpha: 0.7)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(item.$1, color: SoftHomeColors.emberDeep, size: 22),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(item.$2, style: SoftHomeColors.title(size: 14.5)),
+                          ),
+                          Icon(Icons.chevron_right_rounded, color: SoftHomeColors.muted),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SoftTap(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSearch),
+      onTap: onTap ?? () => _openQuickSearch(context),
+      borderRadius: BorderRadius.circular(24),
       child: Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        height: 54,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSearch),
-          border: Border.all(color: AppColors.modernLine),
-          boxShadow: AppSpacing.soft,
+          color: SoftHomeColors.cream,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: SoftHomeColors.line),
+          boxShadow: SoftHomeColors.softShadow,
         ),
         child: Row(
           children: [
-            SoftModernIcon(
-              DiyetselAssets.modernIconSearch,
-              size: 22,
-              fallback: Icons.search_rounded,
-              fallbackColor: AppColors.primary.withValues(alpha: 0.55),
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: SoftHomeColors.blush,
+              ),
+              alignment: Alignment.center,
+              child: SoftModernIcon(
+                DiyetselAssets.modernIconSearch,
+                size: 18,
+                fallback: Icons.search_rounded,
+                fallbackColor: SoftHomeColors.emberDeep,
+              ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 hint,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: AppColors.primary.withValues(alpha: 0.45),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
+                style: SoftHomeColors.body(color: SoftHomeColors.muted.withValues(alpha: 0.85)),
               ),
             ),
-            SoftModernIcon(
-              DiyetselAssets.modernIconBell,
-              size: 22,
-              fallback: Icons.tune_rounded,
-              fallbackColor: AppColors.primary.withValues(alpha: 0.45),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: SoftHomeColors.emberGradient,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: const Text(
+                'Keşfet',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ],
         ),
@@ -107,7 +201,7 @@ class SoftShortcutRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 98,
+      height: 104,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
@@ -117,36 +211,47 @@ class SoftShortcutRail extends StatelessWidget {
           return SoftTap(
             onTap: () => context.push(item.route),
             child: SizedBox(
-              width: 72,
+              width: 76,
               child: Column(
                 children: [
                   Container(
-                    width: 56,
-                    height: 56,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: item.accent,
-                      boxShadow: AppSpacing.soft,
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          item.accent,
+                          Color.lerp(item.accent, SoftHomeColors.blush, 0.35)!,
+                        ],
+                      ),
+                      border: Border.all(color: SoftHomeColors.line.withValues(alpha: 0.8)),
+                      boxShadow: SoftHomeColors.softShadow,
                     ),
                     alignment: Alignment.center,
                     child: SoftModernIcon(
                       item.iconAsset,
                       size: 30,
                       fallback: item.icon,
-                      fallbackColor: AppColors.primary,
+                      fallbackColor: SoftHomeColors.emberDeep,
                     ),
-                  ),
+                  )
+                      .animate(onPlay: (c) => c.forward())
+                      .scale(
+                        begin: const Offset(0.9, 0.9),
+                        delay: (45 * i).ms,
+                        duration: 400.ms,
+                        curve: Curves.easeOutBack,
+                      ),
                   const SizedBox(height: 8),
                   Text(
                     item.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primaryDeep,
-                    ),
+                    style: SoftHomeColors.label(size: 12, color: SoftHomeColors.ink),
                   ),
                 ],
               ),
@@ -178,7 +283,7 @@ class SoftHeroPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tint = bgColor ?? const Color(0xFFE8F5F0);
+    final tint = bgColor ?? SoftHomeColors.blushSoft;
     return SoftTap(
       onTap: () => context.push(ctaRoute),
       child: Container(
@@ -189,12 +294,12 @@ class SoftHeroPlanCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               tint,
-              Color.lerp(tint, const Color(0xFFFFF6E9), 0.65)!,
+              Color.lerp(tint, SoftHomeColors.parchment, 0.55)!,
             ],
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
-          border: Border.all(color: AppColors.modernLine),
-          boxShadow: AppSpacing.softLift,
+          border: Border.all(color: SoftHomeColors.line),
+          boxShadow: SoftHomeColors.softShadow,
         ),
         child: Row(
           children: [
@@ -202,42 +307,16 @@ class SoftHeroPlanCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primaryDeep,
-                      height: 1.2,
-                    ),
-                  ),
+                  Text(title, maxLines: 2, overflow: TextOverflow.ellipsis, style: SoftHomeColors.title(size: 18)),
                   const SizedBox(height: 8),
-                  Text(
-                    subtitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary.withValues(alpha: 0.7),
-                      height: 1.35,
-                    ),
-                  ),
+                  Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: SoftHomeColors.body()),
                   const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      gradient: SoftHomeColors.emberGradient,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.35),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      boxShadow: SoftHomeColors.softShadow,
                     ),
                     child: Text(
                       ctaLabel,
@@ -260,7 +339,7 @@ class SoftHeroPlanCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.14),
+                      color: SoftHomeColors.ember.withValues(alpha: 0.16),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),
@@ -418,8 +497,8 @@ class _SoftHeroSliderState extends State<SoftHeroSlider> {
                     height: 7,
                     decoration: BoxDecoration(
                       color: i == _index
-                          ? AppColors.primary
-                          : AppColors.primary.withValues(alpha: 0.22),
+                          ? SoftHomeColors.ember
+                          : SoftHomeColors.ember.withValues(alpha: 0.22),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -451,8 +530,8 @@ class SoftQuickActionGrid extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-                  border: Border.all(color: AppColors.modernLine),
-                  boxShadow: AppSpacing.soft,
+                  border: Border.all(color: SoftHomeColors.line),
+                  boxShadow: SoftHomeColors.softShadow,
                 ),
                 child: Column(
                   children: [
@@ -461,24 +540,20 @@ class SoftQuickActionGrid extends StatelessWidget {
                       height: 48,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: SoftHomeColors.blush,
                       ),
                       alignment: Alignment.center,
                       child: SoftModernIcon(
                         items[i].iconAsset,
                         size: 28,
                         fallback: items[i].icon,
-                        fallbackColor: AppColors.primary,
+                        fallbackColor: SoftHomeColors.emberDeep,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       items[i].title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                        color: AppColors.primaryDeep,
-                      ),
+                      style: SoftHomeColors.label(size: 12, color: SoftHomeColors.ink),
                     ),
                   ],
                 ),
@@ -491,7 +566,7 @@ class SoftQuickActionGrid extends StatelessWidget {
   }
 }
 
-/// Dark teal featured recipe — mockup “Mercimek çorbası” card.
+/// Dark ember featured recipe card.
 class SoftFeaturedRecipeCard extends StatelessWidget {
   const SoftFeaturedRecipeCard({super.key, required this.recipe});
 
@@ -504,9 +579,9 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 16, 10, 14),
         decoration: BoxDecoration(
-          color: AppColors.modernTealCard,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
-          boxShadow: AppSpacing.softLift,
+          gradient: SoftHomeColors.emberGradient,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: SoftHomeColors.liftShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,10 +589,9 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
             if (recipe.sectionLabel.isNotEmpty)
               Text(
                 recipe.sectionLabel,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.72),
+                style: SoftHomeColors.label(
+                  size: 12,
+                  color: Colors.white.withValues(alpha: 0.78),
                 ),
               ),
             const SizedBox(height: 6),
@@ -530,20 +604,14 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
                     children: [
                       Text(
                         recipe.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
+                        style: SoftHomeColors.display(size: 20, color: Colors.white),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         recipe.subtitle,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.78),
-                          height: 1.35,
+                        style: SoftHomeColors.body(
+                          size: 12.5,
+                          color: Colors.white.withValues(alpha: 0.82),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -551,9 +619,9 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
                         spacing: 8,
                         runSpacing: 6,
                         children: [
-                          _meta('🔥', '${recipe.kcal} kcal'),
-                          _meta('⏱', '${recipe.minutes} dk'),
-                          _meta('💪', '${recipe.proteinG} g'),
+                          _meta('${recipe.kcal} kcal'),
+                          _meta('${recipe.minutes} dk'),
+                          _meta('${recipe.proteinG} g protein'),
                         ],
                       ),
                       if (recipe.badge.isNotEmpty) ...[
@@ -561,7 +629,7 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.18),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Text(
@@ -592,15 +660,15 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _meta(String emoji, String text) {
+  Widget _meta(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
+        color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        '$emoji $text',
+        text,
         style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Colors.white),
       ),
     );
@@ -623,17 +691,11 @@ class SoftLessonCard extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFF3EEFF), Color(0xFFFFFFFF)],
+            colors: [SoftHomeColors.blushSoft, SoftHomeColors.cream],
           ),
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: const Color(0xFFD9CFF5)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF7B6BB0).withValues(alpha: 0.14),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          border: Border.all(color: SoftHomeColors.line),
+          boxShadow: SoftHomeColors.softShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,18 +706,14 @@ class SoftLessonCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF7B6BB0).withValues(alpha: 0.12),
+                      color: SoftHomeColors.ember.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
                       lesson.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF5B4E8C),
-                      ),
+                      style: SoftHomeColors.label(size: 11, color: SoftHomeColors.emberDeep),
                     ),
                   ),
                 ),
@@ -665,14 +723,8 @@ class SoftLessonCard extends StatelessWidget {
                   height: 34,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.35),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    gradient: SoftHomeColors.emberGradient,
+                    boxShadow: SoftHomeColors.softShadow,
                   ),
                   child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 22),
                 ),
@@ -683,21 +735,12 @@ class SoftLessonCard extends StatelessWidget {
               lesson.headline,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 14.5,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primaryDeep,
-                height: 1.2,
-              ),
+              style: SoftHomeColors.title(size: 14.5),
             ),
             const SizedBox(height: 2),
             Text(
               lesson.subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary.withValues(alpha: 0.55),
-              ),
+              style: SoftHomeColors.body(size: 12),
             ),
             const Spacer(),
             Align(
@@ -708,15 +751,15 @@ class SoftLessonCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
-                  border: Border.all(color: const Color(0xFFE4DCF8), width: 2),
-                  boxShadow: AppSpacing.soft,
+                  border: Border.all(color: SoftHomeColors.line, width: 2),
+                  boxShadow: SoftHomeColors.softShadow,
                 ),
                 padding: const EdgeInsets.all(8),
                 child: SoftModernIcon(
                   lesson.imageAsset,
                   size: 56,
                   fallback: Icons.menu_book_rounded,
-                  fallbackColor: const Color(0xFF7B6BB0),
+                  fallbackColor: SoftHomeColors.ember,
                 ),
               ),
             ),
@@ -804,12 +847,7 @@ class SoftStreakCard extends StatelessWidget {
               streak.subtitle,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primaryDeep,
-                height: 1.2,
-              ),
+              style: SoftHomeColors.title(size: 13),
             ),
             const Spacer(),
             Row(
@@ -823,12 +861,12 @@ class SoftStreakCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(999),
                         color: i < streak.progress
-                            ? const Color(0xFFE07A5F)
+                            ? SoftHomeColors.ember
                             : Colors.white.withValues(alpha: 0.85),
                         border: Border.all(
                           color: i < streak.progress
-                              ? const Color(0xFFC45A3C)
-                              : const Color(0xFFFFD5C8),
+                              ? SoftHomeColors.emberDeep
+                              : SoftHomeColors.blush,
                         ),
                       ),
                     ),
@@ -839,11 +877,7 @@ class SoftStreakCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               '${streak.progress}/${streak.total} gün',
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 12.5,
-                color: Color(0xFFC45A3C),
-              ),
+              style: SoftHomeColors.label(size: 12.5, color: SoftHomeColors.emberDeep),
             ),
           ],
         ),
@@ -869,9 +903,10 @@ class SoftProgressChipRow extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: Color.lerp(items[i].accent, Colors.white, 0.78),
+                  color: SoftHomeColors.cream,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: items[i].accent.withValues(alpha: 0.28)),
+                  boxShadow: SoftHomeColors.softShadow,
                 ),
                 child: Column(
                   children: [
@@ -884,19 +919,11 @@ class SoftProgressChipRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       items[i].value,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13,
-                        color: AppColors.primaryDeep,
-                      ),
+                      style: SoftHomeColors.title(size: 13),
                     ),
                     Text(
                       items[i].label,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                        color: AppColors.primary.withValues(alpha: 0.55),
-                      ),
+                      style: SoftHomeColors.body(size: 11),
                     ),
                   ],
                 ),
@@ -910,34 +937,52 @@ class SoftProgressChipRow extends StatelessWidget {
 }
 
 class SoftSectionHeader extends StatelessWidget {
-  const SoftSectionHeader({super.key, required this.title, required this.onSeeAll});
+  const SoftSectionHeader({
+    super.key,
+    required this.title,
+    required this.onSeeAll,
+    this.subtitle,
+  });
 
   final String title;
   final VoidCallback onSeeAll;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        Container(
+          width: 4,
+          height: subtitle == null ? 22 : 36,
+          margin: const EdgeInsets.only(right: 10, bottom: 2),
+          decoration: BoxDecoration(
+            gradient: SoftHomeColors.emberGradient,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
         Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: AppColors.primaryDeep,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: SoftHomeColors.title(size: 17.5)),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(subtitle!, style: SoftHomeColors.body(size: 12)),
+              ],
+            ],
           ),
         ),
         TextButton(
           onPressed: onSeeAll,
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
+            foregroundColor: SoftHomeColors.ember,
             padding: EdgeInsets.zero,
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          child: const Text('Tümü →', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+          child: Text('Tümü →', style: SoftHomeColors.label(size: 13, color: SoftHomeColors.ember)),
         ),
       ],
     );
@@ -966,7 +1011,7 @@ class SoftCampaignCard extends StatelessWidget {
             bottomLeft: Radius.circular(30),
             bottomRight: Radius.circular(18),
           );
-    final accent = _isClinic ? const Color(0xFF7B6BB0) : AppColors.primary;
+    final accent = _isClinic ? SoftHomeColors.wine : SoftHomeColors.ember;
 
     return SoftTap(
       onTap: () => context.push(campaign.route),
@@ -1021,23 +1066,14 @@ class SoftCampaignCard extends StatelessWidget {
                     campaign.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 14,
-                      color: AppColors.primaryDeep,
-                      height: 1.2,
-                    ),
+                    style: SoftHomeColors.title(size: 14),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     campaign.subtitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary.withValues(alpha: 0.55),
-                    ),
+                    style: SoftHomeColors.body(size: 11.5),
                   ),
                   const Spacer(),
                   if (campaign.price.isNotEmpty)
@@ -1079,10 +1115,10 @@ class SoftRecipeThumbCard extends StatelessWidget {
         width: 168,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: SoftHomeColors.cream,
           borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-          border: Border.all(color: AppColors.modernLine),
-          boxShadow: AppSpacing.soft,
+          border: Border.all(color: SoftHomeColors.line),
+          boxShadow: SoftHomeColors.softShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1101,21 +1137,12 @@ class SoftRecipeThumbCard extends StatelessWidget {
               recipe.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 13,
-                color: AppColors.primaryDeep,
-                height: 1.2,
-              ),
+              style: SoftHomeColors.title(size: 13),
             ),
             const SizedBox(height: 4),
             Text(
               '${recipe.kcal} kcal · ${recipe.minutes} dk',
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary.withValues(alpha: 0.55),
-              ),
+              style: SoftHomeColors.body(size: 11.5),
             ),
           ],
         ),
@@ -1141,17 +1168,11 @@ class SoftArticleCard extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFFFFBF4), Colors.white],
+            colors: [SoftHomeColors.cream, SoftHomeColors.blushSoft],
           ),
           borderRadius: BorderRadius.circular(26),
-          border: Border.all(color: AppColors.modernLine),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              blurRadius: 16,
-              offset: const Offset(0, 7),
-            ),
-          ],
+          border: Border.all(color: SoftHomeColors.line),
+          boxShadow: SoftHomeColors.softShadow,
         ),
         child: Row(
           children: [
@@ -1160,8 +1181,8 @@ class SoftArticleCard extends StatelessWidget {
               height: 68,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
-                color: const Color(0xFFE8F5F0),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.15), width: 2),
+                color: SoftHomeColors.blushSoft,
+                border: Border.all(color: SoftHomeColors.ember.withValues(alpha: 0.2), width: 2),
               ),
               padding: const EdgeInsets.all(8),
               child: SoftModernIcon(
@@ -1170,7 +1191,7 @@ class SoftArticleCard extends StatelessWidget {
                     : article.imageAsset,
                 size: 52,
                 fallback: Icons.article_rounded,
-                fallbackColor: AppColors.primary,
+                fallbackColor: SoftHomeColors.ember,
               ),
             ),
             const SizedBox(width: 12),
@@ -1182,16 +1203,12 @@ class SoftArticleCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: SoftHomeColors.ember.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
                         article.tag,
-                        style: const TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary,
-                        ),
+                        style: SoftHomeColors.label(size: 10.5, color: SoftHomeColors.emberDeep),
                       ),
                     ),
                   const SizedBox(height: 6),
@@ -1199,23 +1216,14 @@ class SoftArticleCard extends StatelessWidget {
                     article.title,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 13,
-                      color: AppColors.primaryDeep,
-                      height: 1.25,
-                    ),
+                    style: SoftHomeColors.title(size: 13),
                   ),
                   const Spacer(),
                   Text(
                     article.subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      color: AppColors.primary.withValues(alpha: 0.55),
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: SoftHomeColors.body(size: 11.5),
                   ),
                 ],
               ),
@@ -1235,84 +1243,404 @@ class SoftGreetingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final hour = DateTime.now().hour;
+    final greet = hour < 6
+        ? 'İyi geceler'
+        : hour < 12
+            ? 'Günaydın'
+            : hour < 17
+                ? 'İyi günler'
+                : hour < 21
+                    ? 'İyi akşamlar'
+                    : 'İyi geceler';
+    final vibe = hour < 12
+        ? 'Bugün ateşini yak — küçük bir adım yeter.'
+        : hour < 17
+            ? 'Öğün ve su ritminle enerjini koru.'
+            : 'Akşamı tamamla, seriyi bozma.';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 14, 16),
+      decoration: BoxDecoration(
+        gradient: SoftHomeColors.emberGradient,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: SoftHomeColors.liftShadow,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: const Text(
+                        'e-Diyet',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 11.5,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    SoftTap(
+                      onTap: () => context.push('/app/badges'),
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Badge(
+                          smallSize: 8,
+                          backgroundColor: SoftHomeColors.amberSoft,
+                          child: Icon(
+                            Icons.notifications_none_rounded,
+                            color: Colors.white.withValues(alpha: 0.95),
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  '$greet,',
+                  style: SoftHomeColors.body(
+                    size: 14,
+                    color: Colors.white.withValues(alpha: 0.82),
+                    weight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  userName,
+                  style: SoftHomeColors.display(size: 28, color: Colors.white),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  vibe,
+                  style: SoftHomeColors.body(
+                    size: 13,
+                    color: Colors.white.withValues(alpha: 0.78),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          SoftTap(
+            onTap: () => context.push('/app/settings'),
+            child: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white.withValues(alpha: 0.55), width: 2.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.18),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: avatarUrl != null && avatarUrl!.trim().isNotEmpty
+                  ? Image.network(
+                      avatarUrl!.trim(),
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Image.asset(
+                        DiyetselAssets.characterBoy,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => const ColoredBox(
+                          color: SoftHomeColors.blush,
+                          child: Icon(Icons.person, color: SoftHomeColors.emberDeep),
+                        ),
+                      ),
+                    )
+                  : Image.asset(
+                      DiyetselAssets.characterBoy,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const ColoredBox(
+                        color: SoftHomeColors.blush,
+                        child: Icon(Icons.person, color: SoftHomeColors.emberDeep),
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bold ember “Bugünün özeti” for home only.
+class SoftHomeFocusBanner extends StatelessWidget {
+  const SoftHomeFocusBanner({
+    super.key,
+    required this.waterProgress,
+    required this.mealsDone,
+    required this.mealsTotal,
+    required this.streakDays,
+    this.onWater,
+    this.onDiet,
+    this.onStory,
+  });
+
+  final double waterProgress;
+  final int mealsDone;
+  final int mealsTotal;
+  final int streakDays;
+  final VoidCallback? onWater;
+  final VoidCallback? onDiet;
+  final VoidCallback? onStory;
+
+  @override
+  Widget build(BuildContext context) {
+    final mealP = mealsTotal == 0 ? 0.0 : mealsDone / mealsTotal;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+      decoration: BoxDecoration(
+        color: SoftHomeColors.cream,
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: SoftHomeColors.line),
+        boxShadow: SoftHomeColors.softShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              const DiyetselLogoMark(height: 34),
-              const SizedBox(height: 12),
-              Text(
-                'Merhaba, $userName',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primaryDeep,
-                  height: 1.15,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Bugünün ateşi', style: SoftHomeColors.title(size: 16)),
+                    const SizedBox(height: 2),
+                    Text('Su · öğün · seri — tek bakışta', style: SoftHomeColors.body(size: 12)),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Planın, tariflerin ve kampanyaların tek yerde.',
-                style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary.withValues(alpha: 0.55),
-                  height: 1.35,
+              SoftTap(
+                onTap: onStory,
+                borderRadius: BorderRadius.circular(999),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: SoftHomeColors.emberGradient,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.local_fire_department_rounded, size: 16, color: Colors.white),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$streakDays gün',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
-        ),
-        IconButton(
-          onPressed: () => context.push('/app/badges'),
-          tooltip: 'Bildirimler',
-          visualDensity: VisualDensity.compact,
-          icon: Badge(
-            smallSize: 8,
-            backgroundColor: const Color(0xFFE07A5F),
-            child: SoftModernIcon(
-              DiyetselAssets.modernIconBell,
-              size: 26,
-              fallback: Icons.notifications_none_rounded,
-              fallbackColor: AppColors.primary.withValues(alpha: 0.7),
-            ),
-          ),
-        ),
-        SoftTap(
-          onTap: () => context.push('/app/settings'),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
-              boxShadow: AppSpacing.soft,
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: avatarUrl != null && avatarUrl!.trim().isNotEmpty
-                ? Image.network(
-                    avatarUrl!.trim(),
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Image.asset(
-                      DiyetselAssets.characterBoy,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) =>
-                          const Icon(Icons.person, color: AppColors.primary),
-                    ),
-                  )
-                : Image.asset(
-                    DiyetselAssets.characterBoy,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) =>
-                        const Icon(Icons.person, color: AppColors.primary),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: SoftTap(
+                  onTap: onWater,
+                  child: _FocusRing(
+                    progress: waterProgress,
+                    color: SoftHomeColors.water,
+                    label: 'Su',
+                    value: '%${(waterProgress * 100).round()}',
                   ),
+                ),
+              ),
+              Expanded(
+                child: SoftTap(
+                  onTap: onDiet,
+                  child: _FocusRing(
+                    progress: mealP,
+                    color: SoftHomeColors.ember,
+                    label: 'Öğün',
+                    value: '$mealsDone/$mealsTotal',
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SoftTap(
+                  onTap: onStory,
+                  child: _FocusRing(
+                    progress: (streakDays / 7).clamp(0.0, 1.0),
+                    color: SoftHomeColors.wine,
+                    label: 'Seri',
+                    value: streakDays > 0 ? '$streakDays' : '0',
+                    icon: Icons.bolt_rounded,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FocusRing extends StatelessWidget {
+  const _FocusRing({
+    required this.progress,
+    required this.color,
+    required this.label,
+    required this.value,
+    this.icon,
+  });
+
+  final double progress;
+  final Color color;
+  final String label;
+  final String value;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 72,
+          height: 72,
+          child: CustomPaint(
+            painter: _HomeRingPainter(progress: progress.clamp(0.0, 1.0), color: color),
+            child: Center(
+              child: icon != null
+                  ? Icon(icon, color: color, size: 22)
+                  : Text(value, style: SoftHomeColors.title(size: 13)),
+            ),
           ),
         ),
+        const SizedBox(height: 8),
+        Text(label, style: SoftHomeColors.label(size: 12, color: SoftHomeColors.muted)),
       ],
+    );
+  }
+}
+
+class _HomeRingPainter extends CustomPainter {
+  _HomeRingPainter({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    const stroke = 7.0;
+    final radius = (math.min(size.width, size.height) - stroke) / 2;
+    final bg = Paint()
+      ..color = color.withValues(alpha: 0.14)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    final fg = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawCircle(center, radius, bg);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      2 * math.pi * progress,
+      false,
+      fg,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HomeRingPainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.color != color;
+}
+
+class SoftHomeTipStrip extends StatelessWidget {
+  const SoftHomeTipStrip({super.key, this.onTap});
+
+  final VoidCallback? onTap;
+
+  static const _tips = [
+    (title: 'Su ritmi', body: 'Her öğünden önce bir bardak — tokluk ve odak artar.'),
+    (title: 'Protein önce', body: 'Tabağında önce proteini bitir; enerji daha dengeli kalır.'),
+    (title: 'Yavaş ye', body: 'Her lokmayı iyi çiğne — doyma sinyali geç gelir.'),
+    (title: 'Ateş serisi', body: 'Bugün küçük bir check-in bile seriyi canlı tutar.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final tip = _tips[DateTime.now().difference(DateTime(DateTime.now().year)).inDays % _tips.length];
+    return SoftTap(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [SoftHomeColors.blushSoft, SoftHomeColors.amberSoft],
+          ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: SoftHomeColors.line),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: SoftHomeColors.emberGradient,
+              ),
+              child: const Icon(Icons.lightbulb_outline_rounded, color: Colors.white, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Günün ipucu · ${tip.title}', style: SoftHomeColors.title(size: 13.5)),
+                  const SizedBox(height: 3),
+                  Text(tip.body, style: SoftHomeColors.body(size: 12.5)),
+                  if (onTap != null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      'Daha fazla öğren →',
+                      style: SoftHomeColors.label(size: 12, color: SoftHomeColors.emberDeep),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

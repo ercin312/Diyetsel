@@ -9,6 +9,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/models/models.dart';
+import '../../../../core/widgets/soft_ui_kit.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 
@@ -19,11 +20,11 @@ class SoftTrackerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Takip',
                 style: TextStyle(
                   fontSize: 26,
@@ -32,10 +33,12 @@ class SoftTrackerHeader extends StatelessWidget {
                   letterSpacing: -0.4,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
-                'Su, vücut ve öğün fotoğrafların tek yerde',
-                style: TextStyle(
+                softTimeGreeting() == 'Günaydın'
+                    ? 'Sabah suyuyla güne başla — vücut, kilo ve öğünler burada'
+                    : 'Su, vücut ve öğün fotoğrafların tek yerde',
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                   color: Color(0x991A4F45),

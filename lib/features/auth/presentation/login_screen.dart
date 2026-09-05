@@ -11,6 +11,7 @@ import '../../../core/constants/diyetsel_assets.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/widgets/soft_ui_kit.dart';
 import '../../../core/widgets/style_icon.dart';
 import 'auth_controller.dart';
 
@@ -173,6 +174,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             TextButton(
               onPressed: () => context.go('/register'),
               child: Text('auth.noAccount'.tr())),
+            if (modern) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Demo hesaplarla hemen dene — klinik ve danışan deneyimi hazır.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary.withValues(alpha: 0.5),
+                ),
+              ),
+            ],
           ])));
   }
 
@@ -231,6 +244,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
                 letterSpacing: null)),
+            const SizedBox(height: 28),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final label in const ['Su & kilo', 'Diyet planı', 'Tarifler', 'Randevu'])
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+                    ),
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ])));
   }
 
@@ -312,36 +349,97 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     final canAdmin = !ref.watch(appStoreProvider).hasAdmin;
+    final modern = context.isModern;
+    final form = DiyetselCard(
+      color: modern ? AppColors.lightSurface : null,
+      padding: modern ? const EdgeInsets.fromLTRB(22, 24, 22, 20) : const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (modern) ...[
+            Text(
+              'Hesabını oluştur',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primaryDeep,
+                  ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Klinik veya danışan olarak e-Diyet’e katıl.',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                color: AppColors.primary.withValues(alpha: 0.55),
+              ),
+            ),
+            const SizedBox(height: 18),
+          ],
+          TextField(controller: _name, decoration: InputDecoration(labelText: 'auth.name'.tr())),
+          const SizedBox(height: 12),
+          TextField(controller: _email, decoration: InputDecoration(labelText: 'auth.email'.tr())),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _password,
+            obscureText: true,
+            decoration: InputDecoration(labelText: 'auth.password'.tr()),
+          ),
+          if (canAdmin)
+            SwitchListTile(
+              value: _asAdmin,
+              onChanged: (v) => setState(() => _asAdmin = v),
+              title: Text('auth.dietitianSetup'.tr()),
+              subtitle: Text('auth.dietitianSetupHint'.tr()),
+            ),
+          if (auth.error != null) Text(auth.error!, style: const TextStyle(color: AppColors.danger)),
+          const SizedBox(height: 16),
+          DiyetselButton(
+            label: 'auth.register'.tr(),
+            onPressed: () => ref.read(authControllerProvider.notifier).register(
+                  name: _name.text,
+                  email: _email.text,
+                  password: _password.text,
+                  asAdmin: _asAdmin,
+                ),
+          ),
+          if (modern) ...[
+            const SizedBox(height: 12),
+            SoftTipCard(
+              title: 'İpucu',
+              body: 'Demo ile giriş yapmak istersen giriş ekranındaki diyetisyen / danışan butonlarını kullan.',
+              icon: Icons.info_outline_rounded,
+              accent: AppColors.primary,
+              tint: AppColors.modernMint,
+            ),
+          ],
+        ],
+      ),
+    );
+
     return Scaffold(
+      backgroundColor: modern ? AppColors.modernWash : null,
       appBar: AppBar(title: Text('auth.register'.tr())),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: DiyetselCard(
-              child: Column(
-                children: [
-                  TextField(controller: _name, decoration: InputDecoration(labelText: 'auth.name'.tr())),
-                  const SizedBox(height: 12),
-                  TextField(controller: _email, decoration: InputDecoration(labelText: 'auth.email'.tr())),
-                  const SizedBox(height: 12),
-                  TextField(controller: _password, obscureText: true, decoration: InputDecoration(labelText: 'auth.password'.tr())),
-                  if (canAdmin)
-                    SwitchListTile(
-                      value: _asAdmin,
-                      onChanged: (v) => setState(() => _asAdmin = v),
-                      title: Text('auth.dietitianSetup'.tr()),
-                      subtitle: Text('auth.dietitianSetupHint'.tr())),
-                  if (auth.error != null) Text(auth.error!, style: const TextStyle(color: AppColors.danger)),
-                  const SizedBox(height: 16),
-                  DiyetselButton(
-                    label: 'auth.register'.tr(),
-                    onPressed: () => ref.read(authControllerProvider.notifier).register(
-                          name: _name.text,
-                          email: _email.text,
-                          password: _password.text,
-                          asAdmin: _asAdmin)),
-                ]))))));
+      body: modern
+          ? SoftWashBackground(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 460),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: form.animate().fadeIn(duration: 280.ms).slideY(begin: 0.04),
+                  ),
+                ),
+              ),
+            )
+          : Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 460),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: form,
+                ),
+              ),
+            ),
+    );
   }
 }
