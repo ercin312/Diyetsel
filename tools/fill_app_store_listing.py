@@ -51,8 +51,10 @@ class Asc:
             }
         )
 
-    def get(self, path: str, **params):
+    def get(self, path: str, allow_404: bool = False, **params):
         r = self.s.get(f"{API}{path}", params=params or None, timeout=60)
+        if allow_404 and r.status_code == 404:
+            return {}
         self._ok(r)
         return r.json()
 
@@ -121,9 +123,7 @@ def main() -> int:
         f"/apps/{APP_ID}/appStoreVersions",
         **{
             "filter[platform]": "IOS",
-            "sort": "-createdDate",
             "limit": 10,
-            "include": "appStoreVersionLocalizations,appStoreReviewDetail",
         },
     )
     editable_states = {
@@ -209,13 +209,17 @@ def main() -> int:
     )
     print(f"Updated version localization {vloc['id']}")
 
-    details = api.get(f"/appStoreVersions/{vid}/appStoreReviewDetail")
+    def env_or(name: str, fallback: str) -> str:
+        val = (os.environ.get(name) or "").strip()
+        return val or fallback
+
+    details = api.get(f"/appStoreVersions/{vid}/appStoreReviewDetail", allow_404=True)
     detail = details.get("data")
     review_attrs = {
-        "contactFirstName": os.environ.get("ASC_CONTACT_FIRST_NAME", "Ercin").strip(),
-        "contactLastName": os.environ.get("ASC_CONTACT_LAST_NAME", "Cinar").strip(),
-        "contactEmail": os.environ.get("ASC_CONTACT_EMAIL", "ercin312@gmail.com").strip(),
-        "contactPhone": os.environ.get("ASC_CONTACT_PHONE", "").strip(),
+        "contactFirstName": env_or("ASC_CONTACT_FIRST_NAME", "Ercin"),
+        "contactLastName": env_or("ASC_CONTACT_LAST_NAME", "Cinar"),
+        "contactEmail": env_or("ASC_CONTACT_EMAIL", "ercin312@gmail.com"),
+        "contactPhone": (os.environ.get("ASC_CONTACT_PHONE") or "").strip(),
         "demoAccountName": "diyetisyen@diyetsel.app",
         "demoAccountPassword": "Diyetsel123!",
         "demoAccountRequired": True,
