@@ -76,5 +76,18 @@
 	<string>Öğün günlüğü, tahlil ve sohbet görselleri için galeriye erişilir.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Hikaye kartı ve rapor görsellerini kaydetmek için galeriye yazılır.</string>
+	<key>GIDClientID</key>
+	<string>760739483719-lf80i1804fdn6lm907d39sgom4orjtoh.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.760739483719-lf80i1804fdn6lm907d39sgom4orjtoh</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

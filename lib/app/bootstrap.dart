@@ -10,6 +10,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../core/data/app_store.dart';
 import '../core/models/models.dart';
 import '../core/network/local_database.dart';
+import '../core/network/social_auth.dart';
 import '../core/utils/reminder_service.dart';
 import '../firebase_options.dart';
 
@@ -40,6 +41,9 @@ Future<BootstrapResult> bootstrap() async {
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     firebaseReady = true;
+    try {
+      await SocialAuth.ensureInitialized();
+    } catch (_) {}
     try {
       await FirebaseMessaging.instance.requestPermission();
       await FirebaseMessaging.instance.subscribeToTopic('clients');

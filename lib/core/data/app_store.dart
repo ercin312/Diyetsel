@@ -15,6 +15,7 @@ import '../models/enums.dart';
 import '../models/home_theme_config.dart';
 import '../models/models.dart';
 import '../network/local_database.dart';
+import '../network/social_auth.dart';
 import 'seed_data.dart';
 
 const _uuid = Uuid();
@@ -629,6 +630,66 @@ class AppStore {
     return local;
   }
 
+  Future<UserProfile> loginWithGoogle() async {
+    final cred = await SocialAuth.signInWithGoogle();
+    final user = cred.user;
+    if (user == null) throw StateError('Google girişi tamamlanamadı');
+    return upsertFromFirebaseUser(user);
+  }
+
+  Future<UserProfile> loginWithApple() async {
+    final cred = await SocialAuth.signInWithApple();
+    final user = cred.user;
+    if (user == null) throw StateError('Apple girişi tamamlanamadı');
+    return upsertFromFirebaseUser(
+      user,
+      displayNameHint: SocialAuth.lastAppleDisplayName,
+    );
+  }
+
+  Future<UserProfile> upsertFromFirebaseUser(
+    User firebaseUser, {
+    String? displayNameHint,
+  }) async {
+    final email = (firebaseUser.email ?? '').trim().toLowerCase();
+    final existing = user(firebaseUser.uid) ??
+        (email.isEmpty ? null : userByEmail(email));
+    final name = () {
+      final fromHint = displayNameHint?.trim() ?? '';
+      if (fromHint.isNotEmpty) return fromHint;
+      final fromAuth = firebaseUser.displayName?.trim() ?? '';
+      if (fromAuth.isNotEmpty) return fromAuth;
+      if (existing != null) return existing.displayName;
+      if (email.isNotEmpty) return email.split('@').first;
+      return 'Danışan';
+    }();
+    final resolvedEmail = email.isNotEmpty
+        ? email
+        : (existing?.email ?? '${firebaseUser.uid}@privaterelay.appleid.com');
+    if (existing != null) {
+      final merged = existing.copyWith(
+        email: resolvedEmail,
+        displayName: name,
+        photoUrl: firebaseUser.photoURL ?? existing.photoUrl,
+      );
+      await saveUser(merged);
+      await _mirrorAuthIdentity(merged);
+      return merged;
+    }
+    final profile = UserProfile(
+      id: firebaseUser.uid,
+      email: resolvedEmail,
+      displayName: name,
+      role: UserRole.client,
+      photoUrl: firebaseUser.photoURL,
+      createdAt: DateTime.now(),
+      waterGoalMl: settings().defaultWaterGoalMl,
+    );
+    await saveUser(profile);
+    await _mirrorAuthIdentity(profile);
+    return profile;
+  }
+
   /// Sign in (or create) Firebase Auth so Firestore rules see request.auth.
   Future<User?> _ensureFirebaseSession(
     String email,
@@ -692,6 +753,7 @@ class AppStore {
   Future<void> logout() async {
     if (Firebase.apps.isNotEmpty) {
       try {
+        await SocialAuth.signOut();
         await FirebaseAuth.instance.signOut();
       } catch (_) {}
     }

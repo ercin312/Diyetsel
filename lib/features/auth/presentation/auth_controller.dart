@@ -5,6 +5,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
 import '../../../core/network/cloud_sync_service.dart';
+import '../../../core/network/social_auth.dart';
 import '../../../core/utils/smart_notification_service.dart';
 
 class AuthState {
@@ -35,6 +36,24 @@ class AuthController extends Notifier<AuthState> {
     try {
       final user = await ref.read(appStoreProvider).login(email.trim(), password);
       await _setSession(user);
+    } catch (e) {
+      state = AuthState(error: e.toString().replaceAll('Bad state: ', ''));
+    }
+  }
+
+  Future<void> loginWithGoogle() =>
+      _social(() => ref.read(appStoreProvider).loginWithGoogle());
+
+  Future<void> loginWithApple() =>
+      _social(() => ref.read(appStoreProvider).loginWithApple());
+
+  Future<void> _social(Future<UserProfile> Function() run) async {
+    state = AuthState(user: state.user, loading: true);
+    try {
+      final user = await run();
+      await _setSession(user);
+    } on SocialAuthCanceled {
+      state = AuthState(user: state.user);
     } catch (e) {
       state = AuthState(error: e.toString().replaceAll('Bad state: ', ''));
     }

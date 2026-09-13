@@ -7,12 +7,14 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/constants/diyetsel_assets.dart';
+import '../../../core/data/app_store.dart';
 import '../../../core/utils/legal_links.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../../core/widgets/style_icon.dart';
 import 'auth_controller.dart';
+import 'widgets/social_sign_in_buttons.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -160,6 +162,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         await ref.read(authControllerProvider.notifier).login(_email.text, _password.text);
                       }
                     }),
+            const SocialSignInButtons(),
             SizedBox(height: modern ? 18 : 16),
             TextButton(
               onPressed: () => context.go('/register'),
@@ -399,16 +402,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   asAdmin: _asAdmin,
                 ),
           ),
-          if (modern) ...[
-            const SizedBox(height: 12),
-            SoftTipCard(
-              title: 'İpucu',
-              body: 'Demo ile giriş yapmak istersen giriş ekranındaki diyetisyen / danışan butonlarını kullan.',
-              icon: Icons.info_outline_rounded,
-              accent: AppColors.primary,
-              tint: AppColors.modernMint,
-            ),
-          ],
+          const SocialSignInButtons(),
         ],
       ),
     );

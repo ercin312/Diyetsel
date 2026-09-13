@@ -152,8 +152,8 @@ jobs:
           PUBSPEC_BUILD="${VERSION_LINE##*+}"
           RUN_NUMBER="${{ github.run_number }}"
           RUN_ATTEMPT="${{ github.run_attempt }}"
-          # App Store Connect already has CFBundleVersion 21 — never reuse ≤21.
-          MIN_BUILD=22
+          # App Store Connect already has CFBundleVersion 23 — never reuse ≤23.
+          MIN_BUILD=24
           BUILD_NUMBER="$PUBSPEC_BUILD"
           if [ "$RUN_NUMBER" -gt "$BUILD_NUMBER" ] 2>/dev/null; then
             BUILD_NUMBER="$RUN_NUMBER"

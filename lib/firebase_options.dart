@@ -39,7 +39,12 @@ class DefaultFirebaseOptions {
     projectId: 'diyetsel-platform',
     storageBucket: 'diyetsel-platform.firebasestorage.app',
     iosBundleId: 'com.diyetsel.diyetsel',
+    iosClientId:
+        '760739483719-lf80i1804fdn6lm907d39sgom4orjtoh.apps.googleusercontent.com',
   );
+
+  static const String googleWebClientId =
+      '760739483719-msnpl8hj6utpdj4uho68vsbk3m641kcc.apps.googleusercontent.com';
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyD4OVPv93mvVZNyoRyqmPmJ7GnUPZ6g8D4',

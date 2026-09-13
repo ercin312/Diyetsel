@@ -12,7 +12,20 @@
           "package_name": "com.diyetsel.diyetsel"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "760739483719-8g6trau2elfr6s0slrpkvtcogs4vkalt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diyetsel.diyetsel",
+            "certificate_hash": "d15c9a02ffddd7a430986b3f95ea4f12fea6e917"
+          }
+        },
+        {
+          "client_id": "760739483719-msnpl8hj6utpdj4uho68vsbk3m641kcc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCklLr5hnXjZMeWqNHikrWpdUquVsYFf_s"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760739483719-msnpl8hj6utpdj4uho68vsbk3m641kcc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760739483719-lf80i1804fdn6lm907d39sgom4orjtoh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.diyetsel.diyetsel"
+              }
+            }
+          ]
         }
       }
     }
