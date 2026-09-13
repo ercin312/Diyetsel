@@ -230,36 +230,43 @@ def main() -> int:
         val = (os.environ.get(name) or "").strip()
         return val or fallback
 
-    details = api.get(f"/appStoreVersions/{vid}/appStoreReviewDetail", allow_404=True)
-    detail = details.get("data")
-    review_attrs = {
-        "contactFirstName": env_or("ASC_CONTACT_FIRST_NAME", "Ercin"),
-        "contactLastName": env_or("ASC_CONTACT_LAST_NAME", "Cinar"),
-        "contactEmail": env_or("ASC_CONTACT_EMAIL", "ercin312@gmail.com"),
-        "contactPhone": (os.environ.get("ASC_CONTACT_PHONE") or "").strip(),
-        "demoAccountName": "diyetisyen@diyetsel.app",
-        "demoAccountPassword": "Diyetsel123!",
-        "demoAccountRequired": True,
-        "notes": review_notes,
-    }
-    if not review_attrs["contactPhone"]:
-        review_attrs.pop("contactPhone")
-    payload = {
-        "data": {
-            "type": "appStoreReviewDetails",
-            "attributes": review_attrs,
+    try:
+        details = api.get(f"/appStoreVersions/{vid}/appStoreReviewDetail", allow_404=True)
+        detail = details.get("data")
+        review_attrs = {
+            "contactFirstName": env_or("ASC_CONTACT_FIRST_NAME", "Ercin"),
+            "contactLastName": env_or("ASC_CONTACT_LAST_NAME", "Cinar"),
+            "contactEmail": env_or("ASC_CONTACT_EMAIL", "ercin312@gmail.com"),
+            "contactPhone": (os.environ.get("ASC_CONTACT_PHONE") or "").strip(),
+            "demoAccountName": "diyetisyen@diyetsel.app",
+            "demoAccountPassword": "Diyetsel123!",
+            "demoAccountRequired": True,
+            "notes": review_notes,
         }
-    }
-    if detail:
-        payload["data"]["id"] = detail["id"]
-        api.patch(f"/appStoreReviewDetails/{detail['id']}", payload)
-        print(f"Updated review details {detail['id']}")
-    else:
-        payload["data"]["relationships"] = {
-            "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}
-        }
-        created = api.post("/appStoreReviewDetails", payload)
-        print(f"Created review details {created.get('data', {}).get('id')}")
+        if not review_attrs["contactPhone"]:
+            print(
+                "Review contact phone missing (set ASC_CONTACT_PHONE, e.g. +90 5xx xxx xx xx). "
+                "Demo notes were not written via API; paste them in App Store Connect."
+            )
+        else:
+            payload = {
+                "data": {
+                    "type": "appStoreReviewDetails",
+                    "attributes": review_attrs,
+                }
+            }
+            if detail:
+                payload["data"]["id"] = detail["id"]
+                api.patch(f"/appStoreReviewDetails/{detail['id']}", payload)
+                print(f"Updated review details {detail['id']}")
+            else:
+                payload["data"]["relationships"] = {
+                    "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}
+                }
+                created = api.post("/appStoreReviewDetails", payload)
+                print(f"Created review details {created.get('data', {}).get('id')}")
+    except SystemExit as exc:
+        print(f"Review details skipped: {exc}")
 
     print("App Store listing fields filled.")
     return 0
