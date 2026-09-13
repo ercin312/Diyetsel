@@ -190,24 +190,41 @@ def main() -> int:
     vloc = (vlocs.get("data") or [None])[0]
     if not vloc:
         raise SystemExit("No version localization")
-    api.patch(
-        f"/appStoreVersionLocalizations/{vloc['id']}",
-        {
-            "data": {
-                "type": "appStoreVersionLocalizations",
-                "id": vloc["id"],
-                "attributes": {
-                    "description": description,
-                    "keywords": keywords,
-                    "supportUrl": support,
-                    "marketingUrl": marketing,
-                    "promotionalText": promo,
-                    "whatsNew": whats_new,
+    loc_attrs = {
+        "description": description,
+        "keywords": keywords,
+        "supportUrl": support,
+        "marketingUrl": marketing,
+        "promotionalText": promo,
+    }
+    try:
+        api.patch(
+            f"/appStoreVersionLocalizations/{vloc['id']}",
+            {
+                "data": {
+                    "type": "appStoreVersionLocalizations",
+                    "id": vloc["id"],
+                    "attributes": {**loc_attrs, "whatsNew": whats_new},
+                }
+            },
+        )
+    except SystemExit as exc:
+        if "whatsNew" in str(exc):
+            api.patch(
+                f"/appStoreVersionLocalizations/{vloc['id']}",
+                {
+                    "data": {
+                        "type": "appStoreVersionLocalizations",
+                        "id": vloc["id"],
+                        "attributes": loc_attrs,
+                    }
                 },
-            }
-        },
-    )
-    print(f"Updated version localization {vloc['id']}")
+            )
+            print("whatsNew skipped (first version); other localization fields updated")
+        else:
+            raise
+    else:
+        print(f"Updated version localization {vloc['id']}")
 
     def env_or(name: str, fallback: str) -> str:
         val = (os.environ.get(name) or "").strip()
