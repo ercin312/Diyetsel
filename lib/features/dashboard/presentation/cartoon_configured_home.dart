@@ -6,11 +6,14 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/constants/diyetsel_assets.dart';
+import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/home_theme_config.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/cartoon_asset_icon.dart';
+import '../../auth/presentation/auth_controller.dart';
 import '../domain/home_feed_models.dart';
+import 'widgets/cartoon_home_extras.dart';
 import 'widgets/premium_home_widgets.dart';
 
 /// Premium Cartoon Wellness home — real widgets + brand assets.
@@ -29,7 +32,32 @@ class CartoonConfiguredHome extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final hPad = width < 360 ? 14.0 : AppSpacing.pageH;
     final name = userName.isEmpty ? 'Dostum' : userName;
-    final config = ref.watch(homeThemeProvider).valueOrNull ?? HomeThemeConfig.defaults();
+    final themeAsync = ref.watch(homeThemeProvider);
+    final config = themeAsync.valueOrNull ?? HomeThemeConfig.defaults();
+    final heroSlides = config.heroSlides.isEmpty
+        ? HomeHeroSlideConfig.defaults()
+        : config.heroSlides;
+
+    final authUser = ref.watch(authControllerProvider).user;
+    final store = ref.watch(appStoreProvider);
+    ref.watch(waterLogsProvider);
+    ref.watch(dietPlansProvider);
+    ref.watch(streaksProvider);
+    final uid = authUser?.id;
+    final water = uid == null ? null : store.waterLog(uid, DateTime.now());
+    final waterP =
+        water == null || water.goalMl <= 0 ? 0.0 : (water.amountMl / water.goalMl).clamp(0.0, 1.0);
+    final plan = uid == null ? null : store.dietPlanForClient(uid);
+    var mealsDone = 0;
+    var mealsTotal = 0;
+    if (plan != null) {
+      final today = plan.days.where((d) => DateUtils.isSameDay(d.date, DateTime.now()));
+      if (today.isNotEmpty) {
+        mealsDone = today.first.meals.where((m) => m.consumed).length;
+        mealsTotal = today.first.meals.length;
+      }
+    }
+    final streakDays = uid == null ? 0 : store.streak(uid).current;
 
     final featured = HomeRecipeModel(
       id: 'lentil',
@@ -44,7 +72,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
       sectionLabel: 'Bugün akşam bunu dene',
     );
 
-    final lesson = const HomeLessonModel(
+    const lesson = HomeLessonModel(
       title: 'Mini ders · Gün 1',
       headline: 'İlk bakış: İçindekiler',
       subtitle: 'Etiket Okuma',
@@ -52,19 +80,21 @@ class CartoonConfiguredHome extends ConsumerWidget {
       route: '/app/learn',
     );
 
-    final streak = const HomeStreakModel(
+    final streak = HomeStreakModel(
       title: 'Ateş serisi',
-      subtitle: '3/7 · 7 günlük aktivite serisi',
-      progress: 3,
+      subtitle: streakDays <= 0
+          ? 'Seriyi başlat — bugün küçük bir adım yeter'
+          : '$streakDays/7 · ateşin yanmaya devam ediyor',
+      progress: streakDays.clamp(0, 7),
       total: 7,
       imageAsset: DiyetselAssets.characterActiveBoy,
       route: '/app/story',
     );
 
-    final chips = const [
+    final chips = [
       HomeProgressChipModel(
         id: 'streak',
-        value: '3 gün',
+        value: streakDays > 0 ? '$streakDays gün' : 'Başla',
         label: 'Seri',
         accent: AppColors.kawaiiCoral,
         iconAsset: DiyetselAssets.iconStreak,
@@ -73,7 +103,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
       ),
       HomeProgressChipModel(
         id: 'water',
-        value: '%30',
+        value: '%${(waterP * 100).round()}',
         label: 'Su',
         accent: AppColors.kawaiiSkyBlue,
         iconAsset: DiyetselAssets.iconWaterDrop,
@@ -82,7 +112,9 @@ class CartoonConfiguredHome extends ConsumerWidget {
       ),
       HomeProgressChipModel(
         id: 'meal',
-        value: 'Tamam',
+        value: mealsTotal == 0
+            ? '—'
+            : (mealsDone >= mealsTotal ? 'Tamam' : '$mealsDone/$mealsTotal'),
         label: 'Öğün',
         accent: AppColors.kawaiiLeaf,
         iconAsset: DiyetselAssets.iconCheck,
@@ -91,7 +123,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
       ),
     ];
 
-    final campaigns = const [
+    const campaigns = [
       HomeCampaignModel(
         id: 'clinic',
         title: 'Yüz Yüze Klinik Seansı',
@@ -112,7 +144,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
       ),
     ];
 
-    final recipes = const [
+    const recipes = [
       HomeRecipeModel(
         id: 'bowl',
         title: 'Akdeniz protein kasesi',
@@ -135,7 +167,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
       ),
     ];
 
-    final articles = const [
+    const articles = [
       HomeArticleModel(
         id: 'if',
         title: 'Aralıklı oruç: 16:8 gerçekten size uygun mu?',
@@ -195,7 +227,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
             ),
             children: [
               if (config.isHomeBlockVisible('greeting')) ...[
-                _GreetingHeader(userName: name)
+                _GreetingHeader(userName: name, avatarUrl: avatarUrl)
                     .animate()
                     .fadeIn(duration: 280.ms)
                     .slideY(begin: -0.04, curve: Curves.easeOut),
@@ -208,17 +240,29 @@ class CartoonConfiguredHome extends ConsumerWidget {
                 ),
                 const SizedBox(height: 18),
               ],
+              CartoonHomeFocusBanner(
+                waterProgress: waterP,
+                mealsDone: mealsDone,
+                mealsTotal: mealsTotal == 0 ? 4 : mealsTotal,
+                streakDays: streakDays,
+                onWater: () => context.push('/app/track'),
+                onDiet: () => context.push('/app/diet'),
+                onStory: () => context.push('/app/story'),
+              )
+                  .animate()
+                  .fadeIn(delay: 60.ms, duration: 340.ms)
+                  .scale(begin: const Offset(0.97, 0.97), curve: Curves.easeOutCubic),
+              const SizedBox(height: 14),
               if (config.isHomeBlockVisible('shortcuts')) ...[
                 ShortcutRail(items: HomeFeedData.shortcuts()),
                 const SizedBox(height: 16),
               ],
+              CartoonHomeTipStrip(onTap: () => context.push('/app/learn'))
+                  .animate()
+                  .fadeIn(delay: 90.ms, duration: 280.ms),
+              const SizedBox(height: 16),
               if (config.isHomeBlockVisible('hero')) ...[
-                const HeroPlanCard(
-                  title: 'Bugünkü plan tamam 🎉',
-                  subtitle: 'Kampanyalar ve tarifler aşağıda, günün tek kartta.',
-                  ctaLabel: 'Diyetim',
-                  ctaRoute: '/app/diet',
-                ),
+                CartoonHeroSlider(slides: heroSlides),
                 const SizedBox(height: 16),
               ],
               if (config.isHomeBlockVisible('quickActions')) ...[
@@ -297,12 +341,29 @@ class CartoonConfiguredHome extends ConsumerWidget {
 }
 
 class _GreetingHeader extends StatelessWidget {
-  const _GreetingHeader({required this.userName});
+  const _GreetingHeader({required this.userName, this.avatarUrl});
 
   final String userName;
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
+    final hour = DateTime.now().hour;
+    final greet = hour < 6
+        ? 'İyi geceler'
+        : hour < 12
+            ? 'Günaydın'
+            : hour < 17
+                ? 'İyi günler'
+                : hour < 21
+                    ? 'İyi akşamlar'
+                    : 'İyi geceler';
+    final vibe = hour < 12
+        ? 'Bugün küçük bir adım yeter — planın seni bekliyor.'
+        : hour < 17
+            ? 'Öğün ve su ritminle enerjini koru.'
+            : 'Akşamı tamamla, seriyi bozma.';
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -313,7 +374,7 @@ class _GreetingHeader extends StatelessWidget {
               const DiyetselLogoMark(height: 34),
               const SizedBox(height: 12),
               Text(
-                'Merhaba, $userName! 👋',
+                '$greet, $userName! 👋',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -322,9 +383,9 @@ class _GreetingHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Planın, tariflerin ve kampanyaların tek yerde.',
-                style: TextStyle(
+              Text(
+                vibe,
+                style: const TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,
                   color: AppColors.kawaiiMuted,
@@ -350,7 +411,32 @@ class _GreetingHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 2),
-        const ProfileAvatarBubble(),
+        if (avatarUrl != null && avatarUrl!.trim().isNotEmpty)
+          SoftTap(
+            onTap: () => context.push('/app/settings'),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.kawaiiSurfaceCream,
+                border: Border.all(color: AppColors.kawaiiLeaf.withValues(alpha: 0.45), width: 2),
+                boxShadow: AppSpacing.soft,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Image.network(
+                avatarUrl!.trim(),
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Image.asset(
+                  DiyetselAssets.characterBoy,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => const Icon(Icons.person, color: AppColors.kawaiiLeaf),
+                ),
+              ),
+            ),
+          )
+        else
+          const ProfileAvatarBubble(),
       ],
     );
   }

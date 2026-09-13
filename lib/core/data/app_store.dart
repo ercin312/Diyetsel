@@ -276,6 +276,64 @@ class AppStore {
 
   Future<void> deleteRecipe(String id) => db.delete(FirestorePaths.recipes, id);
 
+  bool isRecipeLiked(String userId, String recipeId) =>
+      db.get(FirestorePaths.recipeInteractions, '${userId}_$recipeId')?['liked'] == true;
+
+  bool isRecipeSaved(String userId, String recipeId) =>
+      db.get(FirestorePaths.recipeInteractions, '${userId}_$recipeId')?['saved'] == true;
+
+  List<Recipe> likedRecipes(String userId) {
+    final ids = {
+      for (final raw in db.list(FirestorePaths.recipeInteractions))
+        if (raw['id'] is String &&
+            '${raw['id']}'.startsWith('${userId}_') &&
+            raw['liked'] == true)
+          '${raw['id']}'.substring(userId.length + 1),
+    };
+    return recipes().where((r) => ids.contains(r.id)).toList();
+  }
+
+  List<Recipe> savedRecipes(String userId) {
+    final ids = {
+      for (final raw in db.list(FirestorePaths.recipeInteractions))
+        if (raw['id'] is String &&
+            '${raw['id']}'.startsWith('${userId}_') &&
+            raw['saved'] == true)
+          '${raw['id']}'.substring(userId.length + 1),
+    };
+    return recipes().where((r) => ids.contains(r.id)).toList();
+  }
+
+  Future<void> toggleRecipeLike(String userId, Recipe recipe) async {
+    final key = '${userId}_${recipe.id}';
+    final raw = db.get(FirestorePaths.recipeInteractions, key) ?? {};
+    final liked = raw['liked'] == true;
+    await db.put(FirestorePaths.recipeInteractions, key, {
+      'id': key,
+      'userId': userId,
+      'recipeId': recipe.id,
+      'liked': !liked,
+      'saved': raw['saved'] == true,
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+    await saveRecipe(recipe.copyWith(
+      likes: (recipe.likes + (liked ? -1 : 1)).clamp(0, 99999),
+    ));
+  }
+
+  Future<void> toggleRecipeSave(String userId, String recipeId) async {
+    final key = '${userId}_$recipeId';
+    final raw = db.get(FirestorePaths.recipeInteractions, key) ?? {};
+    await db.put(FirestorePaths.recipeInteractions, key, {
+      'id': key,
+      'userId': userId,
+      'recipeId': recipeId,
+      'liked': raw['liked'] == true,
+      'saved': raw['saved'] != true,
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
   List<ChatThread> threadsFor(String userId) {
     final items = _map(FirestorePaths.chats, ChatThread.fromMap)
         .where((e) => e.participantIds.contains(userId))
@@ -351,11 +409,41 @@ class AppStore {
         .toList();
   }
 
-  Future<void> saveShoppingList(String userId, List<ShoppingItem> items) => db.put(
-        FirestorePaths.shoppingLists,
-        userId,
-        {'id': userId, 'items': items.map((e) => e.toMap()).toList()},
-      );
+  String? preferredShoppingPlatform(String userId) {
+    final raw = db.get(FirestorePaths.shoppingLists, userId);
+    final v = raw?['preferredPlatform'];
+    return v is String && v.isNotEmpty ? v : null;
+  }
+
+  Future<void> saveShoppingList(
+    String userId,
+    List<ShoppingItem> items, {
+    String? preferredPlatform,
+  }) {
+    final raw = db.get(FirestorePaths.shoppingLists, userId);
+    final platform = preferredPlatform ??
+        (raw?['preferredPlatform'] is String
+            ? raw!['preferredPlatform'] as String
+            : null);
+    return db.put(
+      FirestorePaths.shoppingLists,
+      userId,
+      {
+        'id': userId,
+        'items': items.map((e) => e.toMap()).toList(),
+        if (platform != null && platform.isNotEmpty)
+          'preferredPlatform': platform,
+      },
+    );
+  }
+
+  Future<void> savePreferredShoppingPlatform(
+    String userId,
+    String platformId,
+  ) {
+    final items = shoppingList(userId);
+    return saveShoppingList(userId, items, preferredPlatform: platformId);
+  }
 
   NotificationPrefs prefs(String userId) {
     final raw = db.get(FirestorePaths.prefs, userId);
@@ -470,6 +558,7 @@ class AppStore {
                   protein: m.protein,
                   carbs: m.carbs,
                   fat: m.fat,
+                  ingredients: m.ingredients,
                   reminderTime: m.reminderTime ?? m.type.defaultReminderTime,
                 ),
             ],

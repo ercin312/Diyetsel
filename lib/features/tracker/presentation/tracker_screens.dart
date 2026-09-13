@@ -426,6 +426,51 @@ class WaterTrackerScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 14),
+        Row(
+          children: [
+            for (final ml in const [100, 200, 250, 500]) ...[
+              if (ml != 100) const SizedBox(width: 8),
+              Expanded(
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    onTap: () => store.addWaterSip(user.id, ml: ml),
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.kawaiiOutline),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            '+$ml',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 15,
+                              color: AppColors.kawaiiSkyBlue,
+                            ),
+                          ),
+                          Text(
+                            'ml',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                              color: AppColors.kawaiiMuted.withValues(alpha: 0.9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ).animate().fadeIn(delay: 120.ms, duration: 280.ms),
+        const SizedBox(height: 14),
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
@@ -448,7 +493,9 @@ class WaterTrackerScreen extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Hedef: ${log.goalMl} ml — her yudum sayılır, gün boyu küçük adımlar yeter!',
+                  log.progress >= 1
+                      ? 'Hedef tamam — fazlasını akşam geç saate bırakma.'
+                      : 'Her öğünde 1 bardak pratik bir ritüel. Kalan: ${(log.goalMl - log.amountMl).clamp(0, log.goalMl)} ml.',
                   style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiInk, height: 1.35),
                 ),
               ),
@@ -664,6 +711,28 @@ class BodyTrackerScreen extends ConsumerWidget {
               ],
             ),
           ).animate().fadeIn().scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOutBack),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.kawaiiLemon.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+            border: Border.all(color: AppColors.kawaiiOutline),
+          ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.lightbulb_outline_rounded, color: AppColors.kawaiiSalmon, size: 22),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Haftada bir ölçüm yeter — aynı saatte, aynı koşullarda tartıl; grafik daha adil okunur.',
+                  style: TextStyle(fontWeight: FontWeight.w700, height: 1.35, color: AppColors.kawaiiInk),
+                ),
+              ),
+            ],
+          ),
+        ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
         const SizedBox(height: 14),
         Container(
           padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),

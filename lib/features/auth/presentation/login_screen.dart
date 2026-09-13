@@ -6,9 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_theme.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/diyetsel_assets.dart';
-import '../../../core/data/app_store.dart';
+import '../../../core/utils/legal_links.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
@@ -23,8 +22,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _email = TextEditingController(text: AppConstants.demoClientEmail);
-  final _password = TextEditingController(text: AppConstants.demoPassword);
+  final _email = TextEditingController();
+  final _password = TextEditingController();
   final _form = GlobalKey<FormState>();
 
   @override
@@ -161,31 +160,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         await ref.read(authControllerProvider.notifier).login(_email.text, _password.text);
                       }
                     }),
-            SizedBox(height: modern ? 12 : 10),
-            DiyetselButton(
-              label: 'auth.demoDietitian'.tr(),
-              tonal: true,
-              onPressed: () {
-                _email.text = AppConstants.demoAdminEmail;
-                _password.text = AppConstants.demoPassword;
-                ref.read(authControllerProvider.notifier).login(_email.text, _password.text);
-              }),
             SizedBox(height: modern ? 18 : 16),
             TextButton(
               onPressed: () => context.go('/register'),
               child: Text('auth.noAccount'.tr())),
-            if (modern) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Demo hesaplarla hemen dene — klinik ve danışan deneyimi hazır.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary.withValues(alpha: 0.5),
+            const SizedBox(height: 8),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              children: [
+                TextButton(
+                  onPressed: LegalLinks.privacy,
+                  child: const Text('Gizlilik'),
                 ),
-              ),
-            ],
+                TextButton(
+                  onPressed: LegalLinks.support,
+                  child: const Text('Destek'),
+                ),
+                TextButton(
+                  onPressed: LegalLinks.terms,
+                  child: const Text('Şartlar'),
+                ),
+              ],
+            ),
           ])));
   }
 

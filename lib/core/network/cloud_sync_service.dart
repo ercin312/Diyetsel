@@ -23,6 +23,7 @@ const List<String> kSyncedCollections = [
   FirestorePaths.blogPosts,
   FirestorePaths.blogInteractions,
   FirestorePaths.recipes,
+  FirestorePaths.recipeInteractions,
   FirestorePaths.chats,
   FirestorePaths.messages,
   FirestorePaths.documents,

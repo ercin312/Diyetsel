@@ -13,8 +13,11 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/marketplace.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
+import '../domain/shopping_from_diet.dart';
+import '../domain/shopping_platforms.dart';
 import '../domain/shopping_visuals.dart';
 import 'soft_shopping_screen.dart';
+import 'widgets/shopping_delivery_sheet.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -26,6 +29,7 @@ class ShoppingScreen extends ConsumerStatefulWidget {
 class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
   String _filter = 'Tümü';
   bool _hideChecked = false;
+  bool _didNormalize = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,16 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
     final store = ref.watch(appStoreProvider);
     ref.watch(shoppingListsProvider);
     final items = store.shoppingList(user.id);
+
+    if (!_didNormalize && items.isNotEmpty && ShoppingFromDiet.needsNormalize(items)) {
+      _didNormalize = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final cleaned = ShoppingFromDiet.normalizeItems(items);
+        await store.saveShoppingList(user.id, cleaned);
+      });
+    } else if (!_didNormalize) {
+      _didNormalize = true;
+    }
 
     final done = items.where((e) => e.checked).length;
     final total = items.length;
@@ -92,6 +106,19 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                     },
               hideChecked: _hideChecked,
               onToggleHide: () => setState(() => _hideChecked = !_hideChecked),
+              onSendToPlatform: items.isEmpty
+                  ? null
+                  : () => showShoppingDeliverySheet(
+                        context: context,
+                        items: items,
+                        cartoon: true,
+                        initialPlatform: ShoppingDeliveryPlatformX.tryParse(
+                          store.preferredShoppingPlatform(user.id),
+                        ),
+                        onPlatformSelected: (p) {
+                          store.savePreferredShoppingPlatform(user.id, p.id);
+                        },
+                      ),
             ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
             const SizedBox(height: 14),
             SizedBox(
@@ -251,59 +278,43 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
     if (plan == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Önce bir diyet planı olmalı')),
+          const SnackBar(
+            content: Text('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.'),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
       return;
     }
-    final checkedByKey = {for (final i in current) i.key: i.checked};
-    final generated = <String, ShoppingItem>{};
-    for (final day in plan.days) {
-      for (final meal in day.meals) {
-        for (final ing in meal.ingredients) {
-          final key = '${ing.category}|${ing.name}|${ing.amount}';
-          generated[key] = ShoppingItem(
-            id: 'diet-$key',
-            name: ing.name,
-            amount: ing.amount,
-            category: ing.category,
-            checked: checkedByKey[key] ?? checkedByKey['diet-$key'] ?? false,
-            tip: _tipForIngredient(ing),
-            aisle: _aisleFor(ing.category),
-          );
-        }
+
+    final result = ShoppingFromDiet.build(plan: plan, current: current);
+    if (result.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
+      return;
     }
-    await store.saveShoppingList(userId, generated.values.toList());
+
+    await store.saveShoppingList(userId, result.items);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${generated.length} ürün diyetten eklendi')),
+        SnackBar(
+          content: Text(
+            '${result.dietItemCount} ürün diyetten eklendi'
+            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
-
-  String _tipForIngredient(Ingredient ing) {
-    switch (ing.category) {
-      case 'vegetable':
-        return 'Taze ve canlı renkli olanları seç.';
-      case 'protein':
-        return 'Porsiyonunu haftalık menüye göre ayarla.';
-      case 'dairy':
-        return 'Son kullanma tarihine dikkat et.';
-      case 'grain':
-        return 'Tam tahıl / az işlenmiş tercih et.';
-      default:
-        return 'Listeye göre al, dürtü rafına bakma.';
-    }
-  }
-
-  String _aisleFor(String cat) => switch (cat) {
-        'vegetable' => 'Sebze-meyve',
-        'protein' => 'Et / balık / bakliyat',
-        'dairy' => 'Süt ürünleri',
-        'grain' => 'Tahıl / bakliyat',
-        _ => 'Genel',
-      };
 
   void _openDetail(
     BuildContext context,
@@ -444,6 +455,7 @@ class _ActionRow extends StatelessWidget {
     required this.onClearChecked,
     required this.hideChecked,
     required this.onToggleHide,
+    this.onSendToPlatform,
   });
 
   final VoidCallback onGenerate;
@@ -451,84 +463,121 @@ class _ActionRow extends StatelessWidget {
   final VoidCallback? onClearChecked;
   final bool hideChecked;
   final VoidCallback onToggleHide;
+  final VoidCallback? onSendToPlatform;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: SoftTap(
-            onTap: onGenerate,
+        Row(
+          children: [
+            Expanded(
+              child: SoftTap(
+                onTap: onGenerate,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.kawaiiLeaf,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: AppSpacing.soft,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+                      SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'Diyetten üret',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            SoftTap(
+              onTap: onAdd,
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: AppColors.kawaiiOutline),
+                ),
+                child: const Icon(Icons.add_rounded, color: AppColors.kawaiiLeafDeep, size: 22),
+              ),
+            ),
+            const SizedBox(width: 8),
+            SoftTap(
+              onTap: onToggleHide,
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: hideChecked ? AppColors.kawaiiMint : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: AppColors.kawaiiOutline),
+                ),
+                child: Icon(
+                  hideChecked ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: AppColors.kawaiiLeafDeep,
+                  size: 22,
+                ),
+              ),
+            ),
+            if (onClearChecked != null) ...[
+              const SizedBox(width: 8),
+              SoftTap(
+                onTap: onClearChecked,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.kawaiiOutline),
+                  ),
+                  child: const Icon(Icons.delete_sweep_rounded, color: AppColors.kawaiiCoralDeep, size: 22),
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (onSendToPlatform != null) ...[
+          const SizedBox(height: 8),
+          SoftTap(
+            onTap: onSendToPlatform,
             borderRadius: BorderRadius.circular(18),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               decoration: BoxDecoration(
-                color: AppColors.kawaiiLeaf,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.kawaiiOutline),
                 boxShadow: AppSpacing.soft,
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
-                  SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      'Diyetten üret',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
-                      overflow: TextOverflow.ellipsis,
+                  Icon(Icons.local_shipping_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Platforma gönder',
+                    style: TextStyle(
+                      color: AppColors.kawaiiLeafDeep,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        SoftTap(
-          onTap: onAdd,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.kawaiiOutline),
-            ),
-            child: const Icon(Icons.add_rounded, color: AppColors.kawaiiLeafDeep, size: 22),
-          ),
-        ),
-        const SizedBox(width: 8),
-        SoftTap(
-          onTap: onToggleHide,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: hideChecked ? AppColors.kawaiiMint : Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.kawaiiOutline),
-            ),
-            child: Icon(
-              hideChecked ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-              color: AppColors.kawaiiLeafDeep,
-              size: 22,
-            ),
-          ),
-        ),
-        if (onClearChecked != null) ...[
-          const SizedBox(width: 8),
-          SoftTap(
-            onTap: onClearChecked,
-            borderRadius: BorderRadius.circular(18),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.kawaiiOutline),
-              ),
-              child: const Icon(Icons.delete_sweep_rounded, color: AppColors.kawaiiCoralDeep, size: 22),
             ),
           ),
         ],

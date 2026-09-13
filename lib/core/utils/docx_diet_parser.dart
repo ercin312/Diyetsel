@@ -78,6 +78,7 @@ class DocxDietParser {
       if (body == null || body.isEmpty) continue;
       final name = body.first;
       final description = body.length > 1 ? body.skip(1).join('\n') : body.first;
+      final ingredients = _ingredientsFromBody(body);
       meals.add(
         DietMeal(
           id: _uuid.v4(),
@@ -88,11 +89,95 @@ class DocxDietParser {
           protein: 0,
           carbs: 0,
           fat: 0,
+          ingredients: ingredients,
           reminderTime: type.defaultReminderTime,
         ),
       );
     }
     return meals;
+  }
+
+  static Ingredient _tokenToIngredient(String raw) {
+    final pieces = raw
+        .split(RegExp(r'\s*[+&]\s*'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    // Multi-product line: keep first as this ingredient; callers that need all
+    // products should split earlier. For Word body we expand below.
+    if (pieces.length > 1) {
+      return _tokenToIngredient(pieces.first);
+    }
+
+    final t = raw.trim();
+    // Prefer "150 g yoğurt" / "yoğurt 150 g" over swallowing food after "adet".
+    final trailingAmt = RegExp(
+      r'^(.*?)\s+(\d+(?:[.,]\d+)?\s*(?:g|kg|ml|lt|l))\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
+    if (trailingAmt != null) {
+      final name = trailingAmt.group(1)!.trim();
+      return Ingredient(
+        name: name.isEmpty ? t : '${name[0].toUpperCase()}${name.substring(1)}',
+        amount: trailingAmt.group(2)!.trim(),
+      );
+    }
+    final leadingAmt = RegExp(
+      r'^(\d+(?:[.,]\d+)?\s*(?:g|kg|ml|lt|l))\s+(.+)$',
+      caseSensitive: false,
+    ).firstMatch(t);
+    if (leadingAmt != null) {
+      final name = leadingAmt.group(2)!.trim();
+      return Ingredient(
+        name: name.isEmpty ? t : '${name[0].toUpperCase()}${name.substring(1)}',
+        amount: leadingAmt.group(1)!.trim(),
+      );
+    }
+
+    return Ingredient(
+      name: t.isEmpty ? raw : '${t[0].toUpperCase()}${t.substring(1)}',
+      amount: '',
+    );
+  }
+
+  /// Expand body lines that contain "+" into multiple ingredients.
+  static List<Ingredient> _ingredientsFromBody(List<String> body) {
+    if (body.length < 2) return const [];
+    final lines = body
+        .skip(1)
+        .map((e) => e.replaceFirst(RegExp(r'^[\s\-\*•·\d\.\)\(]+'), '').trim())
+        .where((e) => e.isNotEmpty && e.length < 80)
+        .toList();
+    if (lines.isEmpty) return const [];
+
+    final expanded = <String>[];
+    for (final line in lines) {
+      final parts = line
+          .split(RegExp(r'\s*[+&]\s*'))
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      if (parts.length >= 2) {
+        expanded.addAll(parts);
+      } else {
+        expanded.add(line);
+      }
+    }
+
+    if (expanded.length >= 2) {
+      return [for (final line in expanded) _tokenToIngredient(line)];
+    }
+
+    final one = expanded.first;
+    final parts = one
+        .split(RegExp(r'[,;/•·|]'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty && e.length < 48)
+        .toList();
+    if (parts.length >= 2) {
+      return [for (final p in parts) _tokenToIngredient(p)];
+    }
+    return [_tokenToIngredient(one)];
   }
 
   static MealType? _matchHeading(String line) {

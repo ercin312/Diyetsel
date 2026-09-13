@@ -835,6 +835,7 @@ class Recipe {
     this.cookMinutes = 0,
     this.tags = const [],
     this.tips = const [],
+    this.likes = 0,
   });
 
   final String id;
@@ -854,6 +855,7 @@ class Recipe {
   final int cookMinutes;
   final List<String> tags;
   final List<String> tips;
+  final int likes;
 
   int get totalMinutes => prepMinutes + (cookMinutes > 0 ? cookMinutes : 0);
 
@@ -875,6 +877,7 @@ class Recipe {
         'cookMinutes': cookMinutes,
         'tags': tags,
         'tips': tips,
+        'likes': likes,
       };
 
   factory Recipe.fromMap(Map<String, dynamic> map) => Recipe(
@@ -899,6 +902,48 @@ class Recipe {
         cookMinutes: _i(map['cookMinutes']),
         tags: (map['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
         tips: (map['tips'] as List?)?.map((e) => '$e').toList() ?? const [],
+        likes: _i(map['likes']),
+      );
+
+  Recipe copyWith({
+    String? id,
+    String? title,
+    String? description,
+    int? calories,
+    int? prepMinutes,
+    List<String>? allergens,
+    List<String>? steps,
+    List<Ingredient>? ingredients,
+    String? category,
+    String? imageUrl,
+    int? proteinGrams,
+    int? carbsGrams,
+    int? fatGrams,
+    int? servings,
+    int? cookMinutes,
+    List<String>? tags,
+    List<String>? tips,
+    int? likes,
+  }) =>
+      Recipe(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        calories: calories ?? this.calories,
+        prepMinutes: prepMinutes ?? this.prepMinutes,
+        allergens: allergens ?? this.allergens,
+        steps: steps ?? this.steps,
+        ingredients: ingredients ?? this.ingredients,
+        category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
+        proteinGrams: proteinGrams ?? this.proteinGrams,
+        carbsGrams: carbsGrams ?? this.carbsGrams,
+        fatGrams: fatGrams ?? this.fatGrams,
+        servings: servings ?? this.servings,
+        cookMinutes: cookMinutes ?? this.cookMinutes,
+        tags: tags ?? this.tags,
+        tips: tips ?? this.tips,
+        likes: likes ?? this.likes,
       );
 }
 

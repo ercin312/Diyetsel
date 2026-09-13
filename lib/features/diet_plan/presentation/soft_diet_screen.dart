@@ -53,6 +53,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
     final showMacros = plan.calorieTarget > 0 && day.meals.any((m) => m.calories > 0);
     final doneCount = day.meals.where((m) => m.consumed).length;
     final totalMeals = day.meals.length;
+    final dayComplete = doneCount == totalMeals && totalMeals > 0;
     final next = DietInteraction.nextMeal(day.meals);
     final water = store.waterLog(user.id, DateTime.now());
     final streak = store.streak(user.id);
@@ -68,8 +69,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
     return AppPage(
       title: 'Diyetim',
       padding: EdgeInsets.zero,
-      child: ColoredBox(
-        color: AppColors.modernWash,
+      child: SoftWashBackground(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
           children: [
@@ -93,11 +93,11 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                 }
               },
               onShopping: () => context.push('/app/shopping'),
-            ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            ).animate().fadeIn(delay: 40.ms, duration: 280.ms).slideY(begin: 0.04, curve: Curves.easeOutCubic),
             const SizedBox(height: 12),
             SoftTipCard(
               title: isToday ? 'Bugünün odağı' : 'Seçili gün',
-              body: doneCount == totalMeals && totalMeals > 0
+              body: dayComplete
                   ? 'Tüm öğünler tamam — harika tempo! Yarın için alışveriş listeni gözden geçir.'
                   : remaining != null && remaining > 0
                       ? 'Kalan yaklaşık $remaining kcal. Proteini önce bitir, akşamı hafif tut.'
@@ -107,14 +107,21 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
               tint: AppColors.modernMint,
               onTap: () => context.push('/app/recipes'),
               actionLabel: 'Tariflere göz at →',
-            ),
-            if (next != null && isToday) ...[
+            ).animate().fadeIn(delay: 70.ms, duration: 300.ms).slideY(begin: 0.04, curve: Curves.easeOutCubic),
+            if (dayComplete) ...[
+              const SizedBox(height: 12),
+              SoftDietCompletionBanner(
+                onShopping: () => context.push('/app/shopping'),
+                onRecipes: () => context.push('/app/recipes'),
+              ),
+            ],
+            if (next != null && isToday && !dayComplete) ...[
               const SizedBox(height: 12),
               SoftNextMealCard(
                 next: next,
                 onEat: () => _toggleMeal(context, store, plan, selected, day.meals[next.index], doneCount, totalMeals),
                 onJump: () => setState(() => _mealFilter = 1),
-              ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+              ).animate().fadeIn(delay: 90.ms, duration: 280.ms),
             ],
             const SizedBox(height: 16),
             Text(
@@ -124,10 +131,10 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                     color: AppColors.primaryDeep,
                     fontSize: 14,
                   ),
-            ),
+            ).animate().fadeIn(delay: 100.ms, duration: 260.ms),
             const SizedBox(height: 8),
             SizedBox(
-              height: 72,
+              height: 82,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: plan.days.length,
@@ -145,7 +152,10 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                       _dayIndex = i;
                       _mealFilter = 0;
                     }),
-                  );
+                  )
+                      .animate(delay: (30 * i).ms)
+                      .fadeIn(duration: 260.ms)
+                      .slideX(begin: 0.06, curve: Curves.easeOutCubic);
                 },
               ),
             ),
@@ -160,13 +170,13 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                 carbsTarget: plan.carbsTarget,
                 fat: f,
                 fatTarget: plan.fatTarget,
-              ).animate().fadeIn(duration: 360.ms),
+              ).animate().fadeIn(delay: 120.ms, duration: 360.ms).slideY(begin: 0.04, curve: Curves.easeOutCubic),
               const SizedBox(height: 10),
               SoftRemainingMacros(
                 kcalLeft: remaining ?? 0,
                 proteinLeft: (plan.proteinTarget - p).clamp(0, plan.proteinTarget),
                 carbsLeft: (plan.carbsTarget - c).clamp(0, plan.carbsTarget),
-              ),
+              ).animate().fadeIn(delay: 140.ms, duration: 300.ms),
             ],
             const SizedBox(height: 18),
             Row(
@@ -188,29 +198,31 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                 const SizedBox(width: 6),
                 SoftFilterPill(label: 'Yenildi', selected: _mealFilter == 2, onTap: () => setState(() => _mealFilter = 2)),
               ],
-            ),
+            ).animate().fadeIn(delay: 150.ms, duration: 280.ms),
             const SizedBox(height: 12),
             if (visibleMeals.isEmpty)
               SoftDietEmptyMeals(filterDone: _mealFilter == 2)
             else
-              for (final entry in visibleMeals) ...[
-                SoftMealCard(
-                  meal: entry.value,
-                  index: entry.key,
-                  isNext: next != null && next.index == entry.key && isToday,
-                  onToggle: () => _toggleMeal(
-                    context,
-                    store,
-                    plan,
-                    selected,
-                    entry.value,
-                    doneCount,
-                    totalMeals,
-                  ),
-                  onPickReminder: () => _pickReminder(context, plan, entry.value),
-                ),
-                const SizedBox(height: 12),
-              ],
+              SoftMealTimeline(
+                children: [
+                  for (final entry in visibleMeals)
+                    SoftMealCard(
+                      meal: entry.value,
+                      index: entry.key,
+                      isNext: next != null && next.index == entry.key && isToday && !dayComplete,
+                      onToggle: () => _toggleMeal(
+                        context,
+                        store,
+                        plan,
+                        selected,
+                        entry.value,
+                        doneCount,
+                        totalMeals,
+                      ),
+                      onPickReminder: () => _pickReminder(context, plan, entry.value),
+                    ),
+                ],
+              ),
             const SizedBox(height: 8),
             SoftWeekOverview(
               plan: plan,
@@ -219,7 +231,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                 _dayIndex = i;
                 _mealFilter = 0;
               }),
-            ),
+            ).animate().fadeIn(delay: 180.ms, duration: 320.ms).slideY(begin: 0.04, curve: Curves.easeOutCubic),
             const SizedBox(height: 12),
             SoftDietTipCard(
               body: DietInteraction.tipOfDay(DateTime.now().day + selected),
@@ -287,56 +299,63 @@ class SoftDietEmptyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppPage(
       title: 'Diyetim',
-      child: ColoredBox(
-        color: AppColors.modernWash,
+      padding: EdgeInsets.zero,
+      child: SoftWashBackground(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(color: AppColors.modernLine),
-                    boxShadow: AppSpacing.softLift,
-                  ),
-                  padding: const EdgeInsets.all(18),
-                  child: Image.asset(
-                    'assets/images/food_salad_bowl.png',
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) => const Icon(
-                      Icons.restaurant_menu_rounded,
-                      size: 48,
-                      color: AppColors.primary,
+            child: SoftSurfaceCard(
+              padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 22),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.modernMint,
+                      border: Border.all(color: AppColors.modernLine),
+                      boxShadow: AppSpacing.softLift,
+                    ),
+                    padding: const EdgeInsets.all(18),
+                    child: Image.asset(
+                      'assets/images/food_salad_bowl.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, _, _) => const Icon(
+                        Icons.restaurant_menu_rounded,
+                        size: 48,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  )
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .moveY(begin: 0, end: -8, duration: 2000.ms, curve: Curves.easeInOut)
+                      .fadeIn(duration: 400.ms),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Henüz plan yok',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                      color: AppColors.primaryDeep,
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Henüz plan yok',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    color: AppColors.primaryDeep,
+                  const SizedBox(height: 8),
+                  Text(
+                    'Diyetisyeniniz Word belgesiyle plan yüklediğinde burada görünecek.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13.5,
+                      height: 1.4,
+                      color: AppColors.primary.withValues(alpha: 0.55),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Diyetisyeniniz Word belgesiyle plan yüklediğinde burada görünecek.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    height: 1.4,
-                    color: AppColors.primary.withValues(alpha: 0.55),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ).animate().fadeIn(duration: 360.ms).slideY(begin: 0.05, curve: Curves.easeOutCubic),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -44,6 +45,28 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
     final store = ref.watch(appStoreProvider);
     ref.watch(availabilityProvider);
 
+    final now = DateTime.now();
+    final upcoming = items
+        .where(
+          (a) =>
+              a.startAt.isAfter(now) &&
+              a.status != AppointmentStatus.rejected &&
+              a.status != AppointmentStatus.completed,
+        )
+        .toList();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekEnd = weekStart.add(const Duration(days: 7));
+    final thisWeek = items
+        .where(
+          (a) =>
+              !a.startAt.isBefore(weekStart) &&
+              a.startAt.isBefore(weekEnd) &&
+              a.status != AppointmentStatus.rejected,
+        )
+        .length;
+    final pending = items.where((a) => a.status == AppointmentStatus.pending).length;
+    final cartoon = context.isCartoon;
+
     return AppPage(
       title: widget.admin ? 'Takvim' : 'Randevularım',
       actions: [
@@ -56,8 +79,24 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
       ],
       child: ListView(
         children: [
+          if (cartoon) ...[
+            _CartoonCalendarStatStrip(
+              upcoming: upcoming.length,
+              thisWeek: thisWeek,
+              pending: pending,
+            ).animate().fadeIn(duration: 280.ms),
+            const SizedBox(height: 12),
+            _CartoonCalendarTipCard(
+              admin: widget.admin,
+              pending: pending,
+              thisWeek: thisWeek,
+              hasNext: upcoming.isNotEmpty,
+              onBook: widget.admin ? null : () => _book(context, store, user),
+            ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+            const SizedBox(height: 12),
+          ],
           DiyetselCard(
-            color: context.isCartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : null,
+            color: cartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : null,
             padding: const EdgeInsets.all(8),
             child: TableCalendar<Appointment>(
               firstDay: DateTime.now().subtract(const Duration(days: 365)),
@@ -80,7 +119,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
                 ),
                 selectedTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                 todayDecoration: BoxDecoration(
-                  color: context.isCartoon
+                  color: cartoon
                       ? AppColors.kawaiiRose.withValues(alpha: 0.85)
                       : AppColors.modernSageSoft.withValues(
                               alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.95,
@@ -88,7 +127,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
                   shape: BoxShape.circle,
                 ),
                 todayTextStyle: TextStyle(
-                  color: context.isCartoon
+                  color: cartoon
                       ? AppColors.kawaiiInk
                       : Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
@@ -97,7 +136,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
                 weekendTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 outsideTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.55)),
                 markerDecoration: BoxDecoration(
-                  color: context.isCartoon ? AppColors.kawaiiCoral : context.brandPrimary,
+                  color: cartoon ? AppColors.kawaiiCoral : context.brandPrimary,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -121,7 +160,10 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
               onPressed: () => _book(context, store, user),
             ),
           const SizedBox(height: 8),
-          ...dayItems.map((a) => _tile(context, a, store, user)),
+          if (dayItems.isEmpty && cartoon && !widget.admin)
+            _CartoonEmptyDay(onBook: () => _book(context, store, user))
+          else
+            ...dayItems.map((a) => _tile(context, a, store, user)),
           if (widget.admin) ...[
             const SectionHeader(title: 'Uygunluk'),
             Wrap(
@@ -256,6 +298,156 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
             const SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CartoonCalendarStatStrip extends StatelessWidget {
+  const _CartoonCalendarStatStrip({
+    required this.upcoming,
+    required this.thisWeek,
+    required this.pending,
+  });
+
+  final int upcoming;
+  final int thisWeek;
+  final int pending;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget chip(String value, String label, Color tint, Color accent, IconData icon) {
+      return Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          decoration: BoxDecoration(
+            color: tint,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.kawaiiOutline),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, size: 20, color: accent),
+              const SizedBox(height: 6),
+              Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
+              Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        chip('$upcoming', 'yaklaşan', AppColors.kawaiiMint, AppColors.kawaiiLeafDeep, Icons.event_rounded),
+        const SizedBox(width: 8),
+        chip('$thisWeek', 'bu hafta', AppColors.kawaiiSky, AppColors.kawaiiSkyBlue, Icons.calendar_view_week_rounded),
+        const SizedBox(width: 8),
+        chip('$pending', 'bekleyen', AppColors.kawaiiLemon, AppColors.kawaiiCoralDeep, Icons.hourglass_top_rounded),
+      ],
+    );
+  }
+}
+
+class _CartoonCalendarTipCard extends StatelessWidget {
+  const _CartoonCalendarTipCard({
+    required this.admin,
+    required this.pending,
+    required this.thisWeek,
+    required this.hasNext,
+    this.onBook,
+  });
+
+  final bool admin;
+  final int pending;
+  final int thisWeek;
+  final bool hasNext;
+  final VoidCallback? onBook;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = admin ? 'Klinik ritmi' : 'Randevu ipucu';
+    final body = admin
+        ? (pending > 0
+            ? '$pending bekleyen talep var — hızlı onay danışan bağlılığını artırır.'
+            : 'Bu hafta $thisWeek seans. Sessiz danışanlara kısa bir kontrol mesajı at.')
+        : (hasNext
+            ? 'Seansından 1 gün önce check-in ve ölçülerini güncelle — görüşme daha verimli olur.'
+            : 'Düzenli seanslar planı güncel tutar. Müsait bir slot seçip talep gönder.');
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onBook,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [AppColors.kawaiiMint, AppColors.kawaiiLemon]),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.kawaiiOutline),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                admin ? Icons.event_available_rounded : Icons.calendar_month_rounded,
+                color: AppColors.kawaiiLeafDeep,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13.5, color: AppColors.kawaiiInk)),
+                    const SizedBox(height: 4),
+                    Text(body, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.35)),
+                    if (onBook != null) ...[
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Randevu talep et →',
+                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiLeafDeep),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CartoonEmptyDay extends StatelessWidget {
+  const _CartoonEmptyDay({this.onBook});
+
+  final VoidCallback? onBook;
+
+  @override
+  Widget build(BuildContext context) {
+    return DiyetselCard(
+      color: AppColors.kawaiiBubble,
+      child: Column(
+        children: [
+          const Icon(Icons.event_busy_rounded, size: 40, color: AppColors.kawaiiMuted),
+          const SizedBox(height: 10),
+          const Text(
+            'Bu günde randevu yok',
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Müsait bir slot seçerek yeni seans talep edebilirsin.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
+          ),
+          if (onBook != null) ...[
+            const SizedBox(height: 12),
+            DiyetselButton(label: 'Randevu al', icon: Icons.add, onPressed: onBook),
+          ],
+        ],
       ),
     );
   }

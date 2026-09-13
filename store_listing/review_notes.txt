@@ -1,0 +1,9 @@
+Demo diyetisyen: diyetisyen@diyetsel.app / Diyetsel123!
+Demo danışan: danisan@diyetsel.app / Diyetsel123!
+
+Uygulama bir diyetisyen-danışan klinik platformudur. Tıbbi teşhis veya tedavi iddiası yoktur.
+
+İnceleme: danışan hesabıyla giriş yapın, ana sayfa / diyet / su takibi / sohbet sekmelerini deneyin. Diyetisyen hesabıyla plan ve danışan listesini görebilirsiniz.
+
+Gizlilik: https://diyetsel-platform.web.app/privacy
+Destek: https://diyetsel-platform.web.app/support

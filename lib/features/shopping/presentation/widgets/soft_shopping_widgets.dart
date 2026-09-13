@@ -253,6 +253,7 @@ class SoftShoppingActionRow extends StatelessWidget {
     required this.onClearChecked,
     required this.hideChecked,
     required this.onToggleHide,
+    this.onSendToPlatform,
   });
 
   final VoidCallback onGenerate;
@@ -260,95 +261,132 @@ class SoftShoppingActionRow extends StatelessWidget {
   final VoidCallback? onClearChecked;
   final bool hideChecked;
   final VoidCallback onToggleHide;
+  final VoidCallback? onSendToPlatform;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: SoftTap(
-            onTap: onGenerate,
-            borderRadius: BorderRadius.circular(18),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
+        Row(
+          children: [
+            Expanded(
+              child: SoftTap(
+                onTap: onGenerate,
                 borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.28),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.28),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
-                  SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      'Diyetten üret',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+                      SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'Diyetten üret',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        SoftTap(
-          onTap: onAdd,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
+            const SizedBox(width: 8),
+            SoftTap(
+              onTap: onAdd,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.modernLine),
-              boxShadow: AppSpacing.soft,
-            ),
-            child: Icon(Icons.add_rounded, color: AppColors.primary.withValues(alpha: 0.85), size: 22),
-          ),
-        ),
-        const SizedBox(width: 8),
-        SoftTap(
-          onTap: onToggleHide,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: hideChecked ? AppColors.primary.withValues(alpha: 0.12) : Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: hideChecked ? AppColors.primary.withValues(alpha: 0.3) : AppColors.modernLine,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: AppColors.modernLine),
+                  boxShadow: AppSpacing.soft,
+                ),
+                child: Icon(Icons.add_rounded, color: AppColors.primary.withValues(alpha: 0.85), size: 22),
               ),
-              boxShadow: AppSpacing.soft,
             ),
-            child: Icon(
-              hideChecked ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-              color: AppColors.primary.withValues(alpha: 0.85),
-              size: 22,
+            const SizedBox(width: 8),
+            SoftTap(
+              onTap: onToggleHide,
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: hideChecked ? AppColors.primary.withValues(alpha: 0.12) : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: hideChecked ? AppColors.primary.withValues(alpha: 0.3) : AppColors.modernLine,
+                  ),
+                  boxShadow: AppSpacing.soft,
+                ),
+                child: Icon(
+                  hideChecked ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: AppColors.primary.withValues(alpha: 0.85),
+                  size: 22,
+                ),
+              ),
             ),
-          ),
+            if (onClearChecked != null) ...[
+              const SizedBox(width: 8),
+              SoftTap(
+                onTap: onClearChecked,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.modernLine),
+                    boxShadow: AppSpacing.soft,
+                  ),
+                  child: const Icon(Icons.delete_sweep_rounded, color: Color(0xFFE07A5F), size: 22),
+                ),
+              ),
+            ],
+          ],
         ),
-        if (onClearChecked != null) ...[
-          const SizedBox(width: 8),
+        if (onSendToPlatform != null) ...[
+          const SizedBox(height: 8),
           SoftTap(
-            onTap: onClearChecked,
+            onTap: onSendToPlatform,
             borderRadius: BorderRadius.circular(18),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: AppColors.modernLine),
                 boxShadow: AppSpacing.soft,
               ),
-              child: const Icon(Icons.delete_sweep_rounded, color: Color(0xFFE07A5F), size: 22),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.local_shipping_rounded, color: AppColors.primary.withValues(alpha: 0.9), size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Platforma gönder',
+                    style: TextStyle(
+                      color: AppColors.primary.withValues(alpha: 0.95),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

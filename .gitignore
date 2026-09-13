@@ -58,3 +58,6 @@ AuthKey_*.p8
 
 /android/build/
 
+# Firebase Hosting cache
+.firebase/
+

@@ -109,6 +109,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   .fadeIn(duration: 300.ms)
                   .slideY(begin: -0.04, curve: Curves.easeOutCubic),
               const SizedBox(height: 14),
+              _CartoonCheckInStatsRow(count: logs.length, daysSince: daysSince, due: due)
+                  .animate()
+                  .fadeIn(delay: 30.ms, duration: 280.ms),
+              const SizedBox(height: 14),
               if (last?.dietitianNote != null) ...[
                 _DietitianNoteCard(note: last!.dietitianNote!, at: last.dietitianNoteAt)
                     .animate()
@@ -293,6 +297,76 @@ class _CheckInHero extends StatelessWidget {
           Image.asset(DiyetselAssets.characterWoman, height: 92, fit: BoxFit.contain),
         ],
       ),
+    );
+  }
+}
+
+class _CartoonCheckInStatsRow extends StatelessWidget {
+  const _CartoonCheckInStatsRow({
+    required this.count,
+    required this.daysSince,
+    required this.due,
+  });
+
+  final int count;
+  final int? daysSince;
+  final bool due;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      ('Kayıt', '$count', Icons.favorite_rounded, AppColors.kawaiiMint, AppColors.kawaiiLeafDeep),
+      (
+        'Son',
+        daysSince == null ? '—' : '$daysSince g',
+        Icons.schedule_rounded,
+        AppColors.kawaiiSky,
+        AppColors.kawaiiSkyBlue,
+      ),
+      (
+        'Durum',
+        due ? 'Bekliyor' : 'Tamam',
+        Icons.flag_rounded,
+        due ? AppColors.kawaiiPeach : AppColors.kawaiiMint,
+        due ? AppColors.kawaiiCoralDeep : AppColors.kawaiiLeafDeep,
+      ),
+    ];
+    return Row(
+      children: [
+        for (var i = 0; i < items.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.kawaiiOutline),
+                boxShadow: AppSpacing.soft,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(color: items[i].$4, borderRadius: BorderRadius.circular(10)),
+                    child: Icon(items[i].$3, size: 16, color: items[i].$5),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(items[i].$1, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+                  Text(
+                    items[i].$2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: items[i].$5),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

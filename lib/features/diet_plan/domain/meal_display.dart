@@ -54,17 +54,58 @@ class MealDisplay {
   static List<Ingredient> parseIngredientHints(String raw) {
     final text = raw.trim();
     if (text.isEmpty) return const [];
-    if (!text.contains(',') && text.length > 48) return const [];
+
+    // Prefer line / bullet lists from Word diets.
+    final lineParts = text
+        .split(RegExp(r'[\r\n]+'))
+        .map((e) => e.replaceFirst(RegExp(r'^[\s\-\*•·\d\.\)\(]+'), '').trim())
+        .where((e) => e.isNotEmpty && e.length < 60)
+        .toList();
+    if (lineParts.length >= 2) {
+      return [
+        for (final p in lineParts) _ingredientFromToken(p),
+      ];
+    }
+
+    if (!text.contains(',') && !text.contains(';') && !text.contains('•') && text.length > 64) {
+      return const [];
+    }
     final parts = text
         .split(RegExp(r'[,;/•·|]'))
         .map((e) => e.trim())
-        .where((e) => e.isNotEmpty && e.length < 40)
+        .where((e) => e.isNotEmpty && e.length < 48)
         .toList();
-    if (parts.length < 2) return const [];
+    if (parts.length < 2) {
+      // Single "Yulaf 50 g" style token
+      final one = _tryAmountToken(text);
+      return one == null ? const [] : [one];
+    }
     return [
-      for (final p in parts)
-        Ingredient(name: _capitalize(p), amount: '', category: 'other'),
+      for (final p in parts) _ingredientFromToken(p),
     ];
+  }
+
+  static Ingredient _ingredientFromToken(String raw) {
+    final parsed = _tryAmountToken(raw);
+    if (parsed != null) return parsed;
+    return Ingredient(name: _capitalize(raw), amount: '', category: 'other');
+  }
+
+  static Ingredient? _tryAmountToken(String raw) {
+    final t = raw.trim();
+    if (t.isEmpty || t.length > 48) return null;
+    final match = RegExp(
+      r'^(.+?)\s+(\d+(?:[.,]\d+)?\s*(?:g|kg|ml|lt|l|adet|dilim|kaşık|yemek\s*kaşığı|tatlı\s*kaşığı|su\s*bardağı|kase).*)$',
+      caseSensitive: false,
+    ).firstMatch(t);
+    if (match != null) {
+      return Ingredient(
+        name: _capitalize(match.group(1)!.trim()),
+        amount: match.group(2)!.trim(),
+        category: 'other',
+      );
+    }
+    return null;
   }
 
   static String foodAsset(MealType type) => switch (type) {

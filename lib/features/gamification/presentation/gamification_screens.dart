@@ -133,11 +133,18 @@ class BadgeCelebration {
   }
 }
 
-class BadgesScreen extends ConsumerWidget {
+class BadgesScreen extends ConsumerStatefulWidget {
   const BadgesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BadgesScreen> createState() => _BadgesScreenState();
+}
+
+class _BadgesScreenState extends ConsumerState<BadgesScreen> {
+  String _filter = 'Tümü';
+
+  @override
+  Widget build(BuildContext context) {
     if (context.isModern) {
       return const SoftBadgesScreen();
     }
@@ -147,13 +154,26 @@ class BadgesScreen extends ConsumerWidget {
     ref.watch(userProgressProvider(user.id));
     final progress = store.userProgress(user.id);
     final badges = allBadgeProgress(store, user.id, progress);
-    final earned = badges.where((b) => b.earned).length;
+    final earnedList = badges.where((b) => b.earned).toList();
+    final lockedList = badges.where((b) => !b.earned).toList();
+    final earned = earnedList.length;
+    final locked = lockedList.length;
+
+    final nextCandidates = lockedList.toList()..sort((a, b) => b.ratio.compareTo(a.ratio));
+    final next = nextCandidates.isEmpty ? null : nextCandidates.first;
+
+    final filtered = switch (_filter) {
+      'Kazanılan' => earnedList,
+      'Kilitli' => lockedList..sort((a, b) => b.ratio.compareTo(a.ratio)),
+      _ => badges,
+    };
 
     return AppPage(
       title: 'Rozetler & hedefler',
       child: ListView(
         children: [
           DiyetselCard(
+            color: context.isCartoon ? AppColors.kawaiiLemon.withValues(alpha: 0.55) : null,
             child: Row(
               children: [
                 StyleIcon(icon: Icons.emoji_events_rounded, emoji: '🏆', size: 36, color: context.brandPrimary),
@@ -164,7 +184,9 @@ class BadgesScreen extends ConsumerWidget {
                     children: [
                       Text('$earned / ${badges.length} rozet', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
                       Text(
-                        'Su, check-in, fotoğraf ve mini ders serileriyle kazan',
+                        next != null
+                            ? 'Sıradaki: ${next.badge.title} · %${(next.ratio * 100).round()}'
+                            : 'Su, check-in, fotoğraf ve mini ders serileriyle kazan',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -173,16 +195,136 @@ class BadgesScreen extends ConsumerWidget {
               ],
             ),
           ).animate().fadeIn().slideY(begin: 0.06),
-          const SizedBox(height: 14),
-          for (final item in badges)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _BadgeCard(item: item),
-            ).animate().fadeIn(delay: (badges.indexOf(item) * 60).ms).scale(
-                  begin: context.isCartoon ? const Offset(0.94, 0.94) : const Offset(1, 1),
-                  curve: Curves.easeOutBack,
-                  duration: context.isCartoon ? 400.ms : 0.ms,
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _CartoonBadgeStatChip(
+                  label: 'Kazanılan',
+                  value: '$earned',
+                  tint: AppColors.kawaiiMint,
+                  accent: AppColors.kawaiiLeafDeep,
                 ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _CartoonBadgeStatChip(
+                  label: 'Kilitli',
+                  value: '$locked',
+                  tint: AppColors.kawaiiPeach,
+                  accent: AppColors.kawaiiCoralDeep,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _CartoonBadgeStatChip(
+                  label: 'İpucu',
+                  value: next == null ? 'Tamam' : '%${(next.ratio * 100).round()}',
+                  tint: AppColors.kawaiiLilac,
+                  accent: AppColors.kawaiiPurple,
+                ),
+              ),
+            ],
+          ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              for (final option in const ['Tümü', 'Kazanılan', 'Kilitli']) ...[
+                if (option != 'Tümü') const SizedBox(width: 8),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _filter = option),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      decoration: BoxDecoration(
+                        color: _filter == option ? AppColors.kawaiiLeaf : Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: _filter == option ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        option,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12.5,
+                          color: _filter == option ? Colors.white : AppColors.kawaiiInk,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+          const SizedBox(height: 14),
+          if (filtered.isEmpty)
+            DiyetselCard(
+              color: AppColors.kawaiiBubble,
+              child: Column(
+                children: [
+                  const Text('🔒', style: TextStyle(fontSize: 36)),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Bu filtrede rozet yok',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _filter == 'Kazanılan'
+                        ? 'Henüz rozet kazanmadın — küçük günlük adımlar seni buraya getirir.'
+                        : 'Filtreyi değiştir veya hedeflerine doğru ilerlemeye devam et.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ).animate().fadeIn(duration: 280.ms)
+          else
+            for (final item in filtered)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _BadgeCard(item: item),
+              ).animate().fadeIn(delay: (filtered.indexOf(item) * 60).ms).scale(
+                    begin: context.isCartoon ? const Offset(0.94, 0.94) : const Offset(1, 1),
+                    curve: Curves.easeOutBack,
+                    duration: context.isCartoon ? 400.ms : 0.ms,
+                  ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CartoonBadgeStatChip extends StatelessWidget {
+  const _CartoonBadgeStatChip({
+    required this.label,
+    required this.value,
+    required this.tint,
+    required this.accent,
+  });
+
+  final String label;
+  final String value;
+  final Color tint;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: tint,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.kawaiiOutline),
+      ),
+      child: Column(
+        children: [
+          Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
         ],
       ),
     );

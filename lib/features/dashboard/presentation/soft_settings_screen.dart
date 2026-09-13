@@ -309,6 +309,10 @@ class SoftSettingsScreen extends ConsumerWidget {
               ).animate().fadeIn(delay: 150.ms, duration: 280.ms),
             ],
             const SizedBox(height: 18),
+            const SoftSettingsLegalLinks()
+                .animate()
+                .fadeIn(delay: 160.ms, duration: 280.ms),
+            const SizedBox(height: 18),
             SoftSettingsLogoutButton(
               onTap: () => ref.read(authControllerProvider.notifier).logout(),
             ).animate().fadeIn(delay: 170.ms, duration: 280.ms),

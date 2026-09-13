@@ -28,11 +28,14 @@ class ChatListScreen extends ConsumerWidget {
 
     final user = ref.watch(authControllerProvider).user!;
     final threads = ref.watch(chatsProvider(user.id)).valueOrNull ?? [];
+    final cartoon = context.isCartoon;
     return AppPage(
       title: 'Sohbet',
       fab: user.isAdmin
           ? null
           : FloatingActionButton(
+              backgroundColor: cartoon ? AppColors.kawaiiLeaf : null,
+              foregroundColor: cartoon ? Colors.white : null,
               onPressed: () async {
                 final store = ref.read(appStoreProvider);
                 final admin = store.user(SeedData.adminId) ?? store.users().firstWhere((u) => u.isAdmin);
@@ -43,18 +46,145 @@ class ChatListScreen extends ConsumerWidget {
               },
               child: const Icon(Icons.chat),
             ),
-      child: threads.isEmpty
-          ? const EmptyState(icon: Icons.chat, title: 'Henüz mesaj yok')
-          : ListView(
-              children: [
-                for (final t in threads)
-                  ListTile(
-                    title: Text(t.participantNames.where((n) => n != user.displayName).join(', ')),
-                    subtitle: Text(t.lastMessage),
-                    onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ChatRoomScreen(thread: t))),
-                  ),
-              ],
-            ),
+      child: cartoon
+          ? ColoredBox(
+              color: AppColors.kawaiiSurfaceCream,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.kawaiiPeach.withValues(alpha: 0.7),
+                          AppColors.kawaiiMint.withValues(alpha: 0.65),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.kawaiiOutline),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.favorite_rounded, color: AppColors.kawaiiCoral, size: 22),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Diyetisyeninle buradan yazış — sorularını kısa ve net tut, yanıt daha hızlı gelir.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              height: 1.35,
+                              color: AppColors.kawaiiInk,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn(duration: 280.ms),
+                  const SizedBox(height: 14),
+                  if (threads.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(color: AppColors.kawaiiOutline),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(Icons.chat_bubble_outline_rounded, size: 48, color: AppColors.kawaiiLeaf.withValues(alpha: 0.7)),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Henüz mesaj yok',
+                            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            user.isAdmin
+                                ? 'Danışanlar yazınca sohbetler burada görünecek.'
+                                : 'Sağ alttaki butonla diyetisyene ilk mesajını gönder.',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn(delay: 40.ms, duration: 300.ms)
+                  else
+                    for (var i = 0; i < threads.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Material(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(18),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(builder: (_) => ChatRoomScreen(thread: threads[i])),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(color: AppColors.kawaiiOutline),
+                              ),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: AppColors.kawaiiMint,
+                                    child: Text(
+                                      () {
+                                        final name = threads[i]
+                                            .participantNames
+                                            .where((n) => n != user.displayName)
+                                            .join(', ');
+                                        return name.isEmpty ? '?' : name.substring(0, 1).toUpperCase();
+                                      }(),
+                                      style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiLeafDeep),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          threads[i].participantNames.where((n) => n != user.displayName).join(', '),
+                                          style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiInk),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          threads[i].lastMessage,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(Icons.chevron_right_rounded, color: AppColors.kawaiiMuted),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ).animate().fadeIn(delay: (40 * i).ms, duration: 280.ms),
+                ],
+              ),
+            )
+          : threads.isEmpty
+              ? const EmptyState(icon: Icons.chat, title: 'Henüz mesaj yok')
+              : ListView(
+                  children: [
+                    for (final t in threads)
+                      ListTile(
+                        title: Text(t.participantNames.where((n) => n != user.displayName).join(', ')),
+                        subtitle: Text(t.lastMessage),
+                        onTap: () =>
+                            Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ChatRoomScreen(thread: t))),
+                      ),
+                  ],
+                ),
     );
   }
 }

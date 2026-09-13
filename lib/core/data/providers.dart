@@ -92,6 +92,11 @@ final blogInteractionsProvider = StreamProvider<List<Map<String, dynamic>>>((ref
   return _watch(store, FirestorePaths.blogInteractions, () => store.db.list(FirestorePaths.blogInteractions));
 });
 
+final recipeInteractionsProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
+  final store = ref.watch(appStoreProvider);
+  return _watch(store, FirestorePaths.recipeInteractions, () => store.db.list(FirestorePaths.recipeInteractions));
+});
+
 final availabilityProvider = StreamProvider<List<AvailabilityRule>>((ref) {
   final store = ref.watch(appStoreProvider);
   return _watch(store, FirestorePaths.availability, store.availability);

@@ -75,6 +75,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
     final plan = store.dietPlanForClient(user.id);
     if (plan == null) {
       if (context.isModern) return const SoftDietEmptyScreen();
+      if (context.isCartoon) return const _CartoonEmptyPlanScreen();
       return AppPage(
         title: 'Diyet listesi',
         child: EmptyState(
@@ -114,6 +115,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
     }).toList();
 
     if (cartoon) {
+      final dayComplete = totalMeals > 0 && doneCount >= totalMeals;
       return AppPage(
         title: 'Diyetim',
         padding: EdgeInsets.zero,
@@ -143,6 +145,20 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                 },
                 onShopping: () => context.push('/app/shopping'),
               ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+              const SizedBox(height: 12),
+              _CartoonFocusTip(
+                title: isToday ? 'Bugünün odağı' : 'Seçili gün',
+                body: dayComplete
+                    ? 'Tüm öğünler tamam — harika tempo! Yarın için alışveriş listeni gözden geçir.'
+                    : remaining != null && remaining > 0
+                        ? 'Kalan yaklaşık $remaining kcal. Proteini önce bitir, akşamı hafif tut.'
+                        : 'Öğünleri sırayla işaretle; su hedefini de unutma.',
+                onTap: () => context.push('/app/recipes'),
+              ).animate().fadeIn(delay: 50.ms, duration: 280.ms).slideY(begin: 0.04, curve: Curves.easeOut),
+              if (dayComplete) ...[
+                const SizedBox(height: 12),
+                const _CartoonDietCompletion(),
+              ],
               if (next != null && isToday) ...[
                 const SizedBox(height: 12),
                 _NextMealCard(
@@ -162,7 +178,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                height: 52,
+                height: 78,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: plan.days.length,
@@ -171,12 +187,15 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                     final selectedDay = i == selected;
                     final d = plan.days[i];
                     final dayDone = d.meals.where((m) => m.consumed).length;
+                    final progress = d.meals.isEmpty ? 0.0 : dayDone / d.meals.length;
                     return _CartoonDayChip(
                       label: DateFormat('EEE', 'tr').format(d.date),
                       dayNum: DateFormat('d', 'tr').format(d.date),
                       selected: selectedDay,
-                      progress: d.meals.isEmpty ? 0 : dayDone / d.meals.length,
+                      progress: progress,
                       isToday: DateUtils.isSameDay(d.date, DateTime.now()),
+                      complete: progress >= 1 && d.meals.isNotEmpty,
+                      index: i,
                       onTap: () => setState(() {
                         _dayIndex = i;
                         _mealFilter = 0;
@@ -224,19 +243,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
               ),
               const SizedBox(height: 10),
               if (visibleMeals.isEmpty)
-                Container(
-                  padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-                    border: Border.all(color: AppColors.kawaiiOutline),
-                  ),
-                  child: Text(
-                    _mealFilter == 2 ? 'Henüz yenilen öğün yok.' : 'Kalan öğün yok — günü tamamladın!',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
-                  ),
-                )
+                _CartoonEmptyMeals(filterDone: _mealFilter == 2)
               else
                 for (final entry in visibleMeals) ...[
                   MealSectionCard(
@@ -257,7 +264,14 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                   const SizedBox(height: 12),
                 ],
               const SizedBox(height: 8),
-              _WeekOverview(plan: plan, selected: selected, onSelect: (i) => setState(() => _dayIndex = i)),
+              _WeekOverview(
+                plan: plan,
+                selected: selected,
+                onSelect: (i) => setState(() {
+                  _dayIndex = i;
+                  _mealFilter = 0;
+                }),
+              ),
               const SizedBox(height: 12),
               TipCard(
                 title: 'Küçük ipucu',
@@ -404,6 +418,279 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
   }
 }
 
+class _CartoonEmptyPlanScreen extends StatelessWidget {
+  const _CartoonEmptyPlanScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppPage(
+      title: 'Diyetim',
+      padding: EdgeInsets.zero,
+      child: ColoredBox(
+        color: AppColors.kawaiiSurfaceCream,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 128,
+                  height: 128,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AppColors.kawaiiMint, AppColors.kawaiiLemon],
+                    ),
+                    border: Border.all(color: AppColors.kawaiiOutline),
+                    boxShadow: AppSpacing.softLift,
+                  ),
+                  padding: const EdgeInsets.all(18),
+                  child: Image.asset(
+                    DiyetselAssets.foodSaladBowl,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, _, _) => const Icon(
+                      Icons.restaurant_menu_rounded,
+                      size: 48,
+                      color: AppColors.kawaiiLeaf,
+                    ),
+                  ),
+                )
+                    .animate(onPlay: (c) => c.repeat(reverse: true))
+                    .moveY(begin: 0, end: -8, duration: 1600.ms, curve: Curves.easeInOut),
+                const SizedBox(height: 22),
+                const Text(
+                  'Planın henüz gelmedi',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 21,
+                    color: AppColors.kawaiiInk,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Diyetisyenin Word ile plan yüklediğinde burada tatlı bir listeyle karşılanacaksın.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    height: 1.45,
+                    color: AppColors.kawaiiMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CartoonFocusTip extends StatelessWidget {
+  const _CartoonFocusTip({
+    required this.title,
+    required this.body,
+    this.onTap,
+  });
+
+  final String title;
+  final String body;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SoftTap(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.kawaiiMint.withValues(alpha: 0.9),
+              AppColors.kawaiiPeach.withValues(alpha: 0.55),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+          border: Border.all(color: AppColors.kawaiiOutline),
+          boxShadow: AppSpacing.soft,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.7)),
+              ),
+              child: const Icon(Icons.restaurant_menu_rounded, color: AppColors.kawaiiLeafDeep, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                      color: AppColors.kawaiiInk,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    body,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12.5,
+                      height: 1.4,
+                      color: AppColors.kawaiiMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Tariflere göz at →',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12.5,
+                      color: AppColors.kawaiiCoralDeep,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CartoonDietCompletion extends StatelessWidget {
+  const _CartoonDietCompletion();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.kawaiiMint, AppColors.kawaiiLemon],
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+        border: Border.all(color: AppColors.kawaiiLeaf.withValues(alpha: 0.35)),
+        boxShadow: AppSpacing.softLift,
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            DiyetselAssets.mascotAvocado,
+            width: 52,
+            height: 52,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) => const Text('🎉', style: TextStyle(fontSize: 28)),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Gün tamam!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                    color: AppColors.kawaiiLeafDeep,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Tüm öğünler işaretlendi — süper iş çıkardın.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: AppColors.kawaiiInk,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(duration: 320.ms)
+        .scale(begin: const Offset(0.92, 0.92), curve: Curves.easeOutBack)
+        .animate(delay: 280.ms, onPlay: (c) => c.repeat(reverse: true))
+        .moveY(begin: 0, end: -4, duration: 900.ms, curve: Curves.easeInOut);
+  }
+}
+
+class _CartoonEmptyMeals extends StatelessWidget {
+  const _CartoonEmptyMeals({required this.filterDone});
+
+  final bool filterDone;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(22, 26, 22, 26),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+        border: Border.all(color: AppColors.kawaiiOutline),
+        boxShadow: AppSpacing.soft,
+      ),
+      child: Column(
+        children: [
+          Icon(
+            filterDone ? Icons.restaurant_rounded : Icons.celebration_rounded,
+            size: 36,
+            color: filterDone ? AppColors.kawaiiMuted : AppColors.kawaiiLeaf,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            filterDone ? 'Henüz yenilen öğün yok' : 'Kalan öğün yok',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 15,
+              color: AppColors.kawaiiInk,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            filterDone
+                ? 'Öğünleri yedikçe burada birikecek.'
+                : 'Günü tamamladın — afiyet olsun!',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              height: 1.35,
+              color: AppColors.kawaiiMuted,
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 280.ms).scale(begin: const Offset(0.96, 0.96));
+  }
+}
+
 class _CartoonDietHero extends StatelessWidget {
   const _CartoonDietHero({
     required this.planTitle,
@@ -444,6 +731,24 @@ class _CartoonDietHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.kawaiiLeaf.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                  ),
+                  child: const Text(
+                    'Bugünkü plan',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11.5,
+                      color: AppColors.kawaiiLeafDeep,
+                    ),
+                  ),
+                )
+                    .animate(onPlay: (c) => c.repeat(reverse: true))
+                    .shimmer(duration: 2400.ms, color: Colors.white24),
+                const SizedBox(height: 10),
                 Text(
                   planTitle,
                   maxLines: 2,
@@ -495,11 +800,16 @@ class _CartoonDietHero extends StatelessWidget {
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: ratio,
-                    minHeight: 8,
-                    backgroundColor: AppColors.kawaiiOutline.withValues(alpha: 0.55),
-                    color: AppColors.kawaiiLeaf,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: ratio),
+                    duration: const Duration(milliseconds: 700),
+                    curve: Curves.easeOutCubic,
+                    builder: (_, v, _) => LinearProgressIndicator(
+                      value: v,
+                      minHeight: 8,
+                      backgroundColor: AppColors.kawaiiOutline.withValues(alpha: 0.55),
+                      color: AppColors.kawaiiLeaf,
+                    ),
                   ),
                 ),
               ],
@@ -512,7 +822,9 @@ class _CartoonDietHero extends StatelessWidget {
             height: 88,
             fit: BoxFit.contain,
             errorBuilder: (_, _, _) => const SizedBox(width: 72, height: 72),
-          ),
+          )
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .moveY(begin: 0, end: -6, duration: 1500.ms, curve: Curves.easeInOut),
         ],
       ),
     ).animate().fadeIn(duration: 320.ms).slideY(begin: -0.04, curve: Curves.easeOut);
@@ -647,19 +959,25 @@ class _NextMealCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final meal = next.meal;
     final countdown = DietInteraction.countdownLabel(next);
-    return SoftTap(
+    Widget card = SoftTap(
       onTap: onJump,
       borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.kawaiiMint, AppColors.kawaiiSurfaceCream],
+            colors: next.isOverdue
+                ? [AppColors.kawaiiPeach, AppColors.kawaiiLemon.withValues(alpha: 0.85)]
+                : const [AppColors.kawaiiMint, AppColors.kawaiiSurfaceCream],
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
-          border: Border.all(color: AppColors.kawaiiLeaf.withValues(alpha: 0.45)),
+          border: Border.all(
+            color: next.isOverdue
+                ? AppColors.kawaiiCoral.withValues(alpha: 0.55)
+                : AppColors.kawaiiLeaf.withValues(alpha: 0.45),
+          ),
           boxShadow: AppSpacing.softLift,
         ),
         child: Row(
@@ -681,7 +999,7 @@ class _NextMealCard extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
-                      color: next.isOverdue ? const Color(0xFFC45C2A) : AppColors.kawaiiLeafDeep,
+                      color: next.isOverdue ? AppColors.kawaiiCoralDeep : AppColors.kawaiiLeafDeep,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -713,7 +1031,7 @@ class _NextMealCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: AppColors.kawaiiLeaf,
+                  color: next.isOverdue ? AppColors.kawaiiCoral : AppColors.kawaiiLeaf,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: AppSpacing.soft,
                 ),
@@ -727,6 +1045,18 @@ class _NextMealCard extends StatelessWidget {
         ),
       ),
     );
+
+    if (next.isOverdue) {
+      card = card
+          .animate(onPlay: (c) => c.repeat(reverse: true))
+          .scale(
+            begin: const Offset(1, 1),
+            end: const Offset(1.02, 1.02),
+            duration: 900.ms,
+            curve: Curves.easeInOut,
+          );
+    }
+    return card;
   }
 }
 
@@ -912,6 +1242,8 @@ class _CartoonDayChip extends StatelessWidget {
     required this.progress,
     required this.onTap,
     this.isToday = false,
+    this.complete = false,
+    this.index = 0,
   });
 
   final String label;
@@ -920,15 +1252,18 @@ class _CartoonDayChip extends StatelessWidget {
   final double progress;
   final VoidCallback onTap;
   final bool isToday;
+  final bool complete;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     return SoftTap(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
-      child: Container(
-        width: 58,
-        padding: const EdgeInsets.symmetric(vertical: 6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        width: 60,
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: selected ? AppColors.kawaiiLeaf : Colors.white,
           borderRadius: BorderRadius.circular(18),
@@ -951,33 +1286,44 @@ class _CartoonDayChip extends StatelessWidget {
                 color: selected ? Colors.white.withValues(alpha: 0.9) : AppColors.kawaiiMuted,
               ),
             ),
+            const SizedBox(height: 1),
             Text(
               dayNum,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: FontWeight.w900,
                 color: selected ? Colors.white : AppColors.kawaiiInk,
               ),
             ),
-            const SizedBox(height: 3),
-            SizedBox(
-              width: 28,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 3,
-                  backgroundColor: selected
-                      ? Colors.white.withValues(alpha: 0.35)
-                      : AppColors.kawaiiOutline,
-                  color: selected ? Colors.white : AppColors.kawaiiLeaf,
+            const SizedBox(height: 4),
+            if (complete)
+              Icon(
+                Icons.check_circle_rounded,
+                size: 14,
+                color: selected ? Colors.white : AppColors.kawaiiLeaf,
+              )
+            else
+              SizedBox(
+                width: 28,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress.clamp(0.0, 1.0),
+                    minHeight: 3.5,
+                    backgroundColor: selected
+                        ? Colors.white.withValues(alpha: 0.35)
+                        : AppColors.kawaiiOutline,
+                    color: selected ? Colors.white : AppColors.kawaiiLeaf,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(delay: (40 + index * 35).ms, duration: 280.ms)
+        .slideY(begin: 0.18, delay: (40 + index * 35).ms, duration: 320.ms, curve: Curves.easeOutBack);
   }
 }
 

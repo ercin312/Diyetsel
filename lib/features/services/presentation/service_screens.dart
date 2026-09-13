@@ -64,6 +64,39 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                   .animate()
                   .fadeIn(duration: 300.ms)
                   .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+              if (!widget.admin) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.kawaiiMint.withValues(alpha: 0.85),
+                        AppColors.kawaiiLemon.withValues(alpha: 0.55),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                    border: Border.all(color: AppColors.kawaiiOutline),
+                  ),
+                  child: const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.inventory_2_outlined, color: AppColors.kawaiiLeafDeep, size: 22),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Paket seçerken süre ve içerikleri oku; talebin diyetisyene iletilir. Düzenli takip paketleri daha kalıcı sonuç verir.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            height: 1.35,
+                            color: AppColors.kawaiiInk,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn(delay: 50.ms, duration: 280.ms),
+              ],
               const SizedBox(height: 14),
               SizedBox(
                 height: 40,

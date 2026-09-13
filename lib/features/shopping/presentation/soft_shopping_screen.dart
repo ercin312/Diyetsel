@@ -8,7 +8,10 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../domain/shopping_from_diet.dart';
+import '../domain/shopping_platforms.dart';
 import '../domain/shopping_visuals.dart';
+import 'widgets/shopping_delivery_sheet.dart';
 import 'widgets/soft_shopping_widgets.dart';
 
 /// Soft premium modern shopping list.
@@ -22,6 +25,7 @@ class SoftShoppingScreen extends ConsumerStatefulWidget {
 class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
   String _filter = 'Tümü';
   bool _hideChecked = false;
+  bool _didNormalize = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +33,16 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
     final store = ref.watch(appStoreProvider);
     ref.watch(shoppingListsProvider);
     final items = store.shoppingList(user.id);
+
+    if (!_didNormalize && items.isNotEmpty && ShoppingFromDiet.needsNormalize(items)) {
+      _didNormalize = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final cleaned = ShoppingFromDiet.normalizeItems(items);
+        await store.saveShoppingList(user.id, cleaned);
+      });
+    } else if (!_didNormalize) {
+      _didNormalize = true;
+    }
 
     final done = items.where((e) => e.checked).length;
     final total = items.length;
@@ -89,7 +103,7 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
               title: 'Akıllı liste',
               body: total == 0
                   ? 'Diyetten tek dokunuşla liste üret — reyon sırasına göre alışveriş daha hızlı biter.'
-                  : 'Öncelikli ürünleri önce al; tamamlananları gizleyerek listen sade kalsın.',
+                  : 'Elindekileri işaretle ✓, sonra Platforma gönder ile Trendyol Go / Migros vb. sırayla ara.',
               icon: Icons.shopping_basket_outlined,
               accent: AppColors.primary,
               tint: AppColors.modernMint,
@@ -106,6 +120,19 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
                     },
               hideChecked: _hideChecked,
               onToggleHide: () => setState(() => _hideChecked = !_hideChecked),
+              onSendToPlatform: items.isEmpty
+                  ? null
+                  : () => showShoppingDeliverySheet(
+                        context: context,
+                        items: items,
+                        cartoon: false,
+                        initialPlatform: ShoppingDeliveryPlatformX.tryParse(
+                          store.preferredShoppingPlatform(user.id),
+                        ),
+                        onPlatformSelected: (p) {
+                          store.savePreferredShoppingPlatform(user.id, p.id);
+                        },
+                      ),
             ).animate().fadeIn(delay: 80.ms, duration: 280.ms),
             const SizedBox(height: 14),
             SoftShoppingCategoryChips(
@@ -241,59 +268,43 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
     if (plan == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Önce bir diyet planı olmalı')),
+          const SnackBar(
+            content: Text('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.'),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
       return;
     }
-    final checkedByKey = {for (final i in current) i.key: i.checked};
-    final generated = <String, ShoppingItem>{};
-    for (final day in plan.days) {
-      for (final meal in day.meals) {
-        for (final ing in meal.ingredients) {
-          final key = '${ing.category}|${ing.name}|${ing.amount}';
-          generated[key] = ShoppingItem(
-            id: 'diet-$key',
-            name: ing.name,
-            amount: ing.amount,
-            category: ing.category,
-            checked: checkedByKey[key] ?? checkedByKey['diet-$key'] ?? false,
-            tip: _tipForIngredient(ing),
-            aisle: _aisleFor(ing.category),
-          );
-        }
+
+    final result = ShoppingFromDiet.build(plan: plan, current: current);
+    if (result.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
+      return;
     }
-    await store.saveShoppingList(userId, generated.values.toList());
+
+    await store.saveShoppingList(userId, result.items);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${generated.length} ürün diyetten eklendi')),
+        SnackBar(
+          content: Text(
+            '${result.dietItemCount} ürün diyetten eklendi'
+            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
-
-  String _tipForIngredient(Ingredient ing) {
-    switch (ing.category) {
-      case 'vegetable':
-        return 'Taze ve canlı renkli olanları seç.';
-      case 'protein':
-        return 'Porsiyonunu haftalık menüye göre ayarla.';
-      case 'dairy':
-        return 'Son kullanma tarihine dikkat et.';
-      case 'grain':
-        return 'Tam tahıl / az işlenmiş tercih et.';
-      default:
-        return 'Listeye göre al, dürtü rafına bakma.';
-    }
-  }
-
-  String _aisleFor(String cat) => switch (cat) {
-        'vegetable' => 'Sebze-meyve',
-        'protein' => 'Et / balık / bakliyat',
-        'dairy' => 'Süt ürünleri',
-        'grain' => 'Tahıl / bakliyat',
-        _ => 'Genel',
-      };
 
   void _openDetail(
     BuildContext context,

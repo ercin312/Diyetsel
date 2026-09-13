@@ -116,25 +116,142 @@ class LearnHubScreen extends ConsumerWidget {
 
     return AppPage(
       title: 'Mini dersler',
-      child: ListView(
-        children: [
-          const DiyetselCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      padding: context.isCartoon ? EdgeInsets.zero : null,
+      child: context.isCartoon
+          ? ColoredBox(
+              color: AppColors.kawaiiSurfaceCream,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [AppColors.kawaiiLemon, AppColors.kawaiiMint],
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppColors.kawaiiOutline),
+                      boxShadow: const [
+                        BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 16, offset: Offset(0, 6)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Öğrenme yolculuğun',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 18,
+                                  color: AppColors.kawaiiInk,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '$totalDone mini ders tamamlandı · her gün 3 dakika yeter',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: AppColors.kawaiiMuted,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 52,
+                          height: 52,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            '$totalDone',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 18,
+                              color: AppColors.kawaiiLeafDeep,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn(duration: 280.ms),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: AppColors.kawaiiOutline),
+                    ),
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.timer_outlined, color: AppColors.kawaiiLeafDeep, size: 22),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '3 dakikalık dersler — etiket okuma ve porsiyon bilinci, dışarıda yemek seçimini kolaylaştırır.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              height: 1.35,
+                              color: AppColors.kawaiiInk,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
+                  const SizedBox(height: 16),
+                  const Text(
+                    '7 günlük seriler',
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
+                  ),
+                  const SizedBox(height: 10),
+                  for (final series in LessonCatalog.all)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _SeriesHeroCard(
+                        series: series,
+                        done: progress.completedLessonDays[series.id]?.length ?? 0,
+                        onTap: () => context.push('/app/learn/${series.id}'),
+                      ).animate().fadeIn(delay: (LessonCatalog.all.indexOf(series) * 80).ms),
+                    ),
+                ],
+              ),
+            )
+          : ListView(
               children: [
-                SectionHeader(
-                  title: '7 günlük seriler',
-                  subtitle: 'Her gün 3 dakika — quiz ile pekiştir, rozet kazan.'),
-              ])),
-          const SizedBox(height: 12),
-          for (final series in LessonCatalog.all)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _SeriesHeroCard(
-                series: series,
-                done: progress.completedLessonDays[series.id]?.length ?? 0,
-                onTap: () => context.push('/app/learn/${series.id}'))).animate().fadeIn(delay: (LessonCatalog.all.indexOf(series) * 80).ms),
-        ]));
+                const DiyetselCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionHeader(
+                        title: '7 günlük seriler',
+                        subtitle: 'Her gün 3 dakika — quiz ile pekiştir, rozet kazan.',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                for (final series in LessonCatalog.all)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: _SeriesHeroCard(
+                      series: series,
+                      done: progress.completedLessonDays[series.id]?.length ?? 0,
+                      onTap: () => context.push('/app/learn/${series.id}'),
+                    ).animate().fadeIn(delay: (LessonCatalog.all.indexOf(series) * 80).ms),
+                  ),
+              ],
+            ),
+    );
   }
 }
 

@@ -9,6 +9,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/models/enums.dart';
+import '../../../core/utils/legal_links.dart';
 import '../../../core/utils/reminder_service.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/app_page.dart';
@@ -312,6 +313,31 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ],
+          const SizedBox(height: 16),
+          DiyetselCard(
+            child: Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text('Gizlilik politikası'),
+                  onTap: LegalLinks.privacy,
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.support_agent_rounded),
+                  title: const Text('Destek'),
+                  onTap: LegalLinks.support,
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.gavel_rounded),
+                  title: const Text('Kullanım şartları'),
+                  onTap: LegalLinks.terms,
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 16),
           DiyetselButton(
             label: 'auth.logout'.tr(),

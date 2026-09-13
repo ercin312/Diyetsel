@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
+import '../../../../core/utils/legal_links.dart';
 import '../../../../core/models/app_modules.dart';
 import '../../../../core/models/enums.dart';
 import '../../domain/settings_visuals.dart';
@@ -809,6 +811,77 @@ class SoftSettingsModuleRow extends StatelessWidget {
       onChanged: onChanged,
       icon: AppModule.icon(moduleId),
       accent: AppColors.primary,
+    );
+  }
+}
+
+class SoftSettingsLegalLinks extends StatelessWidget {
+  const SoftSettingsLegalLinks({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget row(IconData icon, String title, String subtitle, VoidCallback onTap) {
+      return SoftTap(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: SettingsVisuals.mint,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: AppColors.primary, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                        color: AppColors.primaryDeep,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: AppColors.primary.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.open_in_new_rounded, size: 16, color: AppColors.primary.withValues(alpha: 0.35)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SoftSettingsCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SoftSettingsSectionTitle(
+            title: 'Yasal',
+            subtitle: 'Gizlilik, destek ve kullanım şartları',
+            icon: Icons.policy_rounded,
+          ),
+          row(Icons.privacy_tip_outlined, 'Gizlilik politikası', 'Verilerin nasıl işlendiği', LegalLinks.privacy),
+          row(Icons.support_agent_rounded, 'Destek', AppConstants.supportEmail, LegalLinks.support),
+          row(Icons.gavel_rounded, 'Kullanım şartları', 'Uygulama kullanım koşulları', LegalLinks.terms),
+        ],
+      ),
     );
   }
 }

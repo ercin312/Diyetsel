@@ -347,6 +347,10 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
               _SearchField(
                 onChanged: (v) => setState(() => _query = v),
               ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
+              const SizedBox(height: 12),
+              _CartoonMoreTipBanner(admin: widget.admin)
+                  .animate()
+                  .fadeIn(delay: 70.ms, duration: 280.ms),
               const SizedBox(height: 16),
               if (filtered.isEmpty)
                 const Padding(
@@ -682,6 +686,58 @@ class _FooterTip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CartoonMoreTipBanner extends StatelessWidget {
+  const _CartoonMoreTipBanner({required this.admin});
+
+  final bool admin;
+
+  static const _tips = [
+    (title: 'Keşfet', body: 'Araç kutunda rapor, blog ve tarifler bir arada — ara ile hızlı bul.'),
+    (title: 'Su kısayolu', body: 'Su hatırlatmayı aç; bir dokunuşla bardak ekle.'),
+    (title: 'Ritim', body: 'Check-in ve seriyi birlikte tut — küçük adımlar birikir.'),
+    (title: 'Öğren', body: 'Mini dersler rozet yolunu kısaltır; bugün bir ders dene.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final tip = _tips[DateTime.now().difference(DateTime(DateTime.now().year)).inDays % _tips.length];
+    return SoftTap(
+      onTap: () => context.push(admin ? '/app/settings' : '/app/learn'),
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [AppColors.kawaiiLilac, AppColors.kawaiiMint]),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.kawaiiOutline),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.auto_awesome_rounded, color: AppColors.kawaiiPurple),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    admin ? 'Klinik ipucu · ${tip.title}' : 'Günün ipucu · ${tip.title}',
+                    style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: AppColors.kawaiiInk),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    tip.body,
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.3),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

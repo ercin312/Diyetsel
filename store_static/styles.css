@@ -1,0 +1,84 @@
+:root {
+  --bg: #fff6e9;
+  --card: #ffffff;
+  --text: #202a25;
+  --muted: #707873;
+  --accent: #1a4f45;
+  --accent-2: #2a6b5e;
+  --sage: #6dbf67;
+  --line: #e8e5dc;
+  --peach: #ffe8d6;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  font-size: 16px;
+}
+.wrap { max-width: 740px; margin: 0 auto; padding: 2.25rem 1.2rem 4rem; }
+header { margin-bottom: 1.75rem; }
+.brand {
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+h1 { font-size: 1.85rem; line-height: 1.2; margin: 0.85rem 0 0.4rem; letter-spacing: -0.03em; }
+.meta { color: var(--muted); font-size: 0.92rem; margin: 0; }
+h2 { font-size: 1.12rem; color: var(--accent); margin: 1.85rem 0 0.55rem; }
+p, li { color: var(--text); }
+p { margin: 0 0 0.9rem; }
+ul { padding-left: 1.2rem; }
+li { margin-bottom: 0.45rem; }
+a { color: var(--accent-2); }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 8px 28px rgba(26, 79, 69, 0.06);
+}
+.hero {
+  background: linear-gradient(135deg, #1a4f45 0%, #276a43 100%);
+  color: #fff;
+  border-radius: 22px;
+  padding: 2rem 1.4rem;
+  margin-bottom: 1.25rem;
+}
+.hero h1 { color: #fff; margin-top: 0.35rem; }
+.hero p { color: rgba(255,255,255,0.88); margin-bottom: 0; }
+.links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.1rem; }
+.btn {
+  display: inline-block;
+  background: #fff;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+}
+.email {
+  display: inline-block;
+  margin-top: 0.2rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--peach);
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--accent);
+}
+nav.foot, footer {
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+nav.foot a, footer a { margin-right: 0.85rem; color: var(--accent); text-decoration: none; }
+.grid { display: grid; gap: 0.85rem; }
+@media (min-width: 640px) { .grid.two { grid-template-columns: 1fr 1fr; } }

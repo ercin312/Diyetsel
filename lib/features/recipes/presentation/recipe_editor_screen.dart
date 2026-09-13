@@ -171,6 +171,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
         ingredients: ingredients,
         category: _category,
         imageUrl: _imageUrl.text.trim().isEmpty ? null : _imageUrl.text.trim(),
+        likes: widget.existing?.likes ?? 0,
       );
       await ref.read(appStoreProvider).saveRecipe(recipe);
       if (!mounted) return;

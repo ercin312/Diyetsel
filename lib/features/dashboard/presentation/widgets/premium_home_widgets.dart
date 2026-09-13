@@ -216,6 +216,7 @@ class HeroPlanCard extends StatelessWidget {
     required this.ctaLabel,
     required this.ctaRoute,
     this.imageAsset = DiyetselAssets.foodSaladBowl,
+    this.bgColor,
   });
 
   final String title;
@@ -223,18 +224,20 @@ class HeroPlanCard extends StatelessWidget {
   final String ctaLabel;
   final String ctaRoute;
   final String imageAsset;
+  final Color? bgColor;
 
   @override
   Widget build(BuildContext context) {
+    final tint = bgColor ?? AppColors.kawaiiMint;
     return SoftTap(
       onTap: () => context.push(ctaRoute),
       child: Container(
         padding: const EdgeInsets.fromLTRB(18, 18, 8, 16),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.kawaiiMint, AppColors.kawaiiSurfaceCream],
+            colors: [tint, Color.lerp(tint, AppColors.kawaiiSurfaceCream, 0.55)!],
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusHero),
           border: Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.8)),

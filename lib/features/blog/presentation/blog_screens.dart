@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/app_colors.dart';
@@ -71,6 +72,15 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
                         .animate()
                         .fadeIn(duration: 300.ms)
                         .slideY(begin: -0.04, curve: Curves.easeOutCubic),
+                    const SizedBox(height: 14),
+                    _CartoonBlogStatsRow(
+                      likes: list.fold<int>(0, (s, p) => s + p.likes),
+                      saved: list.where((p) => store.isBookmarked(user.id, p.id)).length,
+                    ).animate().fadeIn(delay: 30.ms, duration: 280.ms),
+                    const SizedBox(height: 12),
+                    _CartoonBlogTipBanner(
+                      onTap: () => context.push('/app/learn'),
+                    ).animate().fadeIn(delay: 45.ms, duration: 280.ms),
                     const SizedBox(height: 14),
                     _CartoonSearchField(
                       hint: 'Yazı veya etiket ara...',
@@ -301,6 +311,121 @@ class _BlogHero extends StatelessWidget {
             errorBuilder: (_, _, _) => const Icon(Icons.auto_stories_rounded, size: 40, color: AppColors.kawaiiLeaf),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CartoonBlogStatsRow extends StatelessWidget {
+  const _CartoonBlogStatsRow({required this.likes, required this.saved});
+
+  final int likes;
+  final int saved;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      (Icons.favorite_rounded, AppColors.kawaiiRose, AppColors.kawaiiCoralDeep, 'Beğeni', '$likes'),
+      (Icons.bookmark_rounded, AppColors.kawaiiMint, AppColors.kawaiiLeafDeep, 'Kayıt', '$saved'),
+    ];
+    return Row(
+      children: [
+        for (var i = 0; i < items.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.kawaiiOutline),
+                boxShadow: AppSpacing.soft,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(color: items[i].$2, borderRadius: BorderRadius.circular(12)),
+                    child: Icon(items[i].$1, size: 18, color: items[i].$3),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(items[i].$4, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+                        Text(items[i].$5, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: items[i].$3)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _CartoonBlogTipBanner extends StatelessWidget {
+  const _CartoonBlogTipBanner({this.onTap});
+
+  final VoidCallback? onTap;
+
+  static const _tips = [
+    (title: 'Lif dostu', body: 'Her öğüne sebze veya baklagil ekle — tokluk uzar.'),
+    (title: 'Su ritmi', body: 'Sabah bir bardak suyla başla; odak ve enerji artar.'),
+    (title: 'Protein dengesi', body: 'Kahvaltıda yumurta veya yoğurt — gün boyu daha dengeli kal.'),
+    (title: 'Yavaş ye', body: 'Lokmaları çiğne; doyma sinyali 15–20 dk’da gelir.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final tip = _tips[DateTime.now().difference(DateTime(DateTime.now().year)).inDays % _tips.length];
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [AppColors.kawaiiMint, AppColors.kawaiiLemon]),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.kawaiiOutline),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.tips_and_updates_rounded, color: AppColors.kawaiiLeafDeep),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Günün ipucu · ${tip.title}',
+                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: AppColors.kawaiiInk),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      tip.body,
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.3),
+                    ),
+                    if (onTap != null) ...[
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Daha fazla öğren →',
+                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

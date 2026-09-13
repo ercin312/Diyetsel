@@ -1,0 +1,35 @@
+# Fill App Store Connect listing (name, subtitle, URLs, description, review notes)
+#
+# Uses the same App Store Connect API secrets as ios_testflight.yml.
+
+name: Fill App Store listing
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet pyjwt cryptography requests
+
+      - name: Fill listing
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY_CONTENT }}
+          ASC_CONTACT_FIRST_NAME: ${{ secrets.ASC_CONTACT_FIRST_NAME }}
+          ASC_CONTACT_LAST_NAME: ${{ secrets.ASC_CONTACT_LAST_NAME }}
+          ASC_CONTACT_EMAIL: ${{ secrets.ASC_CONTACT_EMAIL }}
+          ASC_CONTACT_PHONE: ${{ secrets.ASC_CONTACT_PHONE }}
+        run: python tools/fill_app_store_listing.py

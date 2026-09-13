@@ -74,5 +74,7 @@
 	<string>Diyetisyeninize sesli mesaj göndermek için mikrofona ihtiyaç vardır.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Öğün günlüğü, tahlil ve sohbet görselleri için galeriye erişilir.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Hikaye kartı ve rapor görsellerini kaydetmek için galeriye yazılır.</string>
 </dict>
 </plist>

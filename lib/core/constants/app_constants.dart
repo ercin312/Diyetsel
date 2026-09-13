@@ -3,6 +3,11 @@ class AppConstants {
   static const String demoAdminEmail = 'diyetisyen@diyetsel.app';
   static const String demoClientEmail = 'danisan@diyetsel.app';
   static const String demoPassword = 'Diyetsel123!';
+  static const String supportEmail = 'ercin312@gmail.com';
+  static const String legalSite = 'https://diyetsel-platform.web.app';
+  static const String privacyUrl = '$legalSite/privacy';
+  static const String supportUrl = '$legalSite/support';
+  static const String termsUrl = '$legalSite/terms';
   static const double desktopBreakpoint = 900;
   static const double wideBreakpoint = 1200;
   static const int defaultWaterGoalMl = 2500;
@@ -22,6 +27,7 @@ class FirestorePaths {
   static const blogPosts = 'blogPosts';
   static const blogInteractions = 'blogInteractions';
   static const recipes = 'recipes';
+  static const recipeInteractions = 'recipeInteractions';
   static const chats = 'chats';
   static const messages = 'messages';
   static const documents = 'documents';
