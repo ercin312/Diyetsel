@@ -925,6 +925,44 @@ class SoftSettingsLogoutButton extends StatelessWidget {
   }
 }
 
+class SoftSettingsDeleteAccountButton extends StatelessWidget {
+  const SoftSettingsDeleteAccountButton({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SoftTap(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: SettingsVisuals.coral.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: SettingsVisuals.coral.withValues(alpha: 0.45)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.delete_forever_rounded, color: SettingsVisuals.coral.withValues(alpha: 0.95)),
+            const SizedBox(width: 8),
+            Text(
+              'Hesabı sil',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 15,
+                color: SettingsVisuals.coral.withValues(alpha: 0.98),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class SoftSettingsFooterTip extends StatelessWidget {
   const SoftSettingsFooterTip({super.key, required this.admin});
 

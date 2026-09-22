@@ -15,6 +15,7 @@ import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/settings_visuals.dart';
+import 'account_deletion.dart';
 import 'widgets/soft_settings_widgets.dart';
 
 /// Soft premium modern ayarlar — tema, bildirimler, hesap ve klinik yönetimi.
@@ -313,6 +314,10 @@ class SoftSettingsScreen extends ConsumerWidget {
                 .animate()
                 .fadeIn(delay: 160.ms, duration: 280.ms),
             const SizedBox(height: 18),
+            SoftSettingsDeleteAccountButton(
+              onTap: () => confirmAndDeleteAccount(context, ref),
+            ).animate().fadeIn(delay: 165.ms, duration: 280.ms),
+            const SizedBox(height: 10),
             SoftSettingsLogoutButton(
               onTap: () => ref.read(authControllerProvider.notifier).logout(),
             ).animate().fadeIn(delay: 170.ms, duration: 280.ms),

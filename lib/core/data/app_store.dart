@@ -759,6 +759,159 @@ class AppStore {
     }
   }
 
+  /// Permanently deletes the signed-in account and user-scoped data (App Store 5.1.1v).
+  ///
+  /// [passwordForReauth] is required when Firebase needs a recent password login.
+  Future<void> deleteAccount(
+    UserProfile profile, {
+    String? passwordForReauth,
+  }) async {
+    final ids = <String>{profile.id};
+    User? authUser;
+    if (Firebase.apps.isNotEmpty) {
+      authUser = FirebaseAuth.instance.currentUser;
+      if (authUser != null) ids.add(authUser.uid);
+    }
+
+    if (Firebase.apps.isNotEmpty && authUser != null) {
+      final providers = authUser.providerData.map((p) => p.providerId).toSet();
+      final needsPassword = providers.contains('password');
+      if (needsPassword) {
+        final password = passwordForReauth?.trim() ?? '';
+        if (password.isEmpty) {
+          throw StateError('Hesabı silmek için şifrenizi girin.');
+        }
+        final email = (authUser.email ?? profile.email).trim();
+        try {
+          final cred = EmailAuthProvider.credential(email: email, password: password);
+          await authUser.reauthenticateWithCredential(cred);
+        } on FirebaseAuthException catch (e) {
+          throw StateError(_authErrorMessage(e));
+        }
+      }
+    }
+
+    await _purgeUserScopedData(ids, profile.email);
+
+    if (Firebase.apps.isNotEmpty && authUser != null) {
+      try {
+        // Refresh reference after possible reauth.
+        authUser = FirebaseAuth.instance.currentUser ?? authUser;
+        await authUser.delete();
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'requires-recent-login') {
+          throw StateError(
+            'Güvenlik için yeniden giriş yapıp hesabı silmeyi tekrar deneyin.',
+          );
+        }
+        throw StateError(_authErrorMessage(e));
+      }
+    }
+
+    try {
+      await SocialAuth.signOut();
+    } catch (_) {}
+  }
+
+  String _authErrorMessage(FirebaseAuthException e) {
+    return switch (e.code) {
+      'wrong-password' || 'invalid-credential' || 'INVALID_LOGIN_CREDENTIALS' =>
+        'Şifre hatalı. Lütfen tekrar deneyin.',
+      'too-many-requests' => 'Çok fazla deneme. Biraz sonra tekrar deneyin.',
+      'network-request-failed' => 'Ağ hatası. Bağlantınızı kontrol edin.',
+      _ => e.message ?? 'Hesap silinemedi (${e.code}).',
+    };
+  }
+
+  Future<void> _purgeUserScopedData(Set<String> ids, String email) async {
+    bool owned(Map<String, dynamic> m) {
+      final clientId = m['clientId']?.toString();
+      final userId = m['userId']?.toString();
+      final id = m['id']?.toString();
+      final legacy = m['legacyId']?.toString();
+      final participants = m['participantIds'];
+      final inThread = participants is List &&
+          participants.any((p) => ids.contains(p.toString()));
+      return ids.contains(clientId) ||
+          ids.contains(userId) ||
+          ids.contains(id) ||
+          ids.contains(legacy) ||
+          inThread ||
+          (m['email']?.toString().toLowerCase() == email.toLowerCase());
+    }
+
+    Future<void> purgeLocalWhere(String collection) async {
+      for (final row in db.list(collection)) {
+        if (owned(row)) {
+          final id = row['id']?.toString();
+          if (id != null && id.isNotEmpty) {
+            await db.forceDelete(collection, id);
+          }
+        }
+      }
+    }
+
+    Future<void> purgeByField(String collection, String field) async {
+      if (Firebase.apps.isEmpty) return;
+      for (final uid in ids) {
+        try {
+          final snap = await FirebaseFirestore.instance
+              .collection(collection)
+              .where(field, isEqualTo: uid)
+              .get();
+          for (final doc in snap.docs) {
+            await db.forceDelete(collection, doc.id);
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Doc-id == user id
+    for (final collection in [
+      FirestorePaths.users,
+      FirestorePaths.prefs,
+      FirestorePaths.streaks,
+      FirestorePaths.fasting,
+      FirestorePaths.userProgress,
+      FirestorePaths.shoppingLists,
+    ]) {
+      for (final uid in ids) {
+        await db.forceDelete(collection, uid);
+      }
+    }
+
+    await purgeLocalWhere(FirestorePaths.appointments);
+    await purgeLocalWhere(FirestorePaths.serviceRequests);
+    await purgeLocalWhere(FirestorePaths.dietPlans);
+    await purgeLocalWhere(FirestorePaths.waterLogs);
+    await purgeLocalWhere(FirestorePaths.measurements);
+    await purgeLocalWhere(FirestorePaths.mealLogs);
+    await purgeLocalWhere(FirestorePaths.documents);
+    await purgeLocalWhere(FirestorePaths.payments);
+    await purgeLocalWhere(FirestorePaths.checkIns);
+    await purgeLocalWhere(FirestorePaths.blogInteractions);
+    await purgeLocalWhere(FirestorePaths.recipeInteractions);
+    await purgeLocalWhere(FirestorePaths.chats);
+    await purgeLocalWhere(FirestorePaths.messages);
+
+    await purgeByField(FirestorePaths.appointments, 'clientId');
+    await purgeByField(FirestorePaths.serviceRequests, 'clientId');
+    await purgeByField(FirestorePaths.dietPlans, 'clientId');
+    await purgeByField(FirestorePaths.mealLogs, 'clientId');
+    await purgeByField(FirestorePaths.payments, 'clientId');
+    await purgeByField(FirestorePaths.waterLogs, 'userId');
+    await purgeByField(FirestorePaths.measurements, 'userId');
+    await purgeByField(FirestorePaths.documents, 'userId');
+    await purgeByField(FirestorePaths.checkIns, 'userId');
+    await purgeByField(FirestorePaths.shoppingLists, 'userId');
+
+    // Local credentials (never synced).
+    final emailKey = email.trim().toLowerCase();
+    if (emailKey.isNotEmpty) {
+      await db.delete(FirestorePaths.credentials, emailKey, syncCloud: false);
+    }
+  }
+
   Future<void> seedIfNeeded() async {
     if (settings().seeded) return;
     await SeedData.seed(this);

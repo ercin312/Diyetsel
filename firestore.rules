@@ -59,7 +59,8 @@ service cloud.firestore {
       allow update: if isAdmin()
         || (isSelf(userId) && (!('role' in request.resource.data)
             || request.resource.data.role == resource.data.role));
-      allow delete: if isAdmin();
+      // Self-delete required for App Store Guideline 5.1.1(v).
+      allow delete: if isAdmin() || isSelf(userId);
     }
 
     match /appointments/{id} {
@@ -86,8 +87,9 @@ service cloud.firestore {
 
     match /dietPlans/{id} {
       allow read: if signedIn();
-      allow create, delete: if isAdmin();
+      allow create: if isAdmin();
       allow update: if isAdmin() || ownsClient(resource.data.clientId);
+      allow delete: if isAdmin() || ownsClient(resource.data.clientId);
     }
 
     match /waterLogs/{id} {
@@ -142,7 +144,8 @@ service cloud.firestore {
 
     match /payments/{id} {
       allow read: if signedIn();
-      allow write: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if isAdmin() || ownsClient(resource.data.clientId);
     }
 
     match /shoppingLists/{id} {

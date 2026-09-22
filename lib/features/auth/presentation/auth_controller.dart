@@ -89,6 +89,25 @@ class AuthController extends Notifier<AuthState> {
     state = const AuthState();
   }
 
+  Future<void> deleteAccount({String? password}) async {
+    final user = state.user;
+    if (user == null) return;
+    state = AuthState(user: user, loading: true);
+    try {
+      final store = ref.read(appStoreProvider);
+      await ref.read(cloudSyncServiceProvider).stop();
+      await store.deleteAccount(user, passwordForReauth: password);
+      await store.saveSettings(store.settings().copyWith(clearSession: true));
+      state = const AuthState();
+    } catch (e) {
+      state = AuthState(
+        user: user,
+        error: e.toString().replaceAll('Bad state: ', '').replaceAll('StateError: ', ''),
+      );
+      rethrow;
+    }
+  }
+
   Future<void> updateProfile(UserProfile user) async {
     await ref.read(appStoreProvider).saveUser(user);
     await _setSession(user);

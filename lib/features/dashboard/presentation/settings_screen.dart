@@ -16,6 +16,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'account_deletion.dart';
 import 'soft_settings_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -339,6 +340,12 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
+          DiyetselButton(
+            label: 'Hesabı sil',
+            tonal: true,
+            onPressed: () => confirmAndDeleteAccount(context, ref),
+          ),
+          const SizedBox(height: 10),
           DiyetselButton(
             label: 'auth.logout'.tr(),
             tonal: true,

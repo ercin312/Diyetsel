@@ -5,5 +5,10 @@ Uygulama bir diyetisyen-danışan klinik platformudur. Tıbbi teşhis veya tedav
 
 İnceleme: danışan hesabıyla giriş yapın, ana sayfa / diyet / su takibi / sohbet sekmelerini deneyin. Diyetisyen hesabıyla plan ve danışan listesini görebilirsiniz.
 
+Hesap silme (Guideline 5.1.1v):
+1) Yeni hesap oluşturun (veya demo ile giriş)
+2) Ayarlar → Hesabı sil
+3) Onaylayın (e-posta hesabında şifre istenir) → hesap ve kullanıcı verileri silinir
+
 Gizlilik: https://diyetsel-platform.web.app/privacy
 Destek: https://diyetsel-platform.web.app/support

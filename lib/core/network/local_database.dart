@@ -89,6 +89,19 @@ class LocalDatabase {
     }
   }
 
+  /// Delete locally if present and always attempt a cloud delete (for account purge).
+  Future<void> forceDelete(String collection, String id) async {
+    final key = _key(collection, id);
+    if (_box.containsKey(key)) {
+      await _box.delete(key);
+      _controller.add(collection);
+    }
+    if (kLocalOnlyCollections.contains(collection) || Firebase.apps.isEmpty) return;
+    try {
+      await FirebaseFirestore.instance.collection(collection).doc(id).delete();
+    } catch (_) {}
+  }
+
   List<Map<String, dynamic>> list(String collection) {
     final prefix = '$collection/';
     return _box.keys
