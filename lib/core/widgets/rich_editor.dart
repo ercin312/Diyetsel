@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 import 'diyetsel_widgets.dart';
+import '../l10n/ui_string.dart';
 
 class RichEditor extends StatelessWidget {
   const RichEditor({
@@ -28,11 +29,11 @@ class RichEditor extends StatelessWidget {
         Wrap(
           spacing: 6,
           children: [
-            ActionChip(label: const Text('Paragraf'), onPressed: () => onChanged([...blocks, const RichBlock(type: 'paragraph', text: '')])),
-            ActionChip(label: const Text('Başlık'), onPressed: () => onChanged([...blocks, const RichBlock(type: 'heading', text: '', bold: true)])),
-            ActionChip(label: const Text('Alıntı'), onPressed: () => onChanged([...blocks, const RichBlock(type: 'quote', text: '', italic: true)])),
-            ActionChip(label: const Text('Liste'), onPressed: () => onChanged([...blocks, const RichBlock(type: 'list', text: '')])),
-            ActionChip(label: const Text('Görsel'), onPressed: onPickImage),
+            ActionChip(label: Text(('Paragraf').ui), onPressed: () => onChanged([...blocks, const RichBlock(type: 'paragraph', text: '')])),
+            ActionChip(label: Text(('Başlık').ui), onPressed: () => onChanged([...blocks, const RichBlock(type: 'heading', text: '', bold: true)])),
+            ActionChip(label: Text(('Alıntı').ui), onPressed: () => onChanged([...blocks, const RichBlock(type: 'quote', text: '', italic: true)])),
+            ActionChip(label: Text(('Liste').ui), onPressed: () => onChanged([...blocks, const RichBlock(type: 'list', text: '')])),
+            ActionChip(label: Text(('Görsel').ui), onPressed: onPickImage),
           ],
         ),
         const SizedBox(height: 8),
@@ -44,7 +45,7 @@ class RichEditor extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(blocks[i].type, style: const TextStyle(fontWeight: FontWeight.w800)),
+                      Text((blocks[i].type).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                       const Spacer(),
                       IconButton(
                         icon: Icon(blocks[i].bold ? Icons.format_bold : Icons.format_bold_outlined),

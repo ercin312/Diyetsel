@@ -18,6 +18,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../domain/blog_visuals.dart';
 import 'blog_editor_screen.dart';
 import 'soft_blog_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class BlogListScreen extends ConsumerStatefulWidget {
   const BlogListScreen({super.key, this.admin = false});
@@ -111,10 +112,9 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
                     ),
                     const SizedBox(height: 16),
                     if (list.isEmpty)
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.all(32),
-                        child: Text(
-                          'Bu filtrede yazı yok.',
+                        child: Text(('Bu filtrede yazı yok.').ui,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                         ),
@@ -134,8 +134,7 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
                             .scale(begin: const Offset(0.96, 0.96), curve: Curves.easeOutBack),
                         if (list.length > 1) ...[
                           const SizedBox(height: 18),
-                          const Text(
-                            'Tüm yazılar',
+                          Text(('Tüm yazılar').ui,
                             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
                           ),
                           const SizedBox(height: 10),
@@ -177,7 +176,7 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
       child: Column(
         children: [
           TextField(
-            decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Yazı veya etiket ara'),
+            decoration: InputDecoration(prefixIcon: Icon(Icons.search), hintText: ('Yazı veya etiket ara').ui),
             onChanged: (v) => setState(() => _query = v),
           ),
           const SizedBox(height: 8),
@@ -186,10 +185,10 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                ChoiceChip(label: const Text('Tümü'), selected: _category == null, onSelected: (_) => setState(() => _category = null)),
+                ChoiceChip(label: Text(('Tümü').ui), selected: _category == null, onSelected: (_) => setState(() => _category = null)),
                 const SizedBox(width: 6),
                 for (final c in blogCategories) ...[
-                  ChoiceChip(label: Text(c), selected: _category == c, onSelected: (_) => setState(() => _category = c)),
+                  ChoiceChip(label: Text((c).ui), selected: _category == c, onSelected: (_) => setState(() => _category = c)),
                   const SizedBox(width: 6),
                 ],
               ],
@@ -221,9 +220,9 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(post.category, style: TextStyle(color: context.brandPrimary, fontWeight: FontWeight.w800)),
-                                Text(post.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
-                                Text(post.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+                                Text((post.category).ui, style: TextStyle(color: context.brandPrimary, fontWeight: FontWeight.w800)),
+                                Text((post.title).ui, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
+                                Text((post.subtitle).ui, maxLines: 2, overflow: TextOverflow.ellipsis),
                                 const SizedBox(height: 6),
                                 Row(
                                   children: [
@@ -236,7 +235,7 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
                                         size: 20,
                                       ),
                                     ),
-                                    Text('${post.likes}'),
+                                    Text(('${post.likes}').ui),
                                     IconButton(
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => store.toggleBookmark(user.id, post.id),
@@ -291,13 +290,11 @@ class _BlogHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Sağlıklı yaşam',
+                Text(('Sağlıklı yaşam').ui,
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 22, color: AppColors.kawaiiInk, letterSpacing: -0.3),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  '$count yazı · diyetisyen notları, pratik ipuçları',
+                Text(('$count yazı · diyetisyen notları, pratik ipuçları').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -354,8 +351,8 @@ class _CartoonBlogStatsRow extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(items[i].$4, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
-                        Text(items[i].$5, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: items[i].$3)),
+                        Text((items[i].$4).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+                        Text((items[i].$5).ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: items[i].$3)),
                       ],
                     ),
                   ),
@@ -404,19 +401,16 @@ class _CartoonBlogTipBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Günün ipucu · ${tip.title}',
+                    Text(('Günün ipucu · ${tip.title}').ui,
                       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: AppColors.kawaiiInk),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      tip.body,
+                    Text((tip.body).ui,
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.3),
                     ),
                     if (onTap != null) ...[
                       const SizedBox(height: 4),
-                      const Text(
-                        'Daha fazla öğren →',
+                      Text(('Daha fazla öğren →').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                       ),
                     ],
@@ -455,7 +449,7 @@ class _CartoonSearchField extends StatelessWidget {
             child: TextField(
               onChanged: onChanged,
               decoration: InputDecoration(
-                hintText: hint,
+                hintText: (hint).ui,
                 border: InputBorder.none,
                 isDense: true,
                 hintStyle: TextStyle(color: AppColors.kawaiiMuted.withValues(alpha: 0.9), fontWeight: FontWeight.w600),
@@ -480,8 +474,7 @@ class _CatChip extends StatelessWidget {
     return FilterChip(
       selected: selected,
       showCheckmark: false,
-      label: Text(
-        label,
+      label: Text((label).ui,
         style: TextStyle(
           fontWeight: FontWeight.w800,
           fontSize: 12.5,
@@ -567,14 +560,12 @@ class _FeaturedBlogCard extends StatelessWidget {
                               color: Colors.white.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text(
-                              'Öne çıkan · ${post.category}',
+                            child: Text(('Öne çıkan · ${post.category}').ui,
                               style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiInk),
                             ),
                           ),
                           const Spacer(),
-                          Text(
-                            post.title,
+                          Text((post.title).ui,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -596,8 +587,7 @@ class _FeaturedBlogCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      post.subtitle,
+                    Text((post.subtitle).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5, height: 1.35, color: AppColors.kawaiiMuted),
@@ -605,13 +595,11 @@ class _FeaturedBlogCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Text(
-                          '${BlogVisuals.readMinutes(post)} dk okuma',
+                        Text(('${BlogVisuals.readMinutes(post)} dk okuma').ui,
                           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: AppColors.kawaiiLeafDeep),
                         ),
                         const SizedBox(width: 10),
-                        Text(
-                          DateFormat('d MMM', 'tr').format(post.updatedAt),
+                        Text((DateFormat('d MMM', 'tr').format(post.updatedAt)).ui,
                           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.kawaiiMuted),
                         ),
                         const Spacer(),
@@ -620,7 +608,7 @@ class _FeaturedBlogCard extends StatelessWidget {
                           onPressed: onLike,
                           icon: Icon(liked ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: AppColors.kawaiiCoral, size: 22),
                         ),
-                        Text('${post.likes}', style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiInk)),
+                        Text(('${post.likes}').ui, style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiInk)),
                         IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: onBookmark,
@@ -711,23 +699,20 @@ class _CartoonBlogCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                            post.category,
+                          child: Text((post.category).ui,
                             style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiLeafDeep),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      post.title,
+                    Text((post.title).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, height: 1.2, color: AppColors.kawaiiInk),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      post.subtitle,
+                    Text((post.subtitle).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, height: 1.3, color: AppColors.kawaiiMuted),
@@ -735,8 +720,7 @@ class _CartoonBlogCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Text(
-                          '${BlogVisuals.readMinutes(post)} dk',
+                        Text(('${BlogVisuals.readMinutes(post)} dk').ui,
                           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiMuted),
                         ),
                         const Spacer(),
@@ -745,7 +729,7 @@ class _CartoonBlogCard extends StatelessWidget {
                           child: Icon(liked ? Icons.favorite_rounded : Icons.favorite_border_rounded, size: 18, color: AppColors.kawaiiCoral),
                         ),
                         const SizedBox(width: 4),
-                        Text('${post.likes}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                        Text(('${post.likes}').ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
                         const SizedBox(width: 8),
                         GestureDetector(
                           onTap: onBookmark,
@@ -826,14 +810,12 @@ class BlogDetailScreen extends ConsumerWidget {
                               color: Colors.white.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text(
-                              post.category,
+                            child: Text((post.category).ui,
                               style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiInk),
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            post.title,
+                          Text((post.title).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 24,
@@ -843,13 +825,11 @@ class BlogDetailScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            post.subtitle,
+                          Text((post.subtitle).ui,
                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, height: 1.4, color: AppColors.kawaiiMuted),
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            '${post.authorName} · ${BlogVisuals.readMinutes(post)} dk · ${DateFormat('d MMMM y', 'tr').format(post.updatedAt)}',
+                          Text(('${post.authorName} · ${BlogVisuals.readMinutes(post)} dk · ${DateFormat('d MMMM y', 'tr').format(post.updatedAt)}').ui,
                             style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: AppColors.kawaiiLeafDeep),
                           ),
                         ],
@@ -871,7 +851,7 @@ class BlogDetailScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppColors.kawaiiOutline),
                       ),
-                      child: Text(t, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiInk)),
+                      child: Text((t).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiInk)),
                     ),
                   ],
                   const Spacer(),
@@ -879,7 +859,7 @@ class BlogDetailScreen extends ConsumerWidget {
                     onPressed: () => store.toggleLike(user.id, post),
                     icon: Icon(liked ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: AppColors.kawaiiCoral),
                   ),
-                  Text('${post.likes}', style: const TextStyle(fontWeight: FontWeight.w800)),
+                  Text(('${post.likes}').ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                   IconButton(
                     onPressed: () => store.toggleBookmark(user.id, post.id),
                     icon: Icon(bookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, color: AppColors.kawaiiLeafDeep),
@@ -909,7 +889,7 @@ class BlogDetailScreen extends ConsumerWidget {
       ],
       child: ListView(
         children: [
-          Text(post.subtitle, style: Theme.of(context).textTheme.titleMedium),
+          Text((post.subtitle).ui, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 16),
           for (final block in post.body) _legacyBlock(block),
         ],
@@ -922,7 +902,7 @@ class BlogDetailScreen extends ConsumerWidget {
       case 'heading':
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text(block.text, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+          child: Text((block.text).ui, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
         );
       case 'quote':
         return Container(
@@ -933,18 +913,17 @@ class BlogDetailScreen extends ConsumerWidget {
             border: Border(left: BorderSide(color: AppColors.primary, width: 4)),
             color: AppColors.primary.withValues(alpha: 0.08),
           ),
-          child: Text(block.text, style: const TextStyle(fontStyle: FontStyle.italic)),
+          child: Text((block.text).ui, style: const TextStyle(fontStyle: FontStyle.italic)),
         );
       case 'list':
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text('• ${block.text}'),
+          child: Text(('• ${block.text}').ui),
         );
       default:
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            block.text,
+          child: Text((block.text).ui,
             style: TextStyle(
               fontWeight: block.bold ? FontWeight.w800 : FontWeight.w400,
               fontStyle: block.italic ? FontStyle.italic : FontStyle.normal,
@@ -965,8 +944,7 @@ class _CartoonBlock extends StatelessWidget {
       case 'heading':
         return Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 10),
-          child: Text(
-            block.text,
+          child: Text((block.text).ui,
             style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w900, color: AppColors.kawaiiInk, letterSpacing: -0.2),
           ),
         );
@@ -987,8 +965,7 @@ class _CartoonBlock extends StatelessWidget {
               Icon(Icons.format_quote_rounded, color: AppColors.kawaiiLeaf.withValues(alpha: 0.7)),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  block.text,
+                child: Text((block.text).ui,
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600,
@@ -1015,8 +992,7 @@ class _CartoonBlock extends StatelessWidget {
               const Icon(Icons.check_circle_rounded, size: 18, color: AppColors.kawaiiLeaf),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  block.text,
+                child: Text((block.text).ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4, color: AppColors.kawaiiInk),
                 ),
               ),
@@ -1026,8 +1002,7 @@ class _CartoonBlock extends StatelessWidget {
       default:
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Text(
-            block.text,
+          child: Text((block.text).ui,
             style: TextStyle(
               fontWeight: block.bold ? FontWeight.w800 : FontWeight.w600,
               fontStyle: block.italic ? FontStyle.italic : FontStyle.normal,

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/models/enums.dart';
@@ -6,16 +5,11 @@ import '../../core/models/models.dart';
 import '../../core/network/local_database.dart';
 
 class ThemeState {
-  const ThemeState({
-    this.mode = ThemeMode.light,
-    this.style = VisualStyle.modern,
-  });
+  const ThemeState({this.style = VisualStyle.modern});
 
-  final ThemeMode mode;
   final VisualStyle style;
 
-  ThemeState copyWith({ThemeMode? mode, VisualStyle? style}) =>
-      ThemeState(mode: mode ?? this.mode, style: style ?? this.style);
+  ThemeState copyWith({VisualStyle? style}) => ThemeState(style: style ?? this.style);
 }
 
 class ThemeController extends Notifier<ThemeState> {
@@ -26,21 +20,10 @@ class ThemeController extends Notifier<ThemeState> {
     if (raw == null) return const ThemeState();
     final settings = AppSettings.fromMap(raw);
     return ThemeState(
-      mode: switch (settings.themeMode) {
-        'light' => ThemeMode.light,
-        'dark' => ThemeMode.dark,
-        _ => ThemeMode.light,
-      },
-      // Former "luxury" preference maps to modern (style removed).
       style: settings.visualStyle == VisualStyle.cartoon
           ? VisualStyle.cartoon
           : VisualStyle.modern,
     );
-  }
-
-  Future<void> setMode(ThemeMode mode) async {
-    state = state.copyWith(mode: mode);
-    await _persist();
   }
 
   Future<void> setStyle(VisualStyle style) async {
@@ -57,11 +40,7 @@ class ThemeController extends Notifier<ThemeState> {
       'app',
       settings
           .copyWith(
-            themeMode: switch (state.mode) {
-              ThemeMode.light => 'light',
-              ThemeMode.dark => 'dark',
-              ThemeMode.system => 'system',
-            },
+            themeMode: 'light',
             visualStyle: state.style,
           )
           .toMap(),

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
+import '../l10n/ui_string.dart';
 
 class WaterWave extends StatefulWidget {
   const WaterWave({
@@ -82,7 +83,7 @@ class _WaterWaveState extends State<WaterWave> with TickerProviderStateMixin {
               cartoon: widget.cartoon
             ),
             child: widget.cartoon
-                ? Center(child: Text(reaction, style: TextStyle(fontSize: widget.size * 0.19)))
+                ? Center(child: Text((reaction).ui, style: TextStyle(fontSize: widget.size * 0.19)))
                 : null);
         }));
   }
@@ -200,8 +201,7 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
                                     : 8,
                             offset: const Offset(0, 3)),
                         ]),
-                      child: Text(
-                        widget.sipLabel,
+                      child: Text((widget.sipLabel).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           color: widget.cartoon
@@ -240,7 +240,7 @@ class _WaterSipGlassState extends State<WaterSipGlass> with TickerProviderStateM
         opacity: opacity,
         child: Transform.scale(
           scale: scale * (1.1 - t * 0.3),
-          child: const Text('💧', style: TextStyle(fontSize: 22, height: 1)))));
+          child: Text(('💧').ui, style: TextStyle(fontSize: 22, height: 1)))));
   }
 }
 
@@ -338,8 +338,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                         : AppColors.kawaiiCream,
                 child: widget.after == null
                     ? Center(
-                        child: Text(
-                          'Sonra',
+                        child: Text(('Sonra').ui,
                           style: TextStyle(
                             color: cartoon
                                     ? AppColors.kawaiiInk
@@ -357,8 +356,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                                     ? AppColors.kawaiiCream.withValues(alpha: 0.9)
                                     : brand.withValues(alpha: 0.2),
                             child: Center(
-                              child: Text(
-                                'Önce',
+                              child: Text(('Önce').ui,
                                 style: TextStyle(
                                   color: cartoon
                                           ? AppColors.kawaiiInk

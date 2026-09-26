@@ -11,6 +11,7 @@ import '../../../../core/widgets/cartoon_asset_icon.dart';
 import '../../../../core/widgets/diyetsel_widgets.dart';
 import '../../../../core/widgets/style_icon.dart';
 import '../../domain/meal_display.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 /// Themed, animated meal section with reminder time control.
 class MealSectionCard extends StatelessWidget {
@@ -110,8 +111,7 @@ class _ModernMealCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      meal.type.tr,
+                    Text((meal.type.tr).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -119,8 +119,7 @@ class _ModernMealCard extends StatelessWidget {
                         letterSpacing: 0.2,
                       ),
                     ),
-                    Text(
-                      headline,
+                    Text((headline).ui,
                       style: const TextStyle(fontWeight: FontWeight.w800, letterSpacing: -0.2, fontSize: 16),
                     ),
                   ],
@@ -130,7 +129,7 @@ class _ModernMealCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          Text(hook, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4)),
+          Text((hook).ui, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4)),
           if (ingredients.isNotEmpty) ...[
             const SizedBox(height: 10),
             Wrap(
@@ -261,8 +260,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                               border: Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.7)),
                             ),
-                            child: Text(
-                              '${meal.type.emoji} ${MealDisplay.accentLabel(meal.type)}',
+                            child: Text(('${meal.type.emoji} ${MealDisplay.accentLabel(meal.type)}').ui,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 11.5,
@@ -278,8 +276,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                                 color: AppColors.kawaiiLeaf,
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Text(
-                                'Sıradaki',
+                              child: Text(('Sıradaki').ui,
                                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 10.5),
                               ),
                             ),
@@ -289,8 +286,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        headline,
+                      Text((headline).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 19,
@@ -302,8 +298,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        hook,
+                      Text((hook).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13.5,
@@ -340,8 +335,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                     borderRadius: BorderRadius.circular(10),
                     child: Row(
                       children: [
-                        const Text(
-                          'Tabakta neler var?',
+                        Text(('Tabakta neler var?').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 12.5,
@@ -350,8 +344,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                         ),
                         const Spacer(),
                         if (checkedCount > 0)
-                          Text(
-                            '$checkedCount/${ingredients.length}',
+                          Text(('$checkedCount/${ingredients.length}').ui,
                             style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiLeafDeep),
                           ),
                         Icon(
@@ -409,8 +402,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
-                                    child: Text(
-                                      ingredients[i].name,
+                                    child: Text((ingredients[i].name).ui,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         decoration: _checkedIng.contains(i) ? TextDecoration.lineThrough : null,
@@ -418,8 +410,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    ingredients[i].amount,
+                                  Text((ingredients[i].amount).ui,
                                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5, color: AppColors.kawaiiLeafDeep),
                                   ),
                                 ],
@@ -431,8 +422,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                 ],
                 if (detail != null && detail != hook) ...[
                   const SizedBox(height: 10),
-                  Text(
-                    detail,
+                  Text((detail).ui,
                     style: TextStyle(
                       fontSize: 13,
                       height: 1.4,
@@ -472,8 +462,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                                 size: 20,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                meal.consumed ? 'Afiyet olsun! ✓' : 'Yedim — işaretle',
+                              Text((meal.consumed ? 'Afiyet olsun! ✓' : 'Yedim — işaretle').ui,
                                 style: TextStyle(
                                   color: meal.consumed ? AppColors.kawaiiLeafDeep : Colors.white,
                                   fontWeight: FontWeight.w800,
@@ -487,7 +476,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                     ),
                   ),
                 if (widget.onEdit != null)
-                  TextButton.icon(onPressed: widget.onEdit, icon: const Icon(Icons.edit), label: const Text('Düzenle')),
+                  TextButton.icon(onPressed: widget.onEdit, icon: const Icon(Icons.edit), label: Text(('Düzenle').ui)),
               ],
             ),
           ),
@@ -512,8 +501,7 @@ class _IngredientChip extends StatelessWidget {
           color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.65),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
@@ -529,8 +517,7 @@ class _IngredientChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
         border: Border.all(color: AppColors.kawaiiOutline),
       ),
-      child: Text(
-        label,
+      child: Text((label).ui,
         style: const TextStyle(
           fontSize: 12.5,
           fontWeight: FontWeight.w700,
@@ -638,8 +625,7 @@ class _ReminderChip extends StatelessWidget {
                   fallbackColor: AppColors.kawaiiCoral,
                 ),
                 const SizedBox(width: 5),
-                Text(
-                  time,
+                Text((time).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12.5,
@@ -678,8 +664,7 @@ class _ReminderChip extends StatelessWidget {
             children: [
               Icon(Icons.notifications_active_rounded, size: 16, color: brand),
               const SizedBox(width: 6),
-              Text(
-                time,
+              Text((time).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,

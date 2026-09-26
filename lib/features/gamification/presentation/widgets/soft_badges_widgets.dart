@@ -10,6 +10,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/badge_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftBadgesHeader extends StatelessWidget {
@@ -21,12 +22,11 @@ class SoftBadgesHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Rozetler',
+              Text(('Rozetler').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -35,8 +35,7 @@ class SoftBadgesHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Hedefler & başarılar',
+              Text(('Hedefler & başarılar').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -123,8 +122,7 @@ class SoftBadgesHero extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '$earned',
+                    Text(('$earned').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 26,
@@ -132,8 +130,7 @@ class SoftBadgesHero extends StatelessWidget {
                         height: 1,
                       ),
                     ),
-                    Text(
-                      '/ $total',
+                    Text(('/ $total').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
@@ -156,8 +153,7 @@ class SoftBadgesHero extends StatelessWidget {
                     color: const Color(0xFFD4A017).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Koleksiyon',
+                  child: Text(('Koleksiyon').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -166,12 +162,11 @@ class SoftBadgesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  earned == 0
+                Text((earned == 0
                       ? 'İlk rozetin seni bekliyor'
                       : earned == total
                           ? 'Tüm rozetler senin!'
-                          : '$earned rozet kazandın',
+                          : '$earned rozet kazandın').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -180,8 +175,7 @@ class SoftBadgesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -243,16 +237,14 @@ class SoftBadgesStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$3,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    items[i].$5,
+                  Text((items[i].$5).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
                       color: items[i].$3,
                     ),
                   ),
-                  Text(
-                    items[i].$4,
+                  Text((items[i].$4).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -314,8 +306,7 @@ class SoftBadgesFilterChips extends StatelessWidget {
                         ]
                       : AppSpacing.soft,
                 ),
-                child: Text(
-                  options[i],
+                child: Text((options[i]).ui,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
@@ -381,8 +372,7 @@ class SoftNextBadgeCard extends StatelessWidget {
                     color: accent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    'Sıradaki hedef',
+                  child: Text(('Sıradaki hedef').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -391,8 +381,7 @@ class SoftNextBadgeCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Text(
-                  '%${(item.ratio * 100).round()}',
+                Text(('%${(item.ratio * 100).round()}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -410,8 +399,7 @@ class SoftNextBadgeCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        b.title,
+                      Text((b.title).ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
@@ -419,8 +407,7 @@ class SoftNextBadgeCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        b.subtitle,
+                      Text((b.subtitle).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
@@ -429,8 +416,7 @@ class SoftNextBadgeCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        left == 0 ? 'Tamamlanmaya hazır!' : '$left adım kaldı · ${item.current}/${b.target}',
+                      Text((left == 0 ? 'Tamamlanmaya hazır!' : '$left adım kaldı · ${item.current}/${b.target}').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -521,8 +507,7 @@ class SoftEarnedStrip extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Koleksiyonun',
+        Text(('Koleksiyonun').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 16,
@@ -530,8 +515,7 @@ class SoftEarnedStrip extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          'Kazandığın rozetler',
+        Text(('Kazandığın rozetler').ui,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 12.5,
@@ -564,8 +548,7 @@ class SoftEarnedStrip extends StatelessWidget {
                     children: [
                       SoftBadgeIcon(badge: item.badge, size: 44, earned: true),
                       const SizedBox(height: 8),
-                      Text(
-                        item.badge.title,
+                      Text((item.badge.title).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
@@ -632,8 +615,7 @@ class SoftBadgeCard extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              b.title,
+                            child: Text((b.title).ui,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 16,
@@ -648,8 +630,7 @@ class SoftBadgeCard extends StatelessWidget {
                                 color: accent.withValues(alpha: 0.14),
                                 borderRadius: BorderRadius.circular(999),
                               ),
-                              child: Text(
-                                'Kazanıldı',
+                              child: Text(('Kazanıldı').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 11,
@@ -658,8 +639,7 @@ class SoftBadgeCard extends StatelessWidget {
                               ),
                             )
                           else
-                            Text(
-                              '${item.current}/${b.target}',
+                            Text(('${item.current}/${b.target}').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 14,
@@ -669,8 +649,7 @@ class SoftBadgeCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        b.subtitle,
+                      Text((b.subtitle).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 12.5,
@@ -692,8 +671,7 @@ class SoftBadgeCard extends StatelessWidget {
                     color: tint,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
-                    BadgeVisuals.categoryFor(b),
+                  child: Text((BadgeVisuals.categoryFor(b)).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11,
@@ -702,8 +680,7 @@ class SoftBadgeCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Text(
-                  '%${(item.ratio * 100).round()}',
+                Text(('%${(item.ratio * 100).round()}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
@@ -769,8 +746,7 @@ class SoftBadgeDetailSheet extends StatelessWidget {
               ),
               Center(child: SoftBadgeIcon(badge: b, size: 88, earned: item.earned)),
               const SizedBox(height: 16),
-              Text(
-                b.title,
+              Text((b.title).ui,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
@@ -779,8 +755,7 @@ class SoftBadgeDetailSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                b.subtitle,
+              Text((b.subtitle).ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -816,8 +791,7 @@ class SoftBadgeDetailSheet extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          item.earned ? 'Hedef tamam' : 'İlerleme',
+                        Text((item.earned ? 'Hedef tamam' : 'İlerleme').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 14,
@@ -825,8 +799,7 @@ class SoftBadgeDetailSheet extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          '%${(item.ratio * 100).round()}',
+                        Text(('%${(item.ratio * 100).round()}').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 14,
@@ -846,12 +819,11 @@ class SoftBadgeDetailSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      item.earned
+                    Text((item.earned
                           ? 'Bu rozeti kazandın — koleksiyonuna eklendi.'
                           : left == 0
                               ? 'Hedefe ulaştın; kutlama yakında görünebilir.'
-                              : 'Rozeti açmak için $left adım daha.',
+                              : 'Rozeti açmak için $left adım daha.').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
@@ -887,7 +859,7 @@ class SoftMiniChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(999)),
-      child: Text(label, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: ink)),
+      child: Text((label).ui, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: ink)),
     );
   }
 }
@@ -915,8 +887,7 @@ class SoftBadgesFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Su, check-in, öğün fotoğrafı ve mini dersler rozetleri açar. Günlük küçük adımlar yeter.',
+            child: Text(('Su, check-in, öğün fotoğrafı ve mini dersler rozetleri açar. Günlük küçük adımlar yeter.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -947,10 +918,9 @@ class SoftBadgesEmptyFilter extends StatelessWidget {
         border: Border.all(color: AppColors.modernLine),
         boxShadow: AppSpacing.soft,
       ),
-      child: Text(
-        filter == 'Kazanılan'
+      child: Text((filter == 'Kazanılan'
             ? 'Henüz rozet kazanmadın — sıradaki hedefe bak.'
-            : 'Bu filtrede rozet yok.',
+            : 'Bu filtrede rozet yok.').ui,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.w700,
@@ -1004,8 +974,7 @@ class SoftBadgeCelebrationCard extends StatelessWidget {
               color: accent.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              'Yeni rozet!',
+            child: Text(('Yeni rozet!').ui,
               style: TextStyle(
                 color: accent,
                 fontWeight: FontWeight.w800,
@@ -1016,8 +985,7 @@ class SoftBadgeCelebrationCard extends StatelessWidget {
           const SizedBox(height: 18),
           SoftBadgeIcon(badge: badge, size: 96, earned: true),
           const SizedBox(height: 16),
-          Text(
-            badge.title,
+          Text((badge.title).ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppColors.primaryDeep,
@@ -1026,8 +994,7 @@ class SoftBadgeCelebrationCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            badge.subtitle,
+          Text((badge.subtitle).ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.primary.withValues(alpha: 0.65),
@@ -1053,8 +1020,7 @@ class SoftBadgeCelebrationCard extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Text(
-                'Harika!',
+              child: Text(('Harika!').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
               ),

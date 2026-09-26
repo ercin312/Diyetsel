@@ -15,6 +15,7 @@ import '../../../../core/widgets/nav_back.dart';
 import '../../../auth/presentation/auth_controller.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../domain/recipe_visuals.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 enum CartoonRecipeShelf { discover, liked, saved }
 
@@ -148,8 +149,7 @@ class CartoonNavBackButton extends StatelessWidget {
                   Icon(icon, color: AppColors.kawaiiLeafDeep, size: 22),
                   if (desktop && showLabelOnDesktop) ...[
                     const SizedBox(width: 8),
-                    Text(
-                      label,
+                    Text((label).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 13,
@@ -178,8 +178,7 @@ class CartoonSectionTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 17,
@@ -188,8 +187,7 @@ class CartoonSectionTitle extends StatelessWidget {
         ),
         if (subtitle != null) ...[
           const SizedBox(height: 4),
-          Text(
-            subtitle!,
+          Text((subtitle!).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -224,8 +222,7 @@ class CartoonRecipesHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                admin ? 'Tarif yönetimi' : 'Tarifler',
+              Text((admin ? 'Tarif yönetimi' : 'Tarifler').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -234,12 +231,11 @@ class CartoonRecipesHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                admin
+              Text((admin
                     ? 'Danışanlara özel tarifler oluştur ve yayınla'
                     : likedCount + savedCount > 0
                         ? '$likedCount beğeni · $savedCount kayıtlı · mutfakta yanındayız'
-                        : 'Beğen, kaydet, sonra pişir · sıcak lezzet',
+                        : 'Beğen, kaydet, sonra pişir · sıcak lezzet').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -318,8 +314,7 @@ class CartoonRecipesHero extends StatelessWidget {
                     color: AppColors.kawaiiLeaf.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Mutfakta ilham',
+                  child: Text(('Mutfakta ilham').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -330,8 +325,7 @@ class CartoonRecipesHero extends StatelessWidget {
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .shimmer(duration: 2400.ms, color: Colors.white24),
                 const SizedBox(height: 12),
-                const Text(
-                  'Protein odaklı mutfak',
+                Text(('Protein odaklı mutfak').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -341,8 +335,7 @@ class CartoonRecipesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  '$count tarif · $categories kategori · adım adım & makro net',
+                Text(('$count tarif · $categories kategori · adım adım & makro net').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -420,8 +413,7 @@ class CartoonRecipeMetaChip extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: 5),
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: color),
           ),
         ],
@@ -493,8 +485,7 @@ class CartoonRecipeShelfTabs extends StatelessWidget {
                             : AppColors.kawaiiLeaf.withValues(alpha: 0.55),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        item.$4 == null ? item.$2 : '${item.$2} (${item.$4})',
+                      Text((item.$4 == null ? item.$2 : '${item.$2} (${item.$4})').ui,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
@@ -563,8 +554,7 @@ class CartoonRecipeQuickFilters extends StatelessWidget {
                     color: on ? AppColors.kawaiiCoralDeep : AppColors.kawaiiLeaf.withValues(alpha: 0.55),
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    item.$2,
+                  Text((item.$2).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -629,8 +619,7 @@ class CartoonRecipesStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -639,8 +628,7 @@ class CartoonRecipesStatsRow extends StatelessWidget {
                       color: AppColors.kawaiiMuted.withValues(alpha: 0.9),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
@@ -712,8 +700,7 @@ class CartoonTipCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
+                  Text((title).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
@@ -721,8 +708,7 @@ class CartoonTipCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    body,
+                  Text((body).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -732,8 +718,7 @@ class CartoonTipCard extends StatelessWidget {
                   ),
                   if (actionLabel != null) ...[
                     const SizedBox(height: 8),
-                    Text(
-                      actionLabel!,
+                    Text((actionLabel!).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12.5,
@@ -793,10 +778,9 @@ class CartoonRecipeCollectionStrip extends StatelessWidget {
             SoftTap(
               onTap: onShowSaved,
               borderRadius: BorderRadius.circular(12),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: Text(
-                  'Tümü →',
+                child: Text(('Tümü →').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
@@ -826,13 +810,12 @@ class CartoonRecipeCollectionStrip extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(color: AppColors.kawaiiOutline),
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.favorite_rounded, color: AppColors.kawaiiCoral),
                         SizedBox(height: 6),
-                        Text(
-                          'Beğeniler',
+                        Text(('Beğeniler').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 12,
@@ -887,8 +870,7 @@ class CartoonRecipeCollectionStrip extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        r.title,
+                      Text((r.title).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
@@ -996,8 +978,7 @@ class CartoonRecipeCategoryChip extends StatelessWidget {
                 ]
               : AppSpacing.soft,
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 12.5,
@@ -1069,8 +1050,7 @@ class CartoonRecipeSuggestionCard extends StatelessWidget {
                           color: accent.withValues(alpha: 0.16),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          suggestion.highlight,
+                        child: Text((suggestion.highlight).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 10.5,
@@ -1079,8 +1059,7 @@ class CartoonRecipeSuggestionCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        r.title,
+                      Text((r.title).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -1116,8 +1095,7 @@ class CartoonRecipeSuggestionCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(
-              suggestion.reason,
+            Text((suggestion.reason).ui,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -1128,8 +1106,7 @@ class CartoonRecipeSuggestionCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Text(
-              '${r.calories} kcal · ${recipeProtein(r)} g P · ${r.prepMinutes} dk',
+            Text(('${r.calories} kcal · ${recipeProtein(r)} g P · ${r.prepMinutes} dk').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 12,
@@ -1216,8 +1193,7 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
                                 color: Colors.white.withValues(alpha: 0.92),
                                 borderRadius: BorderRadius.circular(999),
                               ),
-                              child: Text(
-                                'Öne çıkan',
+                              child: Text(('Öne çıkan').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 11,
@@ -1234,8 +1210,7 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
                                   color: Colors.white.withValues(alpha: 0.88),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Text(
-                                  t,
+                                child: Text((t).ui,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 10.5,
@@ -1246,8 +1221,7 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          recipe.title,
+                        Text((recipe.title).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
@@ -1257,8 +1231,7 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          recipe.description,
+                        Text((recipe.description).ui,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -1322,8 +1295,7 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
                     color: AppColors.kawaiiPurple,
                   ),
                   const Spacer(),
-                  Text(
-                    'Tarifi aç',
+                  Text(('Tarifi aç').ui,
                     style: TextStyle(fontWeight: FontWeight.w800, color: accent, fontSize: 13.5),
                   ),
                   Icon(Icons.arrow_forward_rounded, size: 18, color: accent),
@@ -1408,8 +1380,7 @@ class CartoonRecipeCard extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.8)),
                                 ),
-                                child: Text(
-                                  t,
+                                child: Text((t).ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 10.5,
@@ -1420,8 +1391,7 @@ class CartoonRecipeCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          recipe.title,
+                        Text((recipe.title).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 17,
@@ -1431,8 +1401,7 @@ class CartoonRecipeCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          recipe.description,
+                        Text((recipe.description).ui,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -1512,12 +1481,11 @@ class CartoonRecipeCard extends StatelessWidget {
                   ),
                   if (recipe.ingredients.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    Text(
-                      recipe.ingredients
+                    Text((recipe.ingredients
                               .take(3)
                               .map((e) => e.amount.isEmpty ? e.name : '${e.name} (${e.amount})')
                               .join(' · ') +
-                          (recipe.ingredients.length > 3 ? '…' : ''),
+                          (recipe.ingredients.length > 3 ? '…' : '')).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -1528,8 +1496,7 @@ class CartoonRecipeCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Text(
-                        'Tarifi aç',
+                      Text(('Tarifi aç').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, color: accent, fontSize: 13.5),
                       ),
                       Icon(Icons.arrow_forward_rounded, size: 18, color: accent),
@@ -1648,8 +1615,7 @@ class CartoonRecipesEmpty extends StatelessWidget {
               .animate(onPlay: (c) => c.repeat(reverse: true))
               .scale(begin: const Offset(1, 1), end: const Offset(1.06, 1.06), duration: 1200.ms),
           const SizedBox(height: 12),
-          Text(
-            title,
+          Text((title).ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
@@ -1658,8 +1624,7 @@ class CartoonRecipesEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            body,
+          Text((body).ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
@@ -1676,7 +1641,7 @@ class CartoonRecipesEmpty extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Yeni tarif ekle'),
+              label: Text(('Yeni tarif ekle').ui),
             ),
           ],
           if (onExplore != null) ...[
@@ -1688,7 +1653,7 @@ class CartoonRecipesEmpty extends StatelessWidget {
                 side: const BorderSide(color: AppColors.kawaiiLeaf),
               ),
               icon: const Icon(Icons.explore_rounded),
-              label: const Text('Tarifleri keşfet'),
+              label: Text(('Tarifleri keşfet').ui),
             ),
           ],
         ],
@@ -1710,8 +1675,7 @@ class CartoonRecipesFab extends StatelessWidget {
       foregroundColor: Colors.white,
       elevation: 2,
       icon: const Icon(Icons.add_rounded),
-      label: const Text(
-        'Yeni tarif',
+      label: Text(('Yeni tarif').ui,
         style: TextStyle(fontWeight: FontWeight.w800),
       ),
     );
@@ -1768,8 +1732,7 @@ class CartoonRecipeActionBar extends StatelessWidget {
                         .animate(target: liked ? 1 : 0)
                         .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 180.ms),
                     const SizedBox(width: 6),
-                    Text(
-                      liked ? 'Beğenildi${likes > 0 ? ' · $likes' : ''}' : 'Beğen${likes > 0 ? ' · $likes' : ''}',
+                    Text((liked ? 'Beğenildi${likes > 0 ? ' · $likes' : ''}' : 'Beğen${likes > 0 ? ' · $likes' : ''}').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 13,
@@ -1802,8 +1765,7 @@ class CartoonRecipeActionBar extends StatelessWidget {
                       size: 20,
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      saved ? 'Kayıtlı' : 'Kaydet',
+                    Text((saved ? 'Kayıtlı' : 'Kaydet').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 13,
@@ -1934,8 +1896,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                         .animate(onPlay: (c) => c.repeat(reverse: true))
                         .moveY(begin: 0, end: -5, duration: 1500.ms, curve: Curves.easeInOut),
                     const SizedBox(height: 12),
-                    Text(
-                      current.title,
+                    Text((current.title).ui,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
@@ -1945,8 +1906,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      current.description,
+                    Text((current.description).ui,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -1976,7 +1936,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                                 side: const BorderSide(color: AppColors.kawaiiLeaf),
                               ),
                               icon: const Icon(Icons.edit_rounded, size: 18),
-                              label: const Text('Düzenle'),
+                              label: Text(('Düzenle').ui),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -1990,7 +1950,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                                 ),
                               ),
                               icon: const Icon(Icons.delete_outline_rounded, size: 18),
-                              label: const Text('Sil'),
+                              label: Text(('Sil').ui),
                             ),
                           ),
                         ],
@@ -2020,8 +1980,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppColors.kawaiiOutline),
                       ),
-                      child: Text(
-                        t,
+                      child: Text((t).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
@@ -2057,9 +2016,8 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                   children: [
                     Icon(Icons.restaurant_rounded, size: 20, color: accent),
                     const SizedBox(width: 8),
-                    const Expanded(
-                      child: Text(
-                        'Porsiyon ayarı',
+                    Expanded(
+                      child: Text(('Porsiyon ayarı').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiInk),
                       ),
                     ),
@@ -2084,8 +2042,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        '×$_servingsMul',
+                      child: Text(('×$_servingsMul').ui,
                         style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent),
                       ),
                     ),
@@ -2112,8 +2069,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               ),
               const SizedBox(height: 22),
-              const Text(
-                'İçindekiler',
+              Text(('İçindekiler').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 17,
@@ -2121,8 +2077,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                '${current.ingredients.length} malzeme · $shownServings porsiyon',
+              Text(('${current.ingredients.length} malzeme · $shownServings porsiyon').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.5,
@@ -2176,8 +2131,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text(
-                                  current.ingredients[i].name,
+                                child: Text((current.ingredients[i].name).ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     decoration: _checkedIngredients.contains(i)
@@ -2189,8 +2143,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                                   ),
                                 ),
                               ),
-                              Text(
-                                _scaleAmount(current.ingredients[i].amount),
+                              Text((_scaleAmount(current.ingredients[i].amount)).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   color: accent,
@@ -2219,8 +2172,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                       const Icon(Icons.warning_amber_rounded, size: 18, color: AppColors.kawaiiCoralDeep),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text(
-                          'Alerjen: ${current.allergens.join(', ')}',
+                        child: Text(('Alerjen: ${current.allergens.join(', ')}').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             height: 1.35,
@@ -2233,8 +2185,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               ],
               const SizedBox(height: 24),
-              const Text(
-                'Nasıl yapılır?',
+              Text(('Nasıl yapılır?').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 17,
@@ -2242,8 +2193,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Adım adım anlatım',
+              Text(('Adım adım anlatım').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.5,
@@ -2288,8 +2238,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                               color: _doneSteps.contains(i) ? accent : accent.withValues(alpha: 0.14),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(
-                              '${i + 1}',
+                            child: Text(('${i + 1}').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 13,
@@ -2299,8 +2248,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              current.steps[i],
+                            child: Text((current.steps[i]).ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 height: 1.4,
@@ -2320,8 +2268,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               if (current.tips.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                const Text(
-                  'Püf noktaları',
+                Text(('Püf noktaları').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
@@ -2344,8 +2291,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                         Icon(Icons.lightbulb_outline_rounded, color: accent, size: 20),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            tip,
+                          child: Text((tip).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               height: 1.4,
@@ -2358,8 +2304,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                   ),
               ],
               const SizedBox(height: 18),
-              Text(
-                'Makrolar ${shownServings == 1 ? '1 porsiyon' : '$shownServings porsiyon'} için yaklaşık değerlerdir.',
+              Text(('Makrolar ${shownServings == 1 ? '1 porsiyon' : '$shownServings porsiyon'} için yaklaşık değerlerdir.').ui,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 12,
@@ -2412,8 +2357,7 @@ class _CartoonMetaRow extends StatelessWidget {
                 children: [
                   Icon(items[i].$1, size: 18, color: AppColors.kawaiiLeafDeep),
                   const SizedBox(height: 4),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
@@ -2421,8 +2365,7 @@ class _CartoonMetaRow extends StatelessWidget {
                       color: AppColors.kawaiiInk,
                     ),
                   ),
-                  Text(
-                    items[i].$3,
+                  Text((items[i].$3).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 10.5,

@@ -14,6 +14,7 @@ import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show Sof
 import '../domain/blog_visuals.dart' show blogCategories;
 import 'blog_editor_screen.dart';
 import 'widgets/soft_blog_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 
 /// Soft premium modern blog list.
@@ -189,9 +190,8 @@ class SoftBlogDetailScreen extends ConsumerWidget {
               children: [
                 const SoftNavBackButton(),
                 const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'Yazı',
+                Expanded(
+                  child: Text(('Yazı').ui,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w900,

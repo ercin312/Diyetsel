@@ -10,6 +10,7 @@ import '../../../../core/models/enums.dart';
 import '../../../../core/models/models.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../../core/l10n/ui_string.dart';
 
 Color softApptStatusColor(AppointmentStatus s) => switch (s) {
       AppointmentStatus.approved => AppColors.primary,
@@ -76,8 +77,7 @@ class SoftCalendarHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    hasNext ? 'Yaklaşan seans' : 'Takvimin',
+                  child: Text((hasNext ? 'Yaklaşan seans' : 'Takvimin').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -86,8 +86,7 @@ class SoftCalendarHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  title,
+                Text((title).ui,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -99,8 +98,7 @@ class SoftCalendarHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  subtitle,
+                Text((subtitle).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -125,8 +123,7 @@ class SoftCalendarHero extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const Text(
-                        'Müsait saat seç',
+                      child: Text(('Müsait saat seç').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 13.5,
@@ -190,12 +187,10 @@ class SoftCalendarStatStrip extends StatelessWidget {
             children: [
               SoftModernIcon(asset, size: 22, fallback: fallback, fallbackColor: accent),
               const SizedBox(height: 6),
-              Text(
-                value,
+              Text((value).ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent),
               ),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
@@ -263,8 +258,7 @@ class SoftFormatToggle extends StatelessWidget {
               color: selected ? AppColors.primary : Colors.transparent,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Text(
-              label,
+            child: Text((label).ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
@@ -437,16 +431,14 @@ class SoftDayHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                isToday ? 'Bugün' : DateFormat('EEEE', 'tr').format(day),
+              Text((isToday ? 'Bugün' : DateFormat('EEEE', 'tr').format(day)).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 17,
                   color: AppColors.primaryDeep,
                 ),
               ),
-              Text(
-                DateFormat('d MMMM yyyy', 'tr').format(day),
+              Text((DateFormat('d MMMM yyyy', 'tr').format(day)).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -467,8 +459,7 @@ class SoftDayHeader extends StatelessWidget {
               color: count > 0 ? AppColors.primary.withValues(alpha: 0.2) : AppColors.modernLine,
             ),
           ),
-          child: Text(
-            count == 0 ? 'Boş gün' : '$count randevu',
+          child: Text((count == 0 ? 'Boş gün' : '$count randevu').ui,
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 12,
@@ -540,16 +531,14 @@ class SoftAppointmentCard extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
-                    time,
+                  Text((time).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
                       color: accent,
                     ),
                   ),
-                  Text(
-                    end,
+                  Text((end).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
@@ -567,10 +556,9 @@ class SoftAppointmentCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          a.serviceTitle?.isNotEmpty == true
+                        child: Text((a.serviceTitle?.isNotEmpty == true
                               ? a.serviceTitle!
-                              : (admin ? a.clientName : 'Diyetisyen seansı'),
+                              : (admin ? a.clientName : 'Diyetisyen seansı')).ui,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -586,8 +574,7 @@ class SoftAppointmentCard extends StatelessWidget {
                           color: accent.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: Text(
-                          softApptStatusLabel(a.status),
+                        child: Text((softApptStatusLabel(a.status)).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 11,
@@ -599,8 +586,7 @@ class SoftAppointmentCard extends StatelessWidget {
                   ),
                   if (admin) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      a.clientName,
+                    Text((a.clientName).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 12.5,
@@ -609,8 +595,7 @@ class SoftAppointmentCard extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 6),
-                  Text(
-                    '$duration dk · ${DateFormat('d MMM', 'tr').format(a.startAt)}',
+                  Text(('$duration dk · ${DateFormat('d MMM', 'tr').format(a.startAt)}').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
@@ -619,8 +604,7 @@ class SoftAppointmentCard extends StatelessWidget {
                   ),
                   if (a.clinicalNotes?.isNotEmpty == true) ...[
                     const SizedBox(height: 6),
-                    Text(
-                      'Not: ${a.clinicalNotes}',
+                    Text(('Not: ${a.clinicalNotes}').ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -667,8 +651,7 @@ class SoftCalendarEmptyDay extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Bu günde randevu yok',
+          Text(('Bu günde randevu yok').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -676,8 +659,7 @@ class SoftCalendarEmptyDay extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'Müsait bir slot seçerek yeni seans talep edebilirsin.',
+          Text(('Müsait bir slot seçerek yeni seans talep edebilirsin.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -696,8 +678,7 @@ class SoftCalendarEmptyDay extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Text(
-                  'Saat seç',
+                child: Text(('Saat seç').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 13,
@@ -731,8 +712,7 @@ class SoftUpcomingList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Yaklaşanlar',
+        Text(('Yaklaşanlar').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 16,
@@ -767,8 +747,7 @@ class SoftAvailabilityChips extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Uygunluk saatleri',
+        Text(('Uygunluk saatleri').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15,
@@ -788,8 +767,7 @@ class SoftAvailabilityChips extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(color: AppColors.modernLine),
                 ),
-                child: Text(
-                  '${_dayName(r.weekday)}  ${r.start}–${r.end}',
+                child: Text(('${_dayName(r.weekday)}  ${r.start}–${r.end}').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12.5,
@@ -840,8 +818,7 @@ class SoftSlotPickerSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
-                DateFormat('d MMMM EEEE', 'tr').format(day),
+              Text((DateFormat('d MMMM EEEE', 'tr').format(day)).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -849,8 +826,7 @@ class SoftSlotPickerSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'Müsait bir saat seç',
+              Text(('Müsait bir saat seç').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -862,8 +838,7 @@ class SoftSlotPickerSheet extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   child: Center(
-                    child: Text(
-                      'Bu gün için boş slot yok',
+                    child: Text(('Bu gün için boş slot yok').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary.withValues(alpha: 0.5),
@@ -899,8 +874,7 @@ class SoftSlotPickerSheet extends StatelessWidget {
                             border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                             boxShadow: AppSpacing.soft,
                           ),
-                          child: Text(
-                            label,
+                          child: Text((label).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 15,

@@ -17,6 +17,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import 'soft_more_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class _MoreItem {
   const _MoreItem({
@@ -353,10 +354,9 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
                   .fadeIn(delay: 70.ms, duration: 280.ms),
               const SizedBox(height: 16),
               if (filtered.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(28),
-                  child: Text(
-                    'Aramanla eşleşen araç yok.',
+                  child: Text(('Aramanla eşleşen araç yok.').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                   ),
@@ -407,12 +407,11 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            next
+          content: Text((next
                 ? (ReminderService.instance.supportsNative
                     ? 'Kalıcı su bildirimi açıldı'
                     : 'Android’de kalıcı bildirim olur. Windows’ta widget yok.')
-                : 'Su kısayolu kapatıldı',
+                : 'Su kısayolu kapatıldı').ui,
           ),
         ),
       );
@@ -456,21 +455,18 @@ class _MoreHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    admin ? 'Klinik merkezi' : 'Araç kutusu',
+                  child: Text((admin ? 'Klinik merkezi' : 'Araç kutusu').ui,
                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  admin ? 'Merhaba, $name' : 'Merhaba $name',
+                Text((admin ? 'Merhaba, $name' : 'Merhaba $name').ui,
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, height: 1.15, color: AppColors.kawaiiInk),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  admin
+                Text((admin
                       ? '$count yönetim aracı — içerik, plan ve sistem.'
-                      : '$count kısayol · ara, grupla, tek dokunuşla aç.',
+                      : '$count kısayol · ara, grupla, tek dokunuşla aç.').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -530,8 +526,8 @@ class _QuickStats extends StatelessWidget {
                       child: Icon(items[i].$1, size: 16, color: items[i].$3),
                     ),
                     const SizedBox(height: 8),
-                    Text(items[i].$4, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
-                    Text(items[i].$5, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk)),
+                    Text((items[i].$4).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+                    Text((items[i].$5).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk)),
                   ],
                 ),
               ),
@@ -559,8 +555,8 @@ class _SearchField extends StatelessWidget {
       ),
       child: TextField(
         onChanged: onChanged,
-        decoration: const InputDecoration(
-          hintText: 'Blog, rapor, tarif… ara',
+        decoration: InputDecoration(
+          hintText: ('Blog, rapor, tarif… ara').ui,
           prefixIcon: Icon(Icons.search_rounded, color: AppColors.kawaiiLeafDeep),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -579,8 +575,7 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
+    return Text((title).ui,
       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk),
     );
   }
@@ -623,10 +618,9 @@ class _MoreTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
+                  Text((item.title).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
                   const SizedBox(height: 2),
-                  Text(
-                    item.subtitle,
+                  Text((item.subtitle).ui,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                   ),
                 ],
@@ -640,8 +634,7 @@ class _MoreTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.kawaiiOutline),
                 ),
-                child: Text(
-                  waterOn ? 'Açık' : 'Kapalı',
+                child: Text((waterOn ? 'Açık' : 'Kapalı').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 11.5,
@@ -678,10 +671,9 @@ class _FooterTip extends StatelessWidget {
           const Icon(Icons.tips_and_updates_outlined, color: AppColors.kawaiiLeafDeep),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              admin
+            child: Text((admin
                   ? 'Danışanlara özel modülleri Ayarlar’dan açıp kapatabilirsin.'
-                  : 'Ana sekmelere sığmayan her şey burada. Sık kullandıklarını ara ile hızlı bul.',
+                  : 'Ana sekmelere sığmayan her şey burada. Sık kullandıklarını ara ile hızlı bul.').ui,
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
             ),
           ),
@@ -724,13 +716,11 @@ class _CartoonMoreTipBanner extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    admin ? 'Klinik ipucu · ${tip.title}' : 'Günün ipucu · ${tip.title}',
+                  Text((admin ? 'Klinik ipucu · ${tip.title}' : 'Günün ipucu · ${tip.title}').ui,
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: AppColors.kawaiiInk),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    tip.body,
+                  Text((tip.body).ui,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.3),
                   ),
                 ],

@@ -19,7 +19,7 @@ class SeedData {
     final admin = UserProfile(
       id: adminId,
       email: AppConstants.demoAdminEmail,
-      displayName: 'Dyt. Ayşe Kalorist',
+      displayName: 'Zühre',
       role: UserRole.admin,
       createdAt: now.subtract(const Duration(days: 120)),
       phone: '+90 532 000 00 01',

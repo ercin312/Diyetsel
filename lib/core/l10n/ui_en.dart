@@ -1,4 +1,4 @@
-{
+const Map<String,String> uiEn = {
   "auth.tagline": "Dietitian and client management platform",
   "auth.email": "Email",
   "auth.password": "Password",
@@ -1224,5 +1224,5 @@
   "Dekstroz, fruktoz, malto dekstrin, pekmez, bal — hepsi kan şekerini etkiler. “Light” veya “fit” etiketli atıştırmalıklarda bile olabilir.": "Dextrose, fructose, maltodextrin, molasses, honey — they all affect blood sugar. They show up even in snacks labeled “light” or “fit”.",
   "“Hidrojene” bitkisel yağlar ve palm yağı sık işlenmiş ürünlerde görülür. Zeytinyağı, ayçiçek veya kakao yağı genelde daha nötr tercihlerdir.": "“Hydrogenated” vegetable oils and palm oil show up often in processed foods. Olive oil, sunflower oil, or cocoa butter are usually the calmer choice.",
   "İhtiyacına uyan süreyi ve içerikleri oku; talebin diyetisyene iletilir. Düzenli takip paketleri, tek seferlik danışmanlıktan daha kalıcı sonuç verir.": "Read the duration and what’s included, and pick what fits you; your request goes to the dietitian. Regular follow-up packages give more lasting results than a one-time consult.",
-  "Şeker, glukoz şurubu veya invert şeker farklı isimlerle aynı şeye işaret edebilir. İlk sırada görürsen o ürün aslında bir “tatlandırıcı taşıyıcı” olabilir.": "Sugar, glucose syrup, or invert sugar can be the same thing under different names. If one of them is listed first, the product may really be a carrier for sweetener."
-}
+  "Şeker, glukoz şurubu veya invert şeker farklı isimlerle aynı şeye işaret edebilir. İlk sırada görürsen o ürün aslında bir “tatlandırıcı taşıyıcı” olabilir.": "Sugar, glucose syrup, or invert sugar can be the same thing under different names. If one of them is listed first, the product may really be a carrier for sweetener.",
+};

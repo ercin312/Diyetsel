@@ -25,6 +25,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../engage/presentation/engage_screens.dart';
 import 'soft_admin_meals_screen.dart';
 import 'soft_tracker_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class TrackerHubScreen extends ConsumerStatefulWidget {
   const TrackerHubScreen({super.key});
@@ -64,7 +65,7 @@ class _TrackerHubScreenState extends ConsumerState<TrackerHubScreen> with Single
     if (!cartoon) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Takip'),
+          title: Text(('Takip').ui),
           bottom: TabBar(
             controller: _tabs,
             tabs: const [
@@ -99,8 +100,7 @@ class _TrackerHubScreenState extends ConsumerState<TrackerHubScreen> with Single
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Takip',
+                        Text(('Takip').ui,
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w900,
@@ -108,8 +108,7 @@ class _TrackerHubScreenState extends ConsumerState<TrackerHubScreen> with Single
                             letterSpacing: -0.4,
                           ),
                         ),
-                        Text(
-                          'Su, vücut ve öğün fotoğrafların tek yerde',
+                        Text(('Su, vücut ve öğün fotoğrafların tek yerde').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -255,8 +254,7 @@ class _CartoonTabChip extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 12,
@@ -297,15 +295,13 @@ class WaterTrackerScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            '${log.amountMl} / ${log.goalMl} ml',
+          Text(('${log.amountMl} / ${log.goalMl} ml').ui,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              log.progress >= 1 ? 'Kahraman gibi içtin! 🏆' : 'Bardağa veya + tuşuna basarak su ekle.',
+            child: Text((log.progress >= 1 ? 'Kahraman gibi içtin! 🏆' : 'Bardağa veya + tuşuna basarak su ekle.').ui,
               textAlign: TextAlign.center,
             ),
           ),
@@ -341,14 +337,12 @@ class WaterTrackerScreen extends ConsumerWidget {
                       color: AppColors.kawaiiSky.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                     ),
-                    child: const Text(
-                      'Bugünkü su',
+                    child: Text(('Bugünkü su').ui,
                       style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiInk),
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    '%$pct',
+                  Text(('%$pct').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
@@ -366,8 +360,7 @@ class WaterTrackerScreen extends ConsumerWidget {
                 sipLabel: '+ ${AppConstants.waterSipMl} ml',
                 onAdd: () => store.addWaterSip(user.id),
               ),
-              Text(
-                '${log.amountMl} / ${log.goalMl} ml',
+              Text(('${log.amountMl} / ${log.goalMl} ml').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 24,
@@ -376,10 +369,9 @@ class WaterTrackerScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                log.progress >= 1
+              Text((log.progress >= 1
                     ? 'Hedef doldu — süper iş! 🎉'
-                    : 'Damla ya da + tuşuna bas, bardak dolsun.',
+                    : 'Damla ya da + tuşuna bas, bardak dolsun.').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -445,16 +437,14 @@ class WaterTrackerScreen extends ConsumerWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            '+$ml',
+                          Text(('+$ml').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 15,
                               color: AppColors.kawaiiSkyBlue,
                             ),
                           ),
-                          Text(
-                            'ml',
+                          Text(('ml').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 11,
@@ -492,10 +482,9 @@ class WaterTrackerScreen extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  log.progress >= 1
+                child: Text((log.progress >= 1
                       ? 'Hedef tamam — fazlasını akşam geç saate bırakma.'
-                      : 'Her öğünde 1 bardak pratik bir ritüel. Kalan: ${(log.goalMl - log.amountMl).clamp(0, log.goalMl)} ml.',
+                      : 'Her öğünde 1 bardak pratik bir ritüel. Kalan: ${(log.goalMl - log.amountMl).clamp(0, log.goalMl)} ml.').ui,
                   style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiInk, height: 1.35),
                 ),
               ),
@@ -512,7 +501,7 @@ class WaterTrackerScreen extends ConsumerWidget {
           child: InkWell(
             onTap: () => store.addWaterSip(user.id),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(vertical: 14),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -524,8 +513,7 @@ class WaterTrackerScreen extends ConsumerWidget {
                     fallbackColor: Colors.white,
                   ),
                   SizedBox(width: 8),
-                  Text(
-                    'Su ekle',
+                  Text(('Su ekle').ui,
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
                   ),
                 ],
@@ -572,8 +560,8 @@ class _WaterStatPill extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted)),
-                Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: accent)),
+                Text((label).ui, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted)),
+                Text((value).ui, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: accent)),
               ],
             ),
           ),
@@ -603,7 +591,7 @@ class BodyTrackerScreen extends ConsumerWidget {
             child: SizedBox(
               height: 220,
               child: items.length < 2
-                  ? const Center(child: Text('En az iki ölçüm ekleyin'))
+                  ? Center(child: Text(('En az iki ölçüm ekleyin').ui))
                   : LineChart(_lineData(context, items)),
             ),
           ),
@@ -624,8 +612,8 @@ class BodyTrackerScreen extends ConsumerWidget {
           ),
           for (final m in items.reversed)
             ListTile(
-              title: Text('${m.weight ?? '-'} kg • bel ${m.waist ?? '-'}'),
-              subtitle: Text(DateFormat('d MMM y', 'tr').format(m.date)),
+              title: Text(('${m.weight ?? '-'} kg • bel ${m.waist ?? '-'}').ui),
+              subtitle: Text((DateFormat('d MMM y', 'tr').format(m.date)).ui),
             ),
         ],
       );
@@ -653,22 +641,19 @@ class BodyTrackerScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Son ölçüm',
+                      Text(('Son ölçüm').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiMuted),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        latest.weight != null ? '${latest.weight} kg' : 'Kilo yok',
+                      Text((latest.weight != null ? '${latest.weight} kg' : 'Kilo yok').ui,
                         style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 26, color: AppColors.kawaiiInk),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        [
+                      Text(([
                           if (latest.waist != null) 'Bel ${latest.waist} cm',
                           if (latest.bodyFat != null) 'Yağ %${latest.bodyFat}',
                           DateFormat('d MMM', 'tr').format(latest.date),
-                        ].join(' · '),
+                        ].join(' · ')).ui,
                         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.kawaiiMuted),
                       ),
                     ],
@@ -698,13 +683,11 @@ class BodyTrackerScreen extends ConsumerWidget {
                 Image.asset(DiyetselAssets.characterActiveBoy, height: 100, fit: BoxFit.contain,
                     errorBuilder: (_, _, _) => const SizedBox(height: 80)),
                 const SizedBox(height: 10),
-                const Text(
-                  'Henüz ölçüm yok',
+                Text(('Henüz ölçüm yok').ui,
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'İlk kilonu ekle — grafik ve önce/sonra burada canlanır.',
+                Text(('İlk kilonu ekle — grafik ve önce/sonra burada canlanır.').ui,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
                 ),
@@ -719,14 +702,13 @@ class BodyTrackerScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
             border: Border.all(color: AppColors.kawaiiOutline),
           ),
-          child: const Row(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.lightbulb_outline_rounded, color: AppColors.kawaiiSalmon, size: 22),
               SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  'Haftada bir ölçüm yeter — aynı saatte, aynı koşullarda tartıl; grafik daha adil okunur.',
+                child: Text(('Haftada bir ölçüm yeter — aynı saatte, aynı koşullarda tartıl; grafik daha adil okunur.').ui,
                   style: TextStyle(fontWeight: FontWeight.w700, height: 1.35, color: AppColors.kawaiiInk),
                 ),
               ),
@@ -745,17 +727,15 @@ class BodyTrackerScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Kilo grafiği',
+              Text(('Kilo grafiği').ui,
                 style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: AppColors.kawaiiInk),
               ),
               const SizedBox(height: 8),
               SizedBox(
                 height: 200,
                 child: items.length < 2
-                    ? const Center(
-                        child: Text(
-                          'Grafik için en az iki ölçüm ekle',
+                    ? Center(
+                        child: Text(('Grafik için en az iki ölçüm ekle').ui,
                           style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
                         ),
                       )
@@ -783,14 +763,14 @@ class BodyTrackerScreen extends ConsumerWidget {
           child: InkWell(
             onTap: () => _add(context, store, user.id, cartoon: true),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(vertical: 14),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.add_rounded, color: Colors.white),
                   SizedBox(width: 6),
-                  Text('Ölçüm ekle', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15)),
+                  Text(('Ölçüm ekle').ui, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15)),
                 ],
               ),
             ),
@@ -798,8 +778,7 @@ class BodyTrackerScreen extends ConsumerWidget {
         ).animate().fadeIn(delay: 160.ms).scale(begin: const Offset(0.96, 0.96), curve: Curves.easeOutBack),
         if (items.isNotEmpty) ...[
           const SizedBox(height: 18),
-          const Text(
-            'Geçmiş',
+          Text(('Geçmiş').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 8),
@@ -831,8 +810,7 @@ class BodyTrackerScreen extends ConsumerWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 36,
-            getTitlesWidget: (v, _) => Text(
-              v.toStringAsFixed(0),
+            getTitlesWidget: (v, _) => Text((v.toStringAsFixed(0)).ui,
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
@@ -883,8 +861,7 @@ class BodyTrackerScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(cartoon ? AppSpacing.radiusCard : 12),
           ),
-          title: Text(
-            'Yeni ölçüm',
+          title: Text(('Yeni ölçüm').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               color: cartoon ? AppColors.kawaiiInk : null,
@@ -893,23 +870,23 @@ class BodyTrackerScreen extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: w, decoration: const InputDecoration(labelText: 'Kilo (kg)'), keyboardType: TextInputType.number),
-              TextField(controller: waist, decoration: const InputDecoration(labelText: 'Bel (cm)'), keyboardType: TextInputType.number),
-              TextField(controller: fat, decoration: const InputDecoration(labelText: 'Yağ %'), keyboardType: TextInputType.number),
+              TextField(controller: w, decoration: InputDecoration(labelText: ('Kilo (kg)').ui), keyboardType: TextInputType.number),
+              TextField(controller: waist, decoration: InputDecoration(labelText: ('Bel (cm)').ui), keyboardType: TextInputType.number),
+              TextField(controller: fat, decoration: InputDecoration(labelText: ('Yağ %').ui), keyboardType: TextInputType.number),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () async {
                   final file = await ImagePicker().pickImage(source: ImageSource.gallery);
                   setLocal(() => before = file?.path ?? before);
                 },
-                child: Text(before == null ? 'Önce foto' : 'Önce foto seçildi'),
+                child: Text((before == null ? 'Önce foto' : 'Önce foto seçildi').ui),
               ),
               TextButton(
                 onPressed: () async {
                   final file = await ImagePicker().pickImage(source: ImageSource.gallery);
                   setLocal(() => after = file?.path ?? after);
                 },
-                child: Text(after == null ? 'Sonra foto' : 'Sonra foto seçildi'),
+                child: Text((after == null ? 'Sonra foto' : 'Sonra foto seçildi').ui),
               ),
             ],
           ),
@@ -936,7 +913,7 @@ class BodyTrackerScreen extends ConsumerWidget {
                 );
                 if (ctx.mounted) Navigator.pop(ctx);
               },
-              child: const Text('Kaydet'),
+              child: Text(('Kaydet').ui),
             ),
           ],
         ),
@@ -969,8 +946,7 @@ class _BodyHistoryTile extends StatelessWidget {
               color: AppColors.kawaiiMint.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Text(
-              m.weight != null ? '${m.weight!.round()}' : '—',
+            child: Text((m.weight != null ? '${m.weight!.round()}' : '—').ui,
               style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiLeafDeep),
             ),
           ),
@@ -979,12 +955,10 @@ class _BodyHistoryTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${m.weight ?? '-'} kg · bel ${m.waist ?? '-'}',
+                Text(('${m.weight ?? '-'} kg · bel ${m.waist ?? '-'}').ui,
                   style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiInk),
                 ),
-                Text(
-                  DateFormat('d MMMM y', 'tr').format(m.date),
+                Text((DateFormat('d MMMM y', 'tr').format(m.date)).ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -1024,9 +998,8 @@ class MealPhotoScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      const Expanded(
-                        child: Text(
-                          'Öğün günlüğün',
+                      Expanded(
+                        child: Text(('Öğün günlüğün').ui,
                           style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk),
                         ),
                       ),
@@ -1036,13 +1009,13 @@ class MealPhotoScreen extends ConsumerWidget {
                         child: InkWell(
                           onTap: () => capturePlatePhoto(context, ref),
                           borderRadius: BorderRadius.circular(16),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             child: Row(
                               children: [
                                 Icon(Icons.camera_alt_rounded, color: Colors.white, size: 18),
                                 SizedBox(width: 6),
-                                Text('Çek', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+                                Text(('Çek').ui, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
                               ],
                             ),
                           ),
@@ -1126,14 +1099,12 @@ class _CartoonMealEmpty extends StatelessWidget {
                 .animate(onPlay: (c) => c.repeat(reverse: true))
                 .moveY(begin: 0, end: -6, duration: 1800.ms, curve: Curves.easeInOut),
             const SizedBox(height: 16),
-            const Text(
-              'Henüz öğün fotoğrafı yok',
+            Text(('Henüz öğün fotoğrafı yok').ui,
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Tabağını çek, diyetisyenin görsün ve sana not bıraksın.',
+            Text(('Tabağını çek, diyetisyenin görsün ve sana not bıraksın.').ui,
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted, height: 1.4),
             ),
@@ -1145,9 +1116,9 @@ class _CartoonMealEmpty extends StatelessWidget {
                 child: InkWell(
                   onTap: onCapture,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-                    child: Text('İlk fotoğrafı çek', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+                    child: Text(('İlk fotoğrafı çek').ui, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
                   ),
                 ),
               ),
@@ -1180,8 +1151,7 @@ class _MealLogCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            log.clientName,
+          Text((log.clientName).ui,
             style: TextStyle(
               fontWeight: FontWeight.w800,
               color: cartoon ? AppColors.kawaiiInk : null,
@@ -1197,16 +1167,16 @@ class _MealLogCard extends StatelessWidget {
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stack) => const SizedBox(
+              errorBuilder: (context, error, stack) => SizedBox(
                 height: 80,
-                child: Center(child: Text('Görsel yüklenemedi')),
+                child: Center(child: Text(('Görsel yüklenemedi').ui)),
               ),
             ),
           ),
           if (log.caption != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(log.caption!, style: TextStyle(fontWeight: cartoon ? FontWeight.w600 : FontWeight.w400)),
+              child: Text((log.caption!).ui, style: TextStyle(fontWeight: cartoon ? FontWeight.w600 : FontWeight.w400)),
             ),
           if (log.stamp != null)
             Padding(
@@ -1218,7 +1188,7 @@ class _MealLogCard extends StatelessWidget {
             children: [
               for (final e in ['👏 Harika seçim', '⚠️ Porsiyon fazla', '💪 Devam'])
                 ActionChip(
-                  label: Text(e),
+                  label: Text((e).ui),
                   onPressed: admin
                       ? () async {
                           await store.saveMealLog(
@@ -1238,8 +1208,7 @@ class _MealLogCard extends StatelessWidget {
             ],
           ),
           if (log.feedbackNote != null)
-            Text(
-              'Diyetisyen: ${log.feedbackNote}',
+            Text(('Diyetisyen: ${log.feedbackNote}').ui,
               style: TextStyle(color: context.brandPrimary, fontWeight: FontWeight.w700),
             ),
         ],

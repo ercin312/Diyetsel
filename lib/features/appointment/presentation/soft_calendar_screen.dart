@@ -15,6 +15,7 @@ import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_calendar_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern calendar / appointments — cream / teal wellness language.
 class SoftCalendarScreen extends ConsumerStatefulWidget {
@@ -199,8 +200,7 @@ class _SoftCalendarScreenState extends ConsumerState<SoftCalendarScreen> {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Randevu talebi gönderildi · ${DateFormat('d MMM HH:mm', 'tr').format(picked)}',
+          content: Text(('Randevu talebi gönderildi · ${DateFormat('d MMM HH:mm', 'tr').format(picked)}').ui,
           ),
         ),
       );
@@ -241,16 +241,14 @@ class _SoftCalendarScreenState extends ConsumerState<SoftCalendarScreen> {
               ),
             ),
             const SizedBox(height: 14),
-            Text(
-              a.clientName,
+            Text((a.clientName).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
                 color: AppColors.primaryDeep,
               ),
             ),
-            Text(
-              DateFormat('d MMMM · HH:mm', 'tr').format(a.startAt),
+            Text((DateFormat('d MMMM · HH:mm', 'tr').format(a.startAt)).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary.withValues(alpha: 0.55),
@@ -288,12 +286,12 @@ class _SoftCalendarScreenState extends ConsumerState<SoftCalendarScreen> {
             const SizedBox(height: 12),
             TextField(
               controller: notes,
-              decoration: const InputDecoration(labelText: 'Klinik notlar'),
+              decoration: InputDecoration(labelText: ('Klinik notlar').ui),
               maxLines: 3,
             ),
             TextField(
               controller: rec,
-              decoration: const InputDecoration(labelText: 'Tavsiyeler'),
+              decoration: InputDecoration(labelText: ('Tavsiyeler').ui),
               maxLines: 2,
             ),
             const SizedBox(height: 10),
@@ -315,8 +313,7 @@ class _SoftCalendarScreenState extends ConsumerState<SoftCalendarScreen> {
 
   Widget _adminChip(String label, Color color, VoidCallback onTap) {
     return ActionChip(
-      label: Text(
-        label,
+      label: Text((label).ui,
         style: TextStyle(fontWeight: FontWeight.w800, color: color),
       ),
       backgroundColor: color.withValues(alpha: 0.12),
@@ -352,13 +349,12 @@ class SoftCalendarBookButton extends StatelessWidget {
               ),
             ],
           ),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.add_rounded, color: Colors.white, size: 22),
               SizedBox(width: 8),
-              Text(
-                'Müsait saat seç',
+              Text(('Müsait saat seç').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15,

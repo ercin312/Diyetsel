@@ -10,6 +10,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/service_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftServicesHeader extends StatelessWidget {
@@ -27,8 +28,7 @@ class SoftServicesHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                admin ? 'Hizmet yönetimi' : 'Hizmetler',
+              Text((admin ? 'Hizmet yönetimi' : 'Hizmetler').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -37,8 +37,7 @@ class SoftServicesHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                admin ? 'Paketleri düzenle ve yayınla' : 'Online, klinik ve programlar',
+              Text((admin ? 'Paketleri düzenle ve yayınla' : 'Online, klinik ve programlar').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -112,8 +111,7 @@ class SoftServicesHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Klinik & online',
+                  child: Text(('Klinik & online').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -122,8 +120,7 @@ class SoftServicesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Sana uygun paket',
+                Text(('Sana uygun paket').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -133,8 +130,7 @@ class SoftServicesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  '$count hizmet · $priceLabel',
+                Text(('$count hizmet · $priceLabel').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -218,16 +214,14 @@ class SoftServicesStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11.5,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -282,8 +276,7 @@ class SoftServiceCategoryChip extends StatelessWidget {
                 ]
               : AppSpacing.soft,
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 12.5,
@@ -357,8 +350,7 @@ class SoftServiceFeaturedCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.92),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: Text(
-                            'Öne çıkan · ${service.category.isEmpty ? 'Paket' : service.category}',
+                          child: Text(('Öne çıkan · ${service.category.isEmpty ? 'Paket' : service.category}').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 11.5,
@@ -367,8 +359,7 @@ class SoftServiceFeaturedCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          service.title,
+                        Text((service.title).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
@@ -378,8 +369,7 @@ class SoftServiceFeaturedCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          ServiceVisuals.displayTagline(service),
+                        Text((ServiceVisuals.displayTagline(service)).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -403,8 +393,7 @@ class SoftServiceFeaturedCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    service.description,
+                  Text((service.description).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -427,8 +416,7 @@ class SoftServiceFeaturedCard extends StatelessWidget {
                         color: AppColors.primary,
                       ),
                       const Spacer(),
-                      Text(
-                        admin ? 'Detay' : 'İncele',
+                      Text((admin ? 'Detay' : 'İncele').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 13.5,
@@ -522,8 +510,7 @@ class SoftServiceCard extends StatelessWidget {
                                 color: Colors.white.withValues(alpha: 0.9),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Text(
-                                service.category.isEmpty ? 'Paket' : service.category,
+                              child: Text((service.category.isEmpty ? 'Paket' : service.category).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 11.5,
@@ -534,8 +521,7 @@ class SoftServiceCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          service.title,
+                        Text((service.title).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 17,
@@ -545,8 +531,7 @@ class SoftServiceCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          ServiceVisuals.displayTagline(service),
+                        Text((ServiceVisuals.displayTagline(service)).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 12.5,
@@ -570,8 +555,7 @@ class SoftServiceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    service.description,
+                  Text((service.description).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -602,8 +586,7 @@ class SoftServiceCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(color: AppColors.modernLine),
                           ),
-                          child: Text(
-                            t,
+                          child: Text((t).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 11,
@@ -615,8 +598,7 @@ class SoftServiceCard extends StatelessWidget {
                   ),
                   if (service.bullets.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    Text(
-                      service.bullets.take(2).map((e) => '• $e').join('\n'),
+                    Text((service.bullets.take(2).map((e) => '• $e').join('\n')).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -628,8 +610,7 @@ class SoftServiceCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Text(
-                        admin ? 'Detay / düzenle' : 'İncele ve talep et',
+                      Text((admin ? 'Detay / düzenle' : 'İncele ve talep et').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           color: accent,
@@ -688,8 +669,7 @@ class SoftPricePill extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
-      child: Text(
-        label,
+      child: Text((label).ui,
         style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12.5, color: color),
       ),
     );
@@ -718,8 +698,7 @@ class SoftServicesEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Bu kategoride hizmet yok',
+          Text(('Bu kategoride hizmet yok').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w900,
@@ -728,8 +707,7 @@ class SoftServicesEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Başka bir kategori seç veya tümünü görüntüle.',
+          Text(('Başka bir kategori seç veya tümünü görüntüle.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -768,10 +746,9 @@ class SoftServicesFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              admin
+            child: Text((admin
                   ? 'Pasif paketler danışanlara görünmez. Yayın durumunu kart detayından yönet.'
-                  : 'Talep gönderince diyetisyenin onaylar; randevu veya başlangıç tarihi mesajla netleşir.',
+                  : 'Talep gönderince diyetisyenin onaylar; randevu veya başlangıç tarihi mesajla netleşir.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -799,7 +776,7 @@ class SoftServicesFab extends StatelessWidget {
       foregroundColor: Colors.white,
       elevation: 2,
       icon: const Icon(Icons.add_rounded),
-      label: const Text('Yeni paket', style: TextStyle(fontWeight: FontWeight.w800)),
+      label: Text(('Yeni paket').ui, style: TextStyle(fontWeight: FontWeight.w800)),
     );
   }
 }
@@ -881,8 +858,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                               color: Colors.white.withValues(alpha: 0.92),
                               borderRadius: BorderRadius.circular(999),
                             ),
-                            child: Text(
-                              service.category.isEmpty ? 'Paket' : service.category,
+                            child: Text((service.category.isEmpty ? 'Paket' : service.category).ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 12,
@@ -891,8 +867,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
-                            service.title,
+                          Text((service.title).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,
@@ -903,8 +878,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                           ),
                           if (ServiceVisuals.displayTagline(service).isNotEmpty) ...[
                             const SizedBox(height: 6),
-                            Text(
-                              ServiceVisuals.displayTagline(service),
+                            Text((ServiceVisuals.displayTagline(service)).ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary.withValues(alpha: 0.6),
@@ -947,8 +921,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppColors.modernLine),
                       ),
-                      child: Text(
-                        t,
+                      child: Text((t).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
@@ -959,8 +932,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              Text(
-                service.description,
+              Text((service.description).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   height: 1.45,
@@ -969,8 +941,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Neler dahil?',
+              Text(('Neler dahil?').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 17,
@@ -998,8 +969,7 @@ class SoftServiceDetailSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          service.bullets[i],
+                        child: Text((service.bullets[i]).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             color: AppColors.primaryDeep,
@@ -1031,9 +1001,8 @@ class SoftServiceDetailSheet extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Center(
-                      child: Text(
-                        'Randevu / satın alma talebi',
+                    child: Center(
+                      child: Text(('Randevu / satın alma talebi').ui,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
@@ -1054,15 +1023,14 @@ class SoftServiceDetailSheet extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: const Text('Düzenle', style: TextStyle(fontWeight: FontWeight.w800)),
+                    child: Text(('Düzenle').ui, style: TextStyle(fontWeight: FontWeight.w800)),
                   ),
                 ],
                 if (onDelete != null) ...[
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: onDelete,
-                    child: const Text(
-                      'Sil',
+                    child: Text(('Sil').ui,
                       style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFFE07A5F)),
                     ),
                   ),

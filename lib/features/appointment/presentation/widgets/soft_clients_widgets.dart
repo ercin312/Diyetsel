@@ -8,6 +8,7 @@ import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/models/models.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../../core/l10n/ui_string.dart';
 
 class SoftClientsHeader extends StatelessWidget {
   const SoftClientsHeader({super.key});
@@ -16,12 +17,11 @@ class SoftClientsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Danışanlar',
+              Text(('Danışanlar').ui,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w900,
@@ -30,8 +30,7 @@ class SoftClientsHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              Text(
-                'CRM · su hedefi, aktiflik ve modüller',
+              Text(('CRM · su hedefi, aktiflik ve modüller').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -105,8 +104,7 @@ class SoftClientsHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Danışan listesi',
+                  child: Text(('Danışan listesi').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -115,8 +113,7 @@ class SoftClientsHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  '$active aktif · $total kayıt',
+                Text(('$active aktif · $total kayıt').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -125,8 +122,7 @@ class SoftClientsHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Bir danışana dokun: su, aktiflik ve bölümleri yönet.',
+                Text(('Bir danışana dokun: su, aktiflik ve bölümleri yönet.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -170,7 +166,7 @@ class SoftClientsSearchField extends StatelessWidget {
           color: AppColors.primaryDeep,
         ),
         decoration: InputDecoration(
-          hintText: 'İsim veya e-posta ara',
+          hintText: ('İsim veya e-posta ara').ui,
           hintStyle: TextStyle(
             fontWeight: FontWeight.w600,
             color: AppColors.primary.withValues(alpha: 0.4),
@@ -226,8 +222,7 @@ class SoftClientTile extends StatelessWidget {
               backgroundColor: client.isActive
                   ? const Color(0xFFE8F5F0)
                   : const Color(0xFFFFF0E8),
-              child: Text(
-                initial,
+              child: Text((initial).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -240,8 +235,7 @@ class SoftClientTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    client.displayName,
+                  Text((client.displayName).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15.5,
@@ -249,8 +243,7 @@ class SoftClientTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    client.email,
+                  Text((client.email).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -260,8 +253,7 @@ class SoftClientTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    'Su $liters L · hedef ${client.targetWeightKg ?? '-'} kg',
+                  Text(('Su $liters L · hedef ${client.targetWeightKg ?? '-'} kg').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
@@ -281,8 +273,7 @@ class SoftClientTile extends StatelessWidget {
                         : const Color(0xFFE07A5F).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    client.isActive ? 'aktif' : 'pasif',
+                  child: Text((client.isActive ? 'aktif' : 'pasif').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11,
@@ -325,8 +316,7 @@ class SoftClientsEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.4),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Danışan bulunamadı',
+          Text(('Danışan bulunamadı').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -334,8 +324,7 @@ class SoftClientsEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Aramayı değiştir veya listeyi yenile.',
+          Text(('Aramayı değiştir veya listeyi yenile.').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary.withValues(alpha: 0.55),
@@ -369,8 +358,7 @@ class SoftClientsQuickLinks extends StatelessWidget {
               children: [
                 SoftModernIcon(asset, size: 24, fallback: icon, fallbackColor: AppColors.primary),
                 const SizedBox(height: 6),
-                Text(
-                  label,
+                Text((label).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,

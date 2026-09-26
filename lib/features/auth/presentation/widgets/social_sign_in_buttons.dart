@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/network/social_auth.dart';
 import '../auth_controller.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 class SocialSignInButtons extends ConsumerWidget {
   const SocialSignInButtons({super.key});
@@ -26,8 +27,7 @@ class SocialSignInButtons extends ConsumerWidget {
             const Expanded(child: Divider()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'veya',
+              child: Text(('veya').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 12,
@@ -105,8 +105,7 @@ class _SocialButton extends StatelessWidget {
               children: [
                 leading,
                 const SizedBox(width: 10),
-                Text(
-                  label,
+                Text((label).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 14.5,

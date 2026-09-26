@@ -8,6 +8,7 @@ import '../../../../core/utils/engage_logic.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 Color softEatTint(String category) {
@@ -61,12 +62,11 @@ class SoftEatOutHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Dışarıda ne yesem?',
+              Text(('Dışarıda ne yesem?').ui,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -75,8 +75,7 @@ class SoftEatOutHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Kaloriye sığan menü önerileri',
+              Text(('Kaloriye sığan menü önerileri').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -154,8 +153,7 @@ class SoftEatOutHero extends StatelessWidget {
                     color: (tight ? const Color(0xFFE07A5F) : AppColors.primary).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    tight ? 'Bütçe dar' : 'Bugünkü kalan',
+                  child: Text((tight ? 'Bütçe dar' : 'Bugünkü kalan').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -164,8 +162,7 @@ class SoftEatOutHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  tight ? 'Hafif seç, sonra teşekkür et' : '$remaining kcal kaldı',
+                Text((tight ? 'Hafif seç, sonra teşekkür et' : '$remaining kcal kaldı').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 21,
@@ -175,10 +172,9 @@ class SoftEatOutHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tight
+                Text((tight
                       ? 'Kahve, çorba veya paylaşım porsiyonu daha güvenli.'
-                      : '$optionCount seçenek · sos ayrı, pilavı çıkar',
+                      : '$optionCount seçenek · sos ayrı, pilavı çıkar').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -243,16 +239,14 @@ class SoftEatOutStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11.5,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 16,
@@ -291,8 +285,7 @@ class SoftEatOutRulesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '3 sipariş kuralı',
+          Text(('3 sipariş kuralı').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15.5,
@@ -316,8 +309,7 @@ class SoftEatOutRulesCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    '${i + 1}. ${_rules[i].$3}',
+                  child: Text(('${i + 1}. ${_rules[i].$3}').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 13.5,
@@ -368,8 +360,7 @@ class SoftEatOutCategoryChip extends StatelessWidget {
                 ]
               : AppSpacing.soft,
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 12.5,
@@ -457,8 +448,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
                                 color: Colors.white.withValues(alpha: 0.92),
                                 borderRadius: BorderRadius.circular(999),
                               ),
-                              child: Text(
-                                'Önerilen · ${idea.category}',
+                              child: Text(('Önerilen · ${idea.category}').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 11,
@@ -473,8 +463,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
                                 color: _fits ? AppColors.primary : const Color(0xFFE07A5F),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Text(
-                                _fits ? 'sığar' : 'dikkat',
+                              child: Text((_fits ? 'sığar' : 'dikkat').ui,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w800,
@@ -485,8 +474,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          idea.title,
+                        Text((idea.title).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 19,
@@ -496,8 +484,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '${idea.place} · ${idea.kcal} kcal',
+                        Text(('${idea.place} · ${idea.kcal} kcal').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -515,8 +502,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+                  Text((idea.blurb.isNotEmpty ? idea.blurb : idea.tip).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -535,8 +521,7 @@ class SoftEatOutFeaturedCard extends StatelessWidget {
                         SoftEatMiniPill(label: 'protein', value: '${idea.proteinG}g', color: AppColors.primary),
                       ],
                       const Spacer(),
-                      Text(
-                        'Detay',
+                      Text(('Detay').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, color: accent, fontSize: 13.5),
                       ),
                       Icon(Icons.arrow_forward_rounded, size: 18, color: accent),
@@ -619,8 +604,7 @@ class SoftEatOutCard extends StatelessWidget {
                         Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                idea.title,
+                              child: Text((idea.title).ui,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 16.5,
@@ -636,8 +620,7 @@ class SoftEatOutCard extends StatelessWidget {
                                 color: _fits ? AppColors.primary : const Color(0xFFE07A5F),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Text(
-                                _fits ? 'sığar' : 'dikkat',
+                              child: Text((_fits ? 'sığar' : 'dikkat').ui,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w800,
@@ -648,8 +631,7 @@ class SoftEatOutCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '${idea.place} · ${idea.category}',
+                        Text(('${idea.place} · ${idea.category}').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 12.5,
@@ -667,8 +649,7 @@ class SoftEatOutCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+                  Text((idea.blurb.isNotEmpty ? idea.blurb : idea.tip).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -694,8 +675,7 @@ class SoftEatOutCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(color: AppColors.modernLine),
                           ),
-                          child: Text(
-                            t,
+                          child: Text((t).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 11,
@@ -711,8 +691,7 @@ class SoftEatOutCard extends StatelessWidget {
                       Icon(Icons.lightbulb_outline_rounded, size: 16, color: accent),
                       const SizedBox(width: 6),
                       Expanded(
-                        child: Text(
-                          idea.tip,
+                        child: Text((idea.tip).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 12.5,
@@ -720,8 +699,7 @@ class SoftEatOutCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text(
-                        'Detay',
+                      Text(('Detay').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, color: accent, fontSize: 13),
                       ),
                       Icon(Icons.chevron_right_rounded, color: accent, size: 20),
@@ -805,8 +783,7 @@ class SoftEatOutEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Bu kategoride uyan seçenek yok',
+          Text(('Bu kategoride uyan seçenek yok').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w900,
@@ -815,8 +792,7 @@ class SoftEatOutEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Filtreyi değiştir veya tümünü görüntüle.',
+          Text(('Filtreyi değiştir veya tümünü görüntüle.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -857,8 +833,7 @@ class SoftEatOutTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Sos konuşması',
+                Text(('Sos konuşması').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -866,8 +841,7 @@ class SoftEatOutTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.',
+                Text(('“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -961,8 +935,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                           curve: Curves.easeOutBack,
                         ),
                     const SizedBox(height: 14),
-                    Text(
-                      idea.title,
+                    Text((idea.title).ui,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
@@ -972,8 +945,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      '${idea.place} · ${idea.category}',
+                    Text(('${idea.place} · ${idea.category}').ui,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -995,8 +967,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                             color: _fits ? AppColors.primary : const Color(0xFFE07A5F),
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: Text(
-                            _fits ? 'Bütçene sığar' : 'Dikkatli ol',
+                          child: Text((_fits ? 'Bütçene sığar' : 'Dikkatli ol').ui,
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w800,
@@ -1011,8 +982,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
               ),
               if (idea.blurb.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                Text(
-                  idea.blurb,
+                Text((idea.blurb).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     height: 1.45,
@@ -1023,8 +993,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
               ],
               if (idea.orderLine.isNotEmpty) ...[
                 const SizedBox(height: 18),
-                const Text(
-                  'Şöyle söyle',
+                Text(('Şöyle söyle').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -1041,8 +1010,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                     border: Border.all(color: AppColors.modernLine),
                     boxShadow: AppSpacing.soft,
                   ),
-                  child: Text(
-                    '“${idea.orderLine}”',
+                  child: Text(('“${idea.orderLine}”').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontStyle: FontStyle.italic,
@@ -1054,8 +1022,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
               ],
               if (idea.swaps.isNotEmpty) ...[
                 const SizedBox(height: 18),
-                const Text(
-                  'Akıllı swap’ler',
+                Text(('Akıllı swap’ler').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -1082,8 +1049,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            idea.swaps[i],
+                          child: Text((idea.swaps[i]).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: AppColors.primaryDeep,
@@ -1107,8 +1073,7 @@ class SoftEatOutDetailSheet extends StatelessWidget {
                     Icon(Icons.lightbulb_outline_rounded, color: accent),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        idea.tip,
+                      child: Text((idea.tip).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           height: 1.35,

@@ -11,6 +11,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'recipe_editor_screen.dart';
 import 'widgets/soft_recipe_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern recipes hub.
 class SoftRecipesScreen extends ConsumerStatefulWidget {
@@ -259,8 +260,7 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Text(
-                          'Tüm tarifler',
+                        Text(('Tüm tarifler').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 16,
@@ -274,8 +274,7 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
                             color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: Text(
-                            '${filtered.length - 1}',
+                          child: Text(('${filtered.length - 1}').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 11.5,
@@ -374,11 +373,11 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
                 final ok = await showDialog<bool>(
                   context: context,
                   builder: (dCtx) => AlertDialog(
-                    title: const Text('Tarifi sil'),
-                    content: Text('“${recipe.title}” silinsin mi?'),
+                    title: Text(('Tarifi sil').ui),
+                    content: Text(('“${recipe.title}” silinsin mi?').ui),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Vazgeç')),
-                      FilledButton(onPressed: () => Navigator.pop(dCtx, true), child: const Text('Sil')),
+                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: Text(('Vazgeç').ui)),
+                      FilledButton(onPressed: () => Navigator.pop(dCtx, true), child: Text(('Sil').ui)),
                     ],
                   ),
                 );

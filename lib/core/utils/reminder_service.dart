@@ -28,9 +28,37 @@ class ReminderService {
         settings: const InitializationSettings(android: android, iOS: ios),
         onDidReceiveNotificationResponse: _onResponse,
       );
-      await _plugin
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      await androidPlugin?.requestNotificationsPermission();
+      final canExact = await androidPlugin?.canScheduleExactNotifications();
+      if (canExact == false) {
+        await androidPlugin?.requestExactAlarmsPermission();
+      }
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'diyetsel_smart',
+          'Akıllı hatırlatıcılar',
+          description: 'Su, öğün ve randevu bildirimleri',
+          importance: Importance.high,
+        ),
+      );
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'diyetsel_admin',
+          'Diyetisyen bildirimleri',
+          description: 'Diyetisyenden gelen duyurular',
+          importance: Importance.high,
+        ),
+      );
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'diyetsel_feedback',
+          'Diyetisyen geri bildirimi',
+          description: 'Öğün ve plan notları',
+          importance: Importance.high,
+        ),
+      );
       _ready = true;
     } catch (_) {
       _ready = false;
@@ -84,7 +112,15 @@ class ReminderService {
       'Akıllı hatırlatıcılar',
       channelDescription: 'Su, öğün ve randevu bildirimleri',
       importance: Importance.high,
+      priority: Priority.high,
     );
+    const details = NotificationDetails(
+      android: android,
+      iOS: DarwinNotificationDetails(),
+    );
+    final androidPlugin =
+        _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    final canExact = await androidPlugin?.canScheduleExactNotifications() ?? false;
     try {
       await _plugin.zonedSchedule(
         id: id,
@@ -92,13 +128,24 @@ class ReminderService {
         body: body,
         scheduledDate: scheduled,
         matchDateTimeComponents: DateTimeComponents.time,
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        notificationDetails: const NotificationDetails(
-          android: android,
-          iOS: DarwinNotificationDetails(),
-        ),
+        androidScheduleMode: canExact
+            ? AndroidScheduleMode.exactAllowWhileIdle
+            : AndroidScheduleMode.inexactAllowWhileIdle,
+        notificationDetails: details,
       );
-    } catch (_) {}
+    } catch (_) {
+      try {
+        await _plugin.zonedSchedule(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          matchDateTimeComponents: DateTimeComponents.time,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          notificationDetails: details,
+        );
+      } catch (_) {}
+    }
   }
 
   Future<void> showSmart({
@@ -118,6 +165,7 @@ class ReminderService {
           channel,
           channelName,
           importance: Importance.high,
+          priority: Priority.high,
         ),
         iOS: const DarwinNotificationDetails(),
       ),

@@ -11,10 +11,13 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/home_theme_config.dart';
 import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/cartoon_asset_icon.dart';
+import '../../../core/widgets/user_avatar.dart';
+import 'profile_photo.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/home_feed_models.dart';
 import 'widgets/cartoon_home_extras.dart';
 import 'widgets/premium_home_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Premium Cartoon Wellness home — real widgets + brand assets.
 class CartoonConfiguredHome extends ConsumerWidget {
@@ -227,7 +230,11 @@ class CartoonConfiguredHome extends ConsumerWidget {
             ),
             children: [
               if (config.isHomeBlockVisible('greeting')) ...[
-                _GreetingHeader(userName: name, avatarUrl: avatarUrl)
+                _GreetingHeader(
+                  userName: name,
+                  avatarUrl: avatarUrl,
+                  onAvatarTap: () => pickProfilePhoto(context, ref),
+                )
                     .animate()
                     .fadeIn(duration: 280.ms)
                     .slideY(begin: -0.04, curve: Curves.easeOut),
@@ -341,10 +348,11 @@ class CartoonConfiguredHome extends ConsumerWidget {
 }
 
 class _GreetingHeader extends StatelessWidget {
-  const _GreetingHeader({required this.userName, this.avatarUrl});
+  const _GreetingHeader({required this.userName, this.avatarUrl, this.onAvatarTap});
 
   final String userName;
   final String? avatarUrl;
+  final VoidCallback? onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
@@ -373,8 +381,7 @@ class _GreetingHeader extends StatelessWidget {
             children: [
               const DiyetselLogoMark(height: 34),
               const SizedBox(height: 12),
-              Text(
-                '$greet, $userName! 👋',
+              Text(('$greet, $userName! 👋').ui,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -383,8 +390,7 @@ class _GreetingHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                vibe,
+              Text((vibe).ui,
                 style: const TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,
@@ -397,7 +403,7 @@ class _GreetingHeader extends StatelessWidget {
         ),
         IconButton(
           onPressed: () => context.push('/app/badges'),
-          tooltip: 'Bildirimler',
+          tooltip: ('Bildirimler').ui,
           visualDensity: VisualDensity.compact,
           icon: Badge(
             smallSize: 8,
@@ -411,32 +417,11 @@ class _GreetingHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 2),
-        if (avatarUrl != null && avatarUrl!.trim().isNotEmpty)
-          SoftTap(
-            onTap: () => context.push('/app/settings'),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.kawaiiSurfaceCream,
-                border: Border.all(color: AppColors.kawaiiLeaf.withValues(alpha: 0.45), width: 2),
-                boxShadow: AppSpacing.soft,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                avatarUrl!.trim(),
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Image.asset(
-                  DiyetselAssets.characterBoy,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => const Icon(Icons.person, color: AppColors.kawaiiLeaf),
-                ),
-              ),
-            ),
-          )
-        else
-          const ProfileAvatarBubble(),
+        UserAvatar(
+          photoUrl: avatarUrl,
+          size: 44,
+          onTap: onAvatarTap,
+        ),
       ],
     );
   }

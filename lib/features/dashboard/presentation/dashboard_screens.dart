@@ -18,6 +18,8 @@ import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/marketplace.dart';
 import '../../../core/widgets/style_icon.dart';
+import '../../../core/widgets/user_avatar.dart';
+import 'profile_photo.dart';
 import '../../../core/widgets/kawaii_doodle.dart';
 import '../../../core/widgets/story_viewer.dart';
 import '../../auth/presentation/auth_controller.dart';
@@ -28,6 +30,7 @@ import '../../recipes/presentation/recipe_screens.dart';
 import 'cartoon_configured_home.dart';
 import 'soft_admin_home_screen.dart';
 import 'soft_configured_home.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -59,7 +62,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                 greeting: 'Klinik paneli',
                 subtitle: 'Randevu, tahsilat ve içerik tek bakışta',
                 trailing: IconButton(
-                  tooltip: 'PDF',
+                  tooltip: ('PDF').ui,
                   color: context.isDesktopLayout || context.isModern
                       ? AppColors.primary
                       : Colors.white,
@@ -185,7 +188,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                                           bottomTitles: AxisTitles(
                                             sideTitles: SideTitles(
                                               showTitles: true,
-                                              getTitlesWidget: (v, _) => Text(['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][v.toInt() % 7])))),
+                                              getTitlesWidget: (v, _) => Text((['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][v.toInt() % 7]).ui)))),
                                         barGroups: List.generate(7, (i) {
                                           final count = appointments.where((a) => a.startAt.weekday == i + 1).length.toDouble();
                                           return BarChartGroupData(
@@ -221,7 +224,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                                     bottomTitles: AxisTitles(
                                       sideTitles: SideTitles(
                                         showTitles: true,
-                                        getTitlesWidget: (v, _) => Text(['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][v.toInt() % 7])))),
+                                        getTitlesWidget: (v, _) => Text((['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][v.toInt() % 7]).ui)))),
                                   barGroups: List.generate(7, (i) {
                                     final count = appointments.where((a) => a.startAt.weekday == i + 1).length.toDouble();
                                     return BarChartGroupData(
@@ -247,35 +250,35 @@ class AdminDashboardScreen extends ConsumerWidget {
                             title: 'Danışan bakiyeleri',
                             action: TextButton(
                               onPressed: () => _addPayment(context, ref, clients),
-                              child: const Text('Kayıt ekle'))),
+                              child: Text(('Kayıt ekle').ui))),
                           if (context.isWide)
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: DataTable(
-                                columns: const [
-                                  DataColumn(label: Text('Danışan')),
-                                  DataColumn(label: Text('Tutar')),
-                                  DataColumn(label: Text('Durum')),
-                                  DataColumn(label: Text('Tarih')),
-                                  DataColumn(label: Text('Not')),
+                                columns: [
+                                  DataColumn(label: Text(('Danışan').ui)),
+                                  DataColumn(label: Text(('Tutar').ui)),
+                                  DataColumn(label: Text(('Durum').ui)),
+                                  DataColumn(label: Text(('Tarih').ui)),
+                                  DataColumn(label: Text(('Not').ui)),
                                 ],
                                 rows: [
                                   for (final p in payments)
                                     DataRow(
                                       cells: [
-                                        DataCell(Text(p.clientName)),
-                                        DataCell(Text('₺${p.amount.toStringAsFixed(0)}')),
+                                        DataCell(Text((p.clientName).ui)),
+                                        DataCell(Text(('₺${p.amount.toStringAsFixed(0)}').ui)),
                                         DataCell(StatusChip(label: p.status.name, color: _payColor(p.status))),
-                                        DataCell(Text(DateFormat('d MMM', 'tr').format(p.date))),
-                                        DataCell(Text(p.note ?? '—')),
+                                        DataCell(Text((DateFormat('d MMM', 'tr').format(p.date)).ui)),
+                                        DataCell(Text((p.note ?? '—').ui)),
                                       ]),
                                 ]))
                           else
                             ...payments.map(
                               (p) => ListTile(
-                                title: Text(p.clientName),
-                                subtitle: Text(p.note ?? ''),
-                                trailing: Text('₺${p.amount.toStringAsFixed(0)}'))),
+                                title: Text((p.clientName).ui),
+                                subtitle: Text((p.note ?? '').ui),
+                                trailing: Text(('₺${p.amount.toStringAsFixed(0)}').ui))),
                         ])),
                   ])),
             ]))));
@@ -301,8 +304,8 @@ class AdminDashboardScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: Theme.of(context).textTheme.bodySmall),
-                  Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
+                  Text((label).ui, style: Theme.of(context).textTheme.bodySmall),
+                  Text((value).ui, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
                 ])),
           ])));
   }
@@ -315,19 +318,19 @@ class AdminDashboardScreen extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Ödeme kaydı'),
+        title: Text(('Ödeme kaydı').ui),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             DropdownButtonFormField<UserProfile>(
               initialValue: client,
-              items: [for (final c in clients) DropdownMenuItem(value: c, child: Text(c.displayName))],
+              items: [for (final c in clients) DropdownMenuItem(value: c, child: Text((c.displayName).ui))],
               onChanged: (v) => client = v ?? client),
-            TextField(controller: amount, decoration: const InputDecoration(labelText: 'Tutar'), keyboardType: TextInputType.number),
-            TextField(controller: note, decoration: const InputDecoration(labelText: 'Not')),
+            TextField(controller: amount, decoration: InputDecoration(labelText: ('Tutar').ui), keyboardType: TextInputType.number),
+            TextField(controller: note, decoration: InputDecoration(labelText: ('Not').ui)),
           ]),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(('Vazgeç').ui)),
           FilledButton(
             onPressed: () async {
               await ref.read(appStoreProvider).savePayment(
@@ -341,7 +344,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                       note: note.text));
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Kaydet')),
+            child: Text(('Kaydet').ui)),
         ]));
   }
 }
@@ -697,7 +700,11 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                 subtitle: context.isCartoon
                     ? 'Pastel planlar, tatlı tarifler ve minik sürprizler burada'
                     : 'Bugün için yumuşak bir ritim — plan, tarif ve kampanyalar',
-                trailing: CartoonAvatar(name: user.displayName, size: 40),
+                trailing: UserAvatar(
+                  photoUrl: user.photoUrl,
+                  size: 40,
+                  onTap: () => pickProfilePhoto(context, ref),
+                ),
                 search: MarketSearchBar(
                   hint: context.isCartoon ? 'Tatlı bir tarif veya yazı ara' : 'Tarif, yazı veya hizmet ara',
                   onSubmitted: (q) => _openHomeSearch(
@@ -749,8 +756,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                           onTrack: () {
                             store.addWaterSip(user.id);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('+250 ml — minik bir yudum!'),
+                              SnackBar(
+                                content: Text(('+250 ml — minik bir yudum!').ui),
                                 behavior: SnackBarBehavior.floating,
                                 duration: Duration(milliseconds: 900),
                                 backgroundColor: AppColors.kawaiiCoral));
@@ -789,8 +796,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                                 store.addWaterSip(user.id);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      context.isCartoon ? '+250 ml — minik bir yudum!' : '+250 ml eklendi'),
+                                    content: Text((context.isCartoon ? '+250 ml — minik bir yudum!' : '+250 ml eklendi').ui),
                                     behavior: SnackBarBehavior.floating,
                                     duration: const Duration(milliseconds: 900),
                                     backgroundColor: (context.isCartoon
@@ -875,7 +881,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                         12,
                         SectionHeader(
                           title: 'Bugünün planı',
-                          action: TextButton(onPressed: () => context.go('/app/diet'), child: const Text('Tümü')))),
+                          action: TextButton(onPressed: () => context.go('/app/diet'), child: Text(('Tümü').ui)))),
                       if (todayMeals.isEmpty)
                         _homeStagger(
                           context,
@@ -899,11 +905,10 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                                     contentPadding: EdgeInsets.zero,
                                     value: m.consumed,
                                     secondary: StyleIcon(icon: Icons.restaurant, emoji: m.type.emoji, size: 22),
-                                    title: Text(
-                                      m.name,
+                                    title: Text((m.name).ui,
                                       style: TextStyle(
                                         fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800)),
-                                    subtitle: Text('${m.type.tr} • ${m.calories} kcal'),
+                                    subtitle: Text(('${m.type.tr} • ${m.calories} kcal').ui),
                                     onChanged: plan == null
                                         ? null
                                         : (_) {
@@ -916,17 +921,16 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                                 if (leftover.isEmpty)
                                   ListTile(
                                     contentPadding: EdgeInsets.zero,
-                                    title: Text(
-                                      'Tüm öğünler tamam',
+                                    title: Text(('Tüm öğünler tamam').ui,
                                       style: TextStyle(
                                         fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800)),
-                                    subtitle: const Text('Harika gidiyorsun'))
+                                    subtitle: Text(('Harika gidiyorsun').ui))
                                 else if (leftover.length > 3)
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: TextButton(
                                       onPressed: () => context.go('/app/diet'),
-                                      child: Text('+${leftover.length - 3} öğün daha'))),
+                                      child: Text(('+${leftover.length - 3} öğün daha').ui))),
                               ]))),
                     ],
                     SizedBox(height: context.isModern ? 14 : 10),
@@ -952,11 +956,10 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Randevu al',
+                                      Text(('Randevu al').ui,
                                         style: TextStyle(
                                           fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800)),
-                                      Text('Müsait slotlara bak', style: Theme.of(context).textTheme.bodySmall),
+                                      Text(('Müsait slotlara bak').ui, style: Theme.of(context).textTheme.bodySmall),
                                     ])),
                               ])))
                       else
@@ -1008,8 +1011,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             for (final s in foundServices)
               ListTile(
                 leading: const StyleIcon(icon: Icons.storefront_rounded, emoji: '🎁', size: 22),
-                title: Text(s.title),
-                subtitle: Text('₺${s.price.toStringAsFixed(0)}'),
+                title: Text((s.title).ui),
+                subtitle: Text(('₺${s.price.toStringAsFixed(0)}').ui),
                 onTap: () {
                   Navigator.pop(ctx);
                   context.push('/app/services');
@@ -1017,8 +1020,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             for (final r in foundRecipes)
               ListTile(
                 leading: const StyleIcon(icon: Icons.menu_book_rounded, emoji: '🍲', size: 22),
-                title: Text(r.title),
-                subtitle: Text('${r.calories} kcal'),
+                title: Text((r.title).ui),
+                subtitle: Text(('${r.calories} kcal').ui),
                 onTap: () {
                   Navigator.pop(ctx);
                   context.push('/app/recipes');
@@ -1026,8 +1029,8 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
             for (final p in foundPosts)
               ListTile(
                 leading: StyleIcon(icon: Icons.article_rounded, emoji: '📰', size: 22),
-                title: Text(p.title),
-                subtitle: Text(p.category),
+                title: Text((p.title).ui),
+                subtitle: Text((p.category).ui),
                 onTap: () {
                   Navigator.pop(ctx);
                   Navigator.push(context, MaterialPageRoute<void>(builder: (_) => BlogDetailScreen(post: p, admin: false)));
@@ -1051,14 +1054,12 @@ class CountdownCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Yaklaşan randevu', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-          Text(
-            '${appointment.serviceTitle ?? 'Seans'} • ${DateFormat('d MMM HH:mm', 'tr').format(appointment.startAt)}',
+          Text(('Yaklaşan randevu').ui, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+          Text(('${appointment.serviceTitle ?? 'Seans'} • ${DateFormat('d MMM HH:mm', 'tr').format(appointment.startAt)}').ui,
             maxLines: 2,
             overflow: TextOverflow.ellipsis),
           const SizedBox(height: 6),
-          Text(
-            '$hours sa $mins dk',
+          Text(('$hours sa $mins dk').ui,
             style: TextStyle(
               color: context.brandPrimary,
               fontWeight: FontWeight.w900,
@@ -1086,26 +1087,25 @@ class _QuietClientsCard extends ConsumerWidget {
             title: '3 gündür sessiz',
             subtitle: 'Su, öğün işareti veya check-in gelmeyen danışanlar'),
           if (quiet.isEmpty)
-            const Text('Herkes aktif görünüyor.')
+            Text(('Herkes aktif görünüyor.').ui)
           else
             for (final c in quiet)
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(c.displayName, style: const TextStyle(fontWeight: FontWeight.w800)),
-                subtitle: Text(
-                  c.lastActiveAt == null
+                title: Text((c.displayName).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                subtitle: Text((c.lastActiveAt == null
                       ? 'Hiç aktivite yok'
-                      : 'Son: ${DateFormat('d MMM HH:mm', 'tr').format(c.lastActiveAt!)}'),
+                      : 'Son: ${DateFormat('d MMM HH:mm', 'tr').format(c.lastActiveAt!)}').ui),
                 trailing: const StatusChip(label: 'sessiz', color: AppColors.warning)),
           if (checkIns.isNotEmpty) ...[
             const SizedBox(height: 8),
-            const Text('Son check-in’ler', style: TextStyle(fontWeight: FontWeight.w800)),
+            Text(('Son check-in’ler').ui, style: TextStyle(fontWeight: FontWeight.w800)),
             for (final item in checkIns.take(5))
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(item.userName),
-                subtitle: Text('${item.weight ?? '-'} kg • ${item.note}'),
-                trailing: Text(DateFormat('d MMM', 'tr').format(item.createdAt))),
+                title: Text((item.userName).ui),
+                subtitle: Text(('${item.weight ?? '-'} kg • ${item.note}').ui),
+                trailing: Text((DateFormat('d MMM', 'tr').format(item.createdAt)).ui)),
           ],
         ]));
   }

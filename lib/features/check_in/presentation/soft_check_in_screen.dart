@@ -15,6 +15,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../gamification/presentation/gamification_screens.dart';
 import '../domain/check_in_visuals.dart';
 import 'widgets/soft_check_in_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern weekly check-in.
 class SoftCheckInScreen extends ConsumerStatefulWidget {
@@ -161,8 +162,7 @@ class _SoftCheckInScreenState extends ConsumerState<SoftCheckInScreen> {
                 .animate()
                 .fadeIn(delay: 120.ms, duration: 280.ms),
             const SizedBox(height: 18),
-            const Text(
-              'Geçmiş check-in’ler',
+            Text(('Geçmiş check-in’ler').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 16,
@@ -224,7 +224,7 @@ class _SoftCheckInScreenState extends ConsumerState<SoftCheckInScreen> {
         _prefilled = false;
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Check-in diyetisyen paneline düştü')),
+          SnackBar(content: Text(('Check-in diyetisyen paneline düştü').ui)),
         );
       }
     } finally {

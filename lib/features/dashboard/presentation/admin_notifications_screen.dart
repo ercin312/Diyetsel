@@ -9,6 +9,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'soft_admin_notifications_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class AdminNotificationsScreen extends ConsumerStatefulWidget {
   const AdminNotificationsScreen({super.key});
@@ -36,13 +37,13 @@ class _AdminNotificationsScreenState extends ConsumerState<AdminNotificationsScr
     final body = _body.text.trim();
     if (title.isEmpty || body.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Başlık ve mesaj gerekli')),
+        SnackBar(content: Text(('Başlık ve mesaj gerekli').ui)),
       );
       return;
     }
     if (!_targetAll && _selected.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('En az bir danışan seç')),
+        SnackBar(content: Text(('En az bir danışan seç').ui)),
       );
       return;
     }
@@ -66,7 +67,7 @@ class _AdminNotificationsScreenState extends ConsumerState<AdminNotificationsScr
         _targetAll = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${broadcast.recipientCount} danışana kuyruğa alındı')),
+        SnackBar(content: Text(('${broadcast.recipientCount} danışana kuyruğa alındı').ui)),
       );
     } finally {
       if (mounted) setState(() => _sending = false);
@@ -99,17 +100,17 @@ class _AdminNotificationsScreenState extends ConsumerState<AdminNotificationsScr
                 ),
                 TextField(
                   controller: _title,
-                  decoration: const InputDecoration(labelText: 'Başlık'),
+                  decoration: InputDecoration(labelText: ('Başlık').ui),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _body,
                   maxLines: 3,
-                  decoration: const InputDecoration(labelText: 'Mesaj'),
+                  decoration: InputDecoration(labelText: ('Mesaj').ui),
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Tüm danışanlar'),
+                  title: Text(('Tüm danışanlar').ui),
                   value: _targetAll,
                   onChanged: (v) => setState(() => _targetAll = v),
                 ),
@@ -120,7 +121,7 @@ class _AdminNotificationsScreenState extends ConsumerState<AdminNotificationsScr
                       for (final c in clients)
                         FilterChip(
                           selected: _selected.contains(c.id),
-                          label: Text(c.displayName),
+                          label: Text((c.displayName).ui),
                           onSelected: (_) => setState(() {
                             if (_selected.contains(c.id)) {
                               _selected.remove(c.id);
@@ -147,13 +148,13 @@ class _AdminNotificationsScreenState extends ConsumerState<AdminNotificationsScr
               children: [
                 const SectionHeader(title: 'Geçmiş'),
                 if (history.isEmpty)
-                  const Text('Henüz bildirim yok.')
+                  Text(('Henüz bildirim yok.').ui)
                 else
                   for (final item in history.take(15))
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.w800)),
-                      subtitle: Text('${item.body}\n${item.recipientCount} alıcı'),
+                      title: Text((item.title).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                      subtitle: Text(('${item.body}\n${item.recipientCount} alıcı').ui),
                       isThreeLine: true,
                     ),
               ],

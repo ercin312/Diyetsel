@@ -9,6 +9,7 @@ import '../../../core/models/models.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_service_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern services hub.
 class SoftServicesScreen extends ConsumerStatefulWidget {
@@ -119,8 +120,7 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
                 const SizedBox(height: 18),
                 Row(
                   children: [
-                    const Text(
-                      'Tüm paketler',
+                    Text(('Tüm paketler').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 17,
@@ -134,8 +134,7 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(
-                        '${shown.length - 1}',
+                      child: Text(('${shown.length - 1}').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 11.5,
@@ -201,7 +200,7 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
                 if (ctx.mounted) {
                   Navigator.pop(ctx);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Talebiniz iletildi')),
+                    SnackBar(content: Text(('Talebiniz iletildi').ui)),
                   );
                 }
               },
@@ -234,25 +233,24 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.modernWash,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Hizmet',
+        title: Text(('Hizmet').ui,
           style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.primaryDeep),
         ),
         content: SingleChildScrollView(
           child: Column(
             children: [
-              TextField(controller: title, decoration: const InputDecoration(labelText: 'Başlık')),
-              TextField(controller: tagline, decoration: const InputDecoration(labelText: 'Kısa slogan')),
-              TextField(controller: category, decoration: const InputDecoration(labelText: 'Kategori')),
-              TextField(controller: desc, decoration: const InputDecoration(labelText: 'Açıklama'), maxLines: 3),
+              TextField(controller: title, decoration: InputDecoration(labelText: ('Başlık').ui)),
+              TextField(controller: tagline, decoration: InputDecoration(labelText: ('Kısa slogan').ui)),
+              TextField(controller: category, decoration: InputDecoration(labelText: ('Kategori').ui)),
+              TextField(controller: desc, decoration: InputDecoration(labelText: ('Açıklama').ui), maxLines: 3),
               TextField(
                 controller: price,
-                decoration: const InputDecoration(labelText: 'Fiyat'),
+                decoration: InputDecoration(labelText: ('Fiyat').ui),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: bullets,
-                decoration: const InputDecoration(labelText: 'Madde (satır satır)'),
+                decoration: InputDecoration(labelText: ('Madde (satır satır)').ui),
                 maxLines: 4,
               ),
             ],
@@ -261,8 +259,7 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Vazgeç',
+            child: Text(('Vazgeç').ui,
               style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary.withValues(alpha: 0.55)),
             ),
           ),
@@ -289,7 +286,7 @@ class _SoftServicesScreenState extends ConsumerState<SoftServicesScreen> {
               );
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Kaydet', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(('Kaydet').ui, style: TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
       ),

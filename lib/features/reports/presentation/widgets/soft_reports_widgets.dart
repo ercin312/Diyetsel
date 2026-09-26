@@ -8,6 +8,7 @@ import '../../../../core/utils/report_logic.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftReportsHeader extends StatelessWidget {
@@ -25,8 +26,7 @@ class SoftReportsHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                adminName != null ? 'Danışan raporu' : 'Raporlar',
+              Text((adminName != null ? 'Danışan raporu' : 'Raporlar').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -35,8 +35,7 @@ class SoftReportsHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                adminName ?? 'Haftalık / aylık skor ve PDF',
+              Text((adminName ?? 'Haftalık / aylık skor ve PDF').ui,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -119,8 +118,7 @@ class SoftReportsHero extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '$score',
+                    Text(('$score').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 26,
@@ -128,8 +126,7 @@ class SoftReportsHero extends StatelessWidget {
                         height: 1,
                       ),
                     ),
-                    Text(
-                      'skor',
+                    Text(('skor').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
@@ -152,8 +149,7 @@ class SoftReportsHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    adminName ?? report.periodShort,
+                  child: Text((adminName ?? report.periodShort).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -162,8 +158,7 @@ class SoftReportsHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  report.scoreLabel,
+                Text((report.scoreLabel).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -172,8 +167,7 @@ class SoftReportsHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${DateFormat('d MMM', 'tr').format(report.start)} – ${DateFormat('d MMM y', 'tr').format(report.end)}',
+                Text(('${DateFormat('d MMM', 'tr').format(report.start)} – ${DateFormat('d MMM y', 'tr').format(report.end)}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -251,8 +245,7 @@ class SoftReportsPeriodToggle extends StatelessWidget {
             children: [
               Icon(icon, size: 18, color: selected ? Colors.white : AppColors.primary.withValues(alpha: 0.45)),
               const SizedBox(width: 6),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 13.5,
@@ -363,8 +356,7 @@ class SoftMetricTile extends StatelessWidget {
         children: [
           SoftModernIcon(asset, size: 28, fallback: icon, fallbackColor: accent),
           const Spacer(),
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 11.5,
@@ -372,16 +364,14 @@ class SoftMetricTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            value,
+          Text((value).ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 18,
               color: accent,
             ),
           ),
-          Text(
-            sub,
+          Text((sub).ui,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -424,8 +414,7 @@ class SoftWaterChartCard extends StatelessWidget {
                 fallbackColor: const Color(0xFF5BA3C9),
               ),
               const SizedBox(width: 6),
-              const Text(
-                'Günlük su',
+              Text(('Günlük su').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15.5,
@@ -435,10 +424,9 @@ class SoftWaterChartCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            logs.isEmpty
+          Text((logs.isEmpty
                 ? 'Bu dönemde su kaydı yok.'
-                : 'Toplam ${(report.totalWaterMl / 1000).toStringAsFixed(1)} L · hedef gün ${report.waterGoalDays}',
+                : 'Toplam ${(report.totalWaterMl / 1000).toStringAsFixed(1)} L · hedef gün ${report.waterGoalDays}').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -506,8 +494,7 @@ class SoftWaterBar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 11,
@@ -564,16 +551,14 @@ class SoftReportsSecondaryStats extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      i.$4,
+                    Text((i.$4).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 11,
                         color: AppColors.primary.withValues(alpha: 0.5),
                       ),
                     ),
-                    Text(
-                      i.$5,
+                    Text((i.$5).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 14,
@@ -617,8 +602,7 @@ class SoftInsightsCard extends StatelessWidget {
                 fallbackColor: AppColors.primary,
               ),
               const SizedBox(width: 6),
-              const Text(
-                'Öne çıkanlar',
+              Text(('Öne çıkanlar').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15.5,
@@ -641,8 +625,7 @@ class SoftInsightsCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    '${i + 1}',
+                  child: Text(('${i + 1}').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
@@ -652,8 +635,7 @@ class SoftInsightsCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    highlights[i],
+                  child: Text((highlights[i]).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13.5,
@@ -695,13 +677,12 @@ class SoftPdfPrimaryButton extends StatelessWidget {
             ),
           ],
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.ios_share_rounded, color: Colors.white, size: 20),
             SizedBox(width: 8),
-            Text(
-              'PDF indir / paylaş',
+            Text(('PDF indir / paylaş').ui,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
             ),
           ],
@@ -742,8 +723,7 @@ class SoftFullHistoryCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Tam geçmiş raporu',
+                  Text(('Tam geçmiş raporu').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
@@ -751,8 +731,7 @@ class SoftFullHistoryCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    'Tüm plan, ölçümler ve seanslar tek PDF’te',
+                  Text(('Tüm plan, ölçümler ve seanslar tek PDF’te').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -793,8 +772,7 @@ class SoftReportsFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.',
+            child: Text(('Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -878,8 +856,7 @@ class SoftComparePill extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 12,
@@ -887,8 +864,7 @@ class SoftComparePill extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            '$score',
+          Text(('$score').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 26,
@@ -897,8 +873,7 @@ class SoftComparePill extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            subtitle,
+          Text((subtitle).ui,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -945,8 +920,7 @@ class SoftScoreBreakdownCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Skor dağılımı',
+          Text(('Skor dağılımı').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15.5,
@@ -954,8 +928,7 @@ class SoftScoreBreakdownCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'Wellness skorunu oluşturan bileşenler',
+          Text(('Wellness skorunu oluşturan bileşenler').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -1003,8 +976,7 @@ class SoftScoreBar extends StatelessWidget {
             Icon(icon, size: 16, color: color),
             const SizedBox(width: 6),
             Expanded(
-              child: Text(
-                label,
+              child: Text((label).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
@@ -1012,8 +984,7 @@ class SoftScoreBar extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              '%$pct',
+            Text(('%$pct').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 13,

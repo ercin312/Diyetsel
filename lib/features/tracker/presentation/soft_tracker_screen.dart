@@ -21,6 +21,7 @@ import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftMo
 import '../../engage/presentation/engage_screens.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import 'widgets/soft_tracker_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern tracker hub — separate Su / Vücut / Öğün experiences.
 class SoftTrackerHubScreen extends ConsumerStatefulWidget {
@@ -111,7 +112,7 @@ class SoftWaterTrackerScreen extends ConsumerWidget {
       await store.addWaterSip(user.id, ml: ml);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('+$ml ml eklendi')),
+          SnackBar(content: Text(('+$ml ml eklendi').ui)),
         );
       }
     }
@@ -200,8 +201,7 @@ class SoftWaterTrackerScreen extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  'Her öğünde 1 bardak pratik bir ritüel — küçük yudumlar günü tamamlar.',
+                child: Text(('Her öğünde 1 bardak pratik bir ritüel — küçük yudumlar günü tamamlar.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     height: 1.35,
@@ -245,16 +245,14 @@ class SoftWaterTrackerScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
+                Text((label).ui,
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary.withValues(alpha: 0.5),
                   ),
                 ),
-                Text(
-                  value,
+                Text((value).ui,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w900,
@@ -339,8 +337,7 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
             height: 200,
             child: items.length < 2
                 ? Center(
-                    child: Text(
-                      'Grafik için en az iki ölçüm ekle',
+                    child: Text(('Grafik için en az iki ölçüm ekle').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: AppColors.primary.withValues(alpha: 0.5),
@@ -369,8 +366,7 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
         ),
         if (items.isNotEmpty) ...[
           const SizedBox(height: 18),
-          const Text(
-            'Geçmiş',
+          Text(('Geçmiş').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -423,8 +419,7 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
-                'Yeni ölçüm',
+              Text(('Yeni ölçüm').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -434,17 +429,17 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               TextField(
                 controller: w,
-                decoration: const InputDecoration(labelText: 'Kilo (kg)'),
+                decoration: InputDecoration(labelText: ('Kilo (kg)').ui),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: waist,
-                decoration: const InputDecoration(labelText: 'Bel (cm)'),
+                decoration: InputDecoration(labelText: ('Bel (cm)').ui),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: fat,
-                decoration: const InputDecoration(labelText: 'Yağ %'),
+                decoration: InputDecoration(labelText: ('Yağ %').ui),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
@@ -464,8 +459,7 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: AppColors.modernLine),
                         ),
-                        child: Text(
-                          before == null ? 'Önce foto' : 'Önce ✓',
+                        child: Text((before == null ? 'Önce foto' : 'Önce ✓').ui,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
@@ -490,8 +484,7 @@ class SoftBodyTrackerScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: AppColors.modernLine),
                         ),
-                        child: Text(
-                          after == null ? 'Sonra foto' : 'Sonra ✓',
+                        child: Text((after == null ? 'Sonra foto' : 'Sonra ✓').ui,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
@@ -554,9 +547,8 @@ class SoftMealPhotoTrackerScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Expanded(
-                  child: Text(
-                    'Öğün günlüğün',
+                Expanded(
+                  child: Text(('Öğün günlüğün').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
@@ -570,8 +562,7 @@ class SoftMealPhotoTrackerScreen extends ConsumerWidget {
                     color: const Color(0xFFE07A5F).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    '${logs.length} foto',
+                  child: Text(('${logs.length} foto').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,

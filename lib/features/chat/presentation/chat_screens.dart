@@ -16,6 +16,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'soft_chat_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
@@ -64,13 +65,12 @@ class ChatListScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: AppColors.kawaiiOutline),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Icon(Icons.favorite_rounded, color: AppColors.kawaiiCoral, size: 22),
                         SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            'Diyetisyeninle buradan yazış — sorularını kısa ve net tut, yanıt daha hızlı gelir.',
+                          child: Text(('Diyetisyeninle buradan yazış — sorularını kısa ve net tut, yanıt daha hızlı gelir.').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               height: 1.35,
@@ -94,15 +94,13 @@ class ChatListScreen extends ConsumerWidget {
                         children: [
                           Icon(Icons.chat_bubble_outline_rounded, size: 48, color: AppColors.kawaiiLeaf.withValues(alpha: 0.7)),
                           const SizedBox(height: 12),
-                          const Text(
-                            'Henüz mesaj yok',
+                          Text(('Henüz mesaj yok').ui,
                             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            user.isAdmin
+                          Text((user.isAdmin
                                 ? 'Danışanlar yazınca sohbetler burada görünecek.'
-                                : 'Sağ alttaki butonla diyetisyene ilk mesajını gönder.',
+                                : 'Sağ alttaki butonla diyetisyene ilk mesajını gönder.').ui,
                             textAlign: TextAlign.center,
                             style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
                           ),
@@ -132,14 +130,13 @@ class ChatListScreen extends ConsumerWidget {
                                 children: [
                                   CircleAvatar(
                                     backgroundColor: AppColors.kawaiiMint,
-                                    child: Text(
-                                      () {
+                                    child: Text((() {
                                         final name = threads[i]
                                             .participantNames
                                             .where((n) => n != user.displayName)
                                             .join(', ');
                                         return name.isEmpty ? '?' : name.substring(0, 1).toUpperCase();
-                                      }(),
+                                      }()).ui,
                                       style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiLeafDeep),
                                     ),
                                   ),
@@ -148,13 +145,11 @@ class ChatListScreen extends ConsumerWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          threads[i].participantNames.where((n) => n != user.displayName).join(', '),
+                                        Text((threads[i].participantNames.where((n) => n != user.displayName).join(', ')).ui,
                                           style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiInk),
                                         ),
                                         const SizedBox(height: 2),
-                                        Text(
-                                          threads[i].lastMessage,
+                                        Text((threads[i].lastMessage).ui,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
@@ -178,8 +173,8 @@ class ChatListScreen extends ConsumerWidget {
                   children: [
                     for (final t in threads)
                       ListTile(
-                        title: Text(t.participantNames.where((n) => n != user.displayName).join(', ')),
-                        subtitle: Text(t.lastMessage),
+                        title: Text((t.participantNames.where((n) => n != user.displayName).join(', ')).ui),
+                        subtitle: Text((t.lastMessage).ui),
                         onTap: () =>
                             Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ChatRoomScreen(thread: t))),
                       ),
@@ -217,7 +212,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final user = ref.watch(authControllerProvider).user!;
     final messages = ref.watch(messagesProvider(widget.thread.id)).valueOrNull ?? [];
     return Scaffold(
-      appBar: AppBar(title: Text(widget.thread.participantNames.where((n) => n != user.displayName).join(', '))),
+      appBar: AppBar(title: Text((widget.thread.participantNames.where((n) => n != user.displayName).join(', ')).ui)),
       body: Column(
         children: [
           Expanded(
@@ -254,8 +249,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         : null,
                   ),
                   child: m.type == ChatMediaType.text
-                      ? Text(
-                          m.content,
+                      ? Text((m.content).ui,
                           style: TextStyle(
                             color: cartoon
                                 ? AppColors.kawaiiInk
@@ -269,8 +263,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               await _player.play();
                             } catch (_) {}
                           },
-                          child: Text(
-                            '${m.type.name}: ${m.content.split(RegExp(r'[\\/]')).last}',
+                          child: Text(('${m.type.name}: ${m.content.split(RegExp(r'[\\/]')).last}').ui,
                             style: TextStyle(
                               color: cartoon
                                   ? AppColors.kawaiiInk
@@ -324,7 +317,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 Expanded(
                   child: TextField(
                     controller: _text,
-                    decoration: const InputDecoration(hintText: 'Mesaj yazın'),
+                    decoration: InputDecoration(hintText: ('Mesaj yazın').ui),
                   ),
                 ),
                 IconButton(

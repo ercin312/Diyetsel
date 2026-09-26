@@ -10,6 +10,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/shopping_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftShoppingHeader extends StatelessWidget {
@@ -23,12 +24,11 @@ class SoftShoppingHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Alışveriş',
+              Text(('Alışveriş').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -37,8 +37,7 @@ class SoftShoppingHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Haftalık market listesi',
+              Text(('Haftalık market listesi').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -119,8 +118,7 @@ class SoftShoppingHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Haftalık market',
+                  child: Text(('Haftalık market').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -129,8 +127,7 @@ class SoftShoppingHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  total == 0 ? 'Listen seni bekliyor' : '$done / $total alındı',
+                Text((total == 0 ? 'Listen seni bekliyor' : '$done / $total alındı').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -139,8 +136,7 @@ class SoftShoppingHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -219,16 +215,14 @@ class SoftShoppingStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$3,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    items[i].$5,
+                  Text((items[i].$5).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 16,
                       color: items[i].$3,
                     ),
                   ),
-                  Text(
-                    items[i].$4,
+                  Text((items[i].$4).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
@@ -286,14 +280,13 @@ class SoftShoppingActionRow extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
                       SizedBox(width: 6),
                       Flexible(
-                        child: Text(
-                          'Diyetten üret',
+                        child: Text(('Diyetten üret').ui,
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -377,8 +370,7 @@ class SoftShoppingActionRow extends StatelessWidget {
                 children: [
                   Icon(Icons.local_shipping_rounded, color: AppColors.primary.withValues(alpha: 0.9), size: 20),
                   const SizedBox(width: 8),
-                  Text(
-                    'Platforma gönder',
+                  Text(('Platforma gönder').ui,
                     style: TextStyle(
                       color: AppColors.primary.withValues(alpha: 0.95),
                       fontWeight: FontWeight.w800,
@@ -451,8 +443,7 @@ class SoftShoppingCategoryChips extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                   ],
-                  Text(
-                    label,
+                  Text((label).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12.5,
@@ -485,8 +476,7 @@ class SoftShoppingSectionLabel extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: AppColors.primary.withValues(alpha: 0.85)),
         const SizedBox(width: 6),
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15,
@@ -564,8 +554,7 @@ class SoftShopCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            item.name,
+                          child: Text((item.name).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 15.5,
@@ -583,8 +572,7 @@ class SoftShopCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 3),
-                    Text(
-                      item.amount,
+                    Text((item.amount).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12.5,
@@ -593,8 +581,7 @@ class SoftShopCard extends StatelessWidget {
                     ),
                     if (item.tip.isNotEmpty) ...[
                       const SizedBox(height: 3),
-                      Text(
-                        item.tip,
+                      Text((item.tip).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -613,8 +600,7 @@ class SoftShopCard extends StatelessWidget {
                           color: tint,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          item.aisle,
+                        child: Text((item.aisle).ui,
                           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: accent),
                         ),
                       ),
@@ -666,8 +652,7 @@ class SoftShoppingEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary,
           ),
           const SizedBox(height: 14),
-          const Text(
-            'Sepetin henüz boş',
+          Text(('Sepetin henüz boş').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 18,
@@ -675,8 +660,7 @@ class SoftShoppingEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Diyet planından otomatik liste üret veya tek tek ekle — reyon ipuçlarıyla market turu kısalır.',
+          Text(('Diyet planından otomatik liste üret veya tek tek ekle — reyon ipuçlarıyla market turu kısalır.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -703,8 +687,7 @@ class SoftShoppingEmpty extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Text(
-                'Diyetten üret',
+              child: Text(('Diyetten üret').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
               ),
@@ -722,8 +705,7 @@ class SoftShoppingEmpty extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: AppColors.modernLine),
               ),
-              child: const Text(
-                'Manuel ürün ekle',
+              child: Text(('Manuel ürün ekle').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900),
               ),
@@ -758,8 +740,7 @@ class SoftShoppingFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.',
+            child: Text(('Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -843,8 +824,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.name,
+                        Text((item.name).ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
@@ -852,8 +832,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          item.amount,
+                        Text((item.amount).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             color: accent,
@@ -901,8 +880,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Alışveriş ipucu',
+                      Text(('Alışveriş ipucu').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 14,
@@ -910,8 +888,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        item.tip,
+                      Text((item.tip).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           height: 1.4,
@@ -935,8 +912,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Not',
+                      Text(('Not').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 14,
@@ -944,8 +920,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        item.note,
+                      Text((item.note).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           height: 1.4,
@@ -974,8 +949,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Text(
-                    item.checked ? 'Tekrar listeye al' : 'Aldım — işaretle',
+                  child: Text((item.checked ? 'Tekrar listeye al' : 'Aldım — işaretle').ui,
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
                   ),
@@ -1004,8 +978,7 @@ class SoftShopDetailSheet extends StatelessWidget {
                               color: const Color(0xFFE07A5F),
                             ),
                             const SizedBox(width: 6),
-                            Text(
-                              item.priority ? 'Önceliği kaldır' : 'Öncelikli yap',
+                            Text((item.priority ? 'Önceliği kaldır' : 'Öncelikli yap').ui,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 13,
@@ -1059,7 +1032,7 @@ class SoftMiniTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
-      child: Text(label, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: ink)),
+      child: Text((label).ui, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: ink)),
     );
   }
 }
@@ -1117,8 +1090,7 @@ class _SoftAddShopItemSheetState extends State<SoftAddShopItemSheet> {
                   ),
                 ),
               ),
-              const Text(
-                'Ürün ekle',
+              Text(('Ürün ekle').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -1132,8 +1104,7 @@ class _SoftAddShopItemSheetState extends State<SoftAddShopItemSheet> {
               const SizedBox(height: 10),
               SoftShopField(controller: _tip, label: 'İpucu (opsiyonel)'),
               const SizedBox(height: 14),
-              const Text(
-                'Kategori',
+              Text(('Kategori').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 13,
@@ -1174,8 +1145,7 @@ class _SoftAddShopItemSheetState extends State<SoftAddShopItemSheet> {
                                   : ShoppingVisuals.softAccentFor(c),
                             ),
                             const SizedBox(width: 5),
-                            Text(
-                              ShoppingVisuals.label(c),
+                            Text((ShoppingVisuals.label(c)).ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 12,
@@ -1206,9 +1176,8 @@ class _SoftAddShopItemSheetState extends State<SoftAddShopItemSheet> {
                         color: const Color(0xFFE07A5F),
                       ),
                       const SizedBox(width: 10),
-                      const Expanded(
-                        child: Text(
-                          'Öncelikli ürün',
+                      Expanded(
+                        child: Text(('Öncelikli ürün').ui,
                           style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDeep),
                         ),
                       ),
@@ -1269,8 +1238,7 @@ class _SoftAddShopItemSheetState extends State<SoftAddShopItemSheet> {
                     color: _saving ? AppColors.primary.withValues(alpha: 0.5) : AppColors.primary,
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: Text(
-                    _saving ? 'Kaydediliyor…' : 'Listeye ekle',
+                  child: Text((_saving ? 'Kaydediliyor…' : 'Listeye ekle').ui,
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
                   ),
@@ -1303,8 +1271,8 @@ class SoftShopField extends StatelessWidget {
       textCapitalization: TextCapitalization.sentences,
       style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryDeep),
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
+        labelText: (label).ui,
+        hintText: hint?.ui,
         filled: true,
         fillColor: Colors.white,
         labelStyle: TextStyle(

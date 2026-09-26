@@ -11,6 +11,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/blog_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftBlogHeader extends StatelessWidget {
@@ -28,8 +29,7 @@ class SoftBlogHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                admin ? 'Blog editörü' : 'Blog',
+              Text((admin ? 'Blog editörü' : 'Blog').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -38,8 +38,7 @@ class SoftBlogHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                admin ? 'Yazıları yönet ve yayınla' : 'Sağlıklı yaşam yazıları',
+              Text((admin ? 'Yazıları yönet ve yayınla' : 'Sağlıklı yaşam yazıları').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -109,8 +108,7 @@ class SoftBlogHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Diyetisyen notları',
+                  child: Text(('Diyetisyen notları').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -119,8 +117,7 @@ class SoftBlogHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Sağlıklı yaşam',
+                Text(('Sağlıklı yaşam').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -130,8 +127,7 @@ class SoftBlogHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  '$count yazı · $categories kategori · pratik ipuçları',
+                Text(('$count yazı · $categories kategori · pratik ipuçları').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -196,16 +192,14 @@ class SoftBlogStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11.5,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 17,
@@ -240,7 +234,7 @@ class SoftBlogSearchField extends StatelessWidget {
         onChanged: onChanged,
         style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryDeep),
         decoration: InputDecoration(
-          hintText: 'Yazı veya etiket ara…',
+          hintText: ('Yazı veya etiket ara…').ui,
           hintStyle: TextStyle(
             fontWeight: FontWeight.w600,
             color: AppColors.primary.withValues(alpha: 0.4),
@@ -301,8 +295,7 @@ class SoftBlogCategoryChip extends StatelessWidget {
                 ]
               : AppSpacing.soft,
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 12.5,
@@ -392,8 +385,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.92),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: Text(
-                            'Öne çıkan · ${post.category}',
+                          child: Text(('Öne çıkan · ${post.category}').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 11.5,
@@ -402,8 +394,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          post.title,
+                        Text((post.title).ui,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -425,8 +416,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    post.subtitle,
+                  Text((post.subtitle).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -441,8 +431,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
                     children: [
                       Icon(Icons.schedule_rounded, size: 15, color: accent),
                       const SizedBox(width: 4),
-                      Text(
-                        '${BlogVisuals.readMinutes(post)} dk',
+                      Text(('${BlogVisuals.readMinutes(post)} dk').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
@@ -450,8 +439,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Text(
-                        DateFormat('d MMM', 'tr').format(post.updatedAt),
+                      Text((DateFormat('d MMM', 'tr').format(post.updatedAt)).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
@@ -464,8 +452,7 @@ class SoftBlogFeaturedCard extends StatelessWidget {
                         color: const Color(0xFFE07A5F),
                         onTap: onLike,
                       ),
-                      Text(
-                        '${post.likes}',
+                      Text(('${post.likes}').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           color: AppColors.primaryDeep,
@@ -566,8 +553,7 @@ class SoftBlogCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text(
-                          post.category,
+                        child: Text((post.category).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 12,
@@ -578,8 +564,7 @@ class SoftBlogCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    post.title,
+                  Text((post.title).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -590,8 +575,7 @@ class SoftBlogCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    post.subtitle,
+                  Text((post.subtitle).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -604,8 +588,7 @@ class SoftBlogCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Text(
-                        '${BlogVisuals.readMinutes(post)} dk',
+                      Text(('${BlogVisuals.readMinutes(post)} dk').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11.5,
@@ -622,8 +605,7 @@ class SoftBlogCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        '${post.likes}',
+                      Text(('${post.likes}').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
@@ -676,8 +658,7 @@ class SoftBlogEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Bu filtrede yazı yok',
+          Text(('Bu filtrede yazı yok').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w900,
@@ -686,8 +667,7 @@ class SoftBlogEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Başka bir kategori dene veya aramayı temizle.',
+          Text(('Başka bir kategori dene veya aramayı temizle.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -711,8 +691,7 @@ class SoftBlogSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 17,
@@ -727,8 +706,7 @@ class SoftBlogSectionTitle extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              '$count',
+            child: Text(('$count').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 11.5,
@@ -755,8 +733,7 @@ class SoftBlogFab extends StatelessWidget {
       foregroundColor: Colors.white,
       elevation: 2,
       icon: const Icon(Icons.edit_rounded),
-      label: const Text(
-        'Yeni yazı',
+      label: Text(('Yeni yazı').ui,
         style: TextStyle(fontWeight: FontWeight.w800),
       ),
     );
@@ -807,8 +784,7 @@ class SoftBlogDetailHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.92),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    post.category,
+                  child: Text((post.category).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -817,8 +793,7 @@ class SoftBlogDetailHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  post.title,
+                Text((post.title).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 24,
@@ -828,8 +803,7 @@ class SoftBlogDetailHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  post.subtitle,
+                Text((post.subtitle).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -838,8 +812,7 @@ class SoftBlogDetailHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  '${post.authorName} · ${BlogVisuals.readMinutes(post)} dk · ${DateFormat('d MMMM y', 'tr').format(post.updatedAt)}',
+                Text(('${post.authorName} · ${BlogVisuals.readMinutes(post)} dk · ${DateFormat('d MMMM y', 'tr').format(post.updatedAt)}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 12,
@@ -902,8 +875,7 @@ class SoftBlogActionBar extends StatelessWidget {
                     size: 22,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    '${post.likes}',
+                  Text(('${post.likes}').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       color: AppColors.primaryDeep,
@@ -926,8 +898,7 @@ class SoftBlogActionBar extends StatelessWidget {
                     size: 22,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    bookmarked ? 'Kayıtlı' : 'Kaydet',
+                  Text((bookmarked ? 'Kayıtlı' : 'Kaydet').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
@@ -948,8 +919,7 @@ class SoftBlogActionBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(color: AppColors.modernLine),
               ),
-              child: Text(
-                t,
+              child: Text((t).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
@@ -974,8 +944,7 @@ class SoftBlogBlock extends StatelessWidget {
       case 'heading':
         return Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Text(
-            block.text,
+          child: Text((block.text).ui,
             style: const TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.w900,
@@ -1004,8 +973,7 @@ class SoftBlogBlock extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  block.text,
+                child: Text((block.text).ui,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600,
@@ -1037,8 +1005,7 @@ class SoftBlogBlock extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  block.text,
+                child: Text((block.text).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     height: 1.4,
@@ -1052,8 +1019,7 @@ class SoftBlogBlock extends StatelessWidget {
       default:
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: Text(
-            block.text,
+          child: Text((block.text).ui,
             style: TextStyle(
               fontWeight: block.bold ? FontWeight.w800 : FontWeight.w500,
               fontStyle: block.italic ? FontStyle.italic : FontStyle.normal,

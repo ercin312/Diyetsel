@@ -11,6 +11,7 @@ import '../../../../core/utils/desktop.dart';
 import '../../../dashboard/domain/home_feed_models.dart';
 import 'premium_home_widgets.dart' show SoftTap, DiyetselLogoMark;
 import 'soft_home_widgets.dart' show SoftModernIcon, SoftShortcutRail;
+import '../../../../core/l10n/ui_string.dart';
 
 class _SoftAdminSectionTitle extends StatelessWidget {
   const _SoftAdminSectionTitle({required this.title, this.subtitle});
@@ -23,8 +24,7 @@ class _SoftAdminSectionTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w800,
@@ -33,8 +33,7 @@ class _SoftAdminSectionTitle extends StatelessWidget {
         ),
         if (subtitle != null) ...[
           const SizedBox(height: 2),
-          Text(
-            subtitle!,
+          Text((subtitle!).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -68,8 +67,7 @@ class SoftAdminHomeHeader extends StatelessWidget {
             children: [
               const DiyetselLogoMark(height: 32),
               const SizedBox(height: 12),
-              const Text(
-                'Klinik paneli',
+              Text(('Klinik paneli').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -79,8 +77,7 @@ class SoftAdminHomeHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'Merhaba $name — randevu, içerik ve danışanlar',
+              Text(('Merhaba $name — randevu, içerik ve danışanlar').ui,
                 style: TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,
@@ -185,8 +182,7 @@ class SoftAdminHomeHero extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: const Text(
-                      'Bugünün özeti',
+                    child: Text(('Bugünün özeti').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -195,8 +191,7 @@ class SoftAdminHomeHero extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    '$active aktif danışan',
+                  Text(('$active aktif danışan').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 22,
@@ -205,8 +200,7 @@ class SoftAdminHomeHero extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    'Toplam $total · $pendingAppts bekleyen randevu · bu ay $monthSessions seans',
+                  Text(('Toplam $total · $pendingAppts bekleyen randevu · bu ay $monthSessions seans').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -314,8 +308,7 @@ class SoftAdminHomeKpis extends StatelessWidget {
                   fallbackColor: item.$5,
                 ),
                 const Spacer(),
-                Text(
-                  item.$1,
+                Text((item.$1).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 12,
@@ -323,8 +316,7 @@ class SoftAdminHomeKpis extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  item.$2,
+                Text((item.$2).ui,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -469,8 +461,7 @@ class SoftAdminHomeShortcuts extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          item.title,
+                        Text((item.title).ui,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -519,8 +510,7 @@ class SoftAdminHomeQuietCard extends StatelessWidget {
               SoftTap(
                 onTap: () => context.push('/admin/clients'),
                 borderRadius: BorderRadius.circular(12),
-                child: Text(
-                  'Tümü',
+                child: Text(('Tümü').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
@@ -532,8 +522,7 @@ class SoftAdminHomeQuietCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           if (quiet.isEmpty)
-            Text(
-              'Herkes aktif görünüyor.',
+            Text(('Herkes aktif görünüyor.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary.withValues(alpha: 0.55),
@@ -557,8 +546,7 @@ class SoftAdminHomeQuietCard extends StatelessWidget {
                         CircleAvatar(
                           radius: 18,
                           backgroundColor: const Color(0xFFFFF0E8),
-                          child: Text(
-                            c.displayName.isNotEmpty ? c.displayName[0].toUpperCase() : '?',
+                          child: Text((c.displayName.isNotEmpty ? c.displayName[0].toUpperCase() : '?').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               color: Color(0xFFE07A5F),
@@ -570,17 +558,15 @@ class SoftAdminHomeQuietCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                c.displayName,
+                              Text((c.displayName).ui,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w800,
                                   color: AppColors.primaryDeep,
                                 ),
                               ),
-                              Text(
-                                c.lastActiveAt == null
+                              Text((c.lastActiveAt == null
                                     ? 'Hiç aktivite yok'
-                                    : 'Son: ${DateFormat('d MMM HH:mm', 'tr').format(c.lastActiveAt!)}',
+                                    : 'Son: ${DateFormat('d MMM HH:mm', 'tr').format(c.lastActiveAt!)}').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12,
@@ -596,8 +582,7 @@ class SoftAdminHomeQuietCard extends StatelessWidget {
                             color: const Color(0xFFE07A5F).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: const Text(
-                            'sessiz',
+                          child: Text(('sessiz').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 11,
@@ -656,8 +641,7 @@ class SoftAdminHomePaymentsCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Text(
-                    'Kayıt ekle',
+                  child: Text(('Kayıt ekle').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -670,8 +654,7 @@ class SoftAdminHomePaymentsCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           if (payments.isEmpty)
-            Text(
-              'Henüz ödeme kaydı yok.',
+            Text(('Henüz ödeme kaydı yok.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary.withValues(alpha: 0.55),
@@ -687,15 +670,13 @@ class SoftAdminHomePaymentsCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            p.clientName,
+                          Text((p.clientName).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               color: AppColors.primaryDeep,
                             ),
                           ),
-                          Text(
-                            DateFormat('d MMM y', 'tr').format(p.date),
+                          Text((DateFormat('d MMM y', 'tr').format(p.date)).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -705,8 +686,7 @@ class SoftAdminHomePaymentsCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text(
-                      '₺${p.amount.toStringAsFixed(0)}',
+                    Text(('₺${p.amount.toStringAsFixed(0)}').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         color: AppColors.primaryDeep,
@@ -721,8 +701,7 @@ class SoftAdminHomePaymentsCard extends StatelessWidget {
                             : const Color(0xFFE07A5F).withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(
-                        p.status == PaymentStatus.paid ? 'ödendi' : 'bekliyor',
+                      child: Text((p.status == PaymentStatus.paid ? 'ödendi' : 'bekliyor').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 11,
@@ -767,8 +746,7 @@ class SoftAdminHomeTip extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(
-                'Özel bildirim gönder — tüm danışanlara veya seçtiklerine anlık mesaj bırak.',
+              child: Text(('Özel bildirim gönder — tüm danışanlara veya seçtiklerine anlık mesaj bırak.').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,

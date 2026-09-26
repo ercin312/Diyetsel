@@ -8,6 +8,7 @@ import '../../../../core/models/models.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftAdminNotifHeader extends StatelessWidget {
@@ -19,12 +20,11 @@ class SoftAdminNotifHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Bildirimler',
+              Text(('Bildirimler').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -33,8 +33,7 @@ class SoftAdminNotifHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Danışanlara özel bildirim gönder',
+              Text(('Danışanlara özel bildirim gönder').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -108,8 +107,7 @@ class SoftAdminNotifHero extends StatelessWidget {
                     color: const Color(0xFFE07A5F).withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Klinik bildirim merkezi',
+                  child: Text(('Klinik bildirim merkezi').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -118,8 +116,7 @@ class SoftAdminNotifHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Özel mesaj gönder',
+                Text(('Özel mesaj gönder').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -128,8 +125,7 @@ class SoftAdminNotifHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Tüm danışanlara veya seçtiklerine anlık bildirim bırak.',
+                Text(('Tüm danışanlara veya seçtiklerine anlık bildirim bırak.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -178,12 +174,10 @@ class SoftAdminNotifStats extends StatelessWidget {
             children: [
               Icon(icon, size: 20, color: accent),
               const SizedBox(height: 6),
-              Text(
-                value,
+              Text((value).ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: accent),
               ),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 11.5,
@@ -259,8 +253,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Yeni bildirim',
+          Text(('Yeni bildirim').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -273,8 +266,8 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
             maxLength: 60,
             style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDeep),
             decoration: InputDecoration(
-              labelText: 'Başlık',
-              hintText: 'Örn. Haftalık check-in hatırlatması',
+              labelText: ('Başlık').ui,
+              hintText: ('Örn. Haftalık check-in hatırlatması').ui,
               filled: true,
               fillColor: AppColors.modernWash,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
@@ -288,8 +281,8 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
             maxLines: 4,
             style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryDeep, height: 1.35),
             decoration: InputDecoration(
-              labelText: 'Mesaj',
-              hintText: 'Danışanın bildirimde göreceği metin…',
+              labelText: ('Mesaj').ui,
+              hintText: ('Danışanın bildirimde göreceği metin…').ui,
               filled: true,
               fillColor: AppColors.modernWash,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
@@ -297,8 +290,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Hedef kitle',
+          Text(('Hedef kitle').ui,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.primaryDeep),
           ),
           const SizedBox(height: 8),
@@ -324,8 +316,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
           if (!targetAll) ...[
             const SizedBox(height: 10),
             if (clients.isEmpty)
-              Text(
-                'Kayıtlı danışan yok.',
+              Text(('Kayıtlı danışan yok.').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary.withValues(alpha: 0.5),
@@ -339,7 +330,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
                   for (final c in clients)
                     FilterChip(
                       selected: selectedIds.contains(c.id),
-                      label: Text(c.displayName),
+                      label: Text((c.displayName).ui),
                       onSelected: (_) => onToggleClient(c.id),
                       selectedColor: AppColors.primary.withValues(alpha: 0.15),
                       checkmarkColor: AppColors.primary,
@@ -357,14 +348,14 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
           DropdownButtonFormField<String>(
             initialValue: routes.any((e) => e.$1 == route) ? route : '',
             decoration: InputDecoration(
-              labelText: 'Uygulama içi yönlendirme (opsiyonel)',
+              labelText: ('Uygulama içi yönlendirme (opsiyonel)').ui,
               filled: true,
               fillColor: AppColors.modernWash,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
             ),
             items: [
               for (final r in routes)
-                DropdownMenuItem(value: r.$1, child: Text(r.$2)),
+                DropdownMenuItem(value: r.$1, child: Text((r.$2).ui)),
             ],
             onChanged: (v) => onRouteChanged(v ?? ''),
           ),
@@ -402,8 +393,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
                   else
                     const Icon(Icons.send_rounded, color: Colors.white, size: 20),
                   const SizedBox(width: 10),
-                  Text(
-                    sending ? 'Gönderiliyor…' : 'Bildirimi gönder',
+                  Text((sending ? 'Gönderiliyor…' : 'Bildirimi gönder').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
@@ -446,8 +436,7 @@ class _AudienceChip extends StatelessWidget {
             color: selected ? AppColors.primary.withValues(alpha: 0.4) : AppColors.modernLine,
           ),
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w800,
@@ -479,8 +468,7 @@ class SoftAdminNotifHistoryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Gönderim geçmişi',
+          Text(('Gönderim geçmişi').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -488,8 +476,7 @@ class SoftAdminNotifHistoryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            items.isEmpty ? 'Henüz özel bildirim yok.' : '${items.length} kayıt',
+          Text((items.isEmpty ? 'Henüz özel bildirim yok.' : '${items.length} kayıt').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -542,8 +529,7 @@ class _HistoryRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                item.title,
+              Text((item.title).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 14,
@@ -551,8 +537,7 @@ class _HistoryRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 3),
-              Text(
-                item.body,
+              Text((item.body).ui,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -563,8 +548,7 @@ class _HistoryRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                '$when · $audience',
+              Text(('$when · $audience').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 11.5,
@@ -591,9 +575,8 @@ class SoftAdminNotifTip extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.modernLine),
       ),
-      child: Text(
-        'Bildirimler danışanın bir sonraki uygulama açılışında gösterilir. '
-        'Android’de sistem bildirimi; Windows/web’de kuyruk yine kaydedilir.',
+      child: Text(('Bildirimler danışanın bir sonraki uygulama açılışında gösterilir. '
+        'Android’de sistem bildirimi; Windows/web’de kuyruk yine kaydedilir.').ui,
         style: TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 13,

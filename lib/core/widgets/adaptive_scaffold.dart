@@ -11,6 +11,7 @@ import '../models/enums.dart';
 import '../utils/desktop.dart';
 import 'kawaii_doodle.dart';
 import 'modern_glyph.dart';
+import '../l10n/ui_string.dart';
 
 class NavDest {
   const NavDest({
@@ -260,8 +261,7 @@ class AdaptiveScaffold extends StatelessWidget {
                                     child: _mobileGlyph(context, dest[i], selected: i == selected, navIndex: i),
                                   ),
                                   const SizedBox(height: 2),
-                                  Text(
-                                    dest[i].label,
+                                  Text((dest[i].label).ui,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -365,8 +365,7 @@ class _DesktopSidebar extends StatelessWidget {
                   if (extended) ...[
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        'e-Diyet',
+                      child: Text(('e-Diyet').ui,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
                               color: brand,
@@ -381,8 +380,7 @@ class _DesktopSidebar extends StatelessWidget {
             if (extended)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: Text(
-                  cartoon ? 'Sevimli menü' : 'Menü',
+                child: Text((cartoon ? 'Sevimli menü' : 'Menü').ui,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.65) : scheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -428,8 +426,7 @@ class _DesktopSidebar extends StatelessWidget {
                                         ),
                                       const SizedBox(width: 12),
                                       Expanded(
-                                        child: Text(
-                                          d.label,
+                                        child: Text((d.label).ui,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
@@ -470,8 +467,7 @@ class _DesktopSidebar extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 14),
-              child: Text(
-                extended ? 'Ctrl+K · Ctrl+N · Ctrl+B' : '⌘',
+              child: Text((extended ? 'Ctrl+K · Ctrl+N · Ctrl+B' : '⌘').ui,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -556,12 +552,11 @@ class _SoftDesktopSidebar extends StatelessWidget {
                     ),
                     if (extended) ...[
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'e-Diyet',
+                            Text(('e-Diyet').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 17,
@@ -570,8 +565,7 @@ class _SoftDesktopSidebar extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 2),
-                            Text(
-                              'Klinik paneli',
+                            Text(('Klinik paneli').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
@@ -586,10 +580,9 @@ class _SoftDesktopSidebar extends StatelessWidget {
                 ),
               ),
               if (extended)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(20, 4, 20, 10),
-                  child: Text(
-                    'Menü',
+                  child: Text(('Menü').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11,
@@ -647,8 +640,7 @@ class _SoftDesktopSidebar extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
-                                          child: Text(
-                                            d.label,
+                                          child: Text((d.label).ui,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -718,8 +710,7 @@ class _SoftDesktopSidebar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: AppColors.modernLine),
                   ),
-                  child: Text(
-                    extended ? 'Ctrl+K · Ctrl+N · Ctrl+B' : '⌘',
+                  child: Text((extended ? 'Ctrl+K · Ctrl+N · Ctrl+B' : '⌘').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,

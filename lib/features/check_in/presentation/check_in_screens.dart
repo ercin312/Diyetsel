@@ -22,6 +22,7 @@ import '../../gamification/presentation/gamification_screens.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../domain/check_in_visuals.dart';
 import 'soft_check_in_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class CheckInScreen extends ConsumerStatefulWidget {
   const CheckInScreen({super.key});
@@ -158,8 +159,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   .animate()
                   .fadeIn(delay: 110.ms, duration: 280.ms),
               const SizedBox(height: 16),
-              const Text(
-                'Geçmiş check-in’ler',
+              Text(('Geçmiş check-in’ler').ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk),
               ),
               const SizedBox(height: 10),
@@ -218,7 +218,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
         _prefilled = false;
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Check-in diyetisyen paneline düştü')),
+          SnackBar(content: Text(('Check-in diyetisyen paneline düştü').ui)),
         );
       }
     } finally {
@@ -272,23 +272,20 @@ class _CheckInHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    due ? 'Haftalık ritim' : 'Güncel',
+                  child: Text((due ? 'Haftalık ritim' : 'Güncel').ui,
                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  due ? 'Check-in zamanı' : 'Bu hafta tamam',
+                Text((due ? 'Check-in zamanı' : 'Bu hafta tamam').ui,
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, height: 1.15, color: AppColors.kawaiiInk),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  last == null
+                Text((last == null
                       ? 'Kilo, bel, uyku ve ruh halini gönder — diyetisyenin paneline düşer.'
                       : count == 1
                           ? 'İlk kaydın ${DateFormat('d MMM', 'tr').format(last!.createdAt)} tarihinde.'
-                          : '$count kayıt · son ${DateFormat('d MMM', 'tr').format(last!.createdAt)}',
+                          : '$count kayıt · son ${DateFormat('d MMM', 'tr').format(last!.createdAt)}').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -354,9 +351,8 @@ class _CartoonCheckInStatsRow extends StatelessWidget {
                     child: Icon(items[i].$3, size: 16, color: items[i].$5),
                   ),
                   const SizedBox(height: 8),
-                  Text(items[i].$1, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$1).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+                  Text((items[i].$2).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: items[i].$5),
@@ -401,13 +397,13 @@ class _DietitianNoteCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Diyetisyenin notu', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+                Text(('Diyetisyenin notu').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
                 if (at != null) ...[
                   const SizedBox(height: 2),
-                  Text(DateFormat('d MMM y', 'tr').format(at!), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+                  Text((DateFormat('d MMM y', 'tr').format(at!)).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
                 ],
                 const SizedBox(height: 6),
-                Text(note, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4, color: AppColors.kawaiiInk)),
+                Text((note).ui, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4, color: AppColors.kawaiiInk)),
               ],
             ),
           ),
@@ -501,8 +497,8 @@ class _TrendChip extends StatelessWidget {
             child: Icon(icon, size: 16, color: accent),
           ),
           const SizedBox(height: 8),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+          Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+          Text((value).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
         ],
       ),
     );
@@ -561,10 +557,9 @@ class _FormCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Bu haftanın ölçümleri', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk)),
+          Text(('Bu haftanın ölçümleri').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: AppColors.kawaiiInk)),
           const SizedBox(height: 4),
-          const Text(
-            'Sabah, tuvalet sonrası tartıl — daha tutarlı olur.',
+          Text(('Sabah, tuvalet sonrası tartıl — daha tutarlı olur.').ui,
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
           ),
           const SizedBox(height: 14),
@@ -574,8 +569,8 @@ class _FormCard extends StatelessWidget {
                 child: TextField(
                   controller: weight,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Kilo (kg)',
+                  decoration: InputDecoration(
+                    labelText: ('Kilo (kg)').ui,
                     prefixIcon: Icon(Icons.monitor_weight_rounded, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
@@ -585,8 +580,8 @@ class _FormCard extends StatelessWidget {
                 child: TextField(
                   controller: waist,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Bel (cm)',
+                  decoration: InputDecoration(
+                    labelText: ('Bel (cm)').ui,
                     prefixIcon: Icon(Icons.straighten_rounded, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
@@ -597,14 +592,14 @@ class _FormCard extends StatelessWidget {
           TextField(
             controller: sleep,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Ortalama uyku (saat)',
+            decoration: InputDecoration(
+              labelText: ('Ortalama uyku (saat)').ui,
               prefixIcon: Icon(Icons.bedtime_rounded, color: AppColors.kawaiiLeafDeep),
-              hintText: 'Örn. 7.5',
+              hintText: ('Örn. 7.5').ui,
             ),
           ),
           const SizedBox(height: 16),
-          const Text('Ruh hali', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+          Text(('Ruh hali').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -629,8 +624,7 @@ class _FormCard extends StatelessWidget {
                         children: [
                           Icon(CheckInVisuals.moods[i].$1, color: CheckInVisuals.moods[i].$3, size: 22),
                           const SizedBox(height: 4),
-                          Text(
-                            CheckInVisuals.moods[i].$2,
+                          Text((CheckInVisuals.moods[i].$2).ui,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
@@ -663,7 +657,7 @@ class _FormCard extends StatelessWidget {
             color: AppColors.kawaiiLeaf,
           ),
           const SizedBox(height: 14),
-          const Text('Bu haftayı etiketle', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+          Text(('Bu haftayı etiketle').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -673,7 +667,7 @@ class _FormCard extends StatelessWidget {
                 FilterChip(
                   selected: tags.contains(t),
                   showCheckmark: false,
-                  label: Text(t, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: tags.contains(t) ? Colors.white : AppColors.kawaiiInk)),
+                  label: Text((t).ui, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: tags.contains(t) ? Colors.white : AppColors.kawaiiInk)),
                   selectedColor: AppColors.kawaiiLeaf,
                   backgroundColor: AppColors.kawaiiSurfaceCream,
                   side: BorderSide(color: tags.contains(t) ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
@@ -685,9 +679,9 @@ class _FormCard extends StatelessWidget {
           TextField(
             controller: note,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Not',
-              hintText: 'Uyku, spor, zorlandığın öğün…',
+            decoration: InputDecoration(
+              labelText: ('Not').ui,
+              hintText: ('Uyku, spor, zorlandığın öğün…').ui,
               alignLabelWithHint: true,
             ),
           ),
@@ -699,7 +693,7 @@ class _FormCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(onPressed: onClearPhoto, child: const Text('Fotoğrafı kaldır')),
+              child: TextButton(onPressed: onClearPhoto, child: Text(('Fotoğrafı kaldır').ui)),
             ),
           ] else
             SoftTap(
@@ -713,12 +707,12 @@ class _FormCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: AppColors.kawaiiOutline),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.photo_camera_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
                     SizedBox(width: 8),
-                    Text('İsteğe bağlı foto ekle', style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep)),
+                    Text(('İsteğe bağlı foto ekle').ui, style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep)),
                   ],
                 ),
               ),
@@ -735,8 +729,7 @@ class _FormCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: AppSpacing.soft,
               ),
-              child: Text(
-                saving ? 'Gönderiliyor…' : 'Check-in gönder',
+              child: Text((saving ? 'Gönderiliyor…' : 'Check-in gönder').ui,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
               ),
@@ -770,9 +763,9 @@ class _ScaleRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5, color: AppColors.kawaiiInk)),
+            Text((title).ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5, color: AppColors.kawaiiInk)),
             const Spacer(),
-            Text(valueLabel, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: color)),
+            Text((valueLabel).ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: color)),
           ],
         ),
         SliderTheme(
@@ -824,9 +817,9 @@ class _WhyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Neden haftalık?', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+                Text(('Neden haftalık?').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
                 const SizedBox(height: 4),
-                Text(tip, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.4, color: AppColors.kawaiiMuted)),
+                Text((tip).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.4, color: AppColors.kawaiiMuted)),
               ],
             ),
           ),
@@ -848,14 +841,13 @@ class _EmptyHistory extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: AppColors.kawaiiOutline),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Icon(Icons.favorite_border_rounded, size: 36, color: AppColors.kawaiiLeaf),
           SizedBox(height: 8),
-          Text('Henüz check-in yok', style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiInk)),
+          Text(('Henüz check-in yok').ui, style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.kawaiiInk)),
           SizedBox(height: 4),
-          Text(
-            'İlk kaydın burada birikir; trend kartları otomatik dolar.',
+          Text(('İlk kaydın burada birikir; trend kartları otomatik dolar.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
           ),
@@ -904,19 +896,16 @@ class _HistoryCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    DateFormat('d MMMM y', 'tr').format(log.createdAt),
+                  Text((DateFormat('d MMMM y', 'tr').format(log.createdAt)).ui,
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14.5, color: AppColors.kawaiiInk),
                   ),
                   const SizedBox(height: 3),
-                  Text(
-                    CheckInVisuals.summaryLine(log),
+                  Text((CheckInVisuals.summaryLine(log)).ui,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                   ),
                   if (wDelta != null) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      'Önceki kayda göre ${wDelta <= 0 ? '' : '+'}${wDelta.toStringAsFixed(1)} kg',
+                    Text(('Önceki kayda göre ${wDelta <= 0 ? '' : '+'}${wDelta.toStringAsFixed(1)} kg').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -926,7 +915,7 @@ class _HistoryCard extends StatelessWidget {
                   ],
                   if (log.dietitianNote != null) ...[
                     const SizedBox(height: 4),
-                    const Text('Diyetisyen yanıtı var', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiPurple)),
+                    Text(('Diyetisyen yanıtı var').ui, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiPurple)),
                   ],
                 ],
               ),
@@ -974,8 +963,7 @@ class _CheckInDetailSheet extends StatelessWidget {
                   decoration: BoxDecoration(color: AppColors.kawaiiOutline, borderRadius: BorderRadius.circular(99)),
                 ),
               ),
-              Text(
-                DateFormat('d MMMM y · HH:mm', 'tr').format(log.createdAt),
+              Text((DateFormat('d MMMM y · HH:mm', 'tr').format(log.createdAt)).ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: cartoon ? AppColors.kawaiiInk : null),
               ),
               const SizedBox(height: 14),
@@ -1004,7 +992,7 @@ class _CheckInDetailSheet extends StatelessWidget {
                   children: [
                     for (final t in log.tags)
                       Chip(
-                        label: Text(t, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                        label: Text((t).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
                         backgroundColor: cartoon ? AppColors.kawaiiMint : null,
                       ),
                   ],
@@ -1012,15 +1000,15 @@ class _CheckInDetailSheet extends StatelessWidget {
               ],
               if (log.note.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                Text('Senin notun', style: TextStyle(fontWeight: FontWeight.w900, color: cartoon ? AppColors.kawaiiInk : null)),
+                Text(('Senin notun').ui, style: TextStyle(fontWeight: FontWeight.w900, color: cartoon ? AppColors.kawaiiInk : null)),
                 const SizedBox(height: 6),
-                Text(log.note, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+                Text((log.note).ui, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
               ],
               if (log.dietitianNote != null) ...[
                 const SizedBox(height: 16),
-                Text('Diyetisyen notu', style: TextStyle(fontWeight: FontWeight.w900, color: cartoon ? AppColors.kawaiiInk : null)),
+                Text(('Diyetisyen notu').ui, style: TextStyle(fontWeight: FontWeight.w900, color: cartoon ? AppColors.kawaiiInk : null)),
                 const SizedBox(height: 6),
-                Text(log.dietitianNote!, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+                Text((log.dietitianNote!).ui, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
               ],
               if (log.photoPath != null && File(log.photoPath!).existsSync()) ...[
                 const SizedBox(height: 16),
@@ -1055,8 +1043,8 @@ class _DetailPill extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+          Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+          Text((value).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
         ],
       ),
     );

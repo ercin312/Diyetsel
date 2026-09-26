@@ -16,6 +16,7 @@ import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'soft_badges_screen.dart';
 import 'widgets/soft_badges_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class BadgeCelebration {
   static Future<void> show(BuildContext context, BadgeDef badge) {
@@ -77,8 +78,7 @@ class BadgeCelebration {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        'Yeni rozet!',
+                      Text(('Yeni rozet!').ui,
                         style: TextStyle(
                           color: cartoon ? AppColors.kawaiiInk : Colors.white70,
                           fontWeight: FontWeight.w800,
@@ -88,10 +88,9 @@ class BadgeCelebration {
                       if (cartoon)
                         KawaiiDoodle(kind: KawaiiKind.sparkle, size: 88)
                       else
-                        Text(badge.emoji, style: const TextStyle(fontSize: 72)),
+                        Text((badge.emoji).ui, style: const TextStyle(fontSize: 72)),
                       const SizedBox(height: 12),
-                      Text(
-                        badge.title,
+                      Text((badge.title).ui,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: cartoon ? AppColors.kawaiiInk : Colors.white,
@@ -100,8 +99,7 @@ class BadgeCelebration {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        badge.subtitle,
+                      Text((badge.subtitle).ui,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: cartoon
@@ -182,11 +180,10 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('$earned / ${badges.length} rozet', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
-                      Text(
-                        next != null
+                      Text(('$earned / ${badges.length} rozet').ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+                      Text((next != null
                             ? 'Sıradaki: ${next.badge.title} · %${(next.ratio * 100).round()}'
-                            : 'Su, check-in, fotoğraf ve mini ders serileriyle kazan',
+                            : 'Su, check-in, fotoğraf ve mini ders serileriyle kazan').ui,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -245,8 +242,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        option,
+                      child: Text((option).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -265,17 +261,15 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
               color: AppColors.kawaiiBubble,
               child: Column(
                 children: [
-                  const Text('🔒', style: TextStyle(fontSize: 36)),
+                  Text(('🔒').ui, style: TextStyle(fontSize: 36)),
                   const SizedBox(height: 8),
-                  Text(
-                    'Bu filtrede rozet yok',
+                  Text(('Bu filtrede rozet yok').ui,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    _filter == 'Kazanılan'
+                  Text((_filter == 'Kazanılan'
                         ? 'Henüz rozet kazanmadın — küçük günlük adımlar seni buraya getirir.'
-                        : 'Filtreyi değiştir veya hedeflerine doğru ilerlemeye devam et.',
+                        : 'Filtreyi değiştir veya hedeflerine doğru ilerlemeye devam et.').ui,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -322,9 +316,9 @@ class _CartoonBadgeStatChip extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
+          Text((value).ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
           const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
+          Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
         ],
       ),
     );
@@ -366,22 +360,22 @@ class _BadgeCard extends StatelessWidget {
                       : null,
                 ),
                 alignment: Alignment.center,
-                child: Text(b.emoji, style: const TextStyle(fontSize: 26)),
+                child: Text((b.emoji).ui, style: const TextStyle(fontSize: 26)),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(b.title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
-                    Text(b.subtitle, style: Theme.of(context).textTheme.bodySmall),
+                    Text((b.title).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+                    Text((b.subtitle).ui, style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
               if (item.earned)
                 const DoodleBadge(label: 'Kazanıldı', emoji: '⭐')
               else
-                Text('${item.current}/${b.target}', style: TextStyle(color: b.tint, fontWeight: FontWeight.w900)),
+                Text(('${item.current}/${b.target}').ui, style: TextStyle(color: b.tint, fontWeight: FontWeight.w900)),
             ],
           ),
           const SizedBox(height: 12),
@@ -421,15 +415,14 @@ class BadgeHomeStrip extends ConsumerWidget {
       onTap: () => context.push('/app/badges'),
       child: Row(
         children: [
-          Text(focus.badge.emoji, style: const TextStyle(fontSize: 28)),
+          Text((focus.badge.emoji).ui, style: const TextStyle(fontSize: 28)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(focus.badge.title, style: const TextStyle(fontWeight: FontWeight.w900)),
-                Text(
-                  '${focus.current}/${focus.badge.target} • ${focus.badge.subtitle}',
+                Text((focus.badge.title).ui, style: const TextStyle(fontWeight: FontWeight.w900)),
+                Text(('${focus.current}/${focus.badge.target} • ${focus.badge.subtitle}').ui,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall,

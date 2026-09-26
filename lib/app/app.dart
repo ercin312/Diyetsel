@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes/app_router.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_controller.dart';
+import '../core/l10n/ui_string.dart';
 import '../core/data/app_store.dart';
 import '../core/utils/desktop.dart';
 import '../core/utils/smart_notification_service.dart';
@@ -18,19 +19,18 @@ class DiyetselApp extends ConsumerWidget {
     final theme = ref.watch(themeControllerProvider);
     final router = ref.watch(routerProvider);
     final light = AppTheme.build(brightness: Brightness.light, style: theme.style);
-    final dark = AppTheme.build(brightness: Brightness.dark, style: theme.style);
     return AppLifecycleSync(
       child: MaterialApp.router(
         title: 'e-Diyet',
         debugShowCheckedModeBanner: false,
         theme: light,
-        darkTheme: dark,
-        themeMode: theme.mode,
+        themeMode: ThemeMode.light,
         routerConfig: router,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         builder: (context, child) {
+          UiLang.code = context.locale.languageCode;
           final themed = Theme.of(context);
           final desktop = isDesktopOs && MediaQuery.sizeOf(context).width >= 760;
           return Theme(

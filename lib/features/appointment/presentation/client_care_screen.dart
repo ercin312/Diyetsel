@@ -15,6 +15,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
 import 'soft_client_care_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class ClientCareScreen extends ConsumerWidget {
   const ClientCareScreen({super.key, required this.clientId});
@@ -53,8 +54,8 @@ class ClientCareScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(client.displayName, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
-                        Text(client.email, style: Theme.of(context).textTheme.bodySmall),
+                        Text((client.displayName).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+                        Text((client.email).ui, style: Theme.of(context).textTheme.bodySmall),
                       ],
                     ),
                   ),
@@ -74,8 +75,8 @@ class ClientCareScreen extends ConsumerWidget {
             child: SwitchListTile(
               contentPadding: EdgeInsets.zero,
               secondary: const StyleIcon(icon: Icons.verified_user, emoji: '✅', size: 22),
-              title: const Text('Hesap aktif', style: TextStyle(fontWeight: FontWeight.w800)),
-              subtitle: const Text('Kapalıysa danışan giriş yapamaz'),
+              title: Text(('Hesap aktif').ui, style: TextStyle(fontWeight: FontWeight.w800)),
+              subtitle: Text(('Kapalıysa danışan giriş yapamaz').ui),
               value: client.isActive,
               onChanged: (v) => store.saveUser(client.copyWith(isActive: v)),
             ),
@@ -91,8 +92,7 @@ class ClientCareScreen extends ConsumerWidget {
                   children: [
                     StyleIcon(icon: Icons.water_drop_rounded, emoji: '💧', size: 24, color: context.brandPrimary),
                     const SizedBox(width: 10),
-                    Text(
-                      '${liters.toStringAsFixed(2)} L  •  ${client.waterGoalMl} ml',
+                    Text(('${liters.toStringAsFixed(2)} L  •  ${client.waterGoalMl} ml').ui,
                       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
                     ),
                   ],
@@ -110,7 +110,7 @@ class ClientCareScreen extends ConsumerWidget {
                   children: [
                     for (final preset in [1.5, 2.0, 2.5, 3.0, 3.5])
                       ActionChip(
-                        label: Text('${preset.toStringAsFixed(1)} L'),
+                        label: Text(('${preset.toStringAsFixed(1)} L').ui),
                         onPressed: () => store.setWaterGoal(client.id, (preset * 1000).round()),
                       ),
                   ],
@@ -130,8 +130,8 @@ class ClientCareScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Haftalık / aylık rapor', style: TextStyle(fontWeight: FontWeight.w900)),
-                      Text('Su, diyet uyumu, kilo ve seans özeti', style: Theme.of(context).textTheme.bodySmall),
+                      Text(('Haftalık / aylık rapor').ui, style: TextStyle(fontWeight: FontWeight.w900)),
+                      Text(('Su, diyet uyumu, kilo ve seans özeti').ui, style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 ),
@@ -149,8 +149,8 @@ class ClientCareScreen extends ConsumerWidget {
                 for (final c in store.checkIns(userId: client.id).take(3))
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(DateFormat('d MMM y', 'tr').format(c.createdAt), style: const TextStyle(fontWeight: FontWeight.w800)),
-                    subtitle: Text(c.dietitianNote ?? (c.note.isEmpty ? 'Henüz not yok' : c.note)),
+                    title: Text((DateFormat('d MMM y', 'tr').format(c.createdAt)).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text((c.dietitianNote ?? (c.note.isEmpty ? 'Henüz not yok' : c.note)).ui),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit_note_rounded),
                       onPressed: () => _noteCheckIn(context, store, c),
@@ -173,9 +173,8 @@ class ClientCareScreen extends ConsumerWidget {
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     secondary: StyleIcon(icon: AppModule.icon(id), emoji: AppModule.emoji(id), size: 20),
-                    title: Text(AppModule.label(id), style: const TextStyle(fontWeight: FontWeight.w800)),
-                    subtitle: Text(
-                      clinic[id] == false ? 'Klinik genelinde kapalı' : AppModule.subtitle(id),
+                    title: Text((AppModule.label(id)).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text((clinic[id] == false ? 'Klinik genelinde kapalı' : AppModule.subtitle(id)).ui,
                     ),
                     value: store.moduleOn(client.id, id),
                     onChanged: clinic[id] == false
@@ -195,14 +194,14 @@ class ClientCareScreen extends ConsumerWidget {
     final note = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Diyetisyen notu'),
+        title: Text(('Diyetisyen notu').ui),
         content: TextField(
           controller: controller,
           maxLines: 4,
-          decoration: const InputDecoration(hintText: 'Bugün harika gidiyorsun...'),
+          decoration: InputDecoration(hintText: ('Bugün harika gidiyorsun...').ui),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(('İptal').ui)),
           DiyetselButton(
             label: 'Gönder',
             expanded: false,
@@ -220,7 +219,7 @@ class ClientCareScreen extends ConsumerWidget {
       'Diyetisyenin bugün senin için bir not bıraktı: $note',
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Not kaydedildi ve bildirim sıraya alındı')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(('Not kaydedildi ve bildirim sıraya alındı').ui)));
     }
   }
 }

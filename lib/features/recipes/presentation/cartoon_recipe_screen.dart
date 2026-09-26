@@ -10,6 +10,7 @@ import '../../../core/utils/recipe_logic.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'recipe_editor_screen.dart';
 import 'widgets/cartoon_recipe_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Cartoon / kawaii recipes hub — feature parity with SoftRecipesScreen.
 class CartoonRecipesScreen extends ConsumerStatefulWidget {
@@ -258,8 +259,7 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Text(
-                          'Tüm tarifler',
+                        Text(('Tüm tarifler').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 16,
@@ -273,8 +273,7 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
                             color: AppColors.kawaiiLeaf.withValues(alpha: 0.14),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: Text(
-                            '${filtered.length - 1}',
+                          child: Text(('${filtered.length - 1}').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 11.5,
@@ -373,14 +372,14 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
                 final ok = await showDialog<bool>(
                   context: context,
                   builder: (dCtx) => AlertDialog(
-                    title: const Text('Tarifi sil'),
-                    content: Text('“${recipe.title}” silinsin mi?'),
+                    title: Text(('Tarifi sil').ui),
+                    content: Text(('“${recipe.title}” silinsin mi?').ui),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Vazgeç')),
+                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: Text(('Vazgeç').ui)),
                       FilledButton(
                         onPressed: () => Navigator.pop(dCtx, true),
                         style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
-                        child: const Text('Sil'),
+                        child: Text(('Sil').ui),
                       ),
                     ],
                   ),

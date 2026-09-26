@@ -5,6 +5,7 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_spacing.dart';
 import '../../app/theme/app_theme.dart';
 import '../utils/desktop.dart';
+import '../l10n/ui_string.dart';
 
 /// Prefer GoRouter pop; if the stack is empty, jump to admin/client home.
 void navigateBackOrHome(BuildContext context) {
@@ -75,8 +76,7 @@ class SoftNavBackButton extends StatelessWidget {
                   Icon(icon, color: AppColors.primary.withValues(alpha: 0.8), size: 22),
                   if (desktop && showLabelOnDesktop) ...[
                     const SizedBox(width: 8),
-                    Text(
-                      label,
+                    Text((label).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 13,
@@ -115,8 +115,7 @@ class AppPageNavButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: () => navigateBackOrHome(context),
       icon: Icon(icon, size: 20, color: fg),
-      label: Text(
-        label,
+      label: Text((label).ui,
         style: TextStyle(
           fontWeight: FontWeight.w800,
           color: fg,

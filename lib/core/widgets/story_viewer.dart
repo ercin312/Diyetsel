@@ -7,6 +7,7 @@ import '../../app/theme/app_theme.dart';
 import 'kawaii_doodle.dart';
 import 'modern_glyph.dart';
 import 'style_icon.dart';
+import '../l10n/ui_string.dart';
 
 class StoryPageData {
   const StoryPageData({
@@ -183,8 +184,7 @@ class _StoryAvatar extends StatelessWidget {
                               color: Colors.white))),
               ]),
             const SizedBox(height: 6),
-            Text(
-              item.label,
+            Text((item.label).ui,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -389,8 +389,7 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                                 ModernIconTile(kind: bundle.kind, color: Colors.white, size: 42, inverted: true),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text(
-                                  bundle.label,
+                                child: Text((bundle.label).ui,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w900,
@@ -406,8 +405,7 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                                 ? KawaiiTile(kind: page.kind, size: 120)
                                 : ModernIconTile(kind: page.kind, color: Colors.white, size: 96, inverted: true)),
                           const SizedBox(height: 28),
-                          Text(
-                            page.title,
+                          Text((page.title).ui,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
@@ -415,8 +413,7 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                               height: 1.1,
                               letterSpacing: null)),
                           const SizedBox(height: 8),
-                          Text(
-                            page.subtitle,
+                          Text((page.subtitle).ui,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.92),
                               fontSize: 18,
@@ -425,8 +422,7 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                               letterSpacing: null)),
                           if (page.detail != null) ...[
                             const SizedBox(height: 10),
-                            Text(
-                              page.detail!,
+                            Text((page.detail!).ui,
                               style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15, height: 1.35)),
                           ],
                           const SizedBox(height: 28),
@@ -450,14 +446,12 @@ class _StoryViewerState extends State<StoryViewer> with SingleTickerProviderStat
                                 Navigator.pop(context);
                                 context.push(page.ctaRoute!);
                               },
-                              child: Text(
-                                page.ctaLabel!,
+                              child: Text((page.ctaLabel!).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: null))),
                           const SizedBox(height: 12),
-                          Text(
-                            'Basılı tut  •  sağ / sol dokun',
+                          Text(('Basılı tut  •  sağ / sol dokun').ui,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.55),
                               fontSize: 12,

@@ -11,6 +11,7 @@ import '../../../core/widgets/module_gate.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_eat_out_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern "Dışarıda ne yesem?" hub.
 class SoftEatOutScreen extends ConsumerStatefulWidget {
@@ -83,8 +84,7 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
                 .animate()
                 .fadeIn(delay: 90.ms, duration: 280.ms),
             const SizedBox(height: 16),
-            Text(
-              fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler',
+            Text((fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 17,
@@ -92,8 +92,7 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              '${shown.length} seçenek · kalan $remaining kcal',
+            Text(('${shown.length} seçenek · kalan $remaining kcal').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 12.5,
@@ -137,8 +136,7 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    const Text(
-                      'Diğer seçenekler',
+                    Text(('Diğer seçenekler').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
@@ -152,8 +150,7 @@ class _SoftEatOutScreenState extends ConsumerState<SoftEatOutScreen> {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(
-                        '${shown.length - 1}',
+                      child: Text(('${shown.length - 1}').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 11.5,

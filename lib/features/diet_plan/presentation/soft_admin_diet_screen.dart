@@ -15,6 +15,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../core/widgets/nav_back.dart';
+import '../../../core/l10n/ui_string.dart';
 
 
 /// Soft premium admin diet plans hub.
@@ -52,13 +53,12 @@ class SoftAdminDietScreen extends ConsumerWidget {
               ),
             ],
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.upload_file_rounded, color: Colors.white, size: 20),
               SizedBox(width: 8),
-              Text(
-                'Word yükle',
+              Text(('Word yükle').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
@@ -121,8 +121,7 @@ class SoftAdminDietScreen extends ConsumerWidget {
                               color: AppColors.primary.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(999),
                             ),
-                            child: const Text(
-                              'Word ile plan ata',
+                            child: Text(('Word ile plan ata').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 11.5,
@@ -131,8 +130,7 @@ class SoftAdminDietScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'Doküman yükle',
+                          Text(('Doküman yükle').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 20,
@@ -140,8 +138,7 @@ class SoftAdminDietScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            'Kahvaltı, ara öğün, öğle… başlıklı .docx seç veya sürükle.',
+                          Text(('Kahvaltı, ara öğün, öğle… başlıklı .docx seç veya sürükle.').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
@@ -170,8 +167,7 @@ class SoftAdminDietScreen extends ConsumerWidget {
                   duration: 380.ms,
                 ),
             const SizedBox(height: 18),
-            Text(
-              'Atanmış planlar',
+            Text(('Atanmış planlar').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 17,
@@ -179,8 +175,7 @@ class SoftAdminDietScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              'Danışanlara yüklenen haftalık listeler',
+            Text(('Danışanlara yüklenen haftalık listeler').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 12.5,
@@ -229,12 +224,11 @@ class _Header extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Diyet planları',
+              Text(('Diyet planları').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -243,8 +237,7 @@ class _Header extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Word yükle ve danışana ata',
+              Text(('Word yükle ve danışana ata').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -300,8 +293,7 @@ class _PlanTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             alignment: Alignment.center,
-            child: Text(
-              plan.clientName.isNotEmpty ? plan.clientName[0].toUpperCase() : '?',
+            child: Text((plan.clientName.isNotEmpty ? plan.clientName[0].toUpperCase() : '?').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
@@ -314,8 +306,7 @@ class _PlanTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  plan.clientName,
+                Text((plan.clientName).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 15.5,
@@ -323,8 +314,7 @@ class _PlanTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  plan.title,
+                Text((plan.title).ui,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -334,8 +324,7 @@ class _PlanTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${DateFormat('d MMM y', 'tr').format(plan.weekStart)} · ${plan.days.isEmpty ? 0 : plan.days.first.meals.length} öğün',
+                Text(('${DateFormat('d MMM y', 'tr').format(plan.weekStart)} · ${plan.days.isEmpty ? 0 : plan.days.first.meals.length} öğün').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 12,
@@ -370,8 +359,7 @@ class _Empty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.4),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Henüz plan yok',
+          Text(('Henüz plan yok').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -379,8 +367,7 @@ class _Empty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'İlk Word belgeni yükleyerek başla.',
+          Text(('İlk Word belgeni yükleyerek başla.').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary.withValues(alpha: 0.55),

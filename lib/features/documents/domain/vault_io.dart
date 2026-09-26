@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../core/models/models.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class VaultVisuals {
   VaultVisuals._();
@@ -146,7 +147,7 @@ class VaultIO {
     if (!await f.exists()) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dosya bulunamadı. Yeniden yüklemeyi dene.')),
+          SnackBar(content: Text(('Dosya bulunamadı. Yeniden yüklemeyi dene.').ui)),
         );
       }
       return;

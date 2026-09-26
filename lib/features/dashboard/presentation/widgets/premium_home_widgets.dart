@@ -8,6 +8,7 @@ import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/widgets/cartoon_asset_icon.dart';
 import '../../../../core/widgets/cartoon_glyph.dart';
 import '../../domain/home_feed_models.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 class SoftTap extends StatefulWidget {
   const SoftTap({super.key, required this.child, this.onTap, this.borderRadius});
@@ -59,8 +60,7 @@ class DiyetselLogoMark extends StatelessWidget {
       width: height,
       fit: BoxFit.cover,
       filterQuality: FilterQuality.high,
-      errorBuilder: (_, _, _) => Text(
-        'e-Diyet',
+      errorBuilder: (_, _, _) => Text(('e-Diyet').ui,
         style: TextStyle(
           fontSize: height * 0.72,
           fontWeight: FontWeight.w900,
@@ -134,8 +134,7 @@ class PremiumSearchBar extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(
-                hint,
+              child: Text((hint).ui,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -187,8 +186,7 @@ class ShortcutRail extends StatelessWidget {
                     radius: 18,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    item.title,
+                  Text((item.title).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
@@ -249,8 +247,7 @@ class HeroPlanCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
+                  Text((title).ui,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
@@ -259,8 +256,7 @@ class HeroPlanCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    subtitle,
+                  Text((subtitle).ui,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -278,8 +274,7 @@ class HeroPlanCard extends StatelessWidget {
                         BoxShadow(color: AppColors.kawaiiGlow, blurRadius: 12, offset: Offset(0, 4)),
                       ],
                     ),
-                    child: Text(
-                      ctaLabel,
+                    child: Text((ctaLabel).ui,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -342,8 +337,7 @@ class QuickActionGrid extends StatelessWidget {
                       iconSize: 24,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      items[i].title,
+                    Text((items[i].title).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 12,
@@ -386,8 +380,7 @@ class FeaturedRecipeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (recipe.sectionLabel.isNotEmpty)
-              Text(
-                recipe.sectionLabel,
+              Text((recipe.sectionLabel).ui,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -402,8 +395,7 @@ class FeaturedRecipeCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        recipe.title,
+                      Text((recipe.title).ui,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
@@ -411,8 +403,7 @@ class FeaturedRecipeCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        recipe.subtitle,
+                      Text((recipe.subtitle).ui,
                         style: const TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
@@ -438,8 +429,7 @@ class FeaturedRecipeCard extends StatelessWidget {
                             color: AppColors.kawaiiCoral,
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: Text(
-                            recipe.badge,
+                          child: Text((recipe.badge).ui,
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w800,
@@ -473,8 +463,7 @@ class FeaturedRecipeCard extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        '$emoji $text',
+      child: Text(('$emoji $text').ui,
         style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiInk),
       ),
     );
@@ -501,11 +490,11 @@ class LessonCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(lesson.title, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiPurple)),
+            Text((lesson.title).ui, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiPurple)),
             const SizedBox(height: 4),
-            Text(lesson.headline, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.kawaiiInk, height: 1.2)),
+            Text((lesson.headline).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.kawaiiInk, height: 1.2)),
             const SizedBox(height: 2),
-            Text(lesson.subtitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted)),
+            Text((lesson.subtitle).ui, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted)),
             const Spacer(),
             Row(
               children: [
@@ -546,9 +535,9 @@ class StreakCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(streak.title, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiSkyBlue)),
+            Text((streak.title).ui, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiSkyBlue)),
             const SizedBox(height: 4),
-            Text(streak.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.kawaiiInk, height: 1.2)),
+            Text((streak.subtitle).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.kawaiiInk, height: 1.2)),
             const Spacer(),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -567,7 +556,7 @@ class StreakCard extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Text('${streak.progress}/${streak.total}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiInk)),
+                Text(('${streak.progress}/${streak.total}').ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiInk)),
                 const Spacer(),
                 Image.asset(streak.imageAsset, width: 52, height: 52, fit: BoxFit.contain, errorBuilder: (_, _, _) => const SizedBox()),
               ],
@@ -609,8 +598,8 @@ class ProgressChipRow extends StatelessWidget {
                       fallbackColor: items[i].accent,
                     ),
                     const SizedBox(height: 4),
-                    Text(items[i].value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk)),
-                    Text(items[i].label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+                    Text((items[i].value).ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk)),
+                    Text((items[i].label).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
                   ],
                 ),
               ),
@@ -633,8 +622,7 @@ class SectionHeaderRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(
-            title,
+          child: Text((title).ui,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.kawaiiInk),
           ),
         ),
@@ -646,7 +634,7 @@ class SectionHeaderRow extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          child: const Text('Tümü →', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+          child: Text(('Tümü →').ui, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
         ),
       ],
     );
@@ -677,12 +665,12 @@ class CampaignCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(campaign.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: AppColors.kawaiiInk, height: 1.2)),
+                  Text((campaign.title).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: AppColors.kawaiiInk, height: 1.2)),
                   const SizedBox(height: 4),
-                  Text(campaign.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted)),
+                  Text((campaign.subtitle).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted)),
                   const Spacer(),
                   if (campaign.price.isNotEmpty)
-                    Text(campaign.price, style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep, fontSize: 13)),
+                    Text((campaign.price).ui, style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep, fontSize: 13)),
                 ],
               ),
             ),
@@ -721,10 +709,9 @@ class RecipeThumbCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(recipe.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk, height: 1.2)),
+            Text((recipe.title).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk, height: 1.2)),
             const SizedBox(height: 4),
-            Text(
-              '${recipe.kcal} kcal · ${recipe.minutes} dk',
+            Text(('${recipe.kcal} kcal · ${recipe.minutes} dk').ui,
               style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
             ),
           ],
@@ -759,10 +746,10 @@ class ArticleCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (article.tag.isNotEmpty)
-                    Text(article.tag, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiLeafDeep)),
-                  Text(article.title, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk, height: 1.25)),
+                    Text((article.tag).ui, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.kawaiiLeafDeep)),
+                  Text((article.title).ui, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk, height: 1.25)),
                   const Spacer(),
-                  Text(article.subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, color: AppColors.kawaiiMuted, fontWeight: FontWeight.w600)),
+                  Text((article.subtitle).ui, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11.5, color: AppColors.kawaiiMuted, fontWeight: FontWeight.w600)),
                 ],
               ),
             ),

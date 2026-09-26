@@ -12,6 +12,7 @@ import '../../../core/utils/pdf_report.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_admin_home_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium admin home — clinic KPIs, shortcuts, quiet clients, payments.
 class SoftAdminHomeScreen extends ConsumerWidget {
@@ -29,7 +30,7 @@ class SoftAdminHomeScreen extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Ödeme kaydı'),
+        title: Text(('Ödeme kaydı').ui),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -37,23 +38,23 @@ class SoftAdminHomeScreen extends ConsumerWidget {
               initialValue: client,
               items: [
                 for (final c in clients)
-                  DropdownMenuItem(value: c, child: Text(c.displayName)),
+                  DropdownMenuItem(value: c, child: Text((c.displayName).ui)),
               ],
               onChanged: (v) => client = v ?? client,
             ),
             TextField(
               controller: amount,
-              decoration: const InputDecoration(labelText: 'Tutar'),
+              decoration: InputDecoration(labelText: ('Tutar').ui),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: note,
-              decoration: const InputDecoration(labelText: 'Not'),
+              decoration: InputDecoration(labelText: ('Not').ui),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(('Vazgeç').ui)),
           FilledButton(
             onPressed: () async {
               await ref.read(appStoreProvider).savePayment(
@@ -69,7 +70,7 @@ class SoftAdminHomeScreen extends ConsumerWidget {
                   );
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Kaydet'),
+            child: Text(('Kaydet').ui),
           ),
         ],
       ),

@@ -13,6 +13,7 @@ import 'diyetsel_widgets.dart';
 import 'kawaii_doodle.dart';
 import 'modern_glyph.dart';
 import 'style_icon.dart';
+import '../l10n/ui_string.dart';
 
 class PromoSlide {
   const PromoSlide({
@@ -187,16 +188,14 @@ class _PromoSliderState extends State<PromoSlider> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    slide.title,
+                                  Text((slide.title).ui,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: AppColors.kawaiiInk,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 17)),
-                                  Text(
-                                    slide.subtitle,
+                                  Text((slide.subtitle).ui,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -215,8 +214,7 @@ class _PromoSliderState extends State<PromoSlider> {
                                           blurRadius: 12,
                                           offset: Offset(0, 4)),
                                       ]),
-                                    child: Text(
-                                      slide.cta,
+                                    child: Text((slide.cta).ui,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w800,
@@ -301,8 +299,7 @@ class _PromoSliderState extends State<PromoSlider> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                slide.title,
+                              Text((slide.title).ui,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -311,8 +308,7 @@ class _PromoSliderState extends State<PromoSlider> {
                                   letterSpacing: -0.2,
                                   color: cartoon ? AppColors.kawaiiInk : null)),
                               SizedBox(height: cartoon ? 4 : 2),
-                              Text(
-                                slide.subtitle,
+                              Text((slide.subtitle).ui,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context).textTheme.bodySmall),
@@ -372,8 +368,7 @@ class _PromoSliderState extends State<PromoSlider> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            slide.title,
+                          Text((slide.title).ui,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -381,8 +376,7 @@ class _PromoSliderState extends State<PromoSlider> {
                                   fontWeight: FontWeight.w600,
                                   height: 1.15)),
                           const SizedBox(height: 6),
-                          Text(
-                            slide.subtitle,
+                          Text((slide.subtitle).ui,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -402,8 +396,7 @@ class _PromoSliderState extends State<PromoSlider> {
                                   blurRadius: 12,
                                   offset: const Offset(0, 4)),
                               ]),
-                            child: Text(
-                              slide.cta,
+                            child: Text((slide.cta).ui,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -498,8 +491,7 @@ class CategoryShortcuts extends StatelessWidget {
               else
                 ModernIconTile(kind: kind, size: 48),
               SizedBox(height: cartoon ? 10 : 6),
-              Text(
-                item.label,
+              Text((item.label).ui,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -567,8 +559,7 @@ class CategoryShortcuts extends StatelessWidget {
                                 ? AppColors.modernSage
                                 : item.tint),
                       SizedBox(width: cartoon ? 10 : 8),
-                      Text(
-                        item.label,
+                      Text((item.label).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
@@ -640,8 +631,7 @@ class CategoryStrip extends StatelessWidget {
                                   ? AppColors.modernSage
                                   : item.tint),
                         SizedBox(width: cartoon ? 10 : 8),
-                        Text(
-                          item.label,
+                        Text((item.label).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -671,8 +661,7 @@ class CategoryStrip extends StatelessWidget {
             children: [
               KawaiiTile(kind: KawaiiKindX.from(icon: item.icon, emoji: item.emoji), size: 62),
               const SizedBox(height: 8),
-              Text(
-                item.label,
+              Text((item.label).ui,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -723,8 +712,7 @@ class CategoryStrip extends StatelessWidget {
                     ModernIconTile(kind: kind, size: 44),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        item.label,
+                      child: Text((item.label).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -776,16 +764,14 @@ class TodayStrip extends StatelessWidget {
                 children: [
                   KawaiiTile(kind: items[i].kind, size: 44),
                   const SizedBox(height: 10),
-                  Text(
-                    items[i].value,
+                  Text((items[i].value).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
                       color: AppColors.kawaiiInk)),
-                  Text(
-                    items[i].label,
+                  Text((items[i].label).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -813,8 +799,7 @@ class TodayStrip extends StatelessWidget {
                 children: [
                   ModernIconTile(kind: items[i].kind, size: 40),
                   const SizedBox(height: 10),
-                  Text(
-                    items[i].value,
+                  Text((items[i].value).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -822,8 +807,7 @@ class TodayStrip extends StatelessWidget {
                       fontSize: 15,
                       letterSpacing: -0.2,
                       color: ModernPalette.accent(items[i].kind))),
-                  Text(
-                    items[i].label,
+                  Text((items[i].label).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -860,8 +844,7 @@ class WaterProgressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Su: $amountMl / $goalMl ml',
+                Text(('Su: $amountMl / $goalMl ml').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
@@ -893,8 +876,7 @@ class WaterProgressCard extends StatelessWidget {
                               blurRadius: 14,
                               offset: Offset(0, 5)),
                           ]),
-                        child: const Text(
-                          'Takip',
+                        child: Text(('Takip').ui,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,
@@ -924,7 +906,7 @@ class HorizontalRail extends StatelessWidget {
         children: [
           SectionHeader(
             title: title,
-            action: TextButton(onPressed: onSeeAll, child: const Text('Tümü'))),
+            action: TextButton(onPressed: onSeeAll, child: Text(('Tümü').ui))),
           LayoutBuilder(
             builder: (context, constraints) {
               final cols = constraints.maxWidth >= 1000 ? 4 : 3;
@@ -946,7 +928,7 @@ class HorizontalRail extends StatelessWidget {
       children: [
         SectionHeader(
           title: title,
-          action: TextButton(onPressed: onSeeAll, child: const Text('Tümü'))),
+          action: TextButton(onPressed: onSeeAll, child: Text(('Tümü').ui))),
         SizedBox(
           height: context.isCartoon ? 176 : 168,
           child: ListView.separated(
@@ -1003,8 +985,7 @@ class ProductTile extends StatelessWidget {
                   children: [
                     KawaiiTile(kind: kind, size: desktop ? 42 : 54),
                     if (desktop) const SizedBox(height: 12) else const Spacer(),
-                    Text(
-                      title,
+                    Text((title).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -1013,8 +994,7 @@ class ProductTile extends StatelessWidget {
                         height: 1.25,
                         color: AppColors.kawaiiInk)),
                     const SizedBox(height: 4),
-                    Text(
-                      meta,
+                    Text((meta).ui,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1034,8 +1014,7 @@ class ProductTile extends StatelessWidget {
           children: [
                           ModernIconTile(kind: kind, size: desktop ? 36 : 46),
             if (desktop) const SizedBox(height: 10) else const Spacer(),
-            Text(
-              title,
+            Text((title).ui,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -1044,8 +1023,7 @@ class ProductTile extends StatelessWidget {
                 letterSpacing: -0.2,
                 height: 1.25)),
             const SizedBox(height: 4),
-            Text(
-              meta,
+            Text((meta).ui,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1081,7 +1059,7 @@ class MarketSearchBar extends StatelessWidget {
             : ((dark || desktop) ? null : AppColors.lightInk),
         letterSpacing: null),
       decoration: InputDecoration(
-        hintText: hint,
+        hintText: (hint).ui,
         hintStyle: TextStyle(
           color: cartoon
               ? AppColors.kawaiiInk.withValues(alpha: 0.45)
@@ -1189,14 +1167,12 @@ class MarketHeroHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      greeting,
+                    Text((greeting).ui,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.4)),
                     const SizedBox(height: 2),
-                    Text(
-                      subtitle,
+                    Text((subtitle).ui,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: modern ? AppColors.lightMuted : scheme.onSurfaceVariant,
                             letterSpacing: null)),
@@ -1209,7 +1185,7 @@ class MarketHeroHeader extends StatelessWidget {
   }
 
   Widget _cartoon(BuildContext context) {
-    const onHero = AppColors.kawaiiInk;
+    final onHero = AppColors.kawaiiInk;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -1243,8 +1219,7 @@ class MarketHeroHeader extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    'e-Diyet',
+                  Text(('e-Diyet').ui,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: onHero,
                           fontWeight: FontWeight.w800,
@@ -1255,15 +1230,13 @@ class MarketHeroHeader extends StatelessWidget {
                   ?trailing,
                 ]),
               const SizedBox(height: 16),
-              Text(
-                greeting,
+              Text((greeting).ui,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: onHero,
                       fontWeight: FontWeight.w700,
                       height: 1.15)),
               const SizedBox(height: 6),
-              Text(
-                subtitle,
+              Text((subtitle).ui,
                 style: TextStyle(
                   color: onHero.withValues(alpha: 0.68),
                   fontWeight: FontWeight.w600)),
@@ -1289,7 +1262,7 @@ class MarketHeroHeader extends StatelessWidget {
                   AppColors.modernSageSoft,
                   Color(0xFFE8F2EB),
                 ],
-          stops: dark ? null : const [0, 0.5, 1])),
+          stops: dark ? null : [0, 0.5, 1])),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -1315,8 +1288,7 @@ class MarketHeroHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      'e-Diyet',
+                    child: Text(('e-Diyet').ui,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: AppColors.primaryDeep,
                             fontWeight: FontWeight.w600,
@@ -1339,15 +1311,13 @@ class MarketHeroHeader extends StatelessWidget {
                       child: trailing!),
                 ]),
               const SizedBox(height: 16),
-              Text(
-                greeting,
+              Text((greeting).ui,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.lightInk,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.2)),
               const SizedBox(height: 4),
-              Text(
-                subtitle,
+              Text((subtitle).ui,
                 style: TextStyle(
                   color: AppColors.lightMuted.withValues(alpha: 0.95),
                   fontWeight: FontWeight.w500,

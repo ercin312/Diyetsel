@@ -4,6 +4,7 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
 import '../utils/desktop.dart';
 import 'nav_back.dart';
+import '../l10n/ui_string.dart';
 
 class AppPage extends StatelessWidget {
   const AppPage({
@@ -62,8 +63,7 @@ class AppPage extends StatelessWidget {
                         const SizedBox(width: 8),
                       ],
                       Expanded(
-                        child: Text(
-                          title,
+                        child: Text((title).ui,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                 fontWeight: cartoon ? FontWeight.w900 : FontWeight.w700,
                                 letterSpacing: cartoon ? 0.1 : -0.4,
@@ -93,8 +93,7 @@ class AppPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          title,
+        title: Text((title).ui,
           style: cartoon
               ? Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w900,
@@ -104,7 +103,7 @@ class AppPage extends StatelessWidget {
         ),
         leading: showBack
             ? IconButton(
-                tooltip: canNavigateBack(context) ? 'Geri' : 'Ana sayfa',
+                tooltip: (canNavigateBack(context) ? 'Geri' : 'Ana sayfa').ui,
                 icon: Icon(
                   canNavigateBack(context) ? Icons.arrow_back_rounded : Icons.home_rounded,
                 ),

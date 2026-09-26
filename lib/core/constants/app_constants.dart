@@ -1,6 +1,7 @@
 class AppConstants {
   static const String appName = 'e-Diyet';
   static const String demoAdminEmail = 'diyetisyen@diyetsel.app';
+  static const String dietitianName = 'Zühre';
   static const String demoClientEmail = 'danisan@diyetsel.app';
   static const String demoPassword = 'Diyetsel123!';
   static const String supportEmail = 'ercin312@gmail.com';

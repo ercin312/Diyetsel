@@ -30,6 +30,7 @@ import 'soft_eat_out_screen.dart';
 import 'soft_barcode_screen.dart';
 import 'soft_fasting_screen.dart';
 import 'soft_water_shortcut_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 bool get _canScanCamera {
   if (kIsWeb) return false;
@@ -167,8 +168,8 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                         color: (context.isCartoon ? AppColors.kawaiiCoral : AppColors.modernFire),
                       ),
                       const SizedBox(height: 8),
-                      Text('$remaining', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
-                      Text('Kalan gün', style: Theme.of(context).textTheme.bodySmall),
+                      Text(('$remaining').ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
+                      Text(('Kalan gün').ui, style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 ),
@@ -182,8 +183,8 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                     children: [
                       StyleIcon(icon: Icons.cookie_rounded, emoji: '🍪', size: 18, color: context.brandPrimary),
                       const SizedBox(height: 8),
-                      Text('$budget', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
-                      Text('Ara öğün tavanı', style: Theme.of(context).textTheme.bodySmall),
+                      Text(('$budget').ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22)),
+                      Text(('Ara öğün tavanı').ui, style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 ),
@@ -228,8 +229,8 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
             controller: _manual,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: 'Barkod numarası',
-              hintText: 'Örn. 8690504…',
+              labelText: ('Barkod numarası').ui,
+              hintText: ('Örn. 8690504…').ui,
               prefixIcon: const Padding(
                 padding: EdgeInsets.all(10),
                 child: StyleIcon(icon: Icons.qr_code_rounded, emoji: '📷', size: 18, sticker: false),
@@ -274,22 +275,21 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(_product!.name, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+                        child: Text((_product!.name).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
                       ),
                       StatusChip(label: stampLabel(stamp), color: stampColor(stamp)),
                     ],
                   ),
                   if (_product!.brand != null) ...[
                     const SizedBox(height: 4),
-                    Text(_product!.brand!, style: Theme.of(context).textTheme.bodySmall),
+                    Text((_product!.brand!).ui, style: Theme.of(context).textTheme.bodySmall),
                   ],
                   const SizedBox(height: 8),
-                  Text('${_product!.kcal} kcal / ${_product!.per}', style: const TextStyle(fontWeight: FontWeight.w800)),
+                  Text(('${_product!.kcal} kcal / ${_product!.per}').ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                   const SizedBox(height: 8),
-                  Text(
-                    stamp == 'uygun'
+                  Text((stamp == 'uygun'
                         ? 'Bu porsiyon kalan planına sığıyor. Dilediğin gibi ekleyebilirsin.'
-                        : 'Kalori bütçesini aşıyor. Daha küçük porsiyon, paylaşım veya başka öğün dene.',
+                        : 'Kalori bütçesini aşıyor. Daha küçük porsiyon, paylaşım veya başka öğün dene.').ui,
                   ),
                 ],
               ),
@@ -357,13 +357,11 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
                   .fadeIn(delay: 60.ms, duration: 300.ms)
                   .slideY(begin: 0.04, curve: Curves.easeOutCubic),
               const SizedBox(height: 16),
-              Text(
-                fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler',
+              Text((fits.isEmpty ? 'En hafif kaçışlar' : 'Sana uyan öneriler').ui,
                 style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
               ),
               const SizedBox(height: 4),
-              Text(
-                '${shown.length} seçenek · kalan $remaining kcal',
+              Text(('${shown.length} seçenek · kalan $remaining kcal').ui,
                 style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
               ),
               const SizedBox(height: 10),
@@ -379,8 +377,7 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
                     return FilterChip(
                       selected: selected,
                       showCheckmark: false,
-                      label: Text(
-                        c,
+                      label: Text((c).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -410,10 +407,9 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
                       .scale(begin: const Offset(0.97, 0.97), curve: Curves.easeOutBack, duration: 400.ms),
                 ),
               if (shown.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(24),
-                  child: Text(
-                    'Bu kategoride uyan seçenek yok — filtreyi değiştir.',
+                  child: Text(('Bu kategoride uyan seçenek yok — filtreyi değiştir.').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                   ),
@@ -427,7 +423,7 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
                   border: Border.all(color: AppColors.kawaiiOutline),
                   boxShadow: AppSpacing.soft,
                 ),
-                child: const Row(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.chat_bubble_rounded, color: AppColors.kawaiiCoral, size: 22),
@@ -436,13 +432,11 @@ class _EatOutScreenState extends ConsumerState<EatOutScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Sos konuşması',
+                          Text(('Sos konuşması').ui,
                             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk),
                           ),
                           SizedBox(height: 4),
-                          Text(
-                            '“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.',
+                          Text(('“Sosu ayrı, ekmek yok, salata bol” cümlesi çoğu restoranda 150–300 kcal kazandırır.').ui,
                             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.4, color: AppColors.kawaiiMuted),
                           ),
                         ],
@@ -504,14 +498,12 @@ class _EatOutHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.88),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                   ),
-                  child: Text(
-                    tight ? 'Bütçe dar' : 'Bugünkü kalan',
+                  child: Text((tight ? 'Bütçe dar' : 'Bugünkü kalan').ui,
                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiInk),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  tight ? 'Hafif seç, sonra teşekkür et' : '$remaining kcal kaldı',
+                Text((tight ? 'Hafif seç, sonra teşekkür et' : '$remaining kcal kaldı').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -521,10 +513,9 @@ class _EatOutHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tight
+                Text((tight
                       ? 'Kahve, çorba veya paylaşım porsiyonu daha güvenli.'
-                      : 'Sığan menüleri öne çıkardık. Sos ayrı, pilavı çıkar.',
+                      : 'Sığan menüleri öne çıkardık. Sos ayrı, pilavı çıkar.').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -563,8 +554,7 @@ class _EatOutRulesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '3 sipariş kuralı',
+          Text(('3 sipariş kuralı').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 12),
@@ -575,8 +565,7 @@ class _EatOutRulesCard extends StatelessWidget {
                 CartoonGlyph(icon: rules[i].$1, accent: rules[i].$2, size: 40, radius: 12, iconSize: 20),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    '${i + 1}. ${rules[i].$3}',
+                  child: Text(('${i + 1}. ${rules[i].$3}').ui,
                     style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5, color: AppColors.kawaiiInk),
                   ),
                 ),
@@ -661,8 +650,7 @@ class _CartoonEatOutCard extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  idea.title,
+                                child: Text((idea.title).ui,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w900,
                                     fontSize: 16.5,
@@ -678,16 +666,14 @@ class _CartoonEatOutCard extends StatelessWidget {
                                   color: _fits ? AppColors.kawaiiLeaf : AppColors.kawaiiCoral,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Text(
-                                  _fits ? 'sığar' : 'dikkat',
+                                child: Text((_fits ? 'sığar' : 'dikkat').ui,
                                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            '${idea.place} · ${idea.category}',
+                          Text(('${idea.place} · ${idea.category}').ui,
                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                           ),
                         ],
@@ -701,8 +687,7 @@ class _CartoonEatOutCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+                    Text((idea.blurb.isNotEmpty ? idea.blurb : idea.tip).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -728,7 +713,7 @@ class _CartoonEatOutCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(color: AppColors.kawaiiOutline),
                             ),
-                            child: Text(t, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiInk)),
+                            child: Text((t).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiInk)),
                           ),
                       ],
                     ),
@@ -738,13 +723,11 @@ class _CartoonEatOutCard extends StatelessWidget {
                         Icon(Icons.lightbulb_outline_rounded, size: 16, color: AppColors.kawaiiWarmYellow),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: Text(
-                            idea.tip,
+                          child: Text((idea.tip).ui,
                             style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: AppColors.kawaiiMuted),
                           ),
                         ),
-                        Text(
-                          'Detay',
+                        Text(('Detay').ui,
                           style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep, fontSize: 13),
                         ),
                         Icon(Icons.chevron_right_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
@@ -832,8 +815,7 @@ class _EatOutDetailSheet extends StatelessWidget {
               if (!cartoon)
                 Center(child: StyleIcon(icon: idea.icon, emoji: idea.emoji, size: 40, selected: true)),
               const SizedBox(height: 14),
-              Text(
-                idea.title,
+              Text((idea.title).ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
@@ -843,8 +825,7 @@ class _EatOutDetailSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                '${idea.place} · ${idea.category}',
+              Text(('${idea.place} · ${idea.category}').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -868,16 +849,14 @@ class _EatOutDetailSheet extends StatelessWidget {
                           : (cartoon ? AppColors.kawaiiCoral : AppColors.warning),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Text(
-                      _fits ? 'Bütçene sığar' : 'Dikkatli ol',
+                    child: Text((_fits ? 'Bütçene sığar' : 'Dikkatli ol').ui,
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Text(
-                idea.blurb.isNotEmpty ? idea.blurb : idea.tip,
+              Text((idea.blurb.isNotEmpty ? idea.blurb : idea.tip).ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -888,8 +867,7 @@ class _EatOutDetailSheet extends StatelessWidget {
               ),
               if (idea.orderLine.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                Text(
-                  'Garsona söyle',
+                Text(('Garsona söyle').ui,
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: cartoon ? AppColors.kawaiiInk : null),
                 ),
                 const SizedBox(height: 8),
@@ -901,8 +879,7 @@ class _EatOutDetailSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: cartoon ? Border.all(color: AppColors.kawaiiOutline) : null,
                   ),
-                  child: Text(
-                    '“${idea.orderLine}”',
+                  child: Text(('“${idea.orderLine}”').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
@@ -915,8 +892,7 @@ class _EatOutDetailSheet extends StatelessWidget {
               ],
               if (idea.swaps.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                Text(
-                  'Akıllı değişimler',
+                Text(('Akıllı değişimler').ui,
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: cartoon ? AppColors.kawaiiInk : null),
                 ),
                 const SizedBox(height: 10),
@@ -934,12 +910,11 @@ class _EatOutDetailSheet extends StatelessWidget {
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary,
-                          child: Text('${i + 1}', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                          child: Text(('${i + 1}').ui, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            idea.swaps[i],
+                          child: Text((idea.swaps[i]).ui,
                             style: TextStyle(fontWeight: FontWeight.w700, color: cartoon ? AppColors.kawaiiInk : null),
                           ),
                         ),
@@ -958,7 +933,7 @@ class _EatOutDetailSheet extends StatelessWidget {
                   children: [
                     for (final t in idea.tags)
                       Chip(
-                        label: Text(t, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: cartoon ? AppColors.kawaiiInk : null)),
+                        label: Text((t).ui, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: cartoon ? AppColors.kawaiiInk : null)),
                         backgroundColor: cartoon ? AppColors.kawaiiMint : null,
                         side: cartoon ? const BorderSide(color: AppColors.kawaiiOutline) : null,
                       ),
@@ -1044,12 +1019,10 @@ class FastingScreen extends ConsumerWidget {
                             color: brandDeep,
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            session.active ? '$hours sa $mins dk' : 'Hazır',
+                          Text((session.active ? '$hours sa $mins dk' : 'Hazır').ui,
                             style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
                           ),
-                          Text(
-                            session.active ? 'kalan ~${((1 - session.progress) * 16).clamp(0, 16).toStringAsFixed(1)} sa' : '16 saatlik tur',
+                          Text((session.active ? 'kalan ~${((1 - session.progress) * 16).clamp(0, 16).toStringAsFixed(1)} sa' : '16 saatlik tur').ui,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -1058,10 +1031,10 @@ class FastingScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                Text(session.active ? phase.title : 'Orucu başlat, süre aksın.', style: const TextStyle(fontWeight: FontWeight.w800)),
+                Text((session.active ? phase.title : 'Orucu başlat, süre aksın.').ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                 if (session.active) ...[
                   const SizedBox(height: 4),
-                  Text(phase.body, textAlign: TextAlign.center),
+                  Text((phase.body).ui, textAlign: TextAlign.center),
                 ],
                 const SizedBox(height: 14),
                 DiyetselButton(
@@ -1090,9 +1063,9 @@ class FastingScreen extends ConsumerWidget {
                           color: hours >= p.$1 && session.active ? AppColors.success : brand,
                         ),
                         const SizedBox(width: 10),
-                        Text(p.$2, style: const TextStyle(fontWeight: FontWeight.w800)),
+                        Text((p.$2).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                         const SizedBox(width: 8),
-                        Expanded(child: Text(p.$3)),
+                        Expanded(child: Text((p.$3).ui)),
                       ],
                     ),
                   ),
@@ -1139,12 +1112,11 @@ class WaterShortcutTile extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                next
+              content: Text((next
                     ? (ReminderService.instance.supportsNative
                         ? 'Kalıcı su bildirimi açıldı. +250 ml ile hızlı ekle.'
                         : 'Windows’ta widget yok; bildirim Android’de çalışır. Buradan +${AppConstants.waterSipMl} ml ekleyebilirsin.')
-                    : 'Su kısayolu kapatıldı.',
+                    : 'Su kısayolu kapatıldı.').ui,
               ),
             ),
           );
@@ -1153,8 +1125,8 @@ class WaterShortcutTile extends ConsumerWidget {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         leading: const StyleIcon(icon: Icons.notifications_active, emoji: '💧', size: 28),
-        title: const Text('Su kısayolu', style: TextStyle(fontWeight: FontWeight.w800)),
-        subtitle: Text(prefs.waterShortcut ? 'Açık' : 'Kapalı — Android bildirim / +250 ml'),
+        title: Text(('Su kısayolu').ui, style: TextStyle(fontWeight: FontWeight.w800)),
+        subtitle: Text((prefs.waterShortcut ? 'Açık' : 'Kapalı — Android bildirim / +250 ml').ui),
         trailing: Switch(value: prefs.waterShortcut, onChanged: (_) {}),
       ),
     );
@@ -1213,7 +1185,7 @@ Future<void> capturePlatePhoto(BuildContext context, WidgetRef ref) async {
       return StatefulBuilder(
         builder: (ctx, setLocal) {
           return AlertDialog(
-            title: const Text('Tabak damgası'),
+            title: Text(('Tabak damgası').ui),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -1221,16 +1193,16 @@ Future<void> capturePlatePhoto(BuildContext context, WidgetRef ref) async {
                   value: type,
                   isExpanded: true,
                   items: [
-                    for (final t in MealType.values) DropdownMenuItem(value: t, child: Text('${t.emoji} ${t.tr}')),
+                    for (final t in MealType.values) DropdownMenuItem(value: t, child: Text(('${t.emoji} ${t.tr}').ui)),
                   ],
                   onChanged: (v) => setLocal(() => type = v ?? type),
                 ),
                 const SizedBox(height: 8),
                 SegmentedButton<double>(
-                  segments: const [
-                    ButtonSegment(value: 0.7, label: Text('Küçük')),
-                    ButtonSegment(value: 1.0, label: Text('Normal')),
-                    ButtonSegment(value: 1.35, label: Text('Büyük')),
+                  segments: [
+                    ButtonSegment(value: 0.7, label: Text(('Küçük').ui)),
+                    ButtonSegment(value: 1.0, label: Text(('Normal').ui)),
+                    ButtonSegment(value: 1.35, label: Text(('Büyük').ui)),
                   ],
                   selected: {portion},
                   onSelectionChanged: (s) => setLocal(() => portion = s.first),
@@ -1238,8 +1210,8 @@ Future<void> capturePlatePhoto(BuildContext context, WidgetRef ref) async {
               ],
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
-              FilledButton(onPressed: () => Navigator.pop(ctx, (type, portion)), child: const Text('Kaydet')),
+              TextButton(onPressed: () => Navigator.pop(ctx), child: Text(('Vazgeç').ui)),
+              FilledButton(onPressed: () => Navigator.pop(ctx, (type, portion)), child: Text(('Kaydet').ui)),
             ],
           );
         },
@@ -1270,7 +1242,7 @@ Future<void> capturePlatePhoto(BuildContext context, WidgetRef ref) async {
   }
   if (context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Damga: ${stampLabel(stamp)} ($estimated kcal)')),
+      SnackBar(content: Text(('Damga: ${stampLabel(stamp)} ($estimated kcal)').ui)),
     );
   }
 }

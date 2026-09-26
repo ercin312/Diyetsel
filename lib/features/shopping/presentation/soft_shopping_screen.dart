@@ -13,6 +13,7 @@ import '../domain/shopping_platforms.dart';
 import '../domain/shopping_visuals.dart';
 import 'widgets/shopping_delivery_sheet.dart';
 import 'widgets/soft_shopping_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern shopping list.
 class SoftShoppingScreen extends ConsumerStatefulWidget {
@@ -168,8 +169,7 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
                       Icon(Icons.tips_and_updates_outlined, color: AppColors.primary.withValues(alpha: 0.85), size: 22),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          'Liste kısa görünüyor — eksik kalanları ekle veya diyetten yenile.',
+                        child: Text(('Liste kısa görünüyor — eksik kalanları ekle veya diyetten yenile.').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 12.5,
@@ -268,8 +268,8 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
     if (plan == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.'),
+          SnackBar(
+            content: Text(('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.').ui),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -281,9 +281,8 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
     if (result.isEmpty) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.',
+          SnackBar(
+            content: Text(('Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.').ui,
             ),
             behavior: SnackBarBehavior.floating,
           ),
@@ -296,9 +295,8 @@ class _SoftShoppingScreenState extends ConsumerState<SoftShoppingScreen> {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            '${result.dietItemCount} ürün diyetten eklendi'
-            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}',
+          content: Text(('${result.dietItemCount} ürün diyetten eklendi'
+            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}').ui,
           ),
           behavior: SnackBarBehavior.floating,
         ),

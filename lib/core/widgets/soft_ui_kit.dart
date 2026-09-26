@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_spacing.dart';
 import '../../features/dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
+import '../l10n/ui_string.dart';
 
 /// Shared soft-modern enrichment primitives used across e-Diyet screens.
 class SoftWashBackground extends StatelessWidget {
@@ -147,8 +148,7 @@ class SoftTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -156,8 +156,7 @@ class SoftTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  body,
+                Text((body).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -167,8 +166,7 @@ class SoftTipCard extends StatelessWidget {
                 ),
                 if (actionLabel != null) ...[
                   const SizedBox(height: 8),
-                  Text(
-                    actionLabel!,
+                  Text((actionLabel!).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12.5,
@@ -217,8 +215,7 @@ class SoftMetricTile extends StatelessWidget {
                 const SizedBox(width: 6),
               ],
               Expanded(
-                child: Text(
-                  label,
+                child: Text((label).ui,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -231,8 +228,7 @@ class SoftMetricTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            value,
+          Text((value).ui,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 22,
@@ -242,8 +238,7 @@ class SoftMetricTile extends StatelessWidget {
           ),
           if (caption != null) ...[
             const SizedBox(height: 2),
-            Text(
-              caption!,
+            Text((caption!).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 11.5,
@@ -378,8 +373,7 @@ class SoftChipRail extends StatelessWidget {
                 ),
                 boxShadow: selected ? AppSpacing.soft : null,
               ),
-              child: Text(
-                labels[i],
+              child: Text((labels[i]).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 12.5,
@@ -427,8 +421,7 @@ class SoftEmptyRich extends StatelessWidget {
             child: Icon(icon, color: AppColors.primary, size: 30),
           ),
           const SizedBox(height: 14),
-          Text(
-            title,
+          Text((title).ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
@@ -437,8 +430,7 @@ class SoftEmptyRich extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            body,
+          Text((body).ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -449,7 +441,7 @@ class SoftEmptyRich extends StatelessWidget {
           ),
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(height: 16),
-            FilledButton(onPressed: onAction, child: Text(actionLabel!)),
+            FilledButton(onPressed: onAction, child: Text((actionLabel!).ui)),
           ],
         ],
       ),
@@ -529,9 +521,8 @@ class SoftTodayFocusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(
-                child: Text(
-                  'Bugünün özeti',
+              Expanded(
+                child: Text(('Bugünün özeti').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -553,8 +544,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.local_fire_department_rounded, size: 16, color: Color(0xFFE07A5F)),
                       const SizedBox(width: 4),
-                      Text(
-                        '$streakDays gün',
+                      Text(('$streakDays gün').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
@@ -578,8 +568,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                       SoftProgressRing(
                         progress: waterProgress,
                         color: const Color(0xFF5BA3C9),
-                        child: Text(
-                          '%${(waterProgress * 100).round()}',
+                        child: Text(('%${(waterProgress * 100).round()}').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 13,
@@ -588,8 +577,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'Su',
+                      Text(('Su').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
@@ -608,8 +596,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                       SoftProgressRing(
                         progress: mealP,
                         color: AppColors.primary,
-                        child: Text(
-                          '$mealsDone/$mealsTotal',
+                        child: Text(('$mealsDone/$mealsTotal').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 13,
@@ -618,8 +605,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'Öğün',
+                      Text(('Öğün').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
@@ -641,8 +627,7 @@ class SoftTodayFocusCard extends StatelessWidget {
                         child: const Icon(Icons.bolt_rounded, color: Color(0xFFE07A5F), size: 22),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'Seri',
+                      Text(('Seri').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,

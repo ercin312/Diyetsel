@@ -17,6 +17,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/story_visuals.dart';
 import 'widgets/soft_story_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern story card — şablon, önizleme, paylaşım.
 class SoftStoryScreen extends ConsumerStatefulWidget {
@@ -119,8 +120,7 @@ class _SoftStoryScreenState extends ConsumerState<SoftStoryScreen> {
                 .animate()
                 .fadeIn(delay: 75.ms, duration: 280.ms),
             const SizedBox(height: 16),
-            const Text(
-              'Şablon seç',
+            Text(('Şablon seç').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 16,

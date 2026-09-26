@@ -12,6 +12,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/check_in_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftCheckInHeader extends StatelessWidget {
@@ -23,12 +24,11 @@ class SoftCheckInHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Check-in',
+              Text(('Check-in').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -37,8 +37,7 @@ class SoftCheckInHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Haftalık kilo, bel ve ruh hali',
+              Text(('Haftalık kilo, bel ve ruh hali').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -116,8 +115,7 @@ class SoftCheckInHero extends StatelessWidget {
                     color: (due ? const Color(0xFFE07A5F) : AppColors.primary).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    due ? 'Haftalık ritim' : 'Güncel',
+                  child: Text((due ? 'Haftalık ritim' : 'Güncel').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -126,8 +124,7 @@ class SoftCheckInHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  due ? 'Check-in zamanı' : 'Bu hafta tamam',
+                Text((due ? 'Check-in zamanı' : 'Bu hafta tamam').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -137,12 +134,11 @@ class SoftCheckInHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  last == null
+                Text((last == null
                       ? 'Kilo, bel, uyku ve ruh halini gönder — diyetisyenin paneline düşer.'
                       : count == 1
                           ? 'İlk kaydın ${DateFormat('d MMM', 'tr').format(last!.createdAt)} tarihinde.'
-                          : '$count kayıt · son ${DateFormat('d MMM', 'tr').format(last!.createdAt)}',
+                          : '$count kayıt · son ${DateFormat('d MMM', 'tr').format(last!.createdAt)}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -219,16 +215,14 @@ class SoftCheckInStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11.5,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -278,8 +272,7 @@ class SoftDietitianNoteCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Diyetisyenin notu',
+                Text(('Diyetisyenin notu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -288,8 +281,7 @@ class SoftDietitianNoteCard extends StatelessWidget {
                 ),
                 if (at != null) ...[
                   const SizedBox(height: 2),
-                  Text(
-                    DateFormat('d MMM y', 'tr').format(at!),
+                  Text((DateFormat('d MMM y', 'tr').format(at!)).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
@@ -298,8 +290,7 @@ class SoftDietitianNoteCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 6),
-                Text(
-                  note,
+                Text((note).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     height: 1.4,
@@ -403,16 +394,14 @@ class SoftTrendChip extends StatelessWidget {
             child: Icon(icon, size: 16, color: accent),
           ),
           const SizedBox(height: 8),
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 11,
               color: AppColors.primary.withValues(alpha: 0.5),
             ),
           ),
-          Text(
-            value,
+          Text((value).ui,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -480,8 +469,7 @@ class SoftCheckInFormCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Bu haftanın ölçümleri',
+          Text(('Bu haftanın ölçümleri').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -489,8 +477,7 @@ class SoftCheckInFormCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'Sabah, tuvalet sonrası tartıl — daha tutarlı olur.',
+          Text(('Sabah, tuvalet sonrası tartıl — daha tutarlı olur.').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -504,8 +491,8 @@ class SoftCheckInFormCard extends StatelessWidget {
                 child: TextField(
                   controller: weight,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Kilo (kg)',
+                  decoration: InputDecoration(
+                    labelText: ('Kilo (kg)').ui,
                     prefixIcon: Icon(Icons.monitor_weight_rounded, color: AppColors.primary),
                   ),
                 ),
@@ -515,8 +502,8 @@ class SoftCheckInFormCard extends StatelessWidget {
                 child: TextField(
                   controller: waist,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Bel (cm)',
+                  decoration: InputDecoration(
+                    labelText: ('Bel (cm)').ui,
                     prefixIcon: Icon(Icons.straighten_rounded, color: AppColors.primary),
                   ),
                 ),
@@ -527,15 +514,14 @@ class SoftCheckInFormCard extends StatelessWidget {
           TextField(
             controller: sleep,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Ortalama uyku (saat)',
+            decoration: InputDecoration(
+              labelText: ('Ortalama uyku (saat)').ui,
               prefixIcon: Icon(Icons.bedtime_rounded, color: AppColors.primary),
-              hintText: 'Örn. 7.5',
+              hintText: ('Örn. 7.5').ui,
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Ruh hali',
+          Text(('Ruh hali').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.primaryDeep),
           ),
           const SizedBox(height: 8),
@@ -570,8 +556,7 @@ class SoftCheckInFormCard extends StatelessWidget {
                             size: 22,
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            CheckInVisuals.moods[i].$2,
+                          Text((CheckInVisuals.moods[i].$2).ui,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
@@ -606,8 +591,7 @@ class SoftCheckInFormCard extends StatelessWidget {
             color: AppColors.primary,
           ),
           const SizedBox(height: 14),
-          const Text(
-            'Bu haftayı etiketle',
+          Text(('Bu haftayı etiketle').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.primaryDeep),
           ),
           const SizedBox(height: 8),
@@ -629,8 +613,7 @@ class SoftCheckInFormCard extends StatelessWidget {
                         color: tags.contains(t) ? AppColors.primary : AppColors.modernLine,
                       ),
                     ),
-                    child: Text(
-                      t,
+                    child: Text((t).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 12,
@@ -645,9 +628,9 @@ class SoftCheckInFormCard extends StatelessWidget {
           TextField(
             controller: note,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Not',
-              hintText: 'Uyku, spor, zorlandığın öğün…',
+            decoration: InputDecoration(
+              labelText: ('Not').ui,
+              hintText: ('Uyku, spor, zorlandığın öğün…').ui,
               alignLabelWithHint: true,
             ),
           ),
@@ -661,8 +644,7 @@ class SoftCheckInFormCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: onClearPhoto,
-                child: Text(
-                  'Fotoğrafı kaldır',
+                child: Text(('Fotoğrafı kaldır').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary.withValues(alpha: 0.65),
@@ -692,8 +674,7 @@ class SoftCheckInFormCard extends StatelessWidget {
                       fallbackColor: AppColors.primary,
                     ),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Fotoğraf ekle (isteğe bağlı)',
+                    Text(('Fotoğraf ekle (isteğe bağlı)').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         color: AppColors.primary,
@@ -722,8 +703,7 @@ class SoftCheckInFormCard extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: Text(
-                  saving ? 'Gönderiliyor…' : 'Check-in gönder',
+                child: Text((saving ? 'Gönderiliyor…' : 'Check-in gönder').ui,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -762,13 +742,11 @@ class SoftScaleRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              title,
+            Text((title).ui,
               style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.primaryDeep),
             ),
             const Spacer(),
-            Text(
-              valueLabel,
+            Text((valueLabel).ui,
               style: TextStyle(fontWeight: FontWeight.w800, color: color),
             ),
           ],
@@ -822,8 +800,7 @@ class SoftCheckInTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Neden önemli?',
+                Text(('Neden önemli?').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -831,8 +808,7 @@ class SoftCheckInTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -900,8 +876,7 @@ class SoftCheckInHistoryCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    DateFormat('d MMMM y', 'tr').format(log.createdAt),
+                  Text((DateFormat('d MMMM y', 'tr').format(log.createdAt)).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14.5,
@@ -909,8 +884,7 @@ class SoftCheckInHistoryCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  Text(
-                    CheckInVisuals.summaryLine(log),
+                  Text((CheckInVisuals.summaryLine(log)).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -921,8 +895,7 @@ class SoftCheckInHistoryCard extends StatelessWidget {
                   ),
                   if (wDelta != null) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      'Kilo ${wDelta <= 0 ? '' : '+'}${wDelta.toStringAsFixed(1)} kg',
+                    Text(('Kilo ${wDelta <= 0 ? '' : '+'}${wDelta.toStringAsFixed(1)} kg').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -966,13 +939,11 @@ class SoftCheckInEmptyHistory extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Henüz check-in yok',
+          Text(('Henüz check-in yok').ui,
             style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.primaryDeep),
           ),
           const SizedBox(height: 4),
-          Text(
-            'İlk kaydını yukarıdan gönder.',
+          Text(('İlk kaydını yukarıdan gönder.').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 13,
@@ -1054,8 +1025,7 @@ class SoftCheckInDetailSheet extends StatelessWidget {
                       child: Icon(mood.$1, size: 32, color: accent),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      DateFormat('d MMMM y', 'tr').format(log.createdAt),
+                    Text((DateFormat('d MMMM y', 'tr').format(log.createdAt)).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 20,
@@ -1063,8 +1033,7 @@ class SoftCheckInDetailSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      mood.$2,
+                    Text((mood.$2).ui,
                       style: TextStyle(fontWeight: FontWeight.w800, color: accent),
                     ),
                   ],
@@ -1107,8 +1076,7 @@ class SoftCheckInDetailSheet extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                           border: Border.all(color: AppColors.modernLine),
                         ),
-                        child: Text(
-                          t,
+                        child: Text((t).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 12,
@@ -1121,13 +1089,11 @@ class SoftCheckInDetailSheet extends StatelessWidget {
               ],
               if (log.note.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                const Text(
-                  'Not',
+                Text(('Not').ui,
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.primaryDeep),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  log.note,
+                Text((log.note).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     height: 1.4,

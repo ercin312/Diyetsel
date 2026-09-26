@@ -9,6 +9,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/barcode_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftBarcodeHeader extends StatelessWidget {
@@ -20,12 +21,11 @@ class SoftBarcodeHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Barkod',
+              Text(('Barkod').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -34,8 +34,7 @@ class SoftBarcodeHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Yiyebilir miyim?',
+              Text(('Yiyebilir miyim?').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -121,8 +120,7 @@ class SoftBarcodeHero extends StatelessWidget {
                     color: accent.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    hasProduct ? BarcodeVisuals.stampLabel(stamp) : 'Rafa bakmadan karar',
+                  child: Text((hasProduct ? BarcodeVisuals.stampLabel(stamp) : 'Rafa bakmadan karar').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -131,8 +129,7 @@ class SoftBarcodeHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  hasProduct ? 'Ürün analizi hazır' : '$budget kcal tavan',
+                Text((hasProduct ? 'Ürün analizi hazır' : '$budget kcal tavan').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -141,8 +138,7 @@ class SoftBarcodeHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -210,8 +206,7 @@ class SoftBarcodeStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$3,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    items[i].$5,
+                  Text((items[i].$5).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
@@ -220,8 +215,7 @@ class SoftBarcodeStatsRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    items[i].$4,
+                  Text((items[i].$4).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 10.5,
@@ -254,8 +248,7 @@ class SoftBarcodeHowItWorksCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Nasıl kullanılır?',
+          Text(('Nasıl kullanılır?').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -276,8 +269,7 @@ class SoftBarcodeHowItWorksCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(9),
                   ),
-                  child: Text(
-                    '$i',
+                  child: Text(('$i').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 12,
@@ -287,8 +279,7 @@ class SoftBarcodeHowItWorksCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    BarcodeVisuals.howItWorks(i),
+                  child: Text((BarcodeVisuals.howItWorks(i)).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -335,9 +326,8 @@ class SoftBarcodeScannerCard extends StatelessWidget {
                   fallbackColor: AppColors.primary,
                 ),
                 const SizedBox(width: 8),
-                const Expanded(
-                  child: Text(
-                    'Kamera taraması',
+                Expanded(
+                  child: Text(('Kamera taraması').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
@@ -351,8 +341,7 @@ class SoftBarcodeScannerCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    'Canlı',
+                  child: Text(('Canlı').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 10.5,
@@ -388,8 +377,7 @@ class SoftBarcodeScannerCard extends StatelessWidget {
                   left: 0,
                   right: 0,
                   bottom: 12,
-                  child: Text(
-                    'Barkodu çerçeveye hizala',
+                  child: Text(('Barkodu çerçeveye hizala').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
@@ -434,8 +422,7 @@ class SoftBarcodeNoCameraCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Kamera bu cihazda yok',
+                Text(('Kamera bu cihazda yok').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -443,8 +430,7 @@ class SoftBarcodeNoCameraCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Windows’ta tarama kapalı. Paketin altındaki 8–13 haneli barkodu kutuya yazıp ara.',
+                Text(('Windows’ta tarama kapalı. Paketin altındaki 8–13 haneli barkodu kutuya yazıp ara.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -486,8 +472,7 @@ class SoftBarcodeManualField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Manuel barkod',
+          Text(('Manuel barkod').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 14,
@@ -500,7 +485,7 @@ class SoftBarcodeManualField extends StatelessWidget {
             keyboardType: TextInputType.number,
             style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDeep),
             decoration: InputDecoration(
-              hintText: 'Örn. 8690504…',
+              hintText: ('Örn. 8690504…').ui,
               hintStyle: TextStyle(color: AppColors.primary.withValues(alpha: 0.35)),
               filled: true,
               fillColor: AppColors.modernWash,
@@ -563,8 +548,7 @@ class SoftBarcodeErrorCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Bulunamadı',
+                Text(('Bulunamadı').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -572,8 +556,7 @@ class SoftBarcodeErrorCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  message,
+                Text((message).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -644,8 +627,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product.name,
+                    Text((product.name).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
@@ -654,8 +636,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
                     ),
                     if (product.brand != null) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        product.brand!,
+                      Text((product.brand!).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 12.5,
@@ -672,8 +653,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
                   color: accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: Text(
-                  BarcodeVisuals.stampLabel(stamp),
+                child: Text((BarcodeVisuals.stampLabel(stamp)).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 12,
@@ -695,8 +675,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  'Bütçe kullanımı',
+                child: Text(('Bütçe kullanımı').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 12,
@@ -704,8 +683,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                '${product.kcal} / $budget kcal',
+              Text(('${product.kcal} / $budget kcal').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
@@ -725,8 +703,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            BarcodeVisuals.stampMessage(stamp),
+          Text((BarcodeVisuals.stampMessage(stamp)).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 13,
@@ -735,8 +712,7 @@ class SoftBarcodeResultCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            'Barkod: ${product.barcode}',
+          Text(('Barkod: ${product.barcode}').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 11,
@@ -775,24 +751,21 @@ class _StatPill extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
+            Text((label).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 11,
                 color: AppColors.primary.withValues(alpha: 0.5),
               ),
             ),
-            Text(
-              value,
+            Text((value).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
                 color: accent,
               ),
             ),
-            Text(
-              unit,
+            Text((unit).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 11,
@@ -831,8 +804,7 @@ class SoftBarcodeLoadingCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Text(
-            'Open Food Facts aranıyor…',
+          Text(('Open Food Facts aranıyor…').ui,
             style: TextStyle(
               fontWeight: FontWeight.w700,
               color: AppColors.primary.withValues(alpha: 0.65),
@@ -868,8 +840,7 @@ class SoftBarcodeFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Open Food Facts çoğu ürünü 100 g olarak verir. Paket 30 g ise kaloriyi üçe böl; damga değişebilir.',
+            child: Text(('Open Food Facts çoğu ürünü 100 g olarak verir. Paket 30 g ise kaloriyi üçe böl; damga değişebilir.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,

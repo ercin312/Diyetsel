@@ -17,6 +17,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../core/widgets/nav_back.dart';
+import '../../../core/l10n/ui_string.dart';
 
 
 /// Soft premium client care — modules, water goal, reports.
@@ -35,9 +36,9 @@ class SoftClientCareScreen extends ConsumerWidget {
     final client = store.user(clientId);
 
     if (client == null) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.modernWash,
-        body: Center(child: Text('Danışan bulunamadı')),
+        body: Center(child: Text(('Danışan bulunamadı').ui)),
       );
     }
 
@@ -97,12 +98,10 @@ class SoftClientCareScreen extends ConsumerWidget {
                                 fallback: Icons.verified_user_rounded,
                                 fallbackColor: AppColors.primary,
                               ),
-                              title: const Text(
-                                'Hesap aktif',
+                              title: Text(('Hesap aktif').ui,
                                 style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.primaryDeep),
                               ),
-                              subtitle: Text(
-                                'Kapalıysa danışan giriş yapamaz',
+                              subtitle: Text(('Kapalıysa danışan giriş yapamaz').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12.5,
@@ -134,15 +133,13 @@ class SoftClientCareScreen extends ConsumerWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Haftalık / aylık rapor',
+                                        Text(('Haftalık / aylık rapor').ui,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w900,
                                             color: AppColors.primaryDeep,
                                           ),
                                         ),
-                                        Text(
-                                          'Su, diyet uyumu, kilo ve seans özeti',
+                                        Text(('Su, diyet uyumu, kilo ve seans özeti').ui,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 12.5,
@@ -179,12 +176,10 @@ class SoftClientCareScreen extends ConsumerWidget {
                       fallback: Icons.verified_user_rounded,
                       fallbackColor: AppColors.primary,
                     ),
-                    title: const Text(
-                      'Hesap aktif',
+                    title: Text(('Hesap aktif').ui,
                       style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.primaryDeep),
                     ),
-                    subtitle: Text(
-                      'Kapalıysa danışan giriş yapamaz',
+                    subtitle: Text(('Kapalıysa danışan giriş yapamaz').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -216,15 +211,13 @@ class SoftClientCareScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Haftalık / aylık rapor',
+                              Text(('Haftalık / aylık rapor').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   color: AppColors.primaryDeep,
                                 ),
                               ),
-                              Text(
-                                'Su, diyet uyumu, kilo ve seans özeti',
+                              Text(('Su, diyet uyumu, kilo ve seans özeti').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12.5,
@@ -273,8 +266,7 @@ class SoftClientCareScreen extends ConsumerWidget {
                 fallbackColor: Color(0xFF5BA3C9),
               ),
               const SizedBox(width: 10),
-              Text(
-                '${liters.toStringAsFixed(2)} L  ·  ${client.waterGoalMl} ml',
+              Text(('${liters.toStringAsFixed(2)} L  ·  ${client.waterGoalMl} ml').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -307,8 +299,7 @@ class SoftClientCareScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(color: AppColors.modernLine),
                     ),
-                    child: Text(
-                      '${preset.toStringAsFixed(1)} L',
+                    child: Text(('${preset.toStringAsFixed(1)} L').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12.5,
@@ -336,8 +327,7 @@ class SoftClientCareScreen extends ConsumerWidget {
           if (checkIns.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                'Henüz check-in yok.',
+              child: Text(('Henüz check-in yok.').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary.withValues(alpha: 0.5),
@@ -348,15 +338,13 @@ class SoftClientCareScreen extends ConsumerWidget {
             for (final c in checkIns.take(3))
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(
-                  DateFormat('d MMM y', 'tr').format(c.createdAt),
+                title: Text((DateFormat('d MMM y', 'tr').format(c.createdAt)).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     color: AppColors.primaryDeep,
                   ),
                 ),
-                subtitle: Text(
-                  c.dietitianNote ?? (c.note.isEmpty ? 'Henüz not yok' : c.note),
+                subtitle: Text((c.dietitianNote ?? (c.note.isEmpty ? 'Henüz not yok' : c.note)).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary.withValues(alpha: 0.55),
@@ -397,15 +385,13 @@ class SoftClientCareScreen extends ConsumerWidget {
           for (final id in AppModule.all)
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(
-                AppModule.label(id),
+              title: Text((AppModule.label(id)).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   color: AppColors.primaryDeep,
                 ),
               ),
-              subtitle: Text(
-                clinic[id] == false ? 'Klinik genelinde kapalı' : AppModule.subtitle(id),
+              subtitle: Text((clinic[id] == false ? 'Klinik genelinde kapalı' : AppModule.subtitle(id)).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
@@ -430,17 +416,17 @@ class SoftClientCareScreen extends ConsumerWidget {
     final note = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Diyetisyen notu'),
+        title: Text(('Diyetisyen notu').ui),
         content: TextField(
           controller: controller,
           maxLines: 4,
-          decoration: const InputDecoration(hintText: 'Bugün harika gidiyorsun...'),
+          decoration: InputDecoration(hintText: ('Bugün harika gidiyorsun...').ui),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(('İptal').ui)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: const Text('Gönder'),
+            child: Text(('Gönder').ui),
           ),
         ],
       ),
@@ -455,7 +441,7 @@ class SoftClientCareScreen extends ConsumerWidget {
     );
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Not kaydedildi ve bildirim sıraya alındı')),
+        SnackBar(content: Text(('Not kaydedildi ve bildirim sıraya alındı').ui)),
       );
     }
   }
@@ -475,8 +461,7 @@ class _Header extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                name,
+              Text((name).ui,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -486,8 +471,7 @@ class _Header extends StatelessWidget {
                   letterSpacing: -0.3,
                 ),
               ),
-              const Text(
-                'Danışan bakımı',
+              Text(('Danışan bakımı').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -525,8 +509,7 @@ class _ProfileHero extends StatelessWidget {
           CircleAvatar(
             radius: 28,
             backgroundColor: Colors.white,
-            child: Text(
-              initial,
+            child: Text((initial).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 22,
@@ -539,16 +522,14 @@ class _ProfileHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  client.displayName,
+                Text((client.displayName).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
                     color: AppColors.primaryDeep,
                   ),
                 ),
-                Text(
-                  client.email,
+                Text((client.email).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -566,8 +547,7 @@ class _ProfileHero extends StatelessWidget {
                   : const Color(0xFFE07A5F).withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              client.isActive ? 'aktif' : 'pasif',
+            child: Text((client.isActive ? 'aktif' : 'pasif').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 12,
@@ -610,8 +590,7 @@ class _SectionLabel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15.5,
@@ -619,8 +598,7 @@ class _SectionLabel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          subtitle,
+        Text((subtitle).ui,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 12.5,

@@ -7,6 +7,7 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../../core/l10n/ui_string.dart';
 
 class SoftMoreItem {
   const SoftMoreItem({
@@ -52,8 +53,7 @@ class SoftMoreHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                admin ? 'Klinik araçları' : 'Daha fazla',
+              Text((admin ? 'Klinik araçları' : 'Daha fazla').ui,
                 style: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w900,
@@ -62,10 +62,9 @@ class SoftMoreHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                admin
+              Text((admin
                     ? 'Merhaba $name — klinik operasyon merkezi'
-                    : 'Merhaba $name — keşfet, takip et, geliş',
+                    : 'Merhaba $name — keşfet, takip et, geliş').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -139,8 +138,7 @@ class SoftMoreHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    admin ? 'Yönetim merkezi' : 'Araç kutusu',
+                  child: Text((admin ? 'Yönetim merkezi' : 'Araç kutusu').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -149,10 +147,9 @@ class SoftMoreHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  admin
+                Text((admin
                       ? '$count klinik aracı tek yerde'
-                      : '$count kısayol · ara ve aç',
+                      : '$count kısayol · ara ve aç').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -161,10 +158,9 @@ class SoftMoreHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  admin
+                Text((admin
                       ? 'Bildirim, öğün, diyet planı ve blog araçları.'
-                      : 'Blog, sohbet, rapor ve günlük araçlar.',
+                      : 'Blog, sohbet, rapor ve günlük araçlar.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -255,16 +251,14 @@ class SoftMoreQuickStats extends StatelessWidget {
                       fallbackColor: items[i].$5,
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      items[i].$1,
+                    Text((items[i].$1).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 11.5,
                         color: AppColors.primary.withValues(alpha: 0.5),
                       ),
                     ),
-                    Text(
-                      items[i].$2,
+                    Text((items[i].$2).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
@@ -349,8 +343,7 @@ class SoftMoreAdminQuickStats extends StatelessWidget {
                       fallbackColor: items[i].$5,
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      items[i].$1,
+                    Text((items[i].$1).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11.5,
@@ -358,8 +351,7 @@ class SoftMoreAdminQuickStats extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      items[i].$2,
+                    Text((items[i].$2).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
@@ -393,8 +385,7 @@ class SoftMoreFeaturedRail extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Sık kullanılanlar',
+        Text(('Sık kullanılanlar').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15.5,
@@ -443,8 +434,7 @@ class SoftMoreFeaturedRail extends StatelessWidget {
                             : Icon(item.icon, color: item.accent, size: 22),
                       ),
                       const Spacer(),
-                      Text(
-                        item.title,
+                      Text((item.title).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -487,7 +477,7 @@ class SoftMoreSearchField extends StatelessWidget {
           color: AppColors.primaryDeep,
         ),
         decoration: InputDecoration(
-          hintText: 'Blog, rapor, tarif… ara',
+          hintText: ('Blog, rapor, tarif… ara').ui,
           hintStyle: TextStyle(
             fontWeight: FontWeight.w600,
             color: AppColors.primary.withValues(alpha: 0.4),
@@ -522,8 +512,7 @@ class SoftMoreSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15.5,
@@ -538,8 +527,7 @@ class SoftMoreSectionTitle extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              '$count',
+            child: Text(('$count').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 11.5,
@@ -602,8 +590,7 @@ class SoftMoreTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.title,
+                  Text((item.title).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
@@ -611,8 +598,7 @@ class SoftMoreTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    item.subtitle,
+                  Text((item.subtitle).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -636,8 +622,7 @@ class SoftMoreTile extends StatelessWidget {
                         : AppColors.modernLine,
                   ),
                 ),
-                child: Text(
-                  waterOn ? 'Açık' : 'Kapalı',
+                child: Text((waterOn ? 'Açık' : 'Kapalı').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 11.5,
@@ -704,8 +689,7 @@ class SoftMoreSpotlight extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    admin ? 'Özel bildirim gönder' : 'Hikaye kartı',
+                  Text((admin ? 'Özel bildirim gönder' : 'Hikaye kartı').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15.5,
@@ -713,10 +697,9 @@ class SoftMoreSpotlight extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    admin
+                  Text((admin
                         ? 'Danışanlara anlık mesaj bırak — tümü veya seçili'
-                        : 'İlerlemeyi paylaşılabilir PNG olarak çıkar',
+                        : 'İlerlemeyi paylaşılabilir PNG olarak çıkar').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -763,10 +746,9 @@ class SoftMoreFooterTip extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              admin
+            child: Text((admin
                   ? 'Bildirimler sekmesinden özel mesaj gönder; öğün inbox’tan hızlı not bırak.'
-                  : 'Ana sekmelere sığmayan her şey burada. Sık kullandıklarını ara ile hızlı bul.',
+                  : 'Ana sekmelere sığmayan her şey burada. Sık kullandıklarını ara ile hızlı bul.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -803,8 +785,7 @@ class SoftMoreEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Aramanla eşleşen araç yok',
+          Text(('Aramanla eşleşen araç yok').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w900,
@@ -813,8 +794,7 @@ class SoftMoreEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Başka bir kelime dene veya bölümleri kaydır.',
+          Text(('Başka bir kelime dene veya bölümleri kaydır.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,

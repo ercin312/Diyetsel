@@ -13,12 +13,6 @@ class SettingsVisuals {
   static const sky = Color(0xFFE3F2F8);
   static const peach = Color(0xFFFFF0E8);
 
-  static String themeModeLabel(ThemeMode mode) => switch (mode) {
-        ThemeMode.light => 'Açık',
-        ThemeMode.dark => 'Koyu',
-        ThemeMode.system => 'Sistem',
-      };
-
   static String visualStyleLabel(VisualStyle style) => switch (style) {
         VisualStyle.modern => 'Modern',
         VisualStyle.cartoon => 'Karikatür',
@@ -37,7 +31,7 @@ class SettingsVisuals {
   static String tipOfDay(int daySeed) {
     const tips = [
       'Akıllı hatırlatıcılar su, öğün ve randevuna göre kişiselleşir.',
-      'Koyu tema gece kullanımında göz yorgunluğunu azaltabilir.',
+      'Akıllı hatırlatıcılar su, öğün ve randevuna göre kişiselleşir.',
       'Su kısayolu bildirimi Android’de tek dokunuşla +250 ml ekler.',
       'Diyetisyen geri bildirimi açıkken öğün fotoğraflarından haberdar olursun.',
       'Klinik modüllerini kapatırsan ilgili bölüm tüm danışanlarda gizlenir.',

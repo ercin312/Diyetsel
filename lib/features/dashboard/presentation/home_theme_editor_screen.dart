@@ -10,6 +10,7 @@ import '../../../core/models/home_theme_config.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import 'widgets/premium_home_widgets.dart' show SoftTap;
+import '../../../core/l10n/ui_string.dart';
 
 /// Admin: modern home hero slider + cartoon home JSON.
 class HomeThemeEditorScreen extends ConsumerStatefulWidget {
@@ -83,8 +84,8 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
       _jsonController.text = next.toJson();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ana sayfa bölümleri kaydedildi'),
+        SnackBar(
+          content: Text(('Ana sayfa bölümleri kaydedildi').ui),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -122,8 +123,8 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
       _jsonController.text = next.toJson();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Modern ana sayfa slider kaydedildi'),
+        SnackBar(
+          content: Text(('Modern ana sayfa slider kaydedildi').ui),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -156,8 +157,8 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
       });
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ana sayfa teması kaydedildi'),
+        SnackBar(
+          content: Text(('Ana sayfa teması kaydedildi').ui),
           behavior: SnackBarBehavior.floating,
           backgroundColor: AppColors.kawaiiLeaf,
         ),
@@ -213,7 +214,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
     return AppPage(
       title: soft ? 'Danışan ana sayfa' : 'Ana sayfa teması',
       actions: [
-        TextButton(onPressed: _saving ? null : _reset, child: const Text('Sıfırla')),
+        TextButton(onPressed: _saving ? null : _reset, child: Text(('Sıfırla').ui)),
       ],
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -245,8 +246,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
                 ),
                 const SizedBox(height: 12),
                 if (_error != null) ...[
-                  Text(
-                    _error!,
+                  Text((_error!).ui,
                     style: const TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
@@ -273,15 +273,13 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
     final visibleCount = HomeThemeConfig.homeBlockIds.where((id) => _homeBlocks[id] ?? true).length;
     return ListView(
       children: [
-        Text(
-          'Danışan ana sayfasında hangi blokların görüneceğini seç. Kapattığın bölümler hem modern hem karikatür temada gizlenir.',
+        Text(('Danışan ana sayfasında hangi blokların görüneceğini seç. Kapattığın bölümler hem modern hem karikatür temada gizlenir.').ui,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
         ),
         const SizedBox(height: 10),
-        Text(
-          '$visibleCount / ${HomeThemeConfig.homeBlockIds.length} bölüm açık',
+        Text(('$visibleCount / ${HomeThemeConfig.homeBlockIds.length} bölüm açık').ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: soft ? AppColors.primaryDeep : AppColors.kawaiiLeaf,
@@ -301,15 +299,13 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
             ),
             child: SwitchListTile.adaptive(
               contentPadding: const EdgeInsets.fromLTRB(16, 4, 10, 4),
-              title: Text(
-                HomeThemeConfig.homeBlockLabels[id] ?? id,
+              title: Text((HomeThemeConfig.homeBlockLabels[id] ?? id).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: soft ? AppColors.primaryDeep : null,
                 ),
               ),
-              subtitle: Text(
-                HomeThemeConfig.homeBlockSubtitles[id] ?? '',
+              subtitle: Text((HomeThemeConfig.homeBlockSubtitles[id] ?? '').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: soft ? AppColors.primary.withValues(alpha: 0.55) : null,
@@ -328,8 +324,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
           icon: Icons.visibility_rounded,
         ),
         const SizedBox(height: 8),
-        Text(
-          'Kayıt sonrası danışan cihazlarında bulut senkronu açıksa güncelleme görünür.',
+        Text(('Kayıt sonrası danışan cihazlarında bulut senkronu açıksa güncelleme görünür.').ui,
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
@@ -340,8 +335,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
   Widget _buildSliderEditor(bool soft) {
     return ListView(
       children: [
-        Text(
-          'Modern ana sayfadaki hero slider. Başlık, metin, buton, rota ve görseli buradan yönet.',
+        Text(('Modern ana sayfadaki hero slider. Başlık, metin, buton, rota ve görseli buradan yönet.').ui,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -392,8 +386,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
               children: [
                 Icon(Icons.add_rounded, color: soft ? AppColors.primary : null),
                 const SizedBox(width: 8),
-                Text(
-                  'Slayt ekle',
+                Text(('Slayt ekle').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     color: soft ? AppColors.primaryDeep : null,
@@ -410,8 +403,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
           icon: Icons.save_rounded,
         ),
         const SizedBox(height: 8),
-        Text(
-          'Kaydettikten sonra modern temadaki ana sayfada hemen görünür.',
+        Text(('Kaydettikten sonra modern temadaki ana sayfada hemen görünür.').ui,
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -421,9 +413,8 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
   Widget _buildJsonEditor(bool soft) {
     return ListView(
       children: [
-        Text(
-          'Tüm metinler, renkler (hex), görsel URL’leri, ikon anahtarları ve rotalar bu JSON’dan gelir. '
-          'Danışan karikatür temasındayken ana sayfa bunu kullanır. heroSlides modern slider’ı da içerir.',
+        Text(('Tüm metinler, renkler (hex), görsel URL’leri, ikon anahtarları ve rotalar bu JSON’dan gelir. '
+          'Danışan karikatür temasındayken ana sayfa bunu kullanır. heroSlides modern slider’ı da içerir.').ui,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -435,9 +426,9 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
             controller: _jsonController,
             maxLines: 24,
             style: const TextStyle(fontFamily: 'monospace', fontSize: 12.5, height: 1.35),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: '{ ... }',
+              hintText: ('{ ... }').ui,
             ),
           ),
         ),
@@ -449,8 +440,7 @@ class _HomeThemeEditorScreenState extends ConsumerState<HomeThemeEditorScreen>
         ),
         if (context.isCartoon) ...[
           const SizedBox(height: 12),
-          Text(
-            'Önizleme için Ana Sayfa’ya dön.',
+          Text(('Önizleme için Ana Sayfa’ya dön.').ui,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
@@ -512,8 +502,7 @@ class _SlideEditorCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  '${index + 1}',
+                child: Text(('${index + 1}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 13,
@@ -523,8 +512,7 @@ class _SlideEditorCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  'Slayt ${index + 1}',
+                child: Text(('Slayt ${index + 1}').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 15,
@@ -533,18 +521,18 @@ class _SlideEditorCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Yukarı',
+                tooltip: ('Yukarı').ui,
                 onPressed: onMoveUp,
                 icon: const Icon(Icons.arrow_upward_rounded, size: 20),
               ),
               IconButton(
-                tooltip: 'Aşağı',
+                tooltip: ('Aşağı').ui,
                 onPressed: onMoveDown,
                 icon: const Icon(Icons.arrow_downward_rounded, size: 20),
               ),
               if (canRemove)
                 IconButton(
-                  tooltip: 'Sil',
+                  tooltip: ('Sil').ui,
                   onPressed: onRemove,
                   icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 20),
                 ),
@@ -582,8 +570,8 @@ class _SlideEditorCard extends StatelessWidget {
                   children: [
                     TextFormField(
                       initialValue: slide.title,
-                      decoration: const InputDecoration(
-                        labelText: 'Başlık',
+                      decoration: InputDecoration(
+                        labelText: ('Başlık').ui,
                         isDense: true,
                       ),
                       onChanged: (v) => onChanged(slide.copyWith(title: v)),
@@ -591,8 +579,8 @@ class _SlideEditorCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     TextFormField(
                       initialValue: slide.description,
-                      decoration: const InputDecoration(
-                        labelText: 'Açıklama',
+                      decoration: InputDecoration(
+                        labelText: ('Açıklama').ui,
                         isDense: true,
                       ),
                       maxLines: 2,
@@ -609,8 +597,8 @@ class _SlideEditorCard extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   initialValue: slide.buttonText,
-                  decoration: const InputDecoration(
-                    labelText: 'Buton',
+                  decoration: InputDecoration(
+                    labelText: ('Buton').ui,
                     isDense: true,
                   ),
                   onChanged: (v) => onChanged(slide.copyWith(buttonText: v)),
@@ -620,13 +608,13 @@ class _SlideEditorCard extends StatelessWidget {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   initialValue: routes.contains(slide.buttonRoute) ? slide.buttonRoute : routes.first,
-                  decoration: const InputDecoration(
-                    labelText: 'Rota',
+                  decoration: InputDecoration(
+                    labelText: ('Rota').ui,
                     isDense: true,
                   ),
                   items: [
                     for (final r in routes)
-                      DropdownMenuItem(value: r, child: Text(r.replaceFirst('/app/', ''), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: r, child: Text((r.replaceFirst('/app/', '')).ui, overflow: TextOverflow.ellipsis)),
                   ],
                   onChanged: (v) {
                     if (v != null) onChanged(slide.copyWith(buttonRoute: v));
@@ -638,12 +626,12 @@ class _SlideEditorCard extends StatelessWidget {
           const SizedBox(height: 10),
           DropdownButtonFormField<String>(
             initialValue: imageKeys.any((e) => e.$1 == slide.imageKey) ? slide.imageKey : 'bowl',
-            decoration: const InputDecoration(
-              labelText: 'Görsel',
+            decoration: InputDecoration(
+              labelText: ('Görsel').ui,
               isDense: true,
             ),
             items: [
-              for (final e in imageKeys) DropdownMenuItem(value: e.$1, child: Text(e.$2)),
+              for (final e in imageKeys) DropdownMenuItem(value: e.$1, child: Text((e.$2).ui)),
             ],
             onChanged: (v) {
               if (v != null) onChanged(slide.copyWith(imageKey: v));
@@ -652,8 +640,8 @@ class _SlideEditorCard extends StatelessWidget {
           const SizedBox(height: 10),
           TextFormField(
             initialValue: slide.imageUrl,
-            decoration: const InputDecoration(
-              labelText: 'Görsel URL (opsiyonel — doluysa anahtar yerine kullanılır)',
+            decoration: InputDecoration(
+              labelText: ('Görsel URL (opsiyonel — doluysa anahtar yerine kullanılır)').ui,
               isDense: true,
             ),
             onChanged: (v) => onChanged(slide.copyWith(imageUrl: v)),
@@ -661,10 +649,10 @@ class _SlideEditorCard extends StatelessWidget {
           const SizedBox(height: 10),
           TextFormField(
             initialValue: slide.bgColor,
-            decoration: const InputDecoration(
-              labelText: 'Arka plan rengi (hex)',
+            decoration: InputDecoration(
+              labelText: ('Arka plan rengi (hex)').ui,
               isDense: true,
-              hintText: '#E8F5F0',
+              hintText: ('#E8F5F0').ui,
             ),
             onChanged: (v) => onChanged(slide.copyWith(bgColor: v)),
           ),

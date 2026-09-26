@@ -15,6 +15,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../../core/widgets/style_icon.dart';
 import 'auth_controller.dart';
 import 'widgets/social_sign_in_buttons.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -87,8 +88,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           _brandMark(context, size: 92),
                           const SizedBox(height: 12),
-                          Text(
-                            'e-Diyet',
+                          Text(('e-Diyet').ui,
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: context.brandPrimary,
@@ -98,8 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       )),
               if (context.isCartoon) ...[
                 const SizedBox(height: 16),
-                Text(
-                  'e-Diyet',
+                Text(('e-Diyet').ui,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w900,
@@ -149,7 +148,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               validator: (v) => v != null && v.length >= 6 ? null : 'auth.passwordShort'.tr()),
             if (auth.error != null) ...[
               const SizedBox(height: 12),
-              Text(auth.error!, style: const TextStyle(color: AppColors.danger)),
+              Text((auth.error!).ui, style: const TextStyle(color: AppColors.danger)),
             ],
             SizedBox(height: modern ? 24 : 20),
             DiyetselButton(
@@ -174,15 +173,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 TextButton(
                   onPressed: LegalLinks.privacy,
-                  child: const Text('Gizlilik'),
+                  child: Text(('Gizlilik').ui),
                 ),
                 TextButton(
                   onPressed: LegalLinks.support,
-                  child: const Text('Destek'),
+                  child: Text(('Destek').ui),
                 ),
                 TextButton(
                   onPressed: LegalLinks.terms,
-                  child: const Text('Şartlar'),
+                  child: Text(('Şartlar').ui),
                 ),
               ],
             ),
@@ -216,7 +215,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: colors,
-          stops: const [0, 0.55, 1])),
+          stops: [0, 0.55, 1])),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(48, 48, 40, 48),
         child: Column(
@@ -224,23 +223,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
                           _brandMark(context, size: 56),
             const SizedBox(height: 16),
-            Text(
-              'e-Diyet',
+            Text(('e-Diyet').ui,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -1)),
             const Spacer(),
-            Text(
-              'Diyetisyen ve danışan yönetimi\niçin masaüstü deneyimi',
+            Text(('Diyetisyen ve danışan yönetimi\niçin masaüstü deneyimi').ui,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white.withValues(alpha: 0.95),
                     height: 1.35,
                     fontWeight: FontWeight.w600,
                     letterSpacing: null)),
             const SizedBox(height: 12),
-            Text(
-              'Klinik paneli · Plan takibi · Raporlar',
+            Text(('Klinik paneli · Plan takibi · Raporlar').ui,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
                 letterSpacing: null)),
@@ -249,7 +245,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final label in const ['Su & kilo', 'Diyet planı', 'Tarifler', 'Randevu'])
+                for (final label in ['Su & kilo', 'Diyet planı', 'Tarifler', 'Randevu'])
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
@@ -257,8 +253,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
                     ),
-                    child: Text(
-                      label,
+                    child: Text((label).ui,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -357,16 +352,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (modern) ...[
-            Text(
-              'Hesabını oluştur',
+            Text(('Hesabını oluştur').ui,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: AppColors.primaryDeep,
                   ),
             ),
             const SizedBox(height: 6),
-            Text(
-              'Klinik veya danışan olarak e-Diyet’e katıl.',
+            Text(('Klinik veya danışan olarak e-Diyet’e katıl.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -391,7 +384,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               title: Text('auth.dietitianSetup'.tr()),
               subtitle: Text('auth.dietitianSetupHint'.tr()),
             ),
-          if (auth.error != null) Text(auth.error!, style: const TextStyle(color: AppColors.danger)),
+          if (auth.error != null) Text((auth.error!).ui, style: const TextStyle(color: AppColors.danger)),
           const SizedBox(height: 16),
           DiyetselButton(
             label: 'auth.register'.tr(),

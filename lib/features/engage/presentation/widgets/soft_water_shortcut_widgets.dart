@@ -8,6 +8,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/water_shortcut_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftWaterShortcutHeader extends StatelessWidget {
@@ -19,12 +20,11 @@ class SoftWaterShortcutHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Su kısayolu',
+              Text(('Su kısayolu').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -33,8 +33,7 @@ class SoftWaterShortcutHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Kalıcı bildirim & hızlı ekleme',
+              Text(('Kalıcı bildirim & hızlı ekleme').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -131,8 +130,7 @@ class SoftWaterShortcutHero extends StatelessWidget {
                       color: accent,
                     ),
                     const SizedBox(width: 5),
-                    Text(
-                      status,
+                    Text((status).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -143,8 +141,7 @@ class SoftWaterShortcutHero extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Text(
-                'Bugün %$pct',
+              Text(('Bugün %$pct').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -161,8 +158,7 @@ class SoftWaterShortcutHero extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '$amountMl ml',
+                    Text(('$amountMl ml').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 32,
@@ -172,8 +168,7 @@ class SoftWaterShortcutHero extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Hedef $goalMl ml',
+                    Text(('Hedef $goalMl ml').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
@@ -216,8 +211,7 @@ class SoftWaterShortcutHero extends StatelessWidget {
                 Icon(Icons.lightbulb_rounded, size: 18, color: WaterShortcutVisuals.blue.withValues(alpha: 0.85)),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    tip,
+                  child: Text((tip).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
@@ -270,8 +264,7 @@ class SoftWaterShortcutStatsRow extends StatelessWidget {
                 fallbackColor: accent,
               ),
               const SizedBox(height: 6),
-              Text(
-                value,
+              Text((value).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -279,8 +272,7 @@ class SoftWaterShortcutStatsRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                label,
+              Text((label).ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -352,12 +344,11 @@ class SoftWaterShortcutToggleCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Kalıcı su bildirimi',
+                    Text(('Kalıcı su bildirimi').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
@@ -365,8 +356,7 @@ class SoftWaterShortcutToggleCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2),
-                    Text(
-                      'Tek dokunuşla +250 ml',
+                    Text(('Tek dokunuşla +250 ml').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -385,8 +375,7 @@ class SoftWaterShortcutToggleCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            hint,
+          Text((hint).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 13,
@@ -439,8 +428,7 @@ class SoftWaterShortcutPrimaryAdd extends StatelessWidget {
           children: [
             const Icon(Icons.add_rounded, color: Colors.white, size: 26),
             const SizedBox(width: 8),
-            Text(
-              '+$sipMl ml ekle',
+            Text(('+$sipMl ml ekle').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 17,
@@ -476,16 +464,14 @@ class SoftWaterShortcutQuickAdds extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(
-                  '+$ml',
+                Text(('+$ml').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
                     color: WaterShortcutVisuals.blueDeep,
                   ),
                 ),
-                Text(
-                  label,
+                Text((label).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 11,
@@ -502,8 +488,7 @@ class SoftWaterShortcutQuickAdds extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Hızlı miktarlar',
+        Text(('Hızlı miktarlar').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 14,
@@ -552,8 +537,7 @@ class SoftWaterShortcutNotificationPreview extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text(
-                'Bildirim önizleme',
+              Text(('Bildirim önizleme').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 14,
@@ -568,8 +552,7 @@ class SoftWaterShortcutNotificationPreview extends StatelessWidget {
                     color: AppColors.modernWash,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    'Kapalı',
+                  child: Text(('Kapalı').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 10.5,
@@ -605,8 +588,7 @@ class SoftWaterShortcutNotificationPreview extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          'Su • $amountMl / $goalMl ml',
+                        child: Text(('Su • $amountMl / $goalMl ml').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 13.5,
@@ -619,8 +601,7 @@ class SoftWaterShortcutNotificationPreview extends StatelessWidget {
                   const SizedBox(height: 6),
                   Padding(
                     padding: const EdgeInsets.only(left: 38),
-                    child: Text(
-                      'Hızlı eklemek için +${AppConstants.waterSipMl} ml',
+                    child: Text(('Hızlı eklemek için +${AppConstants.waterSipMl} ml').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -636,8 +617,7 @@ class SoftWaterShortcutNotificationPreview extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: const Color(0xFFD0D5DD)),
                     ),
-                    child: Text(
-                      '+${AppConstants.waterSipMl} ml',
+                    child: Text(('+${AppConstants.waterSipMl} ml').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12.5,
@@ -673,8 +653,7 @@ class SoftWaterShortcutStepsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Nasıl çalışır?',
+          Text(('Nasıl çalışır?').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 14,
@@ -724,8 +703,7 @@ class _StepRow extends StatelessWidget {
             border: Border.all(color: const Color(0xFFB8DCEC)),
           ),
           alignment: Alignment.center,
-          child: Text(
-            '$index',
+          child: Text(('$index').ui,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 13,
@@ -742,8 +720,7 @@ class _StepRow extends StatelessWidget {
                 children: [
                   Icon(icon, size: 16, color: WaterShortcutVisuals.blue),
                   const SizedBox(width: 6),
-                  Text(
-                    title,
+                  Text((title).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 13.5,
@@ -753,8 +730,7 @@ class _StepRow extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 3),
-              Text(
-                body,
+              Text((body).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.5,
@@ -819,8 +795,7 @@ class SoftWaterShortcutTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -828,8 +803,7 @@ class SoftWaterShortcutTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  body,
+                Text((body).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -878,16 +852,14 @@ class SoftWaterShortcutTrackerLink extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Detaylı su takibi',
+                  Text(('Detaylı su takibi').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
                       color: AppColors.primaryDeep,
                     ),
                   ),
-                  Text(
-                    'Haftalık grafik, vücut ölçümü ve öğün fotoğrafı',
+                  Text(('Haftalık grafik, vücut ölçümü ve öğün fotoğrafı').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12,

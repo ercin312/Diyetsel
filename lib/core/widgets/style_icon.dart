@@ -4,6 +4,7 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
 import 'kawaii_doodle.dart';
 import 'modern_glyph.dart';
+import '../l10n/ui_string.dart';
 
 class StyleIcon extends StatelessWidget {
   const StyleIcon({
@@ -173,8 +174,7 @@ class CartoonAvatar extends StatelessWidget {
           BoxShadow(color: AppColors.primary.withValues(alpha: 0.28), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
-      child: Text(
-        name.isEmpty ? '?' : name.substring(0, 1).toUpperCase(),
+      child: Text((name.isEmpty ? '?' : name.substring(0, 1).toUpperCase()).ui,
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w700,
@@ -203,8 +203,7 @@ class DoodleBadge extends StatelessWidget {
             BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 8, offset: Offset(0, 3)),
           ],
         ),
-        child: Text(
-          '$emoji $label',
+        child: Text(('$emoji $label').ui,
           style: const TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 11,
@@ -225,8 +224,7 @@ class DoodleBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.28)),
       ),
-      child: Text(
-        label,
+      child: Text((label).ui,
         style: const TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 11,

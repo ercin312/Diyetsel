@@ -14,6 +14,7 @@ import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class LearnHubScreen extends ConsumerWidget {
   const LearnHubScreen({super.key});
@@ -43,8 +44,7 @@ class LearnHubScreen extends ConsumerWidget {
                     SoftProgressRing(
                       progress: (totalDone / 14).clamp(0.0, 1.0),
                       color: AppColors.primary,
-                      child: Text(
-                        '$totalDone',
+                      child: Text(('$totalDone').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 16,
@@ -53,12 +53,11 @@ class LearnHubScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Öğrenme yolculuğun',
+                          Text(('Öğrenme yolculuğun').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
@@ -66,8 +65,7 @@ class LearnHubScreen extends ConsumerWidget {
                             ),
                           ),
                           SizedBox(height: 4),
-                          Text(
-                            'Her gün 3 dakika — quiz ile pekiştir, rozet kazan.',
+                          Text(('Her gün 3 dakika — quiz ile pekiştir, rozet kazan.').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 12.5,
@@ -90,8 +88,7 @@ class LearnHubScreen extends ConsumerWidget {
                 tint: Colors.white,
               ),
               const SizedBox(height: 16),
-              const Text(
-                '7 günlük seriler',
+              Text(('7 günlük seriler').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 17,
@@ -141,8 +138,7 @@ class LearnHubScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Öğrenme yolculuğun',
+                              Text(('Öğrenme yolculuğun').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 18,
@@ -150,8 +146,7 @@ class LearnHubScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                '$totalDone mini ders tamamlandı · her gün 3 dakika yeter',
+                              Text(('$totalDone mini ders tamamlandı · her gün 3 dakika yeter').ui,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,
@@ -170,8 +165,7 @@ class LearnHubScreen extends ConsumerWidget {
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
-                          child: Text(
-                            '$totalDone',
+                          child: Text(('$totalDone').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 18,
@@ -190,14 +184,13 @@ class LearnHubScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(color: AppColors.kawaiiOutline),
                     ),
-                    child: const Row(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.timer_outlined, color: AppColors.kawaiiLeafDeep, size: 22),
                         SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            '3 dakikalık dersler — etiket okuma ve porsiyon bilinci, dışarıda yemek seçimini kolaylaştırır.',
+                          child: Text(('3 dakikalık dersler — etiket okuma ve porsiyon bilinci, dışarıda yemek seçimini kolaylaştırır.').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               height: 1.35,
@@ -209,8 +202,7 @@ class LearnHubScreen extends ConsumerWidget {
                     ),
                   ).animate().fadeIn(delay: 40.ms, duration: 280.ms),
                   const SizedBox(height: 16),
-                  const Text(
-                    '7 günlük seriler',
+                  Text(('7 günlük seriler').ui,
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
                   ),
                   const SizedBox(height: 10),
@@ -299,21 +291,19 @@ class _SeriesHeroCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(series.emoji, style: const TextStyle(fontSize: 34)),
+                    Text((series.emoji).ui, style: const TextStyle(fontSize: 34)),
                     const Spacer(),
                     DoodleBadge(label: '$done/7 gün', emoji: '📚'),
                   ]),
                 const SizedBox(height: 12),
-                Text(
-                  series.title,
+                Text((series.title).ui,
                   style: TextStyle(
                     color: cartoon ? AppColors.kawaiiInk : Colors.white,
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
                     letterSpacing: null)),
                 const SizedBox(height: 6),
-                Text(
-                  series.subtitle,
+                Text((series.subtitle).ui,
                   style: TextStyle(
                     color: cartoon
                         ? AppColors.kawaiiInk.withValues(alpha: 0.8)
@@ -355,7 +345,7 @@ class LessonSeriesScreen extends ConsumerWidget {
     final user = ref.watch(authControllerProvider).user!;
     final store = ref.watch(appStoreProvider);
     ref.watch(userProgressProvider(user.id));
-    final done = store.userProgress(user.id).completedLessonDays[seriesId] ?? const [];
+    final done = store.userProgress(user.id).completedLessonDays[seriesId] ?? [];
 
     return AppPage(
       title: series.title,
@@ -374,14 +364,14 @@ class LessonSeriesScreen extends ConsumerWidget {
                       backgroundColor: _unlocked(day.day, done)
                           ? Color(series.gradient[0]).withValues(alpha: 0.18)
                           : Colors.grey.withValues(alpha: 0.15),
-                      child: Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.w900))),
+                      child: Text(('${day.day}').ui, style: const TextStyle(fontWeight: FontWeight.w900))),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${day.emoji} ${day.title}', style: const TextStyle(fontWeight: FontWeight.w900)),
-                          Text(day.lead, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
+                          Text(('${day.emoji} ${day.title}').ui, style: const TextStyle(fontWeight: FontWeight.w900)),
+                          Text((day.lead).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
                         ])),
                     Icon(
                       done.contains(day.day)
@@ -437,18 +427,17 @@ class _LessonDayScreenState extends ConsumerState<LessonDayScreen> {
               children: [
                 Row(
                   children: [
-                    Text(lesson.emoji, style: const TextStyle(fontSize: 32)),
+                    Text((lesson.emoji).ui, style: const TextStyle(fontSize: 32)),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(lesson.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))),
+                      child: Text((lesson.title).ui, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))),
                   ]),
                 const SizedBox(height: 10),
-                Text(
-                  lesson.lead,
+                Text((lesson.lead).ui,
                   style: TextStyle(fontWeight: FontWeight.w700, color: context.brandPrimary)),
                 const SizedBox(height: 12),
                 for (final p in lesson.paragraphs) ...[
-                  Text(p, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45)),
+                  Text((p).ui, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45)),
                   const SizedBox(height: 10),
                 ],
                 FeatureBanner(
@@ -464,13 +453,13 @@ class _LessonDayScreenState extends ConsumerState<LessonDayScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionHeader(title: 'Mini quiz', subtitle: 'Doğru cevap rozet ilerlemeni hızlandırır'),
-                Text(quiz.question, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                Text((quiz.question).ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
                 const SizedBox(height: 12),
                 for (var i = 0; i < quiz.options.length; i++)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: ChoiceChip(
-                      label: Text(quiz.options[i]),
+                      label: Text((quiz.options[i]).ui),
                       selected: _picked == i,
                       onSelected: _revealed
                           ? null
@@ -479,8 +468,7 @@ class _LessonDayScreenState extends ConsumerState<LessonDayScreen> {
                               }))),
                 if (_revealed) ...[
                   const SizedBox(height: 8),
-                  Text(
-                    quiz.explanation,
+                  Text((quiz.explanation).ui,
                     style: TextStyle(
                       color: correct ? AppColors.success : AppColors.danger,
                       fontWeight: FontWeight.w700)),
@@ -512,7 +500,7 @@ class _LessonDayScreenState extends ConsumerState<LessonDayScreen> {
                             widget.day);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Gün tamamlandı — harika gidiyorsun!')));
+                              SnackBar(content: Text(('Gün tamamlandı — harika gidiyorsun!').ui)));
                             context.pop();
                           }
                         }),
@@ -559,16 +547,16 @@ class LearnHomeRail extends ConsumerWidget {
                     ]
                   : null),
             alignment: Alignment.center,
-            child: Text(series.emoji, style: const TextStyle(fontSize: 26))),
+            child: Text((series.emoji).ui, style: const TextStyle(fontSize: 26))),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Mini ders • Gün $nextDay', style: const TextStyle(fontWeight: FontWeight.w900)),
-                Text('${day.emoji} ${day.title}', maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(('Mini ders • Gün $nextDay').ui, style: const TextStyle(fontWeight: FontWeight.w900)),
+                Text(('${day.emoji} ${day.title}').ui, maxLines: 1, overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 6),
-                Text(series.title, style: Theme.of(context).textTheme.bodySmall),
+                Text((series.title).ui, style: Theme.of(context).textTheme.bodySmall),
               ])),
           StyleIcon(icon: Icons.play_circle_fill_rounded, emoji: '▶️', size: 28, color: context.brandPrimary),
         ]));

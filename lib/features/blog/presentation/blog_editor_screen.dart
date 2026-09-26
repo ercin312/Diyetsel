@@ -8,6 +8,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/rich_editor.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/blog_visuals.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class BlogEditorScreen extends ConsumerStatefulWidget {
   const BlogEditorScreen({super.key, this.existing});
@@ -61,21 +62,21 @@ class _BlogEditorScreenState extends ConsumerState<BlogEditorScreen> {
             await ref.read(appStoreProvider).saveBlog(post);
             if (context.mounted) Navigator.pop(context);
           },
-          child: const Text('Yayınla'),
+          child: Text(('Yayınla').ui),
         ),
       ],
       child: ListView(
         children: [
-          TextField(controller: _title, decoration: const InputDecoration(labelText: 'Başlık')),
+          TextField(controller: _title, decoration: InputDecoration(labelText: ('Başlık').ui)),
           const SizedBox(height: 8),
-          TextField(controller: _subtitle, decoration: const InputDecoration(labelText: 'Alt başlık')),
+          TextField(controller: _subtitle, decoration: InputDecoration(labelText: ('Alt başlık').ui)),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: _category,
-            items: [for (final c in blogCategories) DropdownMenuItem(value: c, child: Text(c))],
+            items: [for (final c in blogCategories) DropdownMenuItem(value: c, child: Text((c).ui))],
             onChanged: (v) => setState(() => _category = v ?? _category),
           ),
-          SwitchListTile(value: _published, onChanged: (v) => setState(() => _published = v), title: const Text('Yayınla')),
+          SwitchListTile(value: _published, onChanged: (v) => setState(() => _published = v), title: Text(('Yayınla').ui)),
           const SizedBox(height: 8),
           RichEditor(
             blocks: _body,

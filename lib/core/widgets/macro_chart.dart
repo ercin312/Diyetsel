@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_colors.dart';
+import '../l10n/ui_string.dart';
 
 class MacroRings extends StatelessWidget {
   const MacroRings({
@@ -53,13 +54,13 @@ class MacroRings extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text('${(p * 100).round()}%', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11)),
+                Text(('${(p * 100).round()}%').ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11)),
               ],
             ),
           ),
           const SizedBox(height: 6),
-          Text(label, style: Theme.of(context).textTheme.labelMedium),
-          Text('$value / $target', style: Theme.of(context).textTheme.bodySmall),
+          Text((label).ui, style: Theme.of(context).textTheme.labelMedium),
+          Text(('$value / $target').ui, style: Theme.of(context).textTheme.bodySmall),
         ],
       );
     }

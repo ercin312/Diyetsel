@@ -17,6 +17,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import '../domain/vault_io.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class DocumentsScreen extends ConsumerStatefulWidget {
   const DocumentsScreen({super.key});
@@ -91,8 +92,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                               size: 16,
                               color: selected ? Colors.white : VaultVisuals.accentFor(c),
                             ),
-                      label: Text(
-                        label,
+                      label: Text((label).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -114,10 +114,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                     .fadeIn(duration: 320.ms)
                     .scale(begin: const Offset(0.96, 0.96))
               else if (shown.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(28),
-                  child: Text(
-                    'Bu kategoride belge yok.',
+                  child: Text(('Bu kategoride belge yok.').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                   ),
@@ -150,7 +149,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       fab: FloatingActionButton.extended(
         onPressed: () => _upload(context, store, user),
         icon: const Icon(Icons.upload_file_rounded),
-        label: const Text('Yükle', style: TextStyle(fontWeight: FontWeight.w800)),
+        label: Text(('Yükle').ui, style: TextStyle(fontWeight: FontWeight.w800)),
       ),
       child: context.isModern
           ? SoftWashBackground(
@@ -165,8 +164,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         SoftProgressRing(
                           progress: files.isEmpty ? 0 : 1,
                           color: AppColors.primary,
-                          child: Text(
-                            '${files.length}',
+                          child: Text(('${files.length}').ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
@@ -179,8 +177,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                user.isAdmin ? 'Klinik belge kasası' : 'Güvenli belge kasası',
+                              Text((user.isAdmin ? 'Klinik belge kasası' : 'Güvenli belge kasası').ui,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 16,
@@ -188,8 +185,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                'Lab, plan PDF ve formlar — tek yerde sakla, aç, paylaş.',
+                              Text(('Lab, plan PDF ve formlar — tek yerde sakla, aç, paylaş.').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12.5,
@@ -259,8 +255,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      shown[i].name,
+                                    Text((shown[i].name).ui,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -269,12 +264,11 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text(
-                                      [
+                                    Text(([
                                         VaultVisuals.label(shown[i].category),
                                         DateFormat('d MMM y', 'tr').format(shown[i].uploadedAt),
                                         if (user.isAdmin && shown[i].ownerName.isNotEmpty) shown[i].ownerName,
-                                      ].join(' · '),
+                                      ].join(' · ')).ui,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
@@ -318,13 +312,12 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(VaultVisuals.iconForFile(f), color: context.brandPrimary),
-                        title: Text(f.name, style: const TextStyle(fontWeight: FontWeight.w800)),
-                        subtitle: Text(
-                          [
+                        title: Text((f.name).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                        subtitle: Text(([
                             VaultVisuals.label(f.category),
                             DateFormat('d MMM y HH:mm', 'tr').format(f.uploadedAt),
                             if (user.isAdmin && f.ownerName.isNotEmpty) f.ownerName,
-                          ].join(' · '),
+                          ].join(' · ')).ui,
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.more_horiz_rounded),
@@ -375,13 +368,13 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Belge kasaya eklendi')),
+          SnackBar(content: Text(('Belge kasaya eklendi').ui)),
         );
       }
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dosya kaydedilemedi')),
+          SnackBar(content: Text(('Dosya kaydedilemedi').ui)),
         );
       }
     }
@@ -450,19 +443,16 @@ class _VaultHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    admin ? 'Danışan belgeleri' : 'Kişisel kasa',
+                  child: Text((admin ? 'Danışan belgeleri' : 'Kişisel kasa').ui,
                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  count == 0 ? 'Kasayı doldurmaya başla' : '$count belge hazır',
+                Text((count == 0 ? 'Kasayı doldurmaya başla' : '$count belge hazır').ui,
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, height: 1.15, color: AppColors.kawaiiInk),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Lab sonuçları, plan PDF’leri ve formlar — tek yerde, dokununca açılır.',
+                Text(('Lab sonuçları, plan PDF’leri ve formlar — tek yerde, dokununca açılır.').ui,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -490,13 +480,11 @@ class _PurposeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Ne için kullanılır?',
+          Text(('Ne için kullanılır?').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Diyetisyeninle paylaşacağın veya saklamak istediğin dosyalar için güvenli klasör.',
+          Text(('Diyetisyeninle paylaşacağın veya saklamak istediğin dosyalar için güvenli klasör.').ui,
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, height: 1.35, color: AppColors.kawaiiMuted),
           ),
           const SizedBox(height: 12),
@@ -519,8 +507,8 @@ class _PurposeCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(VaultVisuals.label(c), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5)),
-                        Text(VaultVisuals.hint(c), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+                        Text((VaultVisuals.label(c)).ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5)),
+                        Text((VaultVisuals.hint(c)).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.kawaiiMuted)),
                       ],
                     ),
                   ),
@@ -577,26 +565,23 @@ class _CartoonDocCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    file.name,
+                  Text((file.name).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
                   ),
                   const SizedBox(height: 3),
-                  Text(
-                    [
+                  Text(([
                       VaultVisuals.label(file.category),
                       DateFormat('d MMM y', 'tr').format(file.uploadedAt),
                       if (size.isNotEmpty) size,
                       if (showOwner && file.ownerName.isNotEmpty) file.ownerName,
-                    ].join(' · '),
+                    ].join(' · ')).ui,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.kawaiiMuted),
                   ),
                   if (file.note.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      file.note,
+                    Text((file.note).ui,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.kawaiiLeafDeep),
@@ -635,13 +620,11 @@ class _EmptyVault extends StatelessWidget {
         children: [
           Image.asset(DiyetselAssets.mascotCarrot, height: 88),
           const SizedBox(height: 12),
-          const Text(
-            'Kasa henüz boş',
+          Text(('Kasa henüz boş').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'İlk lab sonucunu veya plan PDF’ini yükle. Dosyalar uygulamada saklanır; dokunarak açabilir veya paylaşabilirsin.',
+          Text(('İlk lab sonucunu veya plan PDF’ini yükle. Dosyalar uygulamada saklanır; dokunarak açabilir veya paylaşabilirsin.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5, height: 1.4, color: AppColors.kawaiiMuted),
           ),
@@ -656,8 +639,7 @@ class _EmptyVault extends StatelessWidget {
                 color: AppColors.kawaiiLeaf,
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: const Text(
-                'Belge yükle',
+              child: Text(('Belge yükle').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
               ),
@@ -680,13 +662,12 @@ class _TipsFooter extends StatelessWidget {
         border: Border.all(color: AppColors.kawaiiOutline),
         boxShadow: AppSpacing.soft,
       ),
-      child: const Row(
+      child: Row(
         children: [
           Icon(Icons.lock_outline_rounded, color: AppColors.kawaiiLeafDeep),
           SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Dosyalar cihazındaki uygulama klasöründe tutulur. PDF ve görseller dokununca açılır; diğerleri paylaşım menüsüyle açılır.',
+            child: Text(('Dosyalar cihazındaki uygulama klasöründe tutulur. PDF ve görseller dokununca açılır; diğerleri paylaşım menüsüyle açılır.').ui,
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
             ),
           ),
@@ -747,17 +728,15 @@ class _DocDetailSheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      file.name,
+                    Text((file.name).ui,
                       style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: cartoon ? AppColors.kawaiiInk : null),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      [
+                    Text(([
                         VaultVisuals.label(file.category),
                         DateFormat('d MMM y HH:mm', 'tr').format(file.uploadedAt),
                         if (size.isNotEmpty) size,
-                      ].join(' · '),
+                      ].join(' · ')).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -771,7 +750,7 @@ class _DocDetailSheet extends StatelessWidget {
           ),
           if (file.note.isNotEmpty) ...[
             const SizedBox(height: 14),
-            Text(file.note, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+            Text((file.note).ui, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
           ],
           const SizedBox(height: 18),
           SoftTap(
@@ -783,8 +762,7 @@ class _DocDetailSheet extends StatelessWidget {
                 color: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary,
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: const Text(
-                'Belgeyi aç',
+              child: Text(('Belgeyi aç').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
               ),
@@ -797,7 +775,7 @@ class _DocDetailSheet extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: onShare,
                   icon: const Icon(Icons.ios_share_rounded),
-                  label: const Text('Paylaş'),
+                  label: Text(('Paylaş').ui),
                 ),
               ),
               const SizedBox(width: 8),
@@ -856,13 +834,11 @@ class _UploadSheetState extends State<_UploadSheet> {
                   decoration: BoxDecoration(color: AppColors.kawaiiOutline, borderRadius: BorderRadius.circular(99)),
                 ),
               ),
-              Text(
-                'Belge yükle',
+              Text(('Belge yükle').ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: cartoon ? AppColors.kawaiiInk : null),
               ),
               const SizedBox(height: 6),
-              Text(
-                'Kategori seç, isteğe bağlı not ekle; sonra dosyayı seç.',
+              Text(('Kategori seç, isteğe bağlı not ekle; sonra dosyayı seç.').ui,
                 style: TextStyle(fontWeight: FontWeight.w600, color: cartoon ? AppColors.kawaiiMuted : null),
               ),
               const SizedBox(height: 14),
@@ -872,13 +848,13 @@ class _UploadSheetState extends State<_UploadSheet> {
                 children: [
                   ChoiceChip(
                     selected: _category == 'auto',
-                    label: const Text('Otomatik'),
+                    label: Text(('Otomatik').ui),
                     onSelected: (_) => setState(() => _category = 'auto'),
                   ),
                   for (final c in VaultVisuals.categories)
                     ChoiceChip(
                       selected: _category == c,
-                      label: Text(VaultVisuals.label(c)),
+                      label: Text((VaultVisuals.label(c)).ui),
                       onSelected: (_) => setState(() => _category = c),
                     ),
                 ],
@@ -886,9 +862,9 @@ class _UploadSheetState extends State<_UploadSheet> {
               const SizedBox(height: 12),
               TextField(
                 controller: _note,
-                decoration: const InputDecoration(
-                  labelText: 'Not (opsiyonel)',
-                  hintText: 'Örn. Mart 2026 kan tahlili',
+                decoration: InputDecoration(
+                  labelText: ('Not (opsiyonel)').ui,
+                  hintText: ('Örn. Mart 2026 kan tahlili').ui,
                 ),
               ),
               const SizedBox(height: 16),
@@ -898,7 +874,7 @@ class _UploadSheetState extends State<_UploadSheet> {
                   _UploadMeta(category: _category, note: _note.text.trim()),
                 ),
                 icon: const Icon(Icons.folder_open_rounded),
-                label: const Text('Dosya seç'),
+                label: Text(('Dosya seç').ui),
               ),
             ],
           ),

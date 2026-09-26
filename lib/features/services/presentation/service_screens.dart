@@ -14,6 +14,7 @@ import '../../../core/widgets/marketplace.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/service_visuals.dart';
 import 'soft_service_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class ServicesScreen extends ConsumerStatefulWidget {
   const ServicesScreen({super.key, this.admin = false});
@@ -78,14 +79,13 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                     borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
                     border: Border.all(color: AppColors.kawaiiOutline),
                   ),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.inventory_2_outlined, color: AppColors.kawaiiLeafDeep, size: 22),
                       SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          'Paket seçerken süre ve içerikleri oku; talebin diyetisyene iletilir. Düzenli takip paketleri daha kalıcı sonuç verir.',
+                        child: Text(('Paket seçerken süre ve içerikleri oku; talebin diyetisyene iletilir. Düzenli takip paketleri daha kalıcı sonuç verir.').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             height: 1.35,
@@ -110,8 +110,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                     return FilterChip(
                       selected: selected,
                       showCheckmark: false,
-                      label: Text(
-                        c,
+                      label: Text((c).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -128,10 +127,9 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
               ),
               const SizedBox(height: 16),
               if (shown.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(28),
-                  child: Text(
-                    'Bu kategoride hizmet yok.',
+                  child: Text(('Bu kategoride hizmet yok.').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                   ),
@@ -161,13 +159,12 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                   border: Border.all(color: AppColors.kawaiiOutline),
                   boxShadow: AppSpacing.soft,
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.info_outline_rounded, color: AppColors.kawaiiLeafDeep),
                     SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        'Talep gönderince diyetisyenin onaylar; randevu veya başlangıç tarihi mesajla netleşir.',
+                      child: Text(('Talep gönderince diyetisyenin onaylar; randevu veya başlangıç tarihi mesajla netleşir.').ui,
                         style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                       ),
                     ),
@@ -209,7 +206,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                 if (ctx.mounted) {
                   Navigator.pop(ctx);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Talebiniz iletildi')),
+                    SnackBar(content: Text(('Talebiniz iletildi').ui)),
                   );
                 }
               },
@@ -244,19 +241,18 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(cartoon ? AppSpacing.radiusCard : 12),
         ),
-        title: Text(
-          existing == null ? 'Yeni hizmet' : 'Hizmeti düzenle',
+        title: Text((existing == null ? 'Yeni hizmet' : 'Hizmeti düzenle').ui,
           style: TextStyle(fontWeight: FontWeight.w900, color: cartoon ? AppColors.kawaiiInk : null),
         ),
         content: SingleChildScrollView(
           child: Column(
             children: [
-              TextField(controller: title, decoration: const InputDecoration(labelText: 'Başlık')),
-              TextField(controller: tagline, decoration: const InputDecoration(labelText: 'Kısa slogan')),
-              TextField(controller: category, decoration: const InputDecoration(labelText: 'Kategori')),
-              TextField(controller: desc, decoration: const InputDecoration(labelText: 'Açıklama'), maxLines: 3),
-              TextField(controller: price, decoration: const InputDecoration(labelText: 'Fiyat'), keyboardType: TextInputType.number),
-              TextField(controller: bullets, decoration: const InputDecoration(labelText: 'Madde (satır satır)'), maxLines: 4),
+              TextField(controller: title, decoration: InputDecoration(labelText: ('Başlık').ui)),
+              TextField(controller: tagline, decoration: InputDecoration(labelText: ('Kısa slogan').ui)),
+              TextField(controller: category, decoration: InputDecoration(labelText: ('Kategori').ui)),
+              TextField(controller: desc, decoration: InputDecoration(labelText: ('Açıklama').ui), maxLines: 3),
+              TextField(controller: price, decoration: InputDecoration(labelText: ('Fiyat').ui), keyboardType: TextInputType.number),
+              TextField(controller: bullets, decoration: InputDecoration(labelText: ('Madde (satır satır)').ui), maxLines: 4),
             ],
           ),
         ),
@@ -286,7 +282,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
               );
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Kaydet'),
+            child: Text(('Kaydet').ui),
           ),
         ],
       ),
@@ -318,8 +314,7 @@ class _ServicesHero extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Hizmetler',
+                Text(('Hizmetler').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -328,8 +323,7 @@ class _ServicesHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  '$count paket · online, klinik ve program seçenekleri',
+                Text(('$count paket · online, klinik ve program seçenekleri').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -417,16 +411,14 @@ class _CartoonServiceCard extends StatelessWidget {
                                   color: Colors.white.withValues(alpha: 0.9),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Text(
-                                  service.category.isEmpty ? 'Paket' : service.category,
+                                child: Text((service.category.isEmpty ? 'Paket' : service.category).ui,
                                   style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiInk),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
-                          Text(
-                            service.title,
+                          Text((service.title).ui,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 17,
@@ -436,8 +428,7 @@ class _CartoonServiceCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            ServiceVisuals.displayTagline(service),
+                          Text((ServiceVisuals.displayTagline(service)).ui,
                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                           ),
                         ],
@@ -457,8 +448,7 @@ class _CartoonServiceCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      service.description,
+                    Text((service.description).ui,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -483,22 +473,20 @@ class _CartoonServiceCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(color: AppColors.kawaiiOutline),
                             ),
-                            child: Text(t, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiInk)),
+                            child: Text((t).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiInk)),
                           ),
                       ],
                     ),
                     if (service.bullets.isNotEmpty) ...[
                       const SizedBox(height: 10),
-                      Text(
-                        service.bullets.take(2).map((e) => '• $e').join('\n'),
+                      Text((service.bullets.take(2).map((e) => '• $e').join('\n')).ui,
                         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, height: 1.35, color: AppColors.kawaiiMuted),
                       ),
                     ],
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Text(
-                          admin ? 'Detay / düzenle' : 'İncele ve talep et',
+                        Text((admin ? 'Detay / düzenle' : 'İncele ve talep et').ui,
                           style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.kawaiiLeafDeep, fontSize: 13.5),
                         ),
                         const Icon(Icons.arrow_forward_rounded, size: 18, color: AppColors.kawaiiLeafDeep),
@@ -542,7 +530,7 @@ class _PricePill extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(label, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12.5, color: color)),
+      child: Text((label).ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12.5, color: color)),
     );
   }
 }
@@ -611,8 +599,7 @@ class _ServiceDetailSheet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            service.category.isEmpty ? 'Paket' : service.category,
+                          Text((service.category.isEmpty ? 'Paket' : service.category).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 12,
@@ -620,8 +607,7 @@ class _ServiceDetailSheet extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            service.title,
+                          Text((service.title).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 22,
@@ -632,8 +618,7 @@ class _ServiceDetailSheet extends StatelessWidget {
                           ),
                           if (ServiceVisuals.displayTagline(service).isNotEmpty) ...[
                             const SizedBox(height: 6),
-                            Text(
-                              ServiceVisuals.displayTagline(service),
+                            Text((ServiceVisuals.displayTagline(service)).ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: cartoon ? AppColors.kawaiiMuted : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -667,15 +652,14 @@ class _ServiceDetailSheet extends StatelessWidget {
                   ),
                   for (final t in service.tags)
                     Chip(
-                      label: Text(t, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: cartoon ? AppColors.kawaiiInk : null)),
+                      label: Text((t).ui, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: cartoon ? AppColors.kawaiiInk : null)),
                       backgroundColor: cartoon ? AppColors.kawaiiMint : null,
                       side: cartoon ? const BorderSide(color: AppColors.kawaiiOutline) : null,
                     ),
                 ],
               ),
               const SizedBox(height: 16),
-              Text(
-                service.description,
+              Text((service.description).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   height: 1.45,
@@ -684,8 +668,7 @@ class _ServiceDetailSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                'Neler dahil?',
+              Text(('Neler dahil?').ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: cartoon ? AppColors.kawaiiInk : null),
               ),
               const SizedBox(height: 10),
@@ -703,8 +686,7 @@ class _ServiceDetailSheet extends StatelessWidget {
                       Icon(Icons.check_circle_rounded, size: 20, color: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          service.bullets[i],
+                        child: Text((service.bullets[i]).ui,
                           style: TextStyle(fontWeight: FontWeight.w700, color: cartoon ? AppColors.kawaiiInk : null),
                         ),
                       ),
@@ -722,11 +704,10 @@ class _ServiceDetailSheet extends StatelessWidget {
                   child: InkWell(
                     onTap: onRequest,
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 14),
                       child: Center(
-                        child: Text(
-                          'Randevu / satın alma talebi',
+                        child: Text(('Randevu / satın alma talebi').ui,
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
                         ),
                       ),
@@ -735,12 +716,12 @@ class _ServiceDetailSheet extends StatelessWidget {
                 ),
               if (admin) ...[
                 if (onEdit != null)
-                  TextButton.icon(onPressed: onEdit, icon: const Icon(Icons.edit_rounded), label: const Text('Düzenle')),
+                  TextButton.icon(onPressed: onEdit, icon: const Icon(Icons.edit_rounded), label: Text(('Düzenle').ui)),
                 if (onDelete != null)
                   TextButton.icon(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete_outline_rounded, color: AppColors.kawaiiCoral),
-                    label: const Text('Sil', style: TextStyle(color: AppColors.kawaiiCoral)),
+                    label: Text(('Sil').ui, style: TextStyle(color: AppColors.kawaiiCoral)),
                   ),
               ],
             ],

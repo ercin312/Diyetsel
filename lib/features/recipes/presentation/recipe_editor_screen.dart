@@ -7,6 +7,7 @@ import '../../../core/data/app_store.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 const recipeCategories = [
   'Kahvaltı',
@@ -124,7 +125,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
     final title = _title.text.trim();
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Başlık gerekli'), behavior: SnackBarBehavior.floating),
+        SnackBar(content: Text(('Başlık gerekli').ui), behavior: SnackBarBehavior.floating),
       );
       return;
     }
@@ -139,8 +140,8 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
     final steps = _steps.map((c) => c.text.trim()).where((s) => s.isNotEmpty).toList();
     if (ingredients.isEmpty || steps.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('En az bir malzeme ve bir adım ekleyin'),
+        SnackBar(
+          content: Text(('En az bir malzeme ve bir adım ekleyin').ui),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -177,7 +178,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(widget.existing == null ? 'Tarif eklendi' : 'Tarif güncellendi'),
+          content: Text((widget.existing == null ? 'Tarif eklendi' : 'Tarif güncellendi').ui),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -185,7 +186,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kayıt hatası: $e'), behavior: SnackBarBehavior.floating),
+        SnackBar(content: Text(('Kayıt hatası: $e').ui), behavior: SnackBarBehavior.floating),
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -199,43 +200,42 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
       actions: [
         TextButton(
           onPressed: _saving ? null : _save,
-          child: Text(_saving ? 'Kaydediliyor…' : 'Kaydet'),
+          child: Text((_saving ? 'Kaydediliyor…' : 'Kaydet').ui),
         ),
       ],
       child: ListView(
         children: [
           TextField(
             controller: _title,
-            decoration: const InputDecoration(labelText: 'Başlık'),
+            decoration: InputDecoration(labelText: ('Başlık').ui),
             textCapitalization: TextCapitalization.sentences,
           ),
           const SizedBox(height: 10),
           TextField(
             controller: _description,
-            decoration: const InputDecoration(labelText: 'Kısa açıklama'),
+            decoration: InputDecoration(labelText: ('Kısa açıklama').ui),
             maxLines: 3,
             textCapitalization: TextCapitalization.sentences,
           ),
           const SizedBox(height: 10),
           DropdownButtonFormField<String>(
             initialValue: _category,
-            decoration: const InputDecoration(labelText: 'Kategori'),
+            decoration: InputDecoration(labelText: ('Kategori').ui),
             items: [
-              for (final c in recipeCategories) DropdownMenuItem(value: c, child: Text(c)),
+              for (final c in recipeCategories) DropdownMenuItem(value: c, child: Text((c).ui)),
             ],
             onChanged: (v) => setState(() => _category = v ?? _category),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: _imageUrl,
-            decoration: const InputDecoration(
-              labelText: 'Görsel URL (isteğe bağlı)',
-              hintText: 'https://…',
+            decoration: InputDecoration(
+              labelText: ('Görsel URL (isteğe bağlı)').ui,
+              hintText: ('https://…').ui,
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Makrolar',
+          Text(('Makrolar').ui,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
@@ -263,24 +263,23 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
           const SizedBox(height: 10),
           TextField(
             controller: _allergens,
-            decoration: const InputDecoration(
-              labelText: 'Alerjenler',
-              hintText: 'Gluten, süt, …',
+            decoration: InputDecoration(
+              labelText: ('Alerjenler').ui,
+              hintText: ('Gluten, süt, …').ui,
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: _tags,
-            decoration: const InputDecoration(
-              labelText: 'Etiketler',
-              hintText: 'protein, hızlı, …',
+            decoration: InputDecoration(
+              labelText: ('Etiketler').ui,
+              hintText: ('protein, hızlı, …').ui,
             ),
           ),
           const SizedBox(height: 18),
           Row(
             children: [
-              Text(
-                'Malzemeler',
+              Text(('Malzemeler').ui,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
               const Spacer(),
@@ -290,7 +289,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
                   _ingredientAmounts.add(TextEditingController());
                 }),
                 icon: const Icon(Icons.add_rounded, size: 18),
-                label: const Text('Ekle'),
+                label: Text(('Ekle').ui),
               ),
             ],
           ),
@@ -303,7 +302,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
                     flex: 3,
                     child: TextField(
                       controller: _ingredientNames[i],
-                      decoration: InputDecoration(labelText: 'Malzeme ${i + 1}'),
+                      decoration: InputDecoration(labelText: ('Malzeme ${i + 1}').ui),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -311,7 +310,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
                     flex: 2,
                     child: TextField(
                       controller: _ingredientAmounts[i],
-                      decoration: const InputDecoration(labelText: 'Miktar'),
+                      decoration: InputDecoration(labelText: ('Miktar').ui),
                     ),
                   ),
                   IconButton(
@@ -329,15 +328,14 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Text(
-                'Adımlar',
+              Text(('Adımlar').ui,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
               const Spacer(),
               TextButton.icon(
                 onPressed: () => setState(() => _steps.add(TextEditingController())),
                 icon: const Icon(Icons.add_rounded, size: 18),
-                label: const Text('Ekle'),
+                label: Text(('Ekle').ui),
               ),
             ],
           ),
@@ -352,8 +350,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
                     child: CircleAvatar(
                       radius: 12,
                       backgroundColor: AppColors.primary.withValues(alpha: 0.12),
-                      child: Text(
-                        '${i + 1}',
+                      child: Text(('${i + 1}').ui,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
@@ -366,7 +363,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
                   Expanded(
                     child: TextField(
                       controller: _steps[i],
-                      decoration: const InputDecoration(labelText: 'Adım'),
+                      decoration: InputDecoration(labelText: ('Adım').ui),
                       maxLines: 2,
                     ),
                   ),
@@ -382,9 +379,9 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
           const SizedBox(height: 10),
           TextField(
             controller: _tips,
-            decoration: const InputDecoration(
-              labelText: 'İpuçları',
-              hintText: 'Her satır bir ipucu',
+            decoration: InputDecoration(
+              labelText: ('İpuçları').ui,
+              hintText: ('Her satır bir ipucu').ui,
               alignLabelWithHint: true,
             ),
             maxLines: 4,
@@ -406,7 +403,7 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
   Widget _numField(TextEditingController c, String label) {
     return TextField(
       controller: c,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(labelText: (label).ui),
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
     );

@@ -18,6 +18,7 @@ import '../../auth/presentation/auth_controller.dart';
 import 'client_care_screen.dart';
 import 'soft_calendar_screen.dart';
 import 'soft_clients_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class AppointmentCalendarScreen extends ConsumerStatefulWidget {
   const AppointmentCalendarScreen({super.key, this.admin = false});
@@ -170,7 +171,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
               spacing: 8,
               children: [
                 for (final r in store.availability())
-                  Chip(label: Text('${_dayName(r.weekday)} ${r.start}-${r.end}')),
+                  Chip(label: Text(('${_dayName(r.weekday)} ${r.start}-${r.end}').ui)),
               ],
             ),
           ],
@@ -200,13 +201,13 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
             children: [
               Row(
                 children: [
-                  Expanded(child: Text('${a.clientName} • ${TimeOfDay.fromDateTime(a.startAt).format(context)}', style: const TextStyle(fontWeight: FontWeight.w800))),
+                  Expanded(child: Text(('${a.clientName} • ${TimeOfDay.fromDateTime(a.startAt).format(context)}').ui, style: const TextStyle(fontWeight: FontWeight.w800))),
                   StatusChip(label: a.status.name, color: _color(a.status)),
                 ],
               ),
-              if (a.serviceTitle != null) Text(a.serviceTitle!),
-              if (a.clinicalNotes != null) Text('Not: ${a.clinicalNotes}'),
-              if (a.recommendations != null) Text('Tavsiye: ${a.recommendations}'),
+              if (a.serviceTitle != null) Text((a.serviceTitle!).ui),
+              if (a.clinicalNotes != null) Text(('Not: ${a.clinicalNotes}').ui),
+              if (a.recommendations != null) Text(('Tavsiye: ${a.recommendations}').ui),
             ],
           ),
         ),
@@ -226,7 +227,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
     final slots = store.openSlots(dietitianId: SeedData.adminId, day: _selected);
     if (slots.isEmpty) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bu gün için boş slot yok')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(('Bu gün için boş slot yok').ui)));
       }
       return;
     }
@@ -236,7 +237,7 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
         children: [
           for (final s in slots)
             ListTile(
-              title: Text(TimeOfDay.fromDateTime(s).format(context)),
+              title: Text((TimeOfDay.fromDateTime(s).format(context)).ui),
               onTap: () => Navigator.pop(ctx, s),
             ),
         ],
@@ -270,10 +271,10 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
             Wrap(
               spacing: 8,
               children: [
-                ActionChip(label: const Text('Onayla'), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.approved))),
-                ActionChip(label: const Text('Reddet'), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.rejected))),
+                ActionChip(label: Text(('Onayla').ui), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.approved))),
+                ActionChip(label: Text(('Reddet').ui), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.rejected))),
                 ActionChip(
-                  label: const Text('Ertele +1 gün'),
+                  label: Text(('Ertele +1 gün').ui),
                   onPressed: () => store.saveAppointment(
                     a.copyWith(
                       status: AppointmentStatus.rescheduled,
@@ -282,11 +283,11 @@ class _AppointmentCalendarScreenState extends ConsumerState<AppointmentCalendarS
                     ),
                   ),
                 ),
-                ActionChip(label: const Text('Tamamla'), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.completed))),
+                ActionChip(label: Text(('Tamamla').ui), onPressed: () => store.saveAppointment(a.copyWith(status: AppointmentStatus.completed))),
               ],
             ),
-            TextField(controller: notes, decoration: const InputDecoration(labelText: 'Klinik notlar'), maxLines: 3),
-            TextField(controller: rec, decoration: const InputDecoration(labelText: 'Tavsiyeler'), maxLines: 2),
+            TextField(controller: notes, decoration: InputDecoration(labelText: ('Klinik notlar').ui), maxLines: 3),
+            TextField(controller: rec, decoration: InputDecoration(labelText: ('Tavsiyeler').ui), maxLines: 2),
             const SizedBox(height: 8),
             DiyetselButton(
               label: 'Notları kaydet',
@@ -329,8 +330,8 @@ class _CartoonCalendarStatStrip extends StatelessWidget {
             children: [
               Icon(icon, size: 20, color: accent),
               const SizedBox(height: 6),
-              Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
-              Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
+              Text((value).ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent)),
+              Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
             ],
           ),
         ),
@@ -399,13 +400,12 @@ class _CartoonCalendarTipCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13.5, color: AppColors.kawaiiInk)),
+                    Text((title).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13.5, color: AppColors.kawaiiInk)),
                     const SizedBox(height: 4),
-                    Text(body, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.35)),
+                    Text((body).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted, height: 1.35)),
                     if (onBook != null) ...[
                       const SizedBox(height: 6),
-                      const Text(
-                        'Randevu talep et →',
+                      Text(('Randevu talep et →').ui,
                         style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppColors.kawaiiLeafDeep),
                       ),
                     ],
@@ -433,13 +433,11 @@ class _CartoonEmptyDay extends StatelessWidget {
         children: [
           const Icon(Icons.event_busy_rounded, size: 40, color: AppColors.kawaiiMuted),
           const SizedBox(height: 10),
-          const Text(
-            'Bu günde randevu yok',
+          Text(('Bu günde randevu yok').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Müsait bir slot seçerek yeni seans talep edebilirsin.',
+          Text(('Müsait bir slot seçerek yeni seans talep edebilirsin.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
           ),
@@ -465,9 +463,9 @@ class ClientsScreen extends ConsumerWidget {
       title: 'Danışanlar',
       child: ListView(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(bottom: 12),
-            child: Text('Bir danışana dokun: su hedefi, aktiflik ve bölümleri aç/kapa.'),
+            child: Text(('Bir danışana dokun: su hedefi, aktiflik ve bölümleri aç/kapa.').ui),
           ),
           for (final c in users)
             Padding(
@@ -480,8 +478,8 @@ class ClientsScreen extends ConsumerWidget {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: CartoonAvatar(name: c.displayName, size: 44),
-                  title: Text(c.displayName, style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text('${c.email}\nSu ${(c.waterGoalMl / 1000).toStringAsFixed(1)} L • hedef ${c.targetWeightKg ?? '-'} kg'),
+                  title: Text((c.displayName).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                  subtitle: Text(('${c.email}\nSu ${(c.waterGoalMl / 1000).toStringAsFixed(1)} L • hedef ${c.targetWeightKg ?? '-'} kg').ui),
                   isThreeLine: true,
                   trailing: StatusChip(label: c.isActive ? 'aktif' : 'pasif', color: c.isActive ? AppColors.success : AppColors.danger),
                 ),

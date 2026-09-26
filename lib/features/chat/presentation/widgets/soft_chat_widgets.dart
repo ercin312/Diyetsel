@@ -10,6 +10,7 @@ import '../../../../core/models/models.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftChatHeader extends StatelessWidget {
@@ -27,8 +28,7 @@ class SoftChatHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                isAdmin ? 'Danışan sohbetleri' : 'Sohbet',
+              Text((isAdmin ? 'Danışan sohbetleri' : 'Sohbet').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -37,8 +37,7 @@ class SoftChatHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                isAdmin ? 'Mesajları yönet ve yanıtla' : 'Diyetisyeninle güvenli mesajlaş',
+              Text((isAdmin ? 'Mesajları yönet ve yanıtla' : 'Diyetisyeninle güvenli mesajlaş').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -112,8 +111,7 @@ class SoftChatHero extends StatelessWidget {
                     color: const Color(0xFF5BA3C9).withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Canlı destek',
+                  child: Text(('Canlı destek').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -122,8 +120,7 @@ class SoftChatHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  isAdmin ? 'Klinik mesaj kutusu' : 'Sor, paylaş, ilerleme takip et',
+                Text((isAdmin ? 'Klinik mesaj kutusu' : 'Sor, paylaş, ilerleme takip et').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -133,10 +130,9 @@ class SoftChatHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  threadCount == 0
+                Text((threadCount == 0
                       ? 'Henüz konuşma yok — ilk mesajı sen başlat.'
-                      : '$threadCount aktif sohbet · yanıtlar burada',
+                      : '$threadCount aktif sohbet · yanıtlar burada').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -199,16 +195,14 @@ class SoftChatStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$5,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11.5,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -250,8 +244,7 @@ class SoftChatTipsCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Öğün fotoğrafı, tartı ekranı veya lab sonucu paylaşabilirsin — net soru = hızlı yanıt.',
+            child: Text(('Öğün fotoğrafı, tartı ekranı veya lab sonucu paylaşabilirsin — net soru = hızlı yanıt.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -292,8 +285,7 @@ class SoftChatEmpty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.45),
           ),
           const SizedBox(height: 14),
-          Text(
-            isAdmin ? 'Henüz danışan mesajı yok' : 'Henüz sohbet yok',
+          Text((isAdmin ? 'Henüz danışan mesajı yok' : 'Henüz sohbet yok').ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
@@ -302,10 +294,9 @@ class SoftChatEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            isAdmin
+          Text((isAdmin
                 ? 'Danışanlar yazınca konuşmalar burada listelenir.'
-                : 'Diyetisyeninle ilk mesajı göndererek başla.',
+                : 'Diyetisyeninle ilk mesajı göndererek başla.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -331,8 +322,7 @@ class SoftChatEmpty extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Text(
-                  'Sohbeti başlat',
+                child: Text(('Sohbeti başlat').ui,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -414,8 +404,7 @@ class SoftChatThreadCard extends StatelessWidget {
                 border: Border.all(color: accent.withValues(alpha: 0.25)),
               ),
               alignment: Alignment.center,
-              child: Text(
-                initial,
+              child: Text((initial).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 20,
@@ -431,8 +420,7 @@ class SoftChatThreadCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          peerName,
+                        child: Text((peerName).ui,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -442,8 +430,7 @@ class SoftChatThreadCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text(
-                        _timeLabel,
+                      Text((_timeLabel).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11.5,
@@ -453,8 +440,7 @@ class SoftChatThreadCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    thread.lastMessage.isEmpty ? 'Yeni sohbet' : thread.lastMessage,
+                  Text((thread.lastMessage.isEmpty ? 'Yeni sohbet' : thread.lastMessage).ui,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -495,7 +481,7 @@ class SoftChatFab extends StatelessWidget {
       foregroundColor: Colors.white,
       elevation: 2,
       icon: const Icon(Icons.chat_rounded),
-      label: const Text('Yeni sohbet', style: TextStyle(fontWeight: FontWeight.w800)),
+      label: Text(('Yeni sohbet').ui, style: TextStyle(fontWeight: FontWeight.w800)),
     );
   }
 }
@@ -528,8 +514,7 @@ class SoftChatRoomAppBar extends StatelessWidget {
                 border: Border.all(color: AppColors.modernLine),
               ),
               alignment: Alignment.center,
-              child: Text(
-                initial,
+              child: Text((initial).ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -543,8 +528,7 @@ class SoftChatRoomAppBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
+                  Text((title).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -553,8 +537,7 @@ class SoftChatRoomAppBar extends StatelessWidget {
                       color: AppColors.primaryDeep,
                     ),
                   ),
-                  Text(
-                    'e-Diyet sohbet',
+                  Text(('e-Diyet sohbet').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
@@ -617,8 +600,7 @@ class SoftChatBubble extends StatelessWidget {
                 ],
               ),
               child: isText
-                  ? Text(
-                      message.content,
+                  ? Text((message.content).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         height: 1.4,
@@ -639,8 +621,7 @@ class SoftChatBubble extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Flexible(
-                            child: Text(
-                              '${_mediaLabel(message.type)} · $fileName',
+                            child: Text(('${_mediaLabel(message.type)} · $fileName').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: mine ? Colors.white : AppColors.primaryDeep,
@@ -654,8 +635,7 @@ class SoftChatBubble extends StatelessWidget {
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Text(
-                time,
+              child: Text((time).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 11,
@@ -763,7 +743,7 @@ class SoftChatComposer extends StatelessWidget {
                         color: AppColors.primaryDeep,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Mesaj yaz…',
+                        hintText: ('Mesaj yaz…').ui,
                         hintStyle: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary.withValues(alpha: 0.4),
@@ -825,8 +805,7 @@ class SoftChatRoomEmpty extends StatelessWidget {
               fallbackColor: AppColors.primary.withValues(alpha: 0.4),
             ),
             const SizedBox(height: 14),
-            const Text(
-              'Konuşmaya başla',
+            Text(('Konuşmaya başla').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 17,
@@ -834,8 +813,7 @@ class SoftChatRoomEmpty extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              'İlk mesajını yaz veya fotoğraf / dosya ekle.',
+            Text(('İlk mesajını yaz veya fotoğraf / dosya ekle.').ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -878,8 +856,7 @@ class _ComposerChip extends StatelessWidget {
           children: [
             Icon(icon, size: 16, color: AppColors.primary),
             const SizedBox(width: 6),
-            Text(
-              label,
+            Text((label).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 12,

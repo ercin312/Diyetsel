@@ -35,6 +35,7 @@ import '../domain/meal_display.dart';
 import 'soft_admin_diet_screen.dart';
 import 'soft_diet_screen.dart';
 import 'widgets/meal_section_card.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class DietPlanScreen extends ConsumerStatefulWidget {
   const DietPlanScreen({super.key, this.admin = false});
@@ -139,7 +140,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                   await store.addWaterSip(user.id);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('+${AppConstants.waterSipMl} ml su eklendi')),
+                      SnackBar(content: Text(('+${AppConstants.waterSipMl} ml su eklendi').ui)),
                     );
                   }
                 },
@@ -168,8 +169,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                 ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
               ],
               const SizedBox(height: 14),
-              Text(
-                'Günü seç',
+              Text(('Günü seç').ui,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: AppColors.kawaiiInk,
@@ -228,9 +228,8 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  const Expanded(
-                    child: Text(
-                      'Öğünler',
+                  Expanded(
+                    child: Text(('Öğünler').ui,
                       style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17, color: AppColors.kawaiiInk),
                     ),
                   ),
@@ -309,8 +308,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
             ).animate().fadeIn(duration: 400.ms),
             const SizedBox(height: 12),
           ],
-          Text(
-            'Haftanın günü',
+          Text(('Haftanın günü').ui,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   letterSpacing: 0,
                   fontWeight: FontWeight.w800,
@@ -328,7 +326,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
                 final d = plan.days[i];
                 return ChoiceChip(
                   selected: selectedDay,
-                  label: Text(DateFormat('EEE d', 'tr').format(d.date)),
+                  label: Text((DateFormat('EEE d', 'tr').format(d.date)).ui),
                   onSelected: (_) => setState(() => _dayIndex = i),
                 );
               },
@@ -373,7 +371,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
       final willComplete = doneBefore + 1 >= total && total > 0;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(willComplete ? 'Günün tüm öğünleri tamam — harika iş!' : 'Afiyet olsun! Öğün işaretlendi.'),
+          content: Text((willComplete ? 'Günün tüm öğünleri tamam — harika iş!' : 'Afiyet olsun! Öğün işaretlendi.').ui),
         ),
       );
     }
@@ -398,7 +396,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${meal.type.tr} hatırlatıcısı $hh:$mm olarak ayarlandı')),
+        SnackBar(content: Text(('${meal.type.tr} hatırlatıcısı $hh:$mm olarak ayarlandı').ui)),
       );
     }
     setState(() {});
@@ -461,8 +459,7 @@ class _CartoonEmptyPlanScreen extends StatelessWidget {
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .moveY(begin: 0, end: -8, duration: 1600.ms, curve: Curves.easeInOut),
                 const SizedBox(height: 22),
-                const Text(
-                  'Planın henüz gelmedi',
+                Text(('Planın henüz gelmedi').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 21,
@@ -470,8 +467,7 @@ class _CartoonEmptyPlanScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Diyetisyenin Word ile plan yüklediğinde burada tatlı bir listeyle karşılanacaksın.',
+                Text(('Diyetisyenin Word ile plan yüklediğinde burada tatlı bir listeyle karşılanacaksın.').ui,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -538,8 +534,7 @@ class _CartoonFocusTip extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
+                  Text((title).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
@@ -547,8 +542,7 @@ class _CartoonFocusTip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    body,
+                  Text((body).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -557,8 +551,7 @@ class _CartoonFocusTip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Tariflere göz at →',
+                  Text(('Tariflere göz at →').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12.5,
@@ -600,15 +593,14 @@ class _CartoonDietCompletion extends StatelessWidget {
             width: 52,
             height: 52,
             fit: BoxFit.contain,
-            errorBuilder: (_, _, _) => const Text('🎉', style: TextStyle(fontSize: 28)),
+            errorBuilder: (_, _, _) => Text(('🎉').ui, style: TextStyle(fontSize: 28)),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Gün tamam!',
+                Text(('Gün tamam!').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -616,8 +608,7 @@ class _CartoonDietCompletion extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 2),
-                Text(
-                  'Tüm öğünler işaretlendi — süper iş çıkardın.',
+                Text(('Tüm öğünler işaretlendi — süper iş çıkardın.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -663,8 +654,7 @@ class _CartoonEmptyMeals extends StatelessWidget {
             color: filterDone ? AppColors.kawaiiMuted : AppColors.kawaiiLeaf,
           ),
           const SizedBox(height: 12),
-          Text(
-            filterDone ? 'Henüz yenilen öğün yok' : 'Kalan öğün yok',
+          Text((filterDone ? 'Henüz yenilen öğün yok' : 'Kalan öğün yok').ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
@@ -673,10 +663,9 @@ class _CartoonEmptyMeals extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            filterDone
+          Text((filterDone
                 ? 'Öğünleri yedikçe burada birikecek.'
-                : 'Günü tamamladın — afiyet olsun!',
+                : 'Günü tamamladın — afiyet olsun!').ui,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
@@ -737,8 +726,7 @@ class _CartoonDietHero extends StatelessWidget {
                     color: AppColors.kawaiiLeaf.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                   ),
-                  child: const Text(
-                    'Bugünkü plan',
+                  child: Text(('Bugünkü plan').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -749,8 +737,7 @@ class _CartoonDietHero extends StatelessWidget {
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .shimmer(duration: 2400.ms, color: Colors.white24),
                 const SizedBox(height: 10),
-                Text(
-                  planTitle,
+                Text((planTitle).ui,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -761,8 +748,7 @@ class _CartoonDietHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  dayLabel,
+                Text((dayLabel).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
@@ -778,8 +764,7 @@ class _CartoonDietHero extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                       border: Border.all(color: AppColors.kawaiiOutline.withValues(alpha: 0.6)),
                     ),
-                    child: Text(
-                      '🔥 $streak gün seri',
+                    child: Text(('🔥 $streak gün seri').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -789,8 +774,7 @@ class _CartoonDietHero extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                Text(
-                  allDone ? 'Bugün tamam 🎉' : '$done / $total öğün tamam',
+                Text((allDone ? 'Bugün tamam 🎉' : '$done / $total öğün tamam').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13.5,
@@ -867,16 +851,14 @@ class _ActionStrip extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${water.amountMl} / ${water.goalMl} ml',
+                        Text(('${water.amountMl} / ${water.goalMl} ml').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 13,
                             color: AppColors.kawaiiInk,
                           ),
                         ),
-                        Text(
-                          '+${AppConstants.waterSipMl} ml ekle',
+                        Text(('+${AppConstants.waterSipMl} ml ekle').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
@@ -904,12 +886,10 @@ class _ActionStrip extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Kalan kcal',
+                  Text(('Kalan kcal').ui,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted),
                   ),
-                  Text(
-                    '$remainingKcal',
+                  Text(('$remainingKcal').ui,
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiLeafDeep),
                   ),
                 ],
@@ -927,12 +907,11 @@ class _ActionStrip extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
               border: Border.all(color: AppColors.kawaiiOutline),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 Icon(Icons.shopping_bag_rounded, color: AppColors.kawaiiInk, size: 22),
                 SizedBox(height: 2),
-                Text(
-                  'Liste',
+                Text(('Liste').ui,
                   style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: AppColors.kawaiiInk),
                 ),
               ],
@@ -987,15 +966,14 @@ class _NextMealCard extends StatelessWidget {
               width: 64,
               height: 64,
               fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => Text(meal.type.emoji, style: const TextStyle(fontSize: 36)),
+              errorBuilder: (_, _, _) => Text((meal.type.emoji).ui, style: const TextStyle(fontSize: 36)),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    next.isOverdue ? 'Şimdi ye' : 'Sıradaki öğün',
+                  Text((next.isOverdue ? 'Şimdi ye' : 'Sıradaki öğün').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -1003,8 +981,7 @@ class _NextMealCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    MealDisplay.headline(meal),
+                  Text((MealDisplay.headline(meal)).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -1014,8 +991,7 @@ class _NextMealCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '${meal.effectiveReminderTime} · $countdown',
+                  Text(('${meal.effectiveReminderTime} · $countdown').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -1035,8 +1011,7 @@ class _NextMealCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: AppSpacing.soft,
                 ),
-                child: const Text(
-                  'Yedim',
+                child: Text(('Yedim').ui,
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13),
                 ),
               ),
@@ -1084,9 +1059,9 @@ class _RemainingMacrosRow extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
+              Text((value).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
               const SizedBox(height: 2),
-              Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+              Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
             ],
           ),
         ),
@@ -1125,8 +1100,7 @@ class _FilterPill extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
           border: Border.all(color: selected ? AppColors.kawaiiLeaf : AppColors.kawaiiOutline),
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 11.5,
@@ -1162,8 +1136,7 @@ class _WeekOverview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Haftalık özet',
+          Text(('Haftalık özet').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 10),
@@ -1193,8 +1166,7 @@ class _WeekOverview extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              Text(
-                                DateFormat('E', 'tr').format(d.date).substring(0, 1).toUpperCase(),
+                              Text((DateFormat('E', 'tr').format(d.date).substring(0, 1).toUpperCase()).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 11,
@@ -1278,8 +1250,7 @@ class _CartoonDayChip extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              label,
+            Text((label).ui,
               style: TextStyle(
                 fontSize: 10.5,
                 fontWeight: FontWeight.w700,
@@ -1287,8 +1258,7 @@ class _CartoonDayChip extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 1),
-            Text(
-              dayNum,
+            Text((dayNum).ui,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
@@ -1343,7 +1313,7 @@ class _AdminDietHub extends ConsumerWidget {
       fab: FloatingActionButton.extended(
         onPressed: onOpenUpload,
         icon: const Icon(Icons.upload_file_rounded),
-        label: const Text('Word yükle'),
+        label: Text(('Word yükle').ui),
       ),
       child: ListView(
         children: [
@@ -1357,13 +1327,11 @@ class _AdminDietHub extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Word (.docx) ile plan ata',
+                      Text(('Word (.docx) ile plan ata').ui,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        'Dosya seç veya sürükle-bırak. Kahvaltı, ara öğün, öğle… başlıklarıyla yazılmış olmalı.',
+                      Text(('Dosya seç veya sürükle-bırak. Kahvaltı, ara öğün, öğle… başlıklarıyla yazılmış olmalı.').ui,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -1387,8 +1355,8 @@ class _AdminDietHub extends ConsumerWidget {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: StyleIcon(icon: Icons.person_rounded, emoji: '👤', size: 22),
-                  title: Text(plan.clientName, style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text('${plan.title}\n${DateFormat('d MMM y', 'tr').format(plan.weekStart)} · ${plan.days.first.meals.length} öğün'),
+                  title: Text((plan.clientName).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
+                  subtitle: Text(('${plan.title}\n${DateFormat('d MMM y', 'tr').format(plan.weekStart)} · ${plan.days.first.meals.length} öğün').ui),
                   isThreeLine: true,
                 ),
               ),
@@ -1482,7 +1450,7 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
       setState(() => _saving = false);
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${client.displayName} için plan kaydedildi')),
+        SnackBar(content: Text(('${client.displayName} için plan kaydedildi').ui)),
       );
     }
   }
@@ -1494,22 +1462,22 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(meal.type.tr),
+        title: Text((meal.type.tr).ui),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: name, decoration: const InputDecoration(labelText: 'Başlık')),
+            TextField(controller: name, decoration: InputDecoration(labelText: ('Başlık').ui)),
             const SizedBox(height: 8),
             TextField(
               controller: desc,
               maxLines: 5,
-              decoration: const InputDecoration(labelText: 'İçerik'),
+              decoration: InputDecoration(labelText: ('İçerik').ui),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Vazgeç')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Kaydet')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(('Vazgeç').ui)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(('Kaydet').ui)),
         ],
       ),
     );
@@ -1576,14 +1544,12 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
         children: [
           StyleIcon(icon: Icons.upload_file_rounded, emoji: '📄', size: 32, selected: _dragging),
           const SizedBox(height: 12),
-          Text(
-            _fileName ?? 'Word (.docx) sürükle-bırak veya seç',
+          Text((_fileName ?? 'Word (.docx) sürükle-bırak veya seç').ui,
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Başlıklar: Kahvaltı, Ara Öğün, Öğle, İkindi, Akşam',
+          Text(('Başlıklar: Kahvaltı, Ara Öğün, Öğle, İkindi, Akşam').ui,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall,
           ),
@@ -1613,13 +1579,13 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Word plan yükle'),
+        title: Text(('Word plan yükle').ui),
         actions: [
           TextButton(
             onPressed: _saving ? null : _save,
             child: _saving
                 ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Ata'),
+                : Text(('Ata').ui),
           ),
         ],
       ),
@@ -1629,10 +1595,10 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
           DropdownButtonFormField<String>(
             // ignore: deprecated_member_use
             value: _client?.id,
-            decoration: const InputDecoration(labelText: 'Danışan'),
+            decoration: InputDecoration(labelText: ('Danışan').ui),
             items: [
               for (final c in clients)
-                DropdownMenuItem(value: c.id, child: Text(c.displayName)),
+                DropdownMenuItem(value: c.id, child: Text((c.displayName).ui)),
             ],
             onChanged: (id) {
               setState(() => _client = clients.where((c) => c.id == id).firstOrNull);
@@ -1641,13 +1607,13 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
           const SizedBox(height: 12),
           TextField(
             controller: _title,
-            decoration: const InputDecoration(labelText: 'Plan başlığı'),
+            decoration: InputDecoration(labelText: ('Plan başlığı').ui),
           ),
           const SizedBox(height: 16),
           dropZone.animate().fadeIn(),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700)),
+            Text((_error!).ui, style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700)),
           ],
           if (_meals.isNotEmpty) ...[
             const SizedBox(height: 18),

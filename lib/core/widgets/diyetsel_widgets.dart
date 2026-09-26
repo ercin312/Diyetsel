@@ -5,6 +5,7 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_theme.dart';
 import 'kawaii_doodle.dart';
 import 'style_icon.dart';
+import '../l10n/ui_string.dart';
 
 class DiyetselButton extends StatelessWidget {
   const DiyetselButton({
@@ -45,7 +46,7 @@ class DiyetselButton extends StatelessWidget {
             Icon(icon, size: 20, color: tonal ? color : Colors.white),
           const SizedBox(width: 8),
         ],
-        Text(label, style: labelStyle),
+        Text((label).ui, style: labelStyle),
       ]);
 
     if (cartoon) {
@@ -228,14 +229,12 @@ class SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: null)),
                 if (subtitle != null)
-                  Text(
-                    subtitle!,
+                  Text((subtitle!).ui,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           letterSpacing: null)),
               ])),
@@ -276,15 +275,13 @@ class EmptyState extends StatelessWidget {
               size: context.isCartoon ? 32 : 24,
               selected: true),
             const SizedBox(height: 16),
-            Text(
-              title,
+            Text((title).ui,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: null)),
             if (subtitle != null) ...[
               const SizedBox(height: 6),
-              Text(
-                subtitle!,
+              Text((subtitle!).ui,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant)),
@@ -317,8 +314,7 @@ class StatusChip extends StatelessWidget {
                 BoxShadow(color: AppColors.kawaiiShadow, blurRadius: 8, offset: Offset(0, 3)),
               ]
             : null),
-      child: Text(
-        label,
+      child: Text((label).ui,
         style: TextStyle(
           color: cartoon ? AppColors.kawaiiInk : color,
           fontWeight: FontWeight.w800,
@@ -359,16 +355,14 @@ class FeatureBanner extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
+                  Text((title).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
                       height: 1.2,
                       color: AppColors.kawaiiInk)),
                   const SizedBox(height: 4),
-                  Text(
-                    subtitle,
+                  Text((subtitle).ui,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.kawaiiInk.withValues(alpha: 0.72))),
                 ])),
@@ -394,9 +388,9 @@ class FeatureBanner extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(title, style: Theme.of(context).textTheme.titleMedium),
+                          Text((title).ui, style: Theme.of(context).textTheme.titleMedium),
                           const SizedBox(height: 4),
-                          Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                          Text((subtitle).ui, style: Theme.of(context).textTheme.bodySmall),
                         ])),
                     trailing ?? const SizedBox.shrink(),
                   ]))),
@@ -426,9 +420,9 @@ class TipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+                Text((title).ui, style: const TextStyle(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 4),
-                Text(body, style: Theme.of(context).textTheme.bodySmall),
+                Text((body).ui, style: Theme.of(context).textTheme.bodySmall),
               ])),
         ]));
   }
@@ -459,8 +453,7 @@ class HowToStep extends StatelessWidget {
             radius: 16,
             backgroundColor: brand.withValues(alpha: 0.14),
             foregroundColor: brand,
-            child: Text(
-              '$index',
+            child: Text(('$index').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 13,
@@ -469,8 +462,7 @@ class HowToStep extends StatelessWidget {
           StyleIcon(icon: icon, emoji: emoji, size: 18, color: brand, sticker: false),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              text,
+            child: Text((text).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0))),

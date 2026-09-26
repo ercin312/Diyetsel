@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,13 +21,22 @@ class AuthState {
 }
 
 class AuthController extends Notifier<AuthState> {
+  bool _pushBound = false;
+
   @override
   AuthState build() {
     final store = ref.watch(appStoreProvider);
     final id = store.settings().sessionUserId;
     // Resume cloud sync if a session is already restored.
     if (id != null && store.user(id) != null) {
-      Future.microtask(() => _startSync());
+      Future.microtask(() async {
+        await _startSync();
+        final current = store.user(id);
+        if (current != null) {
+          state = AuthState(user: current);
+          await _bindPushToken(current);
+        }
+      });
     }
     return AuthState(user: id == null ? null : store.user(id));
   }
@@ -115,19 +125,51 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> _setSession(UserProfile user) async {
     final store = ref.read(appStoreProvider);
-    await store.saveSettings(store.settings().copyWith(sessionUserId: user.id));
-    state = AuthState(user: user);
-    await SmartNotificationService.instance.sync(store, user);
+    await store.ensureDietitianName();
+    final current = store.user(user.id) ?? user;
+    await store.saveSettings(store.settings().copyWith(sessionUserId: current.id));
+    state = AuthState(user: current);
+    await SmartNotificationService.instance.sync(store, current);
     await _startSync();
+    final refreshed = store.user(current.id);
+    if (refreshed != null) state = AuthState(user: refreshed);
+    await _bindPushToken(state.user ?? current);
   }
 
   Future<void> _startSync() async {
     final sync = ref.read(cloudSyncServiceProvider);
     try {
       await sync.start();
+      await ref.read(appStoreProvider).ensureDietitianName();
     } catch (e) {
       debugPrint('Cloud sync start failed: $e');
     }
+  }
+
+  Future<void> _bindPushToken(UserProfile user) async {
+    if (kIsWeb) return;
+    try {
+      final messaging = FirebaseMessaging.instance;
+      await _storeToken(user, await messaging.getToken());
+      if (_pushBound) return;
+      _pushBound = true;
+      messaging.onTokenRefresh.listen((next) async {
+        final current = state.user;
+        if (current == null) return;
+        await _storeToken(current, next);
+      });
+    } catch (e) {
+      debugPrint('FCM token failed: $e');
+    }
+  }
+
+  Future<void> _storeToken(UserProfile user, String? token) async {
+    if (token == null || token.isEmpty || user.fcmTokens.contains(token)) return;
+    final tokens = [...user.fcmTokens, token];
+    final trimmed = tokens.length > 8 ? tokens.sublist(tokens.length - 8) : tokens;
+    final next = user.copyWith(fcmTokens: trimmed);
+    await ref.read(appStoreProvider).saveUser(next);
+    if (state.user?.id == next.id) state = AuthState(user: next);
   }
 }
 

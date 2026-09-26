@@ -11,6 +11,8 @@ import '../../domain/settings_visuals.dart';
 import 'premium_home_widgets.dart' show SoftTap;
 import 'soft_home_widgets.dart' show SoftModernIcon;
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/widgets/user_avatar.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftSettingsHeader extends StatelessWidget {
@@ -22,12 +24,11 @@ class SoftSettingsHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Ayarlar',
+              Text(('Ayarlar').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -36,8 +37,7 @@ class SoftSettingsHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Tema, bildirimler ve hesap',
+              Text(('Tema, bildirimler ve hesap').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -77,6 +77,8 @@ class SoftSettingsProfileHero extends StatelessWidget {
     required this.roleLabel,
     required this.isAdmin,
     required this.tip,
+    this.photoUrl,
+    this.onAvatarTap,
   });
 
   final String name;
@@ -84,6 +86,8 @@ class SoftSettingsProfileHero extends StatelessWidget {
   final String roleLabel;
   final bool isAdmin;
   final String tip;
+  final String? photoUrl;
+  final VoidCallback? onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
@@ -112,31 +116,17 @@ class SoftSettingsProfileHero extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 54,
-                height: 54,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: AppColors.modernLine),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  name.isNotEmpty ? name[0].toUpperCase() : '?',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 22,
-                    color: AppColors.primaryDeep,
-                  ),
-                ),
+              UserAvatar(
+                photoUrl: photoUrl,
+                size: 54,
+                onTap: onAvatarTap,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
+                    Text((name).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
@@ -144,8 +134,7 @@ class SoftSettingsProfileHero extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      email,
+                    Text((email).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -162,8 +151,7 @@ class SoftSettingsProfileHero extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(color: AppColors.modernLine),
                 ),
-                child: Text(
-                  roleLabel,
+                child: Text((roleLabel).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 11.5,
@@ -188,8 +176,7 @@ class SoftSettingsProfileHero extends StatelessWidget {
                 Icon(Icons.lightbulb_rounded, size: 18, color: AppColors.primary.withValues(alpha: 0.75)),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    tip,
+                  child: Text((tip).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
@@ -210,12 +197,10 @@ class SoftSettingsProfileHero extends StatelessWidget {
 class SoftSettingsStatsRow extends StatelessWidget {
   const SoftSettingsStatsRow({
     super.key,
-    required this.themeLabel,
     required this.styleLabel,
     required this.reminderCount,
   });
 
-  final String themeLabel;
   final String styleLabel;
   final int reminderCount;
 
@@ -238,14 +223,12 @@ class SoftSettingsStatsRow extends StatelessWidget {
               else
                 Icon(icon, size: 22, color: accent),
               const SizedBox(height: 6),
-              Text(
-                value,
+              Text((value).ui,
                 style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: accent),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 2),
-              Text(
-                label,
+              Text((label).ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -261,8 +244,6 @@ class SoftSettingsStatsRow extends StatelessWidget {
 
     return Row(
       children: [
-        stat('Tema', themeLabel, Icons.wb_sunny_rounded, SettingsVisuals.blue),
-        const SizedBox(width: 8),
         stat('Stil', styleLabel, Icons.palette_rounded, AppColors.primary,
             asset: DiyetselAssets.modernIconStory),
         const SizedBox(width: 8),
@@ -315,8 +296,7 @@ class SoftSettingsSectionTitle extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 15,
@@ -325,8 +305,7 @@ class SoftSettingsSectionTitle extends StatelessWidget {
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
-                  Text(
-                    subtitle!,
+                  Text((subtitle!).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -361,65 +340,6 @@ class SoftSettingsCard extends StatelessWidget {
         boxShadow: AppSpacing.soft,
       ),
       child: child,
-    );
-  }
-}
-
-class SoftSettingsThemePicker extends StatelessWidget {
-  const SoftSettingsThemePicker({
-    super.key,
-    required this.selected,
-    required this.onChanged,
-  });
-
-  final ThemeMode selected;
-  final ValueChanged<ThemeMode> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget chip(ThemeMode mode, IconData icon, String label) {
-      final on = selected == mode;
-      return Expanded(
-        child: SoftTap(
-          onTap: () => onChanged(mode),
-          borderRadius: BorderRadius.circular(14),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: on ? AppColors.primary.withValues(alpha: 0.12) : SettingsVisuals.mint.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: on ? AppColors.primary.withValues(alpha: 0.4) : AppColors.modernLine,
-              ),
-            ),
-            child: Column(
-              children: [
-                Icon(icon, size: 20, color: on ? AppColors.primary : AppColors.primary.withValues(alpha: 0.45)),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12,
-                    color: on ? AppColors.primaryDeep : AppColors.primary.withValues(alpha: 0.55),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      children: [
-        chip(ThemeMode.light, Icons.wb_sunny_rounded, 'Açık'),
-        const SizedBox(width: 8),
-        chip(ThemeMode.dark, Icons.nights_stay_rounded, 'Koyu'),
-        const SizedBox(width: 8),
-        chip(ThemeMode.system, Icons.phone_android_rounded, 'Sistem'),
-      ],
     );
   }
 }
@@ -474,16 +394,14 @@ class SoftSettingsStylePicker extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
+                    Text((title).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 14,
                         color: on ? AppColors.primaryDeep : AppColors.primary.withValues(alpha: 0.75),
                       ),
                     ),
-                    Text(
-                      subtitle,
+                    Text((subtitle).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -554,10 +472,9 @@ class SoftSettingsLanguagePicker extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(flag, style: const TextStyle(fontSize: 22)),
+                Text((flag).ui, style: const TextStyle(fontSize: 22)),
                 const SizedBox(height: 4),
-                Text(
-                  label,
+                Text((label).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
@@ -624,16 +541,14 @@ class SoftSettingsToggleRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 14,
                     color: AppColors.primaryDeep,
                   ),
                 ),
-                Text(
-                  subtitle,
+                Text((subtitle).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -687,8 +602,7 @@ class SoftSettingsIntervalPicker extends StatelessWidget {
                         : AppColors.modernLine,
                   ),
                 ),
-                child: Text(
-                  '$h sa',
+                child: Text(('$h sa').ui,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
@@ -743,8 +657,7 @@ class SoftSettingsAdminWaterCard extends StatelessWidget {
                 fallbackColor: SettingsVisuals.blue,
               ),
               const SizedBox(width: 10),
-              Text(
-                '${liters.toStringAsFixed(2)} L  •  $ml ml',
+              Text(('${liters.toStringAsFixed(2)} L  •  $ml ml').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -774,12 +687,12 @@ class SoftSettingsAdminWaterCard extends StatelessWidget {
             children: [
               for (final preset in [1.5, 2.0, 2.5, 3.0, 3.5])
                 ActionChip(
-                  label: Text('${preset.toStringAsFixed(1)} L'),
+                  label: Text(('${preset.toStringAsFixed(1)} L').ui),
                   onPressed: () => onPreset(preset),
                 ),
               ActionChip(
                 avatar: const Icon(Icons.groups_rounded, size: 18),
-                label: const Text('Tüm danışanlara uygula'),
+                label: Text(('Tüm danışanlara uygula').ui),
                 onPressed: onApplyAll,
               ),
             ],
@@ -842,16 +755,14 @@ class SoftSettingsLegalLinks extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
+                    Text((title).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 14,
                         color: AppColors.primaryDeep,
                       ),
                     ),
-                    Text(
-                      subtitle,
+                    Text((subtitle).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -910,8 +821,7 @@ class SoftSettingsLogoutButton extends StatelessWidget {
           children: [
             Icon(Icons.logout_rounded, color: SettingsVisuals.coral.withValues(alpha: 0.9)),
             const SizedBox(width: 8),
-            Text(
-              'Çıkış yap',
+            Text(('Çıkış yap').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 15,
@@ -948,8 +858,7 @@ class SoftSettingsDeleteAccountButton extends StatelessWidget {
           children: [
             Icon(Icons.delete_forever_rounded, color: SettingsVisuals.coral.withValues(alpha: 0.95)),
             const SizedBox(width: 8),
-            Text(
-              'Hesabı sil',
+            Text(('Hesabı sil').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 15,
@@ -977,10 +886,9 @@ class SoftSettingsFooterTip extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.modernLine),
       ),
-      child: Text(
-        admin
+      child: Text((admin
             ? 'Klinik modül ve su hedefi değişiklikleri tüm danışan deneyimini etkiler — kaydetmeden önce kontrol et.'
-            : 'Bildirim tercihlerin cihazında saklanır. Android’de izin vermediysen Ayarlar → Bildirimler’den aç.',
+            : 'Bildirim tercihlerin cihazında saklanır. Android’de izin vermediysen Ayarlar → Bildirimler’den aç.').ui,
         style: TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 13,

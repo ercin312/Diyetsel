@@ -12,6 +12,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/diet_interaction.dart';
 import '../../domain/meal_display.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 Color softMealAccent(MealType type) => switch (type) {
       MealType.breakfast => const Color(0xFFE8B86D),
@@ -128,8 +129,7 @@ class SoftDietHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    allDone ? 'Gün tamam' : 'Bugünkü plan',
+                  child: Text((allDone ? 'Gün tamam' : 'Bugünkü plan').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -140,8 +140,7 @@ class SoftDietHero extends StatelessWidget {
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .shimmer(duration: 2400.ms, color: Colors.white38),
                 const SizedBox(height: 10),
-                Text(
-                  planTitle,
+                Text((planTitle).ui,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -153,8 +152,7 @@ class SoftDietHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  dayLabel,
+                Text((dayLabel).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 13.5,
@@ -172,8 +170,7 @@ class SoftDietHero extends StatelessWidget {
                         fallbackColor: const Color(0xFFE07A5F),
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        '$streak gün seri',
+                      Text(('$streak gün seri').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -184,8 +181,7 @@ class SoftDietHero extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 14),
-                Text(
-                  allDone ? 'Gün tamam — harika iş!' : '$done / $total öğün tamam',
+                Text((allDone ? 'Gün tamam — harika iş!' : '$done / $total öğün tamam').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13.5,
@@ -285,8 +281,7 @@ class SoftDietActionStrip extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${water.amountMl} / ${water.goalMl} ml',
+                        Text(('${water.amountMl} / ${water.goalMl} ml').ui,
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 13.5,
@@ -294,8 +289,7 @@ class SoftDietActionStrip extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          '+${AppConstants.waterSipMl} ml ekle',
+                        Text(('+${AppConstants.waterSipMl} ml ekle').ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 11.5,
@@ -346,16 +340,14 @@ class SoftDietActionStrip extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Kalan',
+                  Text(('Kalan').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    '$remainingKcal',
+                  Text(('$remainingKcal').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 20,
@@ -363,8 +355,7 @@ class SoftDietActionStrip extends StatelessWidget {
                       height: 1.1,
                     ),
                   ),
-                  Text(
-                    'kcal',
+                  Text(('kcal').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 11,
@@ -408,8 +399,7 @@ class SoftDietActionStrip extends StatelessWidget {
                   fallbackColor: AppColors.primary,
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Liste',
+                Text(('Liste').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 11,
@@ -475,8 +465,7 @@ class SoftNextMealCard extends StatelessWidget {
               child: Image.asset(
                 MealDisplay.foodAsset(meal.type),
                 fit: BoxFit.contain,
-                errorBuilder: (_, _, _) => Text(
-                  meal.type.emoji,
+                errorBuilder: (_, _, _) => Text((meal.type.emoji).ui,
                   style: const TextStyle(fontSize: 32),
                   textAlign: TextAlign.center,
                 ),
@@ -495,8 +484,7 @@ class SoftNextMealCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    overdue ? 'Şimdi ye' : 'Sıradaki öğün',
+                  Text((overdue ? 'Şimdi ye' : 'Sıradaki öğün').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -506,8 +494,7 @@ class SoftNextMealCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    MealDisplay.headline(meal),
+                  Text((MealDisplay.headline(meal)).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -517,8 +504,7 @@ class SoftNextMealCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '${meal.type.tr} · ${meal.effectiveReminderTime} · $countdown',
+                  Text(('${meal.type.tr} · ${meal.effectiveReminderTime} · $countdown').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
@@ -537,8 +523,7 @@ class SoftNextMealCard extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Text(
-                  'Yedim',
+                child: Text(('Yedim').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 13,
@@ -625,8 +610,7 @@ class SoftDayChip extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              label,
+            Text((label).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 11,
@@ -639,8 +623,7 @@ class SoftDayChip extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  dayNum,
+                Text((dayNum).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -719,8 +702,7 @@ class SoftMacroOverview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Makro özeti',
+          Text(('Makro özeti').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -805,8 +787,7 @@ class _SoftMacroRing extends StatelessWidget {
                   strokeCap: StrokeCap.round,
                 ),
               ),
-              Text(
-                '${(p * 100).round()}%',
+              Text(('${(p * 100).round()}%').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 11,
@@ -817,16 +798,14 @@ class _SoftMacroRing extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
+        Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 11,
             color: AppColors.primary.withValues(alpha: 0.55),
           ),
         ),
-        Text(
-          '$value/$target',
+        Text(('$value/$target').ui,
           style: const TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 11,
@@ -863,8 +842,7 @@ class SoftRemainingMacros extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Text(
-                value,
+              Text((value).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -872,8 +850,7 @@ class SoftRemainingMacros extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
@@ -925,8 +902,7 @@ class SoftFilterPill extends StatelessWidget {
             color: selected ? AppColors.primary : AppColors.modernLine,
           ),
         ),
-        child: Text(
-          label,
+        child: Text((label).ui,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 12,
@@ -1052,8 +1028,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: const Text(
-        'Sırada',
+      child: Text(('Sırada').ui,
         style: TextStyle(
           fontWeight: FontWeight.w800,
           fontSize: 10.5,
@@ -1096,8 +1071,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
               color: meal.consumed ? AppColors.primary : Colors.white,
             ),
             const SizedBox(width: 8),
-            Text(
-              meal.consumed ? 'Yenildi — geri al' : 'Yenildi olarak işaretle',
+            Text((meal.consumed ? 'Yenildi — geri al' : 'Yenildi olarak işaretle').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 13.5,
@@ -1181,8 +1155,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
                             color: accent.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(999),
                           ),
-                          child: Text(
-                            MealDisplay.accentLabel(meal.type),
+                          child: Text((MealDisplay.accentLabel(meal.type)).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 10.5,
@@ -1210,8 +1183,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
                               children: [
                                 Icon(Icons.schedule_rounded, size: 14, color: accent),
                                 const SizedBox(width: 4),
-                                Text(
-                                  meal.effectiveReminderTime,
+                                Text((meal.effectiveReminderTime).ui,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 11.5,
@@ -1225,8 +1197,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      headline,
+                    Text((headline).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
@@ -1236,8 +1207,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      meal.type.tr,
+                    Text((meal.type.tr).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -1250,8 +1220,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
             ],
           ),
           const SizedBox(height: 10),
-          Text(
-            hook,
+          Text((hook).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 13,
@@ -1261,8 +1230,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
           ),
           if (detail != null && detail != hook) ...[
             const SizedBox(height: 6),
-            Text(
-              detail,
+            Text((detail).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 12.5,
@@ -1289,9 +1257,8 @@ class _SoftMealCardState extends State<SoftMealCard> {
                     Icon(Icons.kitchen_rounded, size: 16, color: accent),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        'Malzemeler (${ingredients.length})'
-                        '${_checkedIngredients.isNotEmpty ? ' · ${_checkedIngredients.length} hazır' : ''}',
+                      child: Text(('Malzemeler (${ingredients.length})'
+                        '${_checkedIngredients.isNotEmpty ? ' · ${_checkedIngredients.length} hazır' : ''}').ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12.5,
@@ -1355,10 +1322,9 @@ class _SoftMealCardState extends State<SoftMealCard> {
                                 color: accent,
                               ),
                               const SizedBox(width: 5),
-                              Text(
-                                ingredients[i].amount.isEmpty
+                              Text((ingredients[i].amount.isEmpty
                                     ? ingredients[i].name
-                                    : '${ingredients[i].name} · ${ingredients[i].amount}',
+                                    : '${ingredients[i].name} · ${ingredients[i].amount}').ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 11.5,
@@ -1413,8 +1379,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(
-          '$label $value',
+        child: Text(('$label $value').ui,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w800,
@@ -1480,12 +1445,11 @@ class SoftDietCompletionBanner extends StatelessWidget {
                     curve: Curves.easeInOut,
                   ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Gün tamam!',
+                    Text(('Gün tamam!').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
@@ -1494,8 +1458,7 @@ class SoftDietCompletionBanner extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2),
-                    Text(
-                      'Tüm öğünler işaretlendi — yarın için hazırlan.',
+                    Text(('Tüm öğünler işaretlendi — yarın için hazırlan.').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -1524,8 +1487,7 @@ class SoftDietCompletionBanner extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: AppColors.modernLine),
                         ),
-                        child: const Text(
-                          'Alışveriş listesi',
+                        child: Text(('Alışveriş listesi').ui,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
@@ -1548,8 +1510,7 @@ class SoftDietCompletionBanner extends StatelessWidget {
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Text(
-                          'Tariflere bak',
+                        child: Text(('Tariflere bak').ui,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
@@ -1598,8 +1559,7 @@ class SoftWeekOverview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Haftalık ilerleme',
+          Text(('Haftalık ilerleme').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 14,
@@ -1616,8 +1576,7 @@ class SoftWeekOverview extends StatelessWidget {
                     onTap: () => onSelect(i),
                     child: Column(
                       children: [
-                        Text(
-                          ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][plan.days[i].date.weekday - 1],
+                        Text((['P', 'S', 'Ç', 'P', 'C', 'C', 'P'][plan.days[i].date.weekday - 1]).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 10,
@@ -1707,8 +1666,7 @@ class SoftDietTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Küçük ipucu',
+                Text(('Küçük ipucu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 13,
@@ -1716,8 +1674,7 @@ class SoftDietTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  body,
+                Text((body).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,

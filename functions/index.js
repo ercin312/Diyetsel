@@ -49,3 +49,41 @@ exports.appointmentReminders = functions.pubsub
     await Promise.all(sends);
     return null;
   });
+
+exports.onAdminBroadcast = functions.firestore
+  .document('adminBroadcasts/{id}')
+  .onCreate(async (snap) => {
+    const data = snap.data() || {};
+    const title = (data.title || 'e-Diyet').toString();
+    const body = (data.body || '').toString();
+    const android = {
+      priority: 'high',
+      notification: {
+        channelId: 'diyetsel_admin',
+        sound: 'default',
+      },
+    };
+    if (data.targetAll !== false) {
+      return admin.messaging().send({
+        topic: 'clients',
+        notification: { title, body },
+        android,
+      });
+    }
+    const ids = Array.isArray(data.targetUserIds) ? data.targetUserIds : [];
+    const tokens = new Set();
+    for (const id of ids) {
+      const user = await admin.firestore().collection('users').doc(String(id)).get();
+      const list = user.exists && Array.isArray(user.data().fcmTokens) ? user.data().fcmTokens : [];
+      for (const token of list) {
+        if (token) tokens.add(String(token));
+      }
+    }
+    const batch = [...tokens];
+    if (!batch.length) return null;
+    return admin.messaging().sendEachForMulticast({
+      tokens: batch,
+      notification: { title, body },
+      android,
+    });
+  });

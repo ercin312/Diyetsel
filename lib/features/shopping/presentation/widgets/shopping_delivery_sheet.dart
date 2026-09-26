@@ -6,6 +6,7 @@ import '../../../../core/models/models.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../domain/shopping_delivery.dart';
 import '../../domain/shopping_platforms.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 Future<void> showShoppingDeliverySheet({
   required BuildContext context,
@@ -67,7 +68,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
   Future<void> _toast(String msg) async {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+      SnackBar(content: Text((msg).ui), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -172,20 +173,18 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                       child: Icon(_platform.icon, color: _platform.accent, size: 22),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Platforma gönder',
+                          Text(('Platforma gönder').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 18,
                             ),
                           ),
                           SizedBox(height: 2),
-                          Text(
-                            'Elindekileri işaretle ✓ — alınacaklar sırayla aranır',
+                          Text(('Elindekileri işaretle ✓ — alınacaklar sırayla aranır').ui,
                             style: TextStyle(fontSize: 12.5, height: 1.3),
                           ),
                         ],
@@ -194,8 +193,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  '1. Platform seç',
+                Text(('1. Platform seç').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 14,
@@ -241,8 +239,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                                     : p.accent,
                               ),
                               const SizedBox(width: 6),
-                              Text(
-                                p.label,
+                              Text((p.label).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 12.5,
@@ -260,8 +257,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                   ],
                 ),
                 const SizedBox(height: 18),
-                Text(
-                  '2. Alınacaklar (${needed.length})',
+                Text(('2. Alınacaklar (${needed.length})').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 14,
@@ -281,9 +277,8 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                             : AppColors.modernLine,
                       ),
                     ),
-                    child: const Text(
-                      'Alınacak ürün yok. Elinde olmayanları listede bırak '
-                      '(işaretsiz); elindekilerin tikini koy.',
+                    child: Text(('Alınacak ürün yok. Elinde olmayanları listede bırak '
+                      '(işaretsiz); elindekilerin tikini koy.').ui,
                       style: TextStyle(height: 1.35),
                     ),
                   )
@@ -314,8 +309,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                         ),
                         child: Row(
                           children: [
-                            Text(
-                              '${i + 1}.',
+                            Text(('${i + 1}.').ui,
                               style: TextStyle(
                                 fontWeight: FontWeight.w800,
                                 color: active ? _platform.accent : null,
@@ -323,8 +317,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: Text(
-                                ShoppingDelivery.lineFor(item),
+                              child: Text((ShoppingDelivery.lineFor(item)).ui,
                                 style: TextStyle(
                                   fontWeight:
                                       active ? FontWeight.w800 : FontWeight.w600,
@@ -358,8 +351,7 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                                   color: _platform.accent.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Text(
-                                  'Ara',
+                                child: Text(('Ara').ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 12,
@@ -392,10 +384,9 @@ class _ShoppingDeliverySheetState extends State<ShoppingDeliverySheet> {
                             ),
                           ],
                         ),
-                        child: Text(
-                          _busy
+                        child: Text((_busy
                               ? 'Açılıyor…'
-                              : 'Sıradaki: ${ShoppingDelivery.searchQueryFor(current)}  ·  Ara',
+                              : 'Sıradaki: ${ShoppingDelivery.searchQueryFor(current)}  ·  Ara').ui,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
@@ -489,8 +480,7 @@ class _SheetBtn extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: outline ? accent : Colors.white),
             const SizedBox(height: 4),
-            Text(
-              label,
+            Text((label).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 11.5,

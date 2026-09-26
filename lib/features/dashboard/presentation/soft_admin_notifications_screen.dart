@@ -11,6 +11,7 @@ import '../../../core/widgets/soft_desktop_frame.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_admin_notifications_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium admin — özel danışan bildirimleri gönder / geçmiş.
 class SoftAdminNotificationsScreen extends ConsumerStatefulWidget {
@@ -42,13 +43,13 @@ class _SoftAdminNotificationsScreenState
     final body = _body.text.trim();
     if (title.isEmpty || body.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Başlık ve mesaj gerekli')),
+        SnackBar(content: Text(('Başlık ve mesaj gerekli').ui)),
       );
       return;
     }
     if (!_targetAll && _selected.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('En az bir danışan seç')),
+        SnackBar(content: Text(('En az bir danışan seç').ui)),
       );
       return;
     }
@@ -75,17 +76,16 @@ class _SoftAdminNotificationsScreenState
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            broadcast.recipientCount == 0
+          content: Text((broadcast.recipientCount == 0
                 ? 'Alıcı bulunamadı'
-                : '${broadcast.recipientCount} danışana bildirim kuyruğa alındı',
+                : '${broadcast.recipientCount} danışana bildirim kuyruğa alındı').ui,
           ),
         ),
       );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gönderilemedi: $e')),
+        SnackBar(content: Text(('Gönderilemedi: $e').ui)),
       );
     } finally {
       if (mounted) setState(() => _sending = false);
@@ -96,9 +96,9 @@ class _SoftAdminNotificationsScreenState
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     if (auth.user == null || !auth.user!.isAdmin) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.modernWash,
-        body: Center(child: Text('Bu bölüm yalnızca diyetisyen içindir.')),
+        body: Center(child: Text(('Bu bölüm yalnızca diyetisyen içindir.').ui)),
       );
     }
 

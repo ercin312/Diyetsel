@@ -12,6 +12,7 @@ import '../../../../core/models/models.dart';
 import '../../../../core/widgets/soft_ui_kit.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../../../core/l10n/ui_string.dart';
 
 class SoftTrackerHeader extends StatelessWidget {
   const SoftTrackerHeader({super.key});
@@ -24,8 +25,7 @@ class SoftTrackerHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Takip',
+              Text(('Takip').ui,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w900,
@@ -34,10 +34,9 @@ class SoftTrackerHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                softTimeGreeting() == 'Günaydın'
+              Text((softTimeGreeting() == 'Günaydın'
                     ? 'Sabah suyuyla güne başla — vücut, kilo ve öğünler burada'
-                    : 'Su, vücut ve öğün fotoğrafların tek yerde',
+                    : 'Su, vücut ve öğün fotoğrafların tek yerde').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -127,8 +126,7 @@ class SoftTrackerTabs extends StatelessWidget {
                             fallbackColor: controller.index == i ? Colors.white : AppColors.primary.withValues(alpha: 0.45),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            _items[i].label,
+                          Text((_items[i].label).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 12,
@@ -196,8 +194,7 @@ class SoftWaterHero extends StatelessWidget {
                   color: const Color(0xFF5BA3C9).withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: const Text(
-                  'Bugünkü su',
+                child: Text(('Bugünkü su').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
@@ -206,8 +203,7 @@ class SoftWaterHero extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Text(
-                '%$pct',
+              Text(('%$pct').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 20,
@@ -218,8 +214,7 @@ class SoftWaterHero extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           glass,
-          Text(
-            '$amountMl / $goalMl ml',
+          Text(('$amountMl / $goalMl ml').ui,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 24,
@@ -228,8 +223,7 @@ class SoftWaterHero extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            progress >= 1 ? 'Hedef doldu — süper iş!' : 'Bardağa veya hızlı ekle’ye dokun.',
+          Text((progress >= 1 ? 'Hedef doldu — süper iş!' : 'Bardağa veya hızlı ekle’ye dokun.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -275,16 +269,14 @@ class SoftWaterQuickAdds extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(
-                  '+$ml',
+                Text(('+$ml').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
                     color: Color(0xFF2A6B8A),
                   ),
                 ),
-                Text(
-                  label,
+                Text((label).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 11,
@@ -329,8 +321,7 @@ class SoftWaterWeekStrip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Son 7 gün',
+          Text(('Son 7 gün').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 14,
@@ -358,8 +349,7 @@ class SoftWaterWeekStrip extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        days[i].$1,
+                      Text((days[i].$1).ui,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 10,
@@ -403,8 +393,7 @@ class SoftBodyHero extends StatelessWidget {
               fallback: Icons.monitor_weight_outlined,
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Henüz ölçüm yok',
+            Text(('Henüz ölçüm yok').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
@@ -412,8 +401,7 @@ class SoftBodyHero extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              'İlk kilonu ekle — grafik ve önce/sonra burada canlanır.',
+            Text(('İlk kilonu ekle — grafik ve önce/sonra burada canlanır.').ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -456,8 +444,7 @@ class SoftBodyHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Son ölçüm',
+                  child: Text(('Son ölçüm').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -466,8 +453,7 @@ class SoftBodyHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  m.weight != null ? '${m.weight} kg' : 'Kilo yok',
+                Text((m.weight != null ? '${m.weight} kg' : 'Kilo yok').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 28,
@@ -476,12 +462,11 @@ class SoftBodyHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  [
+                Text(([
                     if (m.waist != null) 'Bel ${m.waist} cm',
                     if (m.bodyFat != null) 'Yağ %${m.bodyFat}',
                     DateFormat('d MMM', 'tr').format(m.date),
-                  ].join(' · '),
+                  ].join(' · ')).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -534,16 +519,14 @@ class SoftBodyStatRow extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
-                    items[i].$2,
+                  Text((items[i].$2).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 16,
                       color: items[i].$3,
                     ),
                   ),
-                  Text(
-                    items[i].$1,
+                  Text((items[i].$1).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 11,
@@ -583,8 +566,7 @@ class SoftChartCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
+          Text((title).ui,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -626,8 +608,7 @@ class SoftBodyHistoryTile extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Text(
-              m.weight != null ? '${m.weight!.round()}' : '—',
+            child: Text((m.weight != null ? '${m.weight!.round()}' : '—').ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: AppColors.primary,
@@ -639,15 +620,13 @@ class SoftBodyHistoryTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${m.weight ?? '-'} kg · bel ${m.waist ?? '-'}',
+                Text(('${m.weight ?? '-'} kg · bel ${m.waist ?? '-'}').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     color: AppColors.primaryDeep,
                   ),
                 ),
-                Text(
-                  DateFormat('d MMMM y', 'tr').format(m.date),
+                Text((DateFormat('d MMMM y', 'tr').format(m.date)).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -704,8 +683,7 @@ class SoftPrimaryButton extends StatelessWidget {
           children: [
             Icon(icon, color: Colors.white, size: 20),
             const SizedBox(width: 8),
-            Text(
-              label,
+            Text((label).ui,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -755,8 +733,7 @@ class SoftMealEmpty extends StatelessWidget {
                 .animate(onPlay: (c) => c.repeat(reverse: true))
                 .moveY(begin: 0, end: -6, duration: 1800.ms, curve: Curves.easeInOut),
             const SizedBox(height: 18),
-            const Text(
-              'Henüz öğün fotoğrafı yok',
+            Text(('Henüz öğün fotoğrafı yok').ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
@@ -765,8 +742,7 @@ class SoftMealEmpty extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Tabağını çek, diyetisyenin görsün ve sana not bıraksın.',
+            Text(('Tabağını çek, diyetisyenin görsün ve sana not bıraksın.').ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -819,8 +795,7 @@ class SoftMealPhotoCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  DateFormat('d MMM · HH:mm', 'tr').format(log.createdAt),
+                child: Text((DateFormat('d MMM · HH:mm', 'tr').format(log.createdAt)).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
@@ -835,8 +810,7 @@ class SoftMealPhotoCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    log.stamp!,
+                  child: Text((log.stamp!).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11,
@@ -858,8 +832,7 @@ class SoftMealPhotoCard extends StatelessWidget {
                 height: 120,
                 color: AppColors.modernWash,
                 alignment: Alignment.center,
-                child: Text(
-                  'Görsel yüklenemedi',
+                child: Text(('Görsel yüklenemedi').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary.withValues(alpha: 0.45),
@@ -870,8 +843,7 @@ class SoftMealPhotoCard extends StatelessWidget {
           ),
           if (log.caption?.isNotEmpty == true) ...[
             const SizedBox(height: 10),
-            Text(
-              log.caption!,
+            Text((log.caption!).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13.5,
@@ -888,8 +860,7 @@ class SoftMealPhotoCard extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Text(
-                'Diyetisyen: ${feedback ?? log.feedbackNote}',
+              child: Text(('Diyetisyen: ${feedback ?? log.feedbackNote}').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,
@@ -924,8 +895,7 @@ LineChartData softWeightChart(List<BodyMeasurement> items) {
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 36,
-          getTitlesWidget: (v, _) => Text(
-            v.toStringAsFixed(0),
+          getTitlesWidget: (v, _) => Text((v.toStringAsFixed(0)).ui,
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,

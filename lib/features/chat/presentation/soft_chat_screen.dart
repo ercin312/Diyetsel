@@ -16,6 +16,7 @@ import '../../../core/widgets/soft_desktop_frame.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'widgets/soft_chat_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern chat list.
 class SoftChatListScreen extends ConsumerWidget {
@@ -84,8 +85,7 @@ class SoftChatListScreen extends ConsumerWidget {
             const SizedBox(height: 18),
             Row(
               children: [
-                const Text(
-                  'Konuşmalar',
+                Text(('Konuşmalar').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
@@ -100,8 +100,7 @@ class SoftChatListScreen extends ConsumerWidget {
                       color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: Text(
-                      '${sorted.length}',
+                    child: Text(('${sorted.length}').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 11.5,

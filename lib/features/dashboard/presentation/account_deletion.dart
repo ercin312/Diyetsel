@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Confirms and runs in-app account deletion (App Store Guideline 5.1.1(v)).
 Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async {
@@ -15,15 +16,14 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
     context: context,
     builder: (ctx) {
       return AlertDialog(
-        title: const Text('Hesabı kalıcı olarak sil'),
+        title: Text(('Hesabı kalıcı olarak sil').ui),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Hesabınız ve uygulamada saklanan kişisel verileriniz silinir. '
-                'Bu işlem geri alınamaz.',
+              Text(('Hesabınız ve uygulamada saklanan kişisel verileriniz silinir. '
+                'Bu işlem geri alınamaz.').ui,
               ),
               if (needsPassword) ...[
                 const SizedBox(height: 16),
@@ -31,8 +31,8 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
                   controller: passwordController,
                   obscureText: true,
                   autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Şifrenizi girin',
+                  decoration: InputDecoration(
+                    labelText: ('Şifrenizi girin').ui,
                     border: OutlineInputBorder(),
                   ),
                   onSubmitted: (_) => Navigator.of(ctx).pop(true),
@@ -44,12 +44,12 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Vazgeç'),
+            child: Text(('Vazgeç').ui),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.kawaiiCoralDeep),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Hesabı sil'),
+            child: Text(('Hesabı sil').ui),
           ),
         ],
       );
@@ -64,7 +64,7 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
   showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => const Center(
+    builder: (_) => Center(
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(24),
@@ -73,7 +73,7 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Hesap siliniyor…'),
+              Text(('Hesap siliniyor…').ui),
             ],
           ),
         ),
@@ -88,7 +88,7 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).pop(); // loading
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Hesabınız silindi.')),
+        SnackBar(content: Text(('Hesabınız silindi.').ui)),
       );
     }
   } catch (e) {
@@ -96,7 +96,7 @@ Future<void> confirmAndDeleteAccount(BuildContext context, WidgetRef ref) async 
       Navigator.of(context, rootNavigator: true).pop(); // loading
       final message = e.toString().replaceAll('Bad state: ', '').replaceAll('Exception: ', '');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Text((message).ui)),
       );
     }
   } finally {

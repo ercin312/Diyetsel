@@ -8,6 +8,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/fasting_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftFastingHeader extends StatelessWidget {
@@ -19,12 +20,11 @@ class SoftFastingHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Aralıklı oruç',
+              Text(('Aralıklı oruç').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -33,8 +33,7 @@ class SoftFastingHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                '16:8 pencere takibi',
+              Text(('16:8 pencere takibi').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -111,8 +110,7 @@ class SoftFastingHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    active ? phaseTitle : '16:8 penceresi',
+                  child: Text((active ? phaseTitle : '16:8 penceresi').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -121,8 +119,7 @@ class SoftFastingHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  active ? 'Oruç devam ediyor' : 'Orucu başlat',
+                Text((active ? 'Oruç devam ediyor' : 'Orucu başlat').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -131,8 +128,7 @@ class SoftFastingHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -203,8 +199,7 @@ class SoftFastingStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$3,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    items[i].$5,
+                  Text((items[i].$5).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
@@ -213,8 +208,7 @@ class SoftFastingStatsRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    items[i].$4,
+                  Text((items[i].$4).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 10.5,
@@ -290,18 +284,16 @@ class SoftFastingTimerCard extends StatelessWidget {
                       fallbackColor: accent,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      session.active ? '$hours sa $mins dk' : 'Hazır',
+                    Text((session.active ? '$hours sa $mins dk' : 'Hazır').ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 22,
                         color: AppColors.primaryDeep,
                       ),
                     ),
-                    Text(
-                      session.active
+                    Text((session.active
                           ? 'kalan ~${remaining.toStringAsFixed(1)} sa'
-                          : '${session.windowHours} saatlik tur',
+                          : '${session.windowHours} saatlik tur').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,
@@ -314,8 +306,7 @@ class SoftFastingTimerCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            session.active ? phase.title : 'Orucu başlat, süre aksın.',
+          Text((session.active ? phase.title : 'Orucu başlat, süre aksın.').ui,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -324,8 +315,7 @@ class SoftFastingTimerCard extends StatelessWidget {
           ),
           if (session.active) ...[
             const SizedBox(height: 6),
-            Text(
-              phase.body,
+            Text((phase.body).ui,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -362,8 +352,7 @@ class SoftFastingTimerCard extends StatelessWidget {
                     size: 22,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    session.active ? 'Orucu bitir' : '16 saat başlat',
+                  Text((session.active ? 'Orucu bitir' : '16 saat başlat').ui,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
@@ -453,8 +442,7 @@ class _WindowBlock extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            hours,
+          Text((hours).ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 28,
@@ -462,8 +450,7 @@ class _WindowBlock extends StatelessWidget {
               height: 1,
             ),
           ),
-          Text(
-            'saat',
+          Text(('saat').ui,
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 11,
@@ -471,16 +458,14 @@ class _WindowBlock extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            label,
+          Text((label).ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 13,
               color: AppColors.primaryDeep,
             ),
           ),
-          Text(
-            sub,
+          Text((sub).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 11,
@@ -516,8 +501,7 @@ class SoftFastingPhasesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Fazlar',
+          Text(('Fazlar').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -525,8 +509,7 @@ class SoftFastingPhasesCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'Saat ilerledikçe vurgu değişir',
+          Text(('Saat ilerledikçe vurgu değişir').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12.5,
@@ -596,8 +579,7 @@ class _PhaseRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text(
-            range,
+          Text((range).ui,
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 13,
@@ -606,8 +588,7 @@ class _PhaseRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              title,
+            child: Text((title).ui,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
@@ -656,8 +637,7 @@ class SoftFastingTipCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                Text((title).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -665,8 +645,7 @@ class SoftFastingTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  body,
+                Text((body).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,

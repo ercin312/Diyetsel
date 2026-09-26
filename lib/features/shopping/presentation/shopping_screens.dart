@@ -18,6 +18,7 @@ import '../domain/shopping_platforms.dart';
 import '../domain/shopping_visuals.dart';
 import 'soft_shopping_screen.dart';
 import 'widgets/shopping_delivery_sheet.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -76,7 +77,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
       padding: EdgeInsets.zero,
       actions: [
         IconButton(
-          tooltip: 'Ürün ekle',
+          tooltip: ('Ürün ekle').ui,
           onPressed: () => _openAddSheet(context, store, user.id, items),
           icon: const Icon(Icons.add_rounded, color: AppColors.kawaiiLeafDeep, size: 26),
         ),
@@ -141,8 +142,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                             size: 16,
                             color: selected ? Colors.white : ShoppingVisuals.accentFor(c),
                           ),
-                    label: Text(
-                      label,
+                    label: Text((label).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12.5,
@@ -164,10 +164,9 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                 onAdd: () => _openAddSheet(context, store, user.id, items),
               ).animate().fadeIn(duration: 320.ms).scale(begin: const Offset(0.96, 0.96))
             else if (shown.isEmpty)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(28),
-                child: Text(
-                  'Bu filtrede ürün yok.',
+                child: Text(('Bu filtrede ürün yok.').ui,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.kawaiiMuted),
                 ),
@@ -236,13 +235,12 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                 border: Border.all(color: AppColors.kawaiiOutline),
                 boxShadow: AppSpacing.soft,
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   Icon(Icons.lightbulb_outline_rounded, color: AppColors.kawaiiLeafDeep),
                   SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      'Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.',
+                    child: Text(('Diyetten üret, reyon etiketlerine bak, tamamlananları temizle — listen her hafta taze kalsın.').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
@@ -278,8 +276,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
     if (plan == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.'),
+          SnackBar(
+            content: Text(('Önce bir diyet planın olmalı. Diyetisyeninden plan iste.').ui),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -291,9 +289,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
     if (result.isEmpty) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.',
+          SnackBar(
+            content: Text(('Planda alışverişe çevrilecek malzeme bulunamadı. Öğünlere malzeme eklenmiş olmalı.').ui,
             ),
             behavior: SnackBarBehavior.floating,
           ),
@@ -306,9 +303,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            '${result.dietItemCount} ürün diyetten eklendi'
-            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}',
+          content: Text(('${result.dietItemCount} ürün diyetten eklendi'
+            '${result.items.length > result.dietItemCount ? ' · elle eklenenler korundu' : ''}').ui,
           ),
           behavior: SnackBarBehavior.floating,
         ),
@@ -402,14 +398,12 @@ class _ShoppingHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'Haftalık market',
+                  child: Text(('Haftalık market').ui,
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  total == 0 ? 'Listen seni bekliyor' : '$done / $total alındı',
+                Text((total == 0 ? 'Listen seni bekliyor' : '$done / $total alındı').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -418,8 +412,7 @@ class _ShoppingHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -482,14 +475,13 @@ class _ActionRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: AppSpacing.soft,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
                       SizedBox(width: 6),
                       Flexible(
-                        child: Text(
-                          'Diyetten üret',
+                        child: Text(('Diyetten üret').ui,
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -563,13 +555,12 @@ class _ActionRow extends StatelessWidget {
                 border: Border.all(color: AppColors.kawaiiOutline),
                 boxShadow: AppSpacing.soft,
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.local_shipping_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
                   SizedBox(width: 8),
-                  Text(
-                    'Platforma gönder',
+                  Text(('Platforma gönder').ui,
                     style: TextStyle(
                       color: AppColors.kawaiiLeafDeep,
                       fontWeight: FontWeight.w800,
@@ -598,8 +589,7 @@ class _SectionLabel extends StatelessWidget {
       children: [
         Icon(emojiIcon, size: 18, color: AppColors.kawaiiLeafDeep),
         const SizedBox(width: 6),
-        Text(
-          title,
+        Text((title).ui,
           style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk),
         ),
       ],
@@ -670,8 +660,7 @@ class _CartoonShopCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            item.name,
+                          child: Text((item.name).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 15.5,
@@ -689,14 +678,12 @@ class _CartoonShopCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 3),
-                    Text(
-                      item.amount,
+                    Text((item.amount).ui,
                       style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5, color: AppColors.kawaiiLeafDeep),
                     ),
                     if (item.tip.isNotEmpty) ...[
                       const SizedBox(height: 3),
-                      Text(
-                        item.tip,
+                      Text((item.tip).ui,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, height: 1.3, color: AppColors.kawaiiMuted),
@@ -710,8 +697,7 @@ class _CartoonShopCard extends StatelessWidget {
                           color: tint,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          item.aisle,
+                        child: Text((item.aisle).ui,
                           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: accent),
                         ),
                       ),
@@ -754,13 +740,11 @@ class _EmptyShopping extends StatelessWidget {
         children: [
           Image.asset(DiyetselAssets.mascotAvocado, height: 96),
           const SizedBox(height: 12),
-          const Text(
-            'Sepetin henüz boş',
+          Text(('Sepetin henüz boş').ui,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'Diyet planından otomatik liste üret veya tek tek ekle — reyon ipuçlarıyla market turu kısalır.',
+          Text(('Diyet planından otomatik liste üret veya tek tek ekle — reyon ipuçlarıyla market turu kısalır.').ui,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5, height: 1.4, color: AppColors.kawaiiMuted),
           ),
@@ -775,8 +759,7 @@ class _EmptyShopping extends StatelessWidget {
                 color: AppColors.kawaiiLeaf,
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: const Text(
-                'Diyetten üret',
+              child: Text(('Diyetten üret').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
               ),
@@ -794,8 +777,7 @@ class _EmptyShopping extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: AppColors.kawaiiOutline),
               ),
-              child: const Text(
-                'Manuel ürün ekle',
+              child: Text(('Manuel ürün ekle').ui,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.kawaiiLeafDeep, fontWeight: FontWeight.w900),
               ),
@@ -875,8 +857,7 @@ class _ShopDetailSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.name,
+                        Text((item.name).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
@@ -884,8 +865,7 @@ class _ShopDetailSheet extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          item.amount,
+                        Text((item.amount).ui,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             color: cartoon ? AppColors.kawaiiLeafDeep : context.brandPrimary,
@@ -908,8 +888,7 @@ class _ShopDetailSheet extends StatelessWidget {
               ),
               if (item.tip.isNotEmpty) ...[
                 const SizedBox(height: 18),
-                Text(
-                  'Alışveriş ipucu',
+                Text(('Alışveriş ipucu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -917,8 +896,7 @@ class _ShopDetailSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  item.tip,
+                Text((item.tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     height: 1.4,
@@ -928,8 +906,7 @@ class _ShopDetailSheet extends StatelessWidget {
               ],
               if (item.note.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                Text(
-                  'Not',
+                Text(('Not').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 14,
@@ -937,7 +914,7 @@ class _ShopDetailSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(item.note, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+                Text((item.note).ui, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
               ],
               const SizedBox(height: 22),
               SoftTap(
@@ -950,8 +927,7 @@ class _ShopDetailSheet extends StatelessWidget {
                     color: cartoon ? AppColors.kawaiiLeaf : context.brandPrimary,
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: Text(
-                    item.checked ? 'Tekrar listeye al' : 'Aldım — işaretle',
+                  child: Text((item.checked ? 'Tekrar listeye al' : 'Aldım — işaretle').ui,
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
                   ),
@@ -964,7 +940,7 @@ class _ShopDetailSheet extends StatelessWidget {
                     child: OutlinedButton.icon(
                       onPressed: onTogglePriority,
                       icon: Icon(item.priority ? Icons.bolt_outlined : Icons.bolt_rounded),
-                      label: Text(item.priority ? 'Önceliği kaldır' : 'Öncelikli yap'),
+                      label: Text((item.priority ? 'Önceliği kaldır' : 'Öncelikli yap').ui),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -994,7 +970,7 @@ class _MiniTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
-      child: Text(label, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: ink)),
+      child: Text((label).ui, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: ink)),
     );
   }
 }
@@ -1050,8 +1026,7 @@ class _AddShopItemSheetState extends State<_AddShopItemSheet> {
                   decoration: BoxDecoration(color: AppColors.kawaiiOutline, borderRadius: BorderRadius.circular(99)),
                 ),
               ),
-              Text(
-                'Ürün ekle',
+              Text(('Ürün ekle').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
@@ -1062,17 +1037,17 @@ class _AddShopItemSheetState extends State<_AddShopItemSheet> {
               TextField(
                 controller: _name,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(labelText: 'Ürün adı', hintText: 'Örn. Roka'),
+                decoration: InputDecoration(labelText: ('Ürün adı').ui, hintText: ('Örn. Roka').ui),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: _amount,
-                decoration: const InputDecoration(labelText: 'Miktar', hintText: 'Örn. 1 demet'),
+                decoration: InputDecoration(labelText: ('Miktar').ui, hintText: ('Örn. 1 demet').ui),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: _tip,
-                decoration: const InputDecoration(labelText: 'İpucu (opsiyonel)'),
+                decoration: InputDecoration(labelText: ('İpucu (opsiyonel)').ui),
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -1082,14 +1057,14 @@ class _AddShopItemSheetState extends State<_AddShopItemSheet> {
                   for (final c in ShoppingVisuals.categoryOrder)
                     ChoiceChip(
                       selected: _category == c,
-                      label: Text(ShoppingVisuals.label(c)),
+                      label: Text((ShoppingVisuals.label(c)).ui),
                       onSelected: (_) => setState(() => _category = c),
                     ),
                 ],
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Öncelikli ürün', style: TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(('Öncelikli ürün').ui, style: TextStyle(fontWeight: FontWeight.w700)),
                 value: _priority,
                 onChanged: (v) => setState(() => _priority = v),
               ),
@@ -1119,7 +1094,7 @@ class _AddShopItemSheetState extends State<_AddShopItemSheet> {
                           ),
                         );
                       },
-                child: Text(_saving ? 'Kaydediliyor…' : 'Listeye ekle'),
+                child: Text((_saving ? 'Kaydediliyor…' : 'Listeye ekle').ui),
               ),
             ],
           ),

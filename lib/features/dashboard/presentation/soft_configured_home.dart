@@ -9,6 +9,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/home_theme_config.dart';
 import '../../../core/utils/desktop.dart';
 import '../../auth/presentation/auth_controller.dart';
+import 'profile_photo.dart';
 import '../domain/home_feed_models.dart';
 import 'widgets/soft_home_palette.dart';
 import 'widgets/soft_home_widgets.dart';
@@ -229,7 +230,11 @@ class SoftConfiguredHome extends ConsumerWidget {
             ),
             children: [
               if (config.isHomeBlockVisible('greeting')) ...[
-                SoftGreetingHeader(userName: name, avatarUrl: avatarUrl)
+                SoftGreetingHeader(
+                  userName: name,
+                  avatarUrl: avatarUrl,
+                  onAvatarTap: () => pickProfilePhoto(context, ref),
+                )
                     .animate()
                     .fadeIn(duration: 320.ms)
                     .slideY(begin: -0.05, curve: Curves.easeOutCubic),

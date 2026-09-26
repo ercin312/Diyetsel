@@ -17,6 +17,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../core/widgets/nav_back.dart';
+import '../../../core/l10n/ui_string.dart';
 
 
 /// Soft premium admin meal photo inbox.
@@ -107,12 +108,11 @@ class _Header extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Öğün günlüğü',
+              Text(('Öğün günlüğü').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -121,8 +121,7 @@ class _Header extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Gelen fotoğraflara hızlı geri bildirim',
+              Text(('Gelen fotoğraflara hızlı geri bildirim').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -184,8 +183,7 @@ class _Hero extends StatelessWidget {
                     color: const Color(0xFF5BA3C9).withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Öğün inbox',
+                  child: Text(('Öğün inbox').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -194,8 +192,7 @@ class _Hero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  '$total fotoğraf · $pending bekleyen not',
+                Text(('$total fotoğraf · $pending bekleyen not').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 18,
@@ -203,8 +200,7 @@ class _Hero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Tek dokunuşla kısa geri bildirim gönder.',
+                Text(('Tek dokunuşla kısa geri bildirim gönder.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -255,8 +251,7 @@ class _MealCard extends StatelessWidget {
               CircleAvatar(
                 radius: 16,
                 backgroundColor: const Color(0xFFE8F5F0),
-                child: Text(
-                  log.clientName.isNotEmpty ? log.clientName[0].toUpperCase() : '?',
+                child: Text((log.clientName.isNotEmpty ? log.clientName[0].toUpperCase() : '?').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     color: AppColors.primary,
@@ -268,15 +263,13 @@ class _MealCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      log.clientName,
+                    Text((log.clientName).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         color: AppColors.primaryDeep,
                       ),
                     ),
-                    Text(
-                      DateFormat('d MMM · HH:mm', 'tr').format(log.createdAt),
+                    Text((DateFormat('d MMM · HH:mm', 'tr').format(log.createdAt)).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -293,8 +286,7 @@ class _MealCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text(
-                    log.stamp!,
+                  child: Text((log.stamp!).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11,
@@ -316,8 +308,7 @@ class _MealCard extends StatelessWidget {
                 height: 100,
                 color: AppColors.modernWash,
                 alignment: Alignment.center,
-                child: Text(
-                  'Görsel yüklenemedi',
+                child: Text(('Görsel yüklenemedi').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary.withValues(alpha: 0.45),
@@ -328,8 +319,7 @@ class _MealCard extends StatelessWidget {
           ),
           if (log.caption?.isNotEmpty == true) ...[
             const SizedBox(height: 10),
-            Text(
-              log.caption!,
+            Text((log.caption!).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13.5,
@@ -365,8 +355,7 @@ class _MealCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(color: AppColors.modernLine),
                     ),
-                    child: Text(
-                      e,
+                    child: Text((e).ui,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
@@ -386,8 +375,7 @@ class _MealCard extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Text(
-                'Sen: ${log.feedbackNote}',
+              child: Text(('Sen: ${log.feedbackNote}').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,
@@ -420,8 +408,7 @@ class _Empty extends StatelessWidget {
             fallbackColor: AppColors.primary.withValues(alpha: 0.4),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Henüz öğün fotoğrafı yok',
+          Text(('Henüz öğün fotoğrafı yok').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -429,8 +416,7 @@ class _Empty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            'Danışanlar paylaşınca burada görünecek.',
+          Text(('Danışanlar paylaşınca burada görünecek.').ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary.withValues(alpha: 0.55),

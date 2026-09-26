@@ -14,6 +14,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../domain/recipe_visuals.dart';
 import 'cartoon_recipe_screen.dart';
 import 'soft_recipe_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class RecipeTonightCard extends ConsumerWidget {
   const RecipeTonightCard({super.key});
@@ -59,8 +60,7 @@ class RecipeTonightCard extends ConsumerWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              'Bugün akşam bunu dene',
+                            child: Text(('Bugün akşam bunu dene').ui,
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                     color: Colors.white.withValues(alpha: 0.88),
                                     fontWeight: FontWeight.w600))),
@@ -69,27 +69,23 @@ class RecipeTonightCard extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: AppColors.modernFire,
                               borderRadius: BorderRadius.circular(16)),
-                            child: Text(
-                              pick.highlight,
+                            child: Text((pick.highlight).ui,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 11))),
                         ]),
                       const SizedBox(height: 10),
-                      Text(
-                        r.title,
+                      Text((r.title).ui,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                               height: 1.15)),
                       const SizedBox(height: 6),
-                      Text(
-                        pick.reason,
+                      Text((pick.reason).ui,
                         style: TextStyle(color: Colors.white.withValues(alpha: 0.72), height: 1.3)),
                       const SizedBox(height: 8),
-                      Text(
-                        '${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein',
+                      Text(('${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.modernSageSoft)),
@@ -151,8 +147,7 @@ class RecipeTonightCard extends ConsumerWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  'Bugün akşam bunu dene',
+                                child: Text(('Bugün akşam bunu dene').ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                     fontSize: 15,
@@ -161,21 +156,18 @@ class RecipeTonightCard extends ConsumerWidget {
                               DoodleBadge(label: pick.highlight, emoji: '💪'),
                             ]),
                           const SizedBox(height: 10),
-                          Text(
-                            r.title,
+                          Text((r.title).ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 20,
                               letterSpacing: null,
                               color: cartoon ? AppColors.kawaiiInk : Colors.white)),
                           const SizedBox(height: 6),
-                          Text(
-                            pick.reason,
+                          Text((pick.reason).ui,
                             style: TextStyle(
                               color: cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.78) : Colors.white70)),
                           const SizedBox(height: 8),
-                          Text(
-                            '${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein',
+                          Text(('${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: cartoon

@@ -918,6 +918,67 @@ class AppStore {
     await saveSettings(settings().copyWith(seeded: true));
   }
 
+  /// Clinic dietitian display name is Zühre on every admin profile and chat label.
+  Future<void> ensureDietitianName() async {
+    const next = AppConstants.dietitianName;
+    final admins = users().where((u) => u.isAdmin).toList();
+    if (admins.isEmpty) return;
+    final previous = <String>{};
+    final adminIds = <String>{};
+    for (final admin in admins) {
+      adminIds.add(admin.id);
+      if (admin.displayName == next) continue;
+      previous.add(admin.displayName);
+      await saveUser(admin.copyWith(displayName: next));
+    }
+    if (previous.isEmpty) return;
+
+    for (final thread in _map(FirestorePaths.chats, ChatThread.fromMap)) {
+      final names = [...thread.participantNames];
+      var changed = false;
+      for (var i = 0; i < names.length && i < thread.participantIds.length; i++) {
+        if (adminIds.contains(thread.participantIds[i]) || previous.contains(names[i])) {
+          if (names[i] != next) {
+            names[i] = next;
+            changed = true;
+          }
+        }
+      }
+      if (!changed) continue;
+      await db.put(
+        FirestorePaths.chats,
+        thread.id,
+        ChatThread(
+          id: thread.id,
+          participantIds: thread.participantIds,
+          participantNames: names,
+          lastMessage: thread.lastMessage,
+          lastAt: thread.lastAt,
+        ).toMap(),
+      );
+    }
+
+    for (final post in blogPosts()) {
+      if (!adminIds.contains(post.authorId) && !previous.contains(post.authorName)) continue;
+      if (post.authorName == next) continue;
+      await saveBlog(BlogPost(
+        id: post.id,
+        title: post.title,
+        subtitle: post.subtitle,
+        authorId: post.authorId,
+        authorName: next,
+        category: post.category,
+        tags: post.tags,
+        body: post.body,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        coverUrl: post.coverUrl,
+        published: post.published,
+        likes: post.likes,
+      ));
+    }
+  }
+
   Future<void> touchActivity(String userId) async {
     final profile = user(userId);
     if (profile == null || profile.isAdmin) return;

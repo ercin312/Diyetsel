@@ -70,6 +70,7 @@ class UserProfile {
     UserRole? role,
     DateTime? lastActiveAt,
     Map<String, bool>? moduleOverrides,
+    List<String>? fcmTokens,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -84,7 +85,7 @@ class UserProfile {
       waterGoalMl: waterGoalMl ?? this.waterGoalMl,
       isActive: isActive ?? this.isActive,
       notes: notes ?? this.notes,
-      fcmTokens: fcmTokens,
+      fcmTokens: fcmTokens ?? this.fcmTokens,
       lastActiveAt: lastActiveAt ?? this.lastActiveAt,
       moduleOverrides: moduleOverrides ?? this.moduleOverrides,
     );

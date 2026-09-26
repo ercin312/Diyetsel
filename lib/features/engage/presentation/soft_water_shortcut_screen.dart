@@ -17,6 +17,7 @@ import '../../auth/presentation/auth_controller.dart';
 import '../../tracker/presentation/widgets/soft_tracker_widgets.dart';
 import '../domain/water_shortcut_visuals.dart';
 import 'widgets/soft_water_shortcut_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern su kısayolu — bildirim, hızlı ekleme, günlük ilerleme.
 class SoftWaterShortcutScreen extends ConsumerStatefulWidget {
@@ -38,12 +39,11 @@ class _SoftWaterShortcutScreenState extends ConsumerState<SoftWaterShortcutScree
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          next
+        content: Text((next
               ? (ReminderService.instance.supportsNative
                   ? 'Kalıcı su bildirimi açıldı'
                   : 'Kısayol açık — buradan +${AppConstants.waterSipMl} ml ekleyebilirsin')
-              : 'Su kısayolu kapatıldı',
+              : 'Su kısayolu kapatıldı').ui,
         ),
       ),
     );
@@ -58,7 +58,7 @@ class _SoftWaterShortcutScreenState extends ConsumerState<SoftWaterShortcutScree
     }
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('+$ml ml eklendi')),
+      SnackBar(content: Text(('+$ml ml eklendi').ui)),
     );
     setState(() {});
   }

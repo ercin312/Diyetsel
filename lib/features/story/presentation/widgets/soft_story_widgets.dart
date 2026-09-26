@@ -8,6 +8,7 @@ import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show 
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../domain/story_visuals.dart';
 import '../../../../core/widgets/nav_back.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 
 class SoftStoryHeader extends StatelessWidget {
@@ -22,12 +23,11 @@ class SoftStoryHeader extends StatelessWidget {
       children: [
         const SoftNavBackButton(),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Hikaye kartı',
+              Text(('Hikaye kartı').ui,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -36,8 +36,7 @@ class SoftStoryHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              Text(
-                'Paylaşılabilir PNG kart',
+              Text(('Paylaşılabilir PNG kart').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -117,8 +116,7 @@ class SoftStoryHero extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: const Text(
-                    'Paylaşılabilir hikaye',
+                  child: Text(('Paylaşılabilir hikaye').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 11.5,
@@ -127,8 +125,7 @@ class SoftStoryHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  'Merhaba $name',
+                Text(('Merhaba $name').ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,
@@ -137,8 +134,7 @@ class SoftStoryHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  tip,
+                Text((tip).ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
@@ -206,16 +202,14 @@ class SoftStoryStatsRow extends StatelessWidget {
                     fallbackColor: items[i].$3,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    items[i].$5,
+                  Text((items[i].$5).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
                       color: items[i].$3,
                     ),
                   ),
-                  Text(
-                    items[i].$4,
+                  Text((items[i].$4).ui,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -250,8 +244,7 @@ class SoftStoryHowItWorksCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Nasıl çalışır?',
+          Text(('Nasıl çalışır?').ui,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 15,
@@ -272,8 +265,7 @@ class SoftStoryHowItWorksCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(9),
                   ),
-                  child: Text(
-                    '$i',
+                  child: Text(('$i').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 12,
@@ -283,8 +275,7 @@ class SoftStoryHowItWorksCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    StoryVisuals.howItWorks(i),
+                  child: Text((StoryVisuals.howItWorks(i)).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -355,8 +346,7 @@ class SoftStoryTemplateChips extends StatelessWidget {
                     color: on ? Colors.white : accent,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    t.chip,
+                  Text((t.chip).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12.5,
@@ -424,16 +414,14 @@ class SoftStorySnapshotStrip extends StatelessWidget {
                     fallbackColor: accent,
                   ),
                   const Spacer(),
-                  Text(
-                    t.statLabel ?? t.chip,
+                  Text((t.statLabel ?? t.chip).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 11,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
                   ),
-                  Text(
-                    t.statValue ?? '—',
+                  Text((t.statValue ?? '—').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
@@ -511,8 +499,7 @@ class SoftShareableCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    'DİYETSEL',
+                  Text(('DİYETSEL').ui,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.85),
                       fontWeight: FontWeight.w900,
@@ -520,8 +507,7 @@ class SoftShareableCard extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
-                  Text(
-                    date,
+                  Text((date).ui,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.75),
                       fontWeight: FontWeight.w600,
@@ -539,8 +525,7 @@ class SoftShareableCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              template.chip,
+            child: Text((template.chip).ui,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 11.5,
@@ -549,8 +534,7 @@ class SoftShareableCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            userName,
+          Text((userName).ui,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -558,8 +542,7 @@ class SoftShareableCard extends StatelessWidget {
               letterSpacing: -0.3,
             ),
           ),
-          Text(
-            'Diyetisyen: $dietitian',
+          Text(('Diyetisyen: $dietitian').ui,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontWeight: FontWeight.w600,
@@ -567,8 +550,7 @@ class SoftShareableCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          Text(
-            template.title,
+          Text((template.title).ui,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 26,
@@ -578,8 +560,7 @@ class SoftShareableCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            template.subtitle,
+          Text((template.subtitle).ui,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -592,8 +573,7 @@ class SoftShareableCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  template.foot,
+                child: Text((template.foot).ui,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w600,
@@ -634,8 +614,7 @@ class SoftStoryCaptionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Paylaşım metni',
+        Text(('Paylaşım metni').ui,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 15,
@@ -661,8 +640,7 @@ class SoftStoryCaptionSection extends StatelessWidget {
                       color: selectedIndex == i ? AppColors.primary : AppColors.modernLine,
                     ),
                   ),
-                  child: Text(
-                    captions[i].length > 36 ? '${captions[i].substring(0, 34)}…' : captions[i],
+                  child: Text((captions[i].length > 36 ? '${captions[i].substring(0, 34)}…' : captions[i]).ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
@@ -683,8 +661,7 @@ class SoftStoryCaptionSection extends StatelessWidget {
             border: Border.all(color: AppColors.modernLine),
             boxShadow: AppSpacing.soft,
           ),
-          child: Text(
-            caption,
+          child: Text((caption).ui,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               height: 1.35,
@@ -733,8 +710,7 @@ class SoftStoryShareButton extends StatelessWidget {
               size: 20,
             ),
             const SizedBox(width: 8),
-            Text(
-              sharing ? 'Hazırlanıyor…' : 'PNG paylaş',
+            Text((sharing ? 'Hazırlanıyor…' : 'PNG paylaş').ui,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -772,8 +748,7 @@ class SoftStoryPrivacyCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Kartta yalnızca ismin, diyetisyen adı ve seçtiğin özet görünür. Sohbet, lab PDF’leri veya detaylı kilo grafiği paylaşılmaz.',
+            child: Text(('Kartta yalnızca ismin, diyetisyen adı ve seçtiğin özet görünür. Sohbet, lab PDF’leri veya detaylı kilo grafiği paylaşılmaz.').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -807,8 +782,7 @@ class SoftStoryPreviewFrame extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text(
-                'Önizleme',
+              Text(('Önizleme').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 14,
@@ -822,8 +796,7 @@ class SoftStoryPreviewFrame extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: Text(
-                  '1080×1920 uyumlu',
+                child: Text(('1080×1920 uyumlu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 10.5,

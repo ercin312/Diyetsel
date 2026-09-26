@@ -16,7 +16,9 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/settings_visuals.dart';
 import 'account_deletion.dart';
+import 'profile_photo.dart';
 import 'widgets/soft_settings_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern ayarlar — tema, bildirimler, hesap ve klinik yönetimi.
 class SoftSettingsScreen extends ConsumerWidget {
@@ -68,6 +70,8 @@ class SoftSettingsScreen extends ConsumerWidget {
               roleLabel: user.isAdmin ? 'Diyetisyen' : 'Danışan',
               isAdmin: user.isAdmin,
               tip: SettingsVisuals.tipOfDay(DateTime.now().day),
+              photoUrl: user.photoUrl,
+              onAvatarTap: () => pickProfilePhoto(context, ref),
             )
                 .animate()
                 .fadeIn(delay: 40.ms, duration: 300.ms)
@@ -78,7 +82,6 @@ class SoftSettingsScreen extends ConsumerWidget {
                 ),
             const SizedBox(height: 12),
             SoftSettingsStatsRow(
-              themeLabel: SettingsVisuals.themeModeLabel(theme.mode),
               styleLabel: SettingsVisuals.visualStyleLabel(theme.style),
               reminderCount: reminderCount,
             ).animate().fadeIn(delay: 60.ms, duration: 280.ms),
@@ -99,17 +102,11 @@ class SoftSettingsScreen extends ConsumerWidget {
                 children: [
                   const SoftSettingsSectionTitle(
                     title: 'Görünüm',
-                    subtitle: 'Açık/koyu tema ve görsel stil tercihin.',
+                    subtitle: 'Modern veya karikatür görünüm.',
                     icon: Icons.palette_outlined,
                     asset: DiyetselAssets.modernIconStory,
                   ),
-                  SoftSettingsThemePicker(
-                    selected: theme.mode,
-                    onChanged: (mode) => ref.read(themeControllerProvider.notifier).setMode(mode),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Görsel stil',
+                  Text(('Görsel stil').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 13,
@@ -159,8 +156,7 @@ class SoftSettingsScreen extends ConsumerWidget {
                     asset: DiyetselAssets.modernIconBell,
                     accent: SettingsVisuals.coral,
                   ),
-                  const Text(
-                    'Su periyodu',
+                  Text(('Su periyodu').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 13,
@@ -278,8 +274,7 @@ class SoftSettingsScreen extends ConsumerWidget {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                              'Tüm danışanların su hedefi ${liters.toStringAsFixed(1)} L oldu.',
+                            content: Text(('Tüm danışanların su hedefi ${liters.toStringAsFixed(1)} L oldu.').ui,
                             ),
                           ),
                         );

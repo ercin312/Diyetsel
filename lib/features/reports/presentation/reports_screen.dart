@@ -16,6 +16,7 @@ import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart';
 import 'soft_reports_screen.dart';
+import '../../../core/l10n/ui_string.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key, this.clientId});
@@ -101,13 +102,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: AppSpacing.soft,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.ios_share_rounded, color: Colors.white, size: 20),
                     SizedBox(width: 8),
-                    Text(
-                      'PDF indir / paylaş',
+                    Text(('PDF indir / paylaş').ui,
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
                     ),
                   ],
@@ -132,13 +132,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 border: Border.all(color: AppColors.kawaiiOutline),
                 boxShadow: AppSpacing.soft,
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   Icon(Icons.info_outline_rounded, color: AppColors.kawaiiLeafDeep),
                   SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      'Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.',
+                    child: Text(('Skor; su hedefi, diyet uyumu, seri ve check-in’lerden hesaplanır. PDF’i diyetisyeninle paylaşabilirsin.').ui,
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.35, color: AppColors.kawaiiMuted),
                     ),
                   ),
@@ -195,11 +194,10 @@ class _ReportsHero extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '$score',
+                    Text(('$score').ui,
                       style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 26, color: AppColors.kawaiiInk, height: 1),
                     ),
-                    const Text('skor', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
+                    Text(('skor').ui, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.kawaiiMuted)),
                   ],
                 ),
               ],
@@ -216,19 +214,16 @@ class _ReportsHero extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    adminName != null ? adminName! : report.periodShort,
+                  child: Text((adminName != null ? adminName! : report.periodShort).ui,
                     style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5, color: AppColors.kawaiiLeafDeep),
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  report.scoreLabel,
+                Text((report.scoreLabel).ui,
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20, height: 1.15, color: AppColors.kawaiiInk),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${DateFormat('d MMM', 'tr').format(report.start)} – ${DateFormat('d MMM y', 'tr').format(report.end)}',
+                Text(('${DateFormat('d MMM', 'tr').format(report.start)} – ${DateFormat('d MMM y', 'tr').format(report.end)}').ui,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                 ),
               ],
@@ -284,8 +279,7 @@ class _PeriodToggle extends StatelessWidget {
             children: [
               Icon(icon, size: 18, color: selected ? Colors.white : AppColors.kawaiiMuted),
               const SizedBox(width: 6),
-              Text(
-                label,
+              Text((label).ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 13.5,
@@ -401,10 +395,10 @@ class _MetricTile extends StatelessWidget {
             child: Icon(icon, size: 18, color: accent),
           ),
           const Spacer(),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiMuted)),
+          Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11.5, color: AppColors.kawaiiMuted)),
           const SizedBox(height: 2),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk)),
-          Text(sub, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+          Text((value).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppColors.kawaiiInk)),
+          Text((sub).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
         ],
       ),
     );
@@ -430,18 +424,17 @@ class _WaterChartCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.water_drop_rounded, color: AppColors.kawaiiSkyBlue, size: 20),
               SizedBox(width: 6),
-              Text('Günlük su', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk)),
+              Text(('Günlük su').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk)),
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            logs.isEmpty
+          Text((logs.isEmpty
                 ? 'Bu dönemde su kaydı yok.'
-                : 'Toplam ${(report.totalWaterMl / 1000).toStringAsFixed(1)} L · hedef gün ${report.waterGoalDays}',
+                : 'Toplam ${(report.totalWaterMl / 1000).toStringAsFixed(1)} L · hedef gün ${report.waterGoalDays}').ui,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
           ),
           const SizedBox(height: 14),
@@ -500,7 +493,7 @@ class _WaterBar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: AppColors.kawaiiMuted)),
+          Text((label).ui, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: AppColors.kawaiiMuted)),
         ],
       ),
     );
@@ -556,8 +549,8 @@ class _SecondaryStats extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(i.$4, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
-                    Text(i.$5, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
+                    Text((i.$4).ui, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: AppColors.kawaiiMuted)),
+                    Text((i.$5).ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.kawaiiInk)),
                   ],
                 ),
               ],
@@ -586,11 +579,11 @@ class _InsightsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.auto_awesome_rounded, color: AppColors.kawaiiLeafDeep, size: 20),
               SizedBox(width: 6),
-              Text('Öne çıkanlar', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk)),
+              Text(('Öne çıkanlar').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15.5, color: AppColors.kawaiiInk)),
             ],
           ),
           const SizedBox(height: 12),
@@ -607,12 +600,11 @@ class _InsightsCard extends StatelessWidget {
                     color: AppColors.kawaiiMint,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('${i + 1}', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 11, color: AppColors.kawaiiLeafDeep)),
+                  child: Text(('${i + 1}').ui, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 11, color: AppColors.kawaiiLeafDeep)),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    highlights[i],
+                  child: Text((highlights[i]).ui,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5, height: 1.4, color: AppColors.kawaiiInk),
                   ),
                 ),
@@ -655,14 +647,13 @@ class _FullHistoryCard extends StatelessWidget {
               child: const Icon(Icons.picture_as_pdf_rounded, color: AppColors.kawaiiPurple),
             ),
             const SizedBox(width: 12),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Tam geçmiş raporu', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
+                  Text(('Tam geçmiş raporu').ui, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: AppColors.kawaiiInk)),
                   SizedBox(height: 2),
-                  Text(
-                    'Tüm plan, ölçümler ve seanslar tek PDF’te',
+                  Text(('Tüm plan, ölçümler ve seanslar tek PDF’te').ui,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.kawaiiMuted),
                   ),
                 ],

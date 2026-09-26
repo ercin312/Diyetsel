@@ -9,6 +9,7 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/diyetsel_assets.dart';
 import '../../../../core/models/home_theme_config.dart';
 import 'premium_home_widgets.dart';
+import '../../../../core/l10n/ui_string.dart';
 
 /// Auto-advancing hero slider for cartoon home — uses [HeroPlanCard].
 class CartoonHeroSlider extends StatefulWidget {
@@ -180,12 +181,11 @@ class CartoonHomeFocusBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Bugünün özeti',
+                    Text(('Bugünün özeti').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
@@ -193,8 +193,7 @@ class CartoonHomeFocusBanner extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2),
-                    Text(
-                      'Su · öğün · seri — tek bakışta',
+                    Text(('Su · öğün · seri — tek bakışta').ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -221,8 +220,7 @@ class CartoonHomeFocusBanner extends StatelessWidget {
                     children: [
                       const Icon(Icons.local_fire_department_rounded, size: 16, color: Colors.white),
                       const SizedBox(width: 4),
-                      Text(
-                        '$streakDays gün',
+                      Text(('$streakDays gün').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
@@ -307,8 +305,7 @@ class _CartoonFocusRing extends StatelessWidget {
             child: Center(
               child: icon != null
                   ? Icon(icon, color: color, size: 22)
-                  : Text(
-                      value,
+                  : Text((value).ui,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 13,
@@ -319,8 +316,7 @@ class _CartoonFocusRing extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
+        Text((label).ui,
           style: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 12,
@@ -413,8 +409,7 @@ class CartoonHomeTipStrip extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Günün ipucu · ${tip.title}',
+                  Text(('Günün ipucu · ${tip.title}').ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 13.5,
@@ -422,8 +417,7 @@ class CartoonHomeTipStrip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  Text(
-                    tip.body,
+                  Text((tip.body).ui,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.5,
@@ -432,8 +426,7 @@ class CartoonHomeTipStrip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'Daha fazla öğren →',
+                  Text(('Daha fazla öğren →').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,

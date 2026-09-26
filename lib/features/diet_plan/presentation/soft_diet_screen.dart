@@ -17,6 +17,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/diet_interaction.dart';
 import 'widgets/soft_diet_widgets.dart';
+import '../../../core/l10n/ui_string.dart';
 
 /// Soft premium modern diet experience — cream / teal wellness language.
 /// Cartoon theme keeps [DietPlanScreen]'s cartoon branch untouched.
@@ -88,7 +89,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
                 await store.addWaterSip(user.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('+${AppConstants.waterSipMl} ml su eklendi')),
+                    SnackBar(content: Text(('+${AppConstants.waterSipMl} ml su eklendi').ui)),
                   );
                 }
               },
@@ -124,8 +125,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
               ).animate().fadeIn(delay: 90.ms, duration: 280.ms),
             ],
             const SizedBox(height: 16),
-            Text(
-              'Günü seç',
+            Text(('Günü seç').ui,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: AppColors.primaryDeep,
@@ -181,9 +181,8 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
             const SizedBox(height: 18),
             Row(
               children: [
-                const Expanded(
-                  child: Text(
-                    'Öğünler',
+                Expanded(
+                  child: Text(('Öğünler').ui,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 18,
@@ -259,7 +258,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
       final willComplete = doneBefore + 1 >= total && total > 0;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(willComplete ? 'Günün tüm öğünleri tamam — harika iş!' : 'Afiyet olsun! Öğün işaretlendi.'),
+          content: Text((willComplete ? 'Günün tüm öğünleri tamam — harika iş!' : 'Afiyet olsun! Öğün işaretlendi.').ui),
         ),
       );
     }
@@ -284,7 +283,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${meal.type.tr} hatırlatıcısı $hh:$mm olarak ayarlandı')),
+        SnackBar(content: Text(('${meal.type.tr} hatırlatıcısı $hh:$mm olarak ayarlandı').ui)),
       );
     }
     setState(() {});
@@ -333,8 +332,7 @@ class SoftDietEmptyScreen extends StatelessWidget {
                       .moveY(begin: 0, end: -8, duration: 2000.ms, curve: Curves.easeInOut)
                       .fadeIn(duration: 400.ms),
                   const SizedBox(height: 18),
-                  const Text(
-                    'Henüz plan yok',
+                  Text(('Henüz plan yok').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
@@ -343,8 +341,7 @@ class SoftDietEmptyScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Diyetisyeniniz Word belgesiyle plan yüklediğinde burada görünecek.',
+                  Text(('Diyetisyeniniz Word belgesiyle plan yüklediğinde burada görünecek.').ui,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
