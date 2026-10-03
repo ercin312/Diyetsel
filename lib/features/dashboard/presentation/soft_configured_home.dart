@@ -60,13 +60,13 @@ class SoftConfiguredHome extends ConsumerWidget {
     final featured = HomeRecipeModel(
       id: 'lentil',
       title: 'Mercimek çorbası',
-      subtitle: 'Akşam için sıcak, protein dolu bir kase',
+      subtitle: 'Akşam için sıcak bir kase',
       imageAsset: DiyetselAssets.foodLentilSoup,
       route: '/app/recipes',
       kcal: 310,
       minutes: 35,
       proteinG: 18,
-      badge: '+18 g protein',
+      badge: '',
       sectionLabel: 'Bugün akşam bunu dene',
     );
 

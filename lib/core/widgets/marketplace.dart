@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -65,8 +66,33 @@ Widget diyetselFoodPhoto({
   BoxFit fit = BoxFit.cover,
   BorderRadius? borderRadius,
 }) {
-  final Widget image;
-  if (url.startsWith('assets/')) {
+  if (url.trim().isEmpty) {
+    return Container(
+      width: width,
+      height: height,
+      alignment: Alignment.center,
+      color: AppColors.modernWash,
+      child: Icon(Icons.restaurant_outlined, color: AppColors.lightMuted, size: (height ?? 48) * 0.38),
+    );
+  }
+  Widget image;
+  if (url.startsWith('data:image')) {
+    final comma = url.indexOf(',');
+    try {
+      image = comma < 0
+          ? Icon(Icons.restaurant_outlined, color: AppColors.lightMuted, size: (height ?? 48) * 0.38)
+          : Image.memory(
+              base64Decode(url.substring(comma + 1)),
+              width: width,
+              height: height,
+              fit: fit,
+              gaplessPlayback: true,
+              errorBuilder: (_, _, _) => Icon(Icons.restaurant_outlined, color: AppColors.lightMuted),
+            );
+    } catch (_) {
+      image = Icon(Icons.restaurant_outlined, color: AppColors.lightMuted, size: (height ?? 48) * 0.38);
+    }
+  } else if (url.startsWith('assets/')) {
     image = Image.asset(
       url,
       width: width,

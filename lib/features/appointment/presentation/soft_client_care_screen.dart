@@ -15,6 +15,7 @@ import '../../../core/utils/desktop.dart';
 import '../../../core/widgets/soft_desktop_frame.dart';
 import '../../../core/widgets/soft_ui_kit.dart';
 import '../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
+import '../../diet_plan/presentation/diet_screens.dart';
 import '../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
 import '../../../core/widgets/nav_back.dart';
 import '../../../core/l10n/ui_string.dart';
@@ -32,6 +33,7 @@ class SoftClientCareScreen extends ConsumerWidget {
     ref.watch(settingsProvider);
     ref.watch(waterLogsProvider);
     ref.watch(checkInsProvider);
+    ref.watch(dietPlansProvider);
     final store = ref.watch(appStoreProvider);
     final client = store.user(clientId);
 
@@ -44,6 +46,7 @@ class SoftClientCareScreen extends ConsumerWidget {
 
     final clinic = store.settings().clinicModules;
     final liters = client.waterGoalMl / 1000;
+    final plan = store.dietPlanForClient(client.id);
     final checkIns = store.checkIns(userId: client.id)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final desktop = context.isDesktopLayout;
@@ -80,6 +83,53 @@ class SoftClientCareScreen extends ConsumerWidget {
                 icon: Icons.favorite_outline_rounded,
                 accent: AppColors.primary,
                 tint: AppColors.modernMint,
+              ),
+              const SizedBox(height: 12),
+              SoftTap(
+                onTap: () => Navigator.push<void>(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => AdminDietUploadPage(clientId: client.id),
+                  ),
+                ),
+                borderRadius: BorderRadius.circular(20),
+                child: _Card(
+                  child: Row(
+                    children: [
+                      const SoftModernIcon(
+                        DiyetselAssets.modernIconPlan,
+                        size: 32,
+                        fallback: Icons.upload_file_rounded,
+                        fallbackColor: AppColors.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(('Word diyet listesi').ui,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.primaryDeep,
+                              ),
+                            ),
+                            Text((plan == null
+                                    ? 'Bu danışana .docx sürükle veya dosya seç'
+                                    : 'Güncel plan: ${plan.title}')
+                                .ui,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12.5,
+                                color: AppColors.primary.withValues(alpha: 0.55),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.chevron_right_rounded, color: AppColors.primary.withValues(alpha: 0.4)),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 12),
               if (desktop)

@@ -613,9 +613,7 @@ class SoftFeaturedRecipeCard extends StatelessWidget {
                         spacing: 8,
                         runSpacing: 6,
                         children: [
-                          _meta('${recipe.kcal} kcal'),
                           _meta('${recipe.minutes} dk'),
-                          _meta('${recipe.proteinG} g protein'),
                         ],
                       ),
                       if (recipe.badge.isNotEmpty) ...[
@@ -1120,7 +1118,7 @@ class SoftRecipeThumbCard extends StatelessWidget {
               style: SoftHomeColors.title(size: 13),
             ),
             const SizedBox(height: 4),
-            Text(('${recipe.kcal} kcal · ${recipe.minutes} dk').ui,
+            Text(('${recipe.minutes} dk').ui,
               style: SoftHomeColors.body(size: 11.5),
             ),
           ],

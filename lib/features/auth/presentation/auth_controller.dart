@@ -123,6 +123,26 @@ class AuthController extends Notifier<AuthState> {
     await _setSession(user);
   }
 
+  Future<void> saveProfileDetails({
+    required String displayName,
+    String? phone,
+    double? heightCm,
+    double? targetWeightKg,
+    int? waterGoalMl,
+  }) async {
+    final user = state.user;
+    if (user == null) return;
+    final next = await ref.read(appStoreProvider).saveProfileDetails(
+          current: user,
+          displayName: displayName,
+          phone: phone,
+          heightCm: heightCm,
+          targetWeightKg: targetWeightKg,
+          waterGoalMl: waterGoalMl,
+        );
+    await _setSession(next);
+  }
+
   Future<void> _setSession(UserProfile user) async {
     final store = ref.read(appStoreProvider);
     await store.ensureDietitianName();

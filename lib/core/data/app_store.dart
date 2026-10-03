@@ -121,6 +121,43 @@ class AppStore {
 
   Future<void> saveUser(UserProfile user) => db.put(FirestorePaths.users, user.id, user.toMap());
 
+  Future<UserProfile> saveProfileDetails({
+    required UserProfile current,
+    required String displayName,
+    String? phone,
+    double? heightCm,
+    double? targetWeightKg,
+    int? waterGoalMl,
+  }) async {
+    final name = displayName.trim();
+    if (name.isEmpty) {
+      throw StateError('Ad soyad gerekli.');
+    }
+    final trimmedPhone = phone?.trim() ?? '';
+    final next = UserProfile(
+      id: current.id,
+      email: current.email,
+      displayName: name,
+      role: current.role,
+      photoUrl: current.photoUrl,
+      phone: trimmedPhone.isEmpty ? null : trimmedPhone,
+      createdAt: current.createdAt,
+      heightCm: heightCm,
+      targetWeightKg: targetWeightKg,
+      waterGoalMl: waterGoalMl ?? current.waterGoalMl,
+      isActive: current.isActive,
+      notes: current.notes,
+      fcmTokens: current.fcmTokens,
+      lastActiveAt: current.lastActiveAt,
+      moduleOverrides: current.moduleOverrides,
+    );
+    await saveUser(next);
+    if (current.displayName != name) {
+      await _rewriteDisplayName(userId: current.id, previous: current.displayName, next: name);
+    }
+    return next;
+  }
+
   Future<void> saveCredential(String email, String passwordHash) =>
       db.put(FirestorePaths.credentials, email.toLowerCase(), {'email': email.toLowerCase(), 'hash': passwordHash});
 
@@ -284,6 +321,20 @@ class AppStore {
   Future<void> saveRecipe(Recipe item) => db.put(FirestorePaths.recipes, item.id, item.toMap());
 
   Future<void> deleteRecipe(String id) => db.delete(FirestorePaths.recipes, id);
+
+  static const bundledRecipeIds = [
+    'rcp-bowl',
+    'rcp-soup',
+    'rcp-yogurt',
+    'rcp-salmon',
+    'rcp-omlet',
+  ];
+
+  Future<void> removeBundledRecipes() async {
+    for (final id in bundledRecipeIds) {
+      await db.forceDelete(FirestorePaths.recipes, id);
+    }
+  }
 
   bool isRecipeLiked(String userId, String recipeId) =>
       db.get(FirestorePaths.recipeInteractions, '${userId}_$recipeId')?['liked'] == true;
@@ -939,11 +990,12 @@ class AppStore {
       if (current != targetEmail && current.isNotEmpty) {
         await db.delete(FirestorePaths.credentials, current, syncCloud: false);
       }
-      if (current != targetEmail || admin.displayName != AppConstants.dietitianName) {
+      final name = admin.displayName.trim().isEmpty ? AppConstants.dietitianName : admin.displayName;
+      if (current != targetEmail || admin.displayName != name) {
         await saveUser(
           admin.copyWith(
             email: targetEmail,
-            displayName: AppConstants.dietitianName,
+            displayName: name,
           ),
         );
       }
@@ -997,26 +1049,28 @@ class AppStore {
     return local;
   }
 
-  /// Clinic dietitian display name is Zühre on every admin profile and chat label.
+  /// Fills a blank dietitian name with the clinic default. A name chosen in profile stays.
   Future<void> ensureDietitianName() async {
     const next = AppConstants.dietitianName;
-    final admins = users().where((u) => u.isAdmin).toList();
-    if (admins.isEmpty) return;
-    final previous = <String>{};
-    final adminIds = <String>{};
-    for (final admin in admins) {
-      adminIds.add(admin.id);
-      if (admin.displayName == next) continue;
-      previous.add(admin.displayName);
+    for (final admin in users().where((u) => u.isAdmin)) {
+      if (admin.displayName.trim().isNotEmpty) continue;
       await saveUser(admin.copyWith(displayName: next));
+      await _rewriteDisplayName(userId: admin.id, previous: admin.displayName, next: next);
     }
-    if (previous.isEmpty) return;
+  }
+
+  Future<void> _rewriteDisplayName({
+    required String userId,
+    required String previous,
+    required String next,
+  }) async {
+    if (previous == next) return;
 
     for (final thread in _map(FirestorePaths.chats, ChatThread.fromMap)) {
       final names = [...thread.participantNames];
       var changed = false;
       for (var i = 0; i < names.length && i < thread.participantIds.length; i++) {
-        if (adminIds.contains(thread.participantIds[i]) || previous.contains(names[i])) {
+        if (thread.participantIds[i] == userId || names[i] == previous) {
           if (names[i] != next) {
             names[i] = next;
             changed = true;
@@ -1038,7 +1092,7 @@ class AppStore {
     }
 
     for (final post in blogPosts()) {
-      if (!adminIds.contains(post.authorId) && !previous.contains(post.authorName)) continue;
+      if (post.authorId != userId && post.authorName != previous) continue;
       if (post.authorName == next) continue;
       await saveBlog(BlogPost(
         id: post.id,
@@ -1054,6 +1108,60 @@ class AppStore {
         coverUrl: post.coverUrl,
         published: post.published,
         likes: post.likes,
+      ));
+    }
+
+    for (final item in appointments()) {
+      if (item.clientId != userId || item.clientName == next) continue;
+      await db.put(
+        FirestorePaths.appointments,
+        item.id,
+        Appointment(
+          id: item.id,
+          dietitianId: item.dietitianId,
+          clientId: item.clientId,
+          clientName: next,
+          startAt: item.startAt,
+          endAt: item.endAt,
+          status: item.status,
+          serviceId: item.serviceId,
+          serviceTitle: item.serviceTitle,
+          clinicalNotes: item.clinicalNotes,
+          recommendations: item.recommendations,
+          rescheduleReason: item.rescheduleReason,
+        ).toMap(),
+      );
+    }
+
+    for (final plan in dietPlans()) {
+      if (plan.clientId != userId || plan.clientName == next) continue;
+      await saveDietPlan(DietPlan(
+        id: plan.id,
+        clientId: plan.clientId,
+        clientName: next,
+        dietitianId: plan.dietitianId,
+        title: plan.title,
+        weekStart: plan.weekStart,
+        days: plan.days,
+        calorieTarget: plan.calorieTarget,
+        proteinTarget: plan.proteinTarget,
+        carbsTarget: plan.carbsTarget,
+        fatTarget: plan.fatTarget,
+        targetsEntered: plan.targetsEntered,
+      ));
+    }
+
+    for (final pay in payments()) {
+      if (pay.clientId != userId || pay.clientName == next) continue;
+      await savePayment(PaymentRecord(
+        id: pay.id,
+        clientId: pay.clientId,
+        clientName: next,
+        amount: pay.amount,
+        status: pay.status,
+        date: pay.date,
+        note: pay.note,
+        appointmentId: pay.appointmentId,
       ));
     }
   }

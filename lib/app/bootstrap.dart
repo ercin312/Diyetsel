@@ -73,6 +73,8 @@ Future<BootstrapResult> bootstrap() async {
     } catch (_) {}
   } catch (_) {}
 
+  await store.removeBundledRecipes();
+
   ReminderService.instance.attach(store);
   await ReminderService.instance.init();
   if (firebaseReady) {

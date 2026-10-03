@@ -16,6 +16,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
 import '../../../core/widgets/user_avatar.dart';
+import 'edit_profile_sheet.dart';
 import 'profile_photo.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'account_deletion.dart';
@@ -171,7 +172,12 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: () => pickProfilePhoto(context, ref),
               ),
               title: Text((user.displayName).ui),
-              subtitle: Text(('${user.email} • ${user.role.name}').ui),
+              subtitle: Text(('${user.email}${user.phone == null || user.phone!.isEmpty ? '' : ' • ${user.phone}'}').ui),
+              trailing: TextButton(
+                onPressed: () => showEditProfileSheet(context, ref),
+                child: Text(('Düzenle').ui),
+              ),
+              onTap: () => showEditProfileSheet(context, ref),
             ),
           ),
           if (user.isAdmin) ...[

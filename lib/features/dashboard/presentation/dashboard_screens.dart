@@ -667,7 +667,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           pages: [
             StoryPageData(
               title: recipes.first.title,
-              subtitle: '${recipes.first.calories} kcal • ${recipes.first.prepMinutes} dk',
+              subtitle: '${recipes.first.prepMinutes} dk',
               kind: KawaiiKind.recipe,
               colors: context.isCartoon
                       ? const [AppColors.kawaiiMint, AppColors.kawaiiSky]
@@ -855,7 +855,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                               ProductTile(
                                 emoji: '🍲',
                                 title: r.title,
-                                meta: '${r.calories} kcal • ${r.prepMinutes} dk',
+                                meta: '${r.prepMinutes} dk',
                                 onTap: () => context.push('/app/recipes')),
                           ])),
                     if (store.moduleOn(user.id, AppModule.blog) && posts.isNotEmpty)
@@ -1024,7 +1024,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               ListTile(
                 leading: const StyleIcon(icon: Icons.menu_book_rounded, emoji: '🍲', size: 22),
                 title: Text((r.title).ui),
-                subtitle: Text(('${r.calories} kcal').ui),
+                subtitle: Text(('${r.prepMinutes} dk').ui),
                 onTap: () {
                   Navigator.pop(ctx);
                   context.push('/app/recipes');

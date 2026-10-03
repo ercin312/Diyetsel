@@ -14,6 +14,7 @@ import '../../../core/models/models.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/diyetsel_widgets.dart';
 import '../../../core/widgets/style_icon.dart';
+import '../../diet_plan/presentation/diet_screens.dart';
 import 'soft_client_care_screen.dart';
 import '../../../core/l10n/ui_string.dart';
 
@@ -30,6 +31,7 @@ class ClientCareScreen extends ConsumerWidget {
     ref.watch(settingsProvider);
     ref.watch(waterLogsProvider);
     ref.watch(checkInsProvider);
+    ref.watch(dietPlansProvider);
     final store = ref.watch(appStoreProvider);
     final client = store.user(clientId);
     if (client == null) {
@@ -132,6 +134,37 @@ class ClientCareScreen extends ConsumerWidget {
                     children: [
                       Text(('Haftalık / aylık rapor').ui, style: TextStyle(fontWeight: FontWeight.w900)),
                       Text(('Su, diyet uyumu, kilo ve seans özeti').ui, style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          DiyetselCard(
+            color: cartoon ? AppColors.kawaiiMint.withValues(alpha: 0.65) : null,
+            onTap: () => Navigator.push<void>(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => AdminDietUploadPage(clientId: client.id),
+              ),
+            ),
+            child: Row(
+              children: [
+                StyleIcon(icon: Icons.upload_file_rounded, emoji: '📄', size: 24, color: context.brandPrimary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(('Word diyet listesi').ui, style: const TextStyle(fontWeight: FontWeight.w900)),
+                      Text((() {
+                        final plan = store.dietPlanForClient(client.id);
+                        return plan == null
+                            ? 'Bu danışana .docx sürükle veya dosya seç'
+                            : 'Güncel plan: ${plan.title}';
+                      }()).ui, style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 ),

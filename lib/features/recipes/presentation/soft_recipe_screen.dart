@@ -43,10 +43,6 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
         return list;
       case SoftRecipeQuickFilter.quick:
         return list.where((r) => r.prepMinutes <= 15).toList();
-      case SoftRecipeQuickFilter.highProtein:
-        return list.where((r) => recipeProtein(r) >= 20).toList();
-      case SoftRecipeQuickFilter.lowCal:
-        return list.where((r) => r.calories > 0 && r.calories <= 350).toList();
     }
   }
 
@@ -78,9 +74,6 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
     final filtered = _applyQuick(base);
 
     final catCount = {for (final r in recipes) r.category}.length;
-    final avgKcal = recipes.isEmpty
-        ? 0
-        : (recipes.fold<int>(0, (s, r) => s + r.calories) / recipes.length).round();
     final quickCount = recipes.where((r) => r.prepMinutes <= 15).length;
 
     return Scaffold(
@@ -147,7 +140,6 @@ class _SoftRecipesScreenState extends ConsumerState<SoftRecipesScreen> {
               const SizedBox(height: 14),
               SoftRecipesStatsRow(
                 recipes: recipes.length,
-                avgKcal: avgKcal,
                 quick: quickCount,
                 liked: liked.length,
                 saved: saved.length,

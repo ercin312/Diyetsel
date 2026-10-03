@@ -79,6 +79,7 @@ class SoftSettingsProfileHero extends StatelessWidget {
     required this.tip,
     this.photoUrl,
     this.onAvatarTap,
+    this.onEdit,
   });
 
   final String name;
@@ -88,6 +89,7 @@ class SoftSettingsProfileHero extends StatelessWidget {
   final String tip;
   final String? photoUrl;
   final VoidCallback? onAvatarTap;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -144,20 +146,32 @@ class SoftSettingsProfileHero extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.modernLine),
-                ),
-                child: Text((roleLabel).ui,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 11.5,
-                    color: isAdmin ? SettingsVisuals.coral : AppColors.primary,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: AppColors.modernLine),
+                    ),
+                    child: Text((roleLabel).ui,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 11.5,
+                        color: isAdmin ? SettingsVisuals.coral : AppColors.primary,
+                      ),
+                    ),
                   ),
-                ),
+                  if (onEdit != null) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: onEdit,
+                      child: Text(('Düzenle').ui),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

@@ -31,7 +31,7 @@ class RecipeTonightCard extends ConsumerWidget {
     final modern = context.isModern;
     final r = pick.recipe;
     final radius = cartoon ? 28.0 : (24.0);
-    final photo = diyetselFoodImage(imageUrl: r.imageUrl, seed: r.title);
+    final photo = RecipeVisuals.imageFor(r);
 
     if (modern) {
       Widget card = Material(
@@ -85,7 +85,7 @@ class RecipeTonightCard extends ConsumerWidget {
                       Text((pick.reason).ui,
                         style: TextStyle(color: Colors.white.withValues(alpha: 0.72), height: 1.3)),
                       const SizedBox(height: 8),
-                      Text(('${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein').ui,
+                      Text(('${r.prepMinutes} dk').ui,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.modernSageSoft)),
@@ -167,7 +167,7 @@ class RecipeTonightCard extends ConsumerWidget {
                             style: TextStyle(
                               color: cartoon ? AppColors.kawaiiInk.withValues(alpha: 0.78) : Colors.white70)),
                           const SizedBox(height: 8),
-                          Text(('${r.calories} kcal • ${r.prepMinutes} dk • ${recipeProtein(r)} g protein').ui,
+                          Text(('${r.prepMinutes} dk').ui,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: cartoon

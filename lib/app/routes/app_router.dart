@@ -54,7 +54,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         builder: (c, s, shell) => AdaptiveScaffold(navigationShell: shell, role: UserRole.admin),
         branches: [
-          StatefulShellBranch(routes: [GoRoute(path: '/admin', builder: (c, s) => const AdminDashboardScreen())]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/admin',
+              builder: (c, s) => const AdminDashboardScreen(),
+              routes: [
+                GoRoute(path: 'blog', builder: (c, s) => const BlogListScreen(admin: true)),
+                GoRoute(path: 'services', builder: (c, s) => const ServicesScreen(admin: true)),
+                GoRoute(path: 'recipes', builder: (c, s) => const RecipesScreen(admin: true)),
+                GoRoute(path: 'diet-plans', builder: (c, s) => const DietPlanScreen(admin: true)),
+                GoRoute(path: 'meals', builder: (c, s) => const MealPhotoScreen(admin: true)),
+                GoRoute(path: 'settings', builder: (c, s) => const SettingsScreen()),
+                GoRoute(path: 'home-theme', builder: (c, s) => const HomeThemeEditorScreen()),
+                GoRoute(path: 'notifications', builder: (c, s) => const AdminNotificationsScreen()),
+                GoRoute(
+                  path: 'reports',
+                  builder: (c, s) => ReportsScreen(clientId: s.uri.queryParameters['clientId']),
+                ),
+              ],
+            ),
+          ]),
           StatefulShellBranch(routes: [GoRoute(path: '/admin/appointments', builder: (c, s) => const AppointmentCalendarScreen(admin: true))]),
           StatefulShellBranch(routes: [GoRoute(path: '/admin/clients', builder: (c, s) => const ClientsScreen())]),
           StatefulShellBranch(routes: [GoRoute(path: '/admin/chat', builder: (c, s) => const ChatListScreen())]),
@@ -71,14 +90,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(routes: [GoRoute(path: '/app/more', builder: (c, s) => const MoreScreen(admin: false))]),
         ],
       ),
-      GoRoute(path: '/admin/blog', builder: (c, s) => const BlogListScreen(admin: true)),
-      GoRoute(path: '/admin/services', builder: (c, s) => const ServicesScreen(admin: true)),
-      GoRoute(path: '/admin/recipes', builder: (c, s) => const RecipesScreen(admin: true)),
-      GoRoute(path: '/admin/diet-plans', builder: (c, s) => const DietPlanScreen(admin: true)),
-      GoRoute(path: '/admin/meals', builder: (c, s) => const MealPhotoScreen(admin: true)),
-      GoRoute(path: '/admin/settings', builder: (c, s) => const SettingsScreen()),
-      GoRoute(path: '/admin/home-theme', builder: (c, s) => const HomeThemeEditorScreen()),
-      GoRoute(path: '/admin/notifications', builder: (c, s) => const AdminNotificationsScreen()),
       GoRoute(path: '/app/blog', builder: (c, s) => const BlogListScreen()),
       GoRoute(path: '/app/services', builder: (c, s) => const ServicesScreen()),
       GoRoute(path: '/app/chat', builder: (c, s) => const ChatListScreen()),
@@ -106,10 +117,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           seriesId: s.pathParameters['seriesId']!,
           day: int.parse(s.pathParameters['day']!),
         ),
-      ),
-      GoRoute(
-        path: '/admin/reports',
-        builder: (c, s) => ReportsScreen(clientId: s.uri.queryParameters['clientId']),
       ),
     ],
   );

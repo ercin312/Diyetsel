@@ -16,6 +16,7 @@ import '../../../core/widgets/soft_ui_kit.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../domain/settings_visuals.dart';
 import 'account_deletion.dart';
+import 'edit_profile_sheet.dart';
 import 'profile_photo.dart';
 import 'widgets/soft_settings_widgets.dart';
 import '../../../core/l10n/ui_string.dart';
@@ -72,6 +73,7 @@ class SoftSettingsScreen extends ConsumerWidget {
               tip: SettingsVisuals.tipOfDay(DateTime.now().day),
               photoUrl: user.photoUrl,
               onAvatarTap: () => pickProfilePhoto(context, ref),
+              onEdit: () => showEditProfileSheet(context, ref),
             )
                 .animate()
                 .fadeIn(delay: 40.ms, duration: 300.ms)

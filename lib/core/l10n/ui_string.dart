@@ -34,6 +34,8 @@ class _Rule {
 }
 
 final List<_Rule> _patterns = [
+  _Rule(RegExp(r'^Miktarlar (.+) porsiyon içindir\.$'), 'Amounts are for {1} servings.'),
+  _Rule(RegExp(r'^Güncel plan: (.+)$'), 'Current plan: {1}'),
   _Rule(RegExp(r'^(.+)/7 gün$'), '{1}/7 days'),
   _Rule(RegExp(r'^Bugün %(.+)$'), 'Today {1}%'),
   _Rule(RegExp(r'^(.+) gün$'), '{1} days'),

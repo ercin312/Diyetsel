@@ -69,11 +69,8 @@ List<RecipeSuggestion> personalizedRecipes(AppStore store, String userId, List<R
 
   return scored.take(3).map((e) {
     final r = e.key;
-    final protein = recipeProtein(r);
-    final reason = gap > 15
-        ? 'Bugün ~$gap g protein eksik — $slotLabel için ideal'
-        : 'Planına uygun, dengeli bir $slotLabel önerisi';
-    final highlight = gap > 15 ? '+$protein g protein' : '${r.calories} kcal • $protein g protein';
+    final reason = '$slotLabel için hazır bir tarif';
+    final highlight = r.prepMinutes > 0 ? '${r.prepMinutes} dk' : r.category;
     return RecipeSuggestion(recipe: r, reason: reason, highlight: highlight, proteinGap: gap);
   }).toList();
 }

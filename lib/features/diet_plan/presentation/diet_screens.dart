@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
@@ -21,6 +20,7 @@ import '../../../core/data/providers.dart';
 import '../../../core/models/app_modules.dart';
 import '../../../core/models/enums.dart';
 import '../../../core/models/models.dart';
+import '../../../core/utils/desktop.dart';
 import '../../../core/utils/docx_diet_parser.dart';
 import '../../../core/utils/smart_notification_service.dart';
 import '../../../core/widgets/app_page.dart';
@@ -403,15 +403,22 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
   }
 
   Future<void> _openUploadSheet(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (ctx) => const FractionallySizedBox(
-        heightFactor: 0.92,
-        child: _AdminDietUploadSheet(),
-      ),
-    );
+    if (isDesktopOs) {
+      await Navigator.push<void>(
+        context,
+        MaterialPageRoute<void>(builder: (_) => const AdminDietUploadPage()),
+      );
+    } else {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        builder: (ctx) => const FractionallySizedBox(
+          heightFactor: 0.92,
+          child: AdminDietUploadPage(),
+        ),
+      );
+    }
     setState(() {});
   }
 }
@@ -1368,14 +1375,17 @@ class _AdminDietHub extends ConsumerWidget {
   }
 }
 
-class _AdminDietUploadSheet extends ConsumerStatefulWidget {
-  const _AdminDietUploadSheet();
+class AdminDietUploadPage extends ConsumerStatefulWidget {
+  const AdminDietUploadPage({super.key, this.clientId});
+
+  /// When set, the Word plan is assigned only to this client.
+  final String? clientId;
 
   @override
-  ConsumerState<_AdminDietUploadSheet> createState() => _AdminDietUploadSheetState();
+  ConsumerState<AdminDietUploadPage> createState() => _AdminDietUploadPageState();
 }
 
-class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
+class _AdminDietUploadPageState extends ConsumerState<AdminDietUploadPage> {
   UserProfile? _client;
   List<DietMeal> _meals = [];
   String? _fileName;
@@ -1389,6 +1399,15 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
   final _fat = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    final id = widget.clientId;
+    if (id != null) {
+      _client = ref.read(appStoreProvider).user(id);
+    }
+  }
+
+  @override
   void dispose() {
     _title.dispose();
     _kcal.dispose();
@@ -1399,19 +1418,14 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
   }
 
   Future<void> _pickFile() async {
-    final files = await FilePicker.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: const ['docx'],
     );
-    if (files.isEmpty) return;
-    final file = files.first;
-    final path = file.path;
-    if (path == null) {
-      setState(() => _error = 'Dosya yolu alınamadı.');
-      return;
-    }
+    if (result.isEmpty) return;
+    final file = result.first;
     try {
-      final bytes = await File(path).readAsBytes();
+      final bytes = await file.readAsBytes();
       await _ingest(file.name, bytes);
     } catch (_) {
       setState(() => _error = 'Dosya okunamadı. Masaüstünde sürükle-bırak deneyin.');
@@ -1576,8 +1590,11 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
     final canDrop = !kIsWeb;
 
     final cartoon = context.isCartoon;
+    final locked = widget.clientId != null;
     Widget dropZone = AnimatedContainer(
       duration: 200.ms,
+      alignment: Alignment.center,
+      constraints: BoxConstraints(minHeight: isDesktopOs ? 240 : 160),
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
@@ -1671,18 +1688,26 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          DropdownButtonFormField<String>(
-            // ignore: deprecated_member_use
-            value: _client?.id,
-            decoration: InputDecoration(labelText: ('Danışan').ui),
-            items: [
-              for (final c in clients)
-                DropdownMenuItem(value: c.id, child: Text((c.displayName).ui)),
-            ],
-            onChanged: (id) {
-              setState(() => _client = clients.where((c) => c.id == id).firstOrNull);
-            },
-          ),
+          if (locked)
+            InputDecorator(
+              decoration: InputDecoration(labelText: ('Danışan').ui),
+              child: Text((_client?.displayName ?? 'Danışan bulunamadı').ui,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+            )
+          else
+            DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
+              value: _client?.id,
+              decoration: InputDecoration(labelText: ('Danışan').ui),
+              items: [
+                for (final c in clients)
+                  DropdownMenuItem(value: c.id, child: Text((c.displayName).ui)),
+              ],
+              onChanged: (id) {
+                setState(() => _client = clients.where((c) => c.id == id).firstOrNull);
+              },
+            ),
           const SizedBox(height: 12),
           TextField(
             controller: _title,

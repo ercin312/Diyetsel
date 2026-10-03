@@ -42,10 +42,6 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
         return list;
       case CartoonRecipeQuickFilter.quick:
         return list.where((r) => r.prepMinutes <= 15).toList();
-      case CartoonRecipeQuickFilter.highProtein:
-        return list.where((r) => recipeProtein(r) >= 20).toList();
-      case CartoonRecipeQuickFilter.lowCal:
-        return list.where((r) => r.calories > 0 && r.calories <= 350).toList();
     }
   }
 
@@ -77,9 +73,6 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
     final filtered = _applyQuick(base);
 
     final catCount = {for (final r in recipes) r.category}.length;
-    final avgKcal = recipes.isEmpty
-        ? 0
-        : (recipes.fold<int>(0, (s, r) => s + r.calories) / recipes.length).round();
     final quickCount = recipes.where((r) => r.prepMinutes <= 15).length;
 
     return Scaffold(
@@ -146,7 +139,6 @@ class _CartoonRecipesScreenState extends ConsumerState<CartoonRecipesScreen> {
               const SizedBox(height: 14),
               CartoonRecipesStatsRow(
                 recipes: recipes.length,
-                avgKcal: avgKcal,
                 quick: quickCount,
                 liked: liked.length,
                 saved: saved.length,

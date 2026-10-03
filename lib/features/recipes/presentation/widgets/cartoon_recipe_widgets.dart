@@ -14,12 +14,15 @@ import '../../../../core/widgets/marketplace.dart';
 import '../../../../core/widgets/nav_back.dart';
 import '../../../auth/presentation/auth_controller.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
+import '../../../../core/widgets/diyetsel_widgets.dart';
+import '../../domain/portion_scale.dart';
 import '../../domain/recipe_visuals.dart';
+import '../recipe_market.dart';
 import '../../../../core/l10n/ui_string.dart';
 
 enum CartoonRecipeShelf { discover, liked, saved }
 
-enum CartoonRecipeQuickFilter { all, quick, highProtein, lowCal }
+enum CartoonRecipeQuickFilter { all, quick }
 
 Color cartoonTintFor(Recipe r) {
   switch (RecipeVisuals.tintFor(r)) {
@@ -521,8 +524,6 @@ class CartoonRecipeQuickFilters extends StatelessWidget {
     final items = [
       (CartoonRecipeQuickFilter.all, 'Hepsi', Icons.apps_rounded),
       (CartoonRecipeQuickFilter.quick, '≤15 dk', Icons.bolt_rounded),
-      (CartoonRecipeQuickFilter.highProtein, 'Yüksek P', Icons.fitness_center_rounded),
-      (CartoonRecipeQuickFilter.lowCal, 'Hafif', Icons.eco_rounded),
     ];
     return SizedBox(
       height: 38,
@@ -575,14 +576,12 @@ class CartoonRecipesStatsRow extends StatelessWidget {
   const CartoonRecipesStatsRow({
     super.key,
     required this.recipes,
-    required this.avgKcal,
     required this.quick,
     this.liked = 0,
     this.saved = 0,
   });
 
   final int recipes;
-  final int avgKcal;
   final int quick;
   final int liked;
   final int saved;
@@ -591,7 +590,6 @@ class CartoonRecipesStatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       ('Tarif', '$recipes', DiyetselAssets.iconPlan, Icons.menu_book_rounded, AppColors.kawaiiLeaf),
-      ('Ort. kcal', '$avgKcal', DiyetselAssets.iconCheck, Icons.local_fire_department_rounded, AppColors.kawaiiCoral),
       ('Hızlı', '$quick', DiyetselAssets.iconCalendar, Icons.timer_outlined, AppColors.kawaiiSkyBlue),
       if (liked + saved > 0)
         ('Koleksiyon', '${liked + saved}', DiyetselAssets.iconStreak, Icons.favorite_rounded, AppColors.kawaiiSalmon),
@@ -1106,7 +1104,7 @@ class CartoonRecipeSuggestionCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Text(('${r.calories} kcal · ${recipeProtein(r)} g P · ${r.prepMinutes} dk').ui,
+            Text(('${r.prepMinutes} dk').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 12,
@@ -1285,10 +1283,6 @@ class CartoonRecipeFeaturedCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: Row(
                 children: [
-                  CartoonRecipeMacroPill(label: 'kcal', value: '${recipe.calories}', color: AppColors.kawaiiCoral),
-                  const SizedBox(width: 6),
-                  CartoonRecipeMacroPill(label: 'protein', value: '${recipeProtein(recipe)}g', color: AppColors.kawaiiLeaf),
-                  const SizedBox(width: 6),
                   CartoonRecipeMacroPill(
                     label: 'süre',
                     value: '${recipe.prepMinutes} dk',
@@ -1459,8 +1453,6 @@ class CartoonRecipeCard extends StatelessWidget {
                     spacing: 6,
                     runSpacing: 6,
                     children: [
-                      CartoonRecipeMacroPill(label: 'kcal', value: '${recipe.calories}', color: AppColors.kawaiiCoral),
-                      CartoonRecipeMacroPill(label: 'protein', value: '${recipeProtein(recipe)}g', color: AppColors.kawaiiLeaf),
                       CartoonRecipeMacroPill(
                         label: 'süre',
                         value: '${recipe.totalMinutes > 0 ? recipe.totalMinutes : recipe.prepMinutes} dk',
@@ -1803,8 +1795,16 @@ class CartoonRecipeDetailSheet extends ConsumerStatefulWidget {
 
 class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSheet> {
   final Set<int> _checkedIngredients = {};
+  final Set<int> _checkedSauce = {};
   final Set<int> _doneSteps = {};
-  int _servingsMul = 1;
+  late int _portion;
+
+  @override
+  void initState() {
+    super.initState();
+    final servings = widget.recipe.servings;
+    _portion = servings < 1 ? 1 : servings;
+  }
 
   Recipe get recipe {
     final list = ref.watch(recipesProvider).valueOrNull ?? const <Recipe>[];
@@ -1814,18 +1814,16 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
     return widget.recipe;
   }
 
-  String _scaleAmount(String amount) {
-    if (_servingsMul == 1) return amount;
-    final match = RegExp(r'^(\d+(?:[.,]\d+)?)\s*(.*)$').firstMatch(amount.trim());
-    if (match == null) return amount;
-    final n = double.tryParse(match.group(1)!.replaceAll(',', '.'));
-    if (n == null) return amount;
-    final scaled = n * _servingsMul;
-    final numStr = scaled == scaled.roundToDouble()
-        ? '${scaled.round()}'
-        : scaled.toStringAsFixed(scaled < 10 ? 1 : 0);
-    final unit = match.group(2) ?? '';
-    return unit.isEmpty ? numStr : '$numStr $unit';
+  Future<void> _market(Recipe current) {
+    return sendCheckedToMarket(
+      context: context,
+      ref: ref,
+      recipe: current,
+      portion: _portion,
+      ingredientIndexes: _checkedIngredients,
+      sauceIndexes: _checkedSauce,
+      cartoon: true,
+    );
   }
 
   @override
@@ -1839,8 +1837,8 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
     final accent = cartoonAccentFor(current);
     final tint = cartoonTintFor(current);
     final tags = RecipeVisuals.displayTags(current);
-    final baseServings = current.servings.clamp(1, 20);
-    final shownServings = baseServings * _servingsMul;
+    final baseServings = current.servings < 1 ? 1 : current.servings;
+    final factor = _portion / baseServings;
     final cook = current.cookMinutes;
     final prep = current.prepMinutes;
 
@@ -1961,10 +1959,9 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
               ),
               const SizedBox(height: 14),
               _CartoonMetaRow(
-                servings: shownServings,
+                servings: _portion,
                 prepMinutes: prep,
                 cookMinutes: cook,
-                calories: current.calories,
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -1991,19 +1988,6 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ],
               ),
               const SizedBox(height: 10),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  CartoonRecipeMacroPill(label: 'kcal', value: '${current.calories}', color: AppColors.kawaiiCoral),
-                  CartoonRecipeMacroPill(label: 'protein', value: '${recipeProtein(current)}g', color: AppColors.kawaiiLeaf),
-                  if (current.carbsGrams > 0)
-                    CartoonRecipeMacroPill(label: 'karb', value: '${current.carbsGrams}g', color: AppColors.kawaiiSalmon),
-                  if (current.fatGrams > 0)
-                    CartoonRecipeMacroPill(label: 'yağ', value: '${current.fatGrams}g', color: AppColors.kawaiiSkyBlue),
-                ],
-              ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -2022,7 +2006,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                       ),
                     ),
                     SoftTap(
-                      onTap: _servingsMul > 1 ? () => setState(() => _servingsMul--) : null,
+                      onTap: _portion > 1 ? () => setState(() => _portion--) : null,
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 36,
@@ -2034,7 +2018,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                         ),
                         child: Icon(
                           Icons.remove_rounded,
-                          color: _servingsMul > 1
+                          color: _portion > 1
                               ? AppColors.kawaiiLeafDeep
                               : AppColors.kawaiiLeaf.withValues(alpha: 0.3),
                         ),
@@ -2042,12 +2026,12 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(('×$_servingsMul').ui,
+                      child: Text(('$_portion').ui,
                         style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent),
                       ),
                     ),
                     SoftTap(
-                      onTap: _servingsMul < 4 ? () => setState(() => _servingsMul++) : null,
+                      onTap: () => setState(() => _portion++),
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 36,
@@ -2057,11 +2041,9 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: AppColors.kawaiiOutline),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.add_rounded,
-                          color: _servingsMul < 4
-                              ? AppColors.kawaiiLeafDeep
-                              : AppColors.kawaiiLeaf.withValues(alpha: 0.3),
+                          color: AppColors.kawaiiLeafDeep,
                         ),
                       ),
                     ),
@@ -2077,7 +2059,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               ),
               const SizedBox(height: 4),
-              Text(('${current.ingredients.length} malzeme · $shownServings porsiyon').ui,
+              Text(('${current.ingredients.length} malzeme · $_portion porsiyon').ui,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.5,
@@ -2131,7 +2113,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text((current.ingredients[i].name).ui,
+                                child: Text((PortionScale.present(current.ingredients[i], factor).name).ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     decoration: _checkedIngredients.contains(i)
@@ -2143,7 +2125,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                                   ),
                                 ),
                               ),
-                              Text((_scaleAmount(current.ingredients[i].amount)).ui,
+                              Text((PortionScale.present(current.ingredients[i], factor).amount).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   color: accent,
@@ -2156,6 +2138,80 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                     ],
                   ],
                 ),
+              ),
+              if (current.sauce.isNotEmpty) ...[
+                const SizedBox(height: 18),
+                Text(('Sosu').ui,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    color: AppColors.kawaiiInk,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.kawaiiOutline),
+                  ),
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < current.sauce.length; i++) ...[
+                        if (i > 0) const Divider(height: 1, color: AppColors.kawaiiOutline),
+                        SoftTap(
+                          onTap: () => setState(() {
+                            if (_checkedSauce.contains(i)) {
+                              _checkedSauce.remove(i);
+                            } else {
+                              _checkedSauce.add(i);
+                            }
+                          }),
+                          borderRadius: BorderRadius.circular(0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _checkedSauce.contains(i)
+                                      ? Icons.check_circle_rounded
+                                      : Icons.circle_outlined,
+                                  size: 22,
+                                  color: _checkedSauce.contains(i)
+                                      ? accent
+                                      : AppColors.kawaiiMuted,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text((PortionScale.present(current.sauce[i], factor).name).ui,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      decoration: _checkedSauce.contains(i)
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      color: AppColors.kawaiiInk.withValues(
+                                        alpha: _checkedSauce.contains(i) ? 0.45 : 1,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text((PortionScale.present(current.sauce[i], factor).amount).ui,
+                                  style: TextStyle(fontWeight: FontWeight.w800, color: accent),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 14),
+              DiyetselButton(
+                label: 'Markete Git',
+                icon: Icons.shopping_bag_outlined,
+                onPressed: () => _market(current),
               ),
               if (current.allergens.isNotEmpty) ...[
                 const SizedBox(height: 12),
@@ -2268,7 +2324,7 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                 ),
               if (current.tips.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                Text(('Püf noktaları').ui,
+                Text(('İpucu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
@@ -2303,8 +2359,35 @@ class _CartoonRecipeDetailSheetState extends ConsumerState<CartoonRecipeDetailSh
                     ),
                   ),
               ],
+              if (current.footnote.trim().isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(('Dipnot').ui,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    color: AppColors.kawaiiInk,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.kawaiiOutline),
+                  ),
+                  child: Text((current.footnote).ui,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                      color: AppColors.kawaiiInk.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 18),
-              Text(('Makrolar ${shownServings == 1 ? '1 porsiyon' : '$shownServings porsiyon'} için yaklaşık değerlerdir.').ui,
+              Text(('Miktarlar $_portion porsiyon içindir.').ui,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 12,
@@ -2325,21 +2408,18 @@ class _CartoonMetaRow extends StatelessWidget {
     required this.servings,
     required this.prepMinutes,
     required this.cookMinutes,
-    required this.calories,
   });
 
   final int servings;
   final int prepMinutes;
   final int cookMinutes;
-  final int calories;
 
   @override
   Widget build(BuildContext context) {
     final items = <(IconData, String, String)>[
       (Icons.people_alt_rounded, '$servings', 'porsiyon'),
       (Icons.timer_outlined, '$prepMinutes dk', 'hazırlık'),
-      if (cookMinutes > 0) (Icons.local_fire_department_rounded, '$cookMinutes dk', 'pişirme'),
-      (Icons.local_dining_rounded, '$calories', 'kcal'),
+      if (cookMinutes > 0) (Icons.outdoor_grill_rounded, '$cookMinutes dk', 'pişirme'),
     ];
     return Row(
       children: [

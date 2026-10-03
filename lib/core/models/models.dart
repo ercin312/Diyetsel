@@ -853,6 +853,8 @@ class Recipe {
     this.cookMinutes = 0,
     this.tags = const [],
     this.tips = const [],
+    this.sauce = const [],
+    this.footnote = '',
     this.likes = 0,
   });
 
@@ -873,6 +875,8 @@ class Recipe {
   final int cookMinutes;
   final List<String> tags;
   final List<String> tips;
+  final List<Ingredient> sauce;
+  final String footnote;
   final int likes;
 
   int get totalMinutes => prepMinutes + (cookMinutes > 0 ? cookMinutes : 0);
@@ -895,6 +899,8 @@ class Recipe {
         'cookMinutes': cookMinutes,
         'tags': tags,
         'tips': tips,
+        'sauce': sauce.map((e) => e.toMap()).toList(),
+        'footnote': footnote,
         'likes': likes,
       };
 
@@ -920,6 +926,12 @@ class Recipe {
         cookMinutes: _i(map['cookMinutes']),
         tags: (map['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
         tips: (map['tips'] as List?)?.map((e) => '$e').toList() ?? const [],
+        sauce: (map['sauce'] as List?)
+                ?.whereType<Map>()
+                .map((e) => Ingredient.fromMap(Map<String, dynamic>.from(e)))
+                .toList() ??
+            const [],
+        footnote: _s(map['footnote']),
         likes: _i(map['likes']),
       );
 
@@ -941,7 +953,10 @@ class Recipe {
     int? cookMinutes,
     List<String>? tags,
     List<String>? tips,
+    List<Ingredient>? sauce,
+    String? footnote,
     int? likes,
+    bool clearImage = false,
   }) =>
       Recipe(
         id: id ?? this.id,
@@ -953,7 +968,7 @@ class Recipe {
         steps: steps ?? this.steps,
         ingredients: ingredients ?? this.ingredients,
         category: category ?? this.category,
-        imageUrl: imageUrl ?? this.imageUrl,
+        imageUrl: clearImage ? null : (imageUrl ?? this.imageUrl),
         proteinGrams: proteinGrams ?? this.proteinGrams,
         carbsGrams: carbsGrams ?? this.carbsGrams,
         fatGrams: fatGrams ?? this.fatGrams,
@@ -961,6 +976,8 @@ class Recipe {
         cookMinutes: cookMinutes ?? this.cookMinutes,
         tags: tags ?? this.tags,
         tips: tips ?? this.tips,
+        sauce: sauce ?? this.sauce,
+        footnote: footnote ?? this.footnote,
         likes: likes ?? this.likes,
       );
 }

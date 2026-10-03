@@ -1,4 +1,5 @@
 import '../../../core/models/models.dart';
+import 'portion_scale.dart';
 
 class ParsedRecipeText {
   const ParsedRecipeText({
@@ -8,7 +9,10 @@ class ParsedRecipeText {
     required this.cookMinutes,
     required this.servings,
     required this.ingredients,
+    required this.sauce,
     required this.steps,
+    required this.tips,
+    required this.footnote,
   });
 
   final String title;
@@ -17,7 +21,10 @@ class ParsedRecipeText {
   final int cookMinutes;
   final int servings;
   final List<Ingredient> ingredients;
+  final List<Ingredient> sauce;
   final List<String> steps;
+  final List<String> tips;
+  final String footnote;
 }
 
 class RecipeTextParser {
@@ -28,14 +35,10 @@ class RecipeTextParser {
     unicode: true,
   );
 
-  static String stripSymbols(String line) {
-    return line.replaceAll(_symbol, '').replaceAll(RegExp(r'\s+'), ' ').trim();
-  }
-
   static ParsedRecipeText? parse(String raw) {
     final lines = raw
         .split(RegExp(r'\r?\n'))
-        .map(stripSymbols)
+        .map((line) => line.trim())
         .where((line) => line.isNotEmpty)
         .toList();
     if (lines.isEmpty) return null;
@@ -46,13 +49,16 @@ class RecipeTextParser {
     var cook = 0;
     var servings = 1;
     final ingredients = <Ingredient>[];
+    final sauce = <Ingredient>[];
     final steps = <String>[];
+    final tips = <String>[];
+    final notes = <String>[];
     var mode = _Mode.meta;
 
     for (final line in lines.skip(1)) {
-      final key = _fold(line);
+      final key = _key(line);
       if (key.startsWith('ogun:')) {
-        category = line.split(':').skip(1).join(':').trim();
+        category = _valueAfterColon(line);
         if (category.isEmpty) category = 'Diğer';
         continue;
       }
@@ -73,19 +79,44 @@ class RecipeTextParser {
         mode = _Mode.ingredients;
         continue;
       }
+      if (_isSauceHeader(key)) {
+        mode = _Mode.sauce;
+        continue;
+      }
       if (key == 'hazirlanisi' || key.startsWith('hazirlanisi:')) {
         mode = _Mode.steps;
         continue;
       }
-      if (_isSauceHeader(key)) {
-        mode = _Mode.ingredients;
-        ingredients.add(Ingredient(name: line, amount: ''));
+      if (key == 'ipucu' || key == 'ipuclari' || key.startsWith('ipucu:') || key.startsWith('ipuclari:')) {
+        mode = _Mode.tips;
+        final inline = _valueAfterColon(line);
+        if (inline.isNotEmpty && key.contains(':')) tips.add(inline);
         continue;
       }
-      if (mode == _Mode.ingredients) {
-        ingredients.add(Ingredient(name: line, amount: ''));
-      } else if (mode == _Mode.steps) {
-        steps.add(line);
+      if (key == 'dipnot' || key.startsWith('dipnot:')) {
+        mode = _Mode.footnote;
+        final inline = _valueAfterColon(line);
+        if (inline.isNotEmpty && key.contains(':')) notes.add(inline);
+        continue;
+      }
+      switch (mode) {
+        case _Mode.ingredients:
+          ingredients.add(PortionScale.split(line));
+          break;
+        case _Mode.sauce:
+          sauce.add(PortionScale.split(line));
+          break;
+        case _Mode.steps:
+          steps.add(line);
+          break;
+        case _Mode.tips:
+          tips.add(line);
+          break;
+        case _Mode.footnote:
+          notes.add(line);
+          break;
+        case _Mode.meta:
+          break;
       }
     }
 
@@ -97,7 +128,10 @@ class RecipeTextParser {
       cookMinutes: cook,
       servings: servings,
       ingredients: ingredients,
+      sauce: sauce,
       steps: steps,
+      tips: tips,
+      footnote: notes.join('\n'),
     );
   }
 
@@ -111,11 +145,14 @@ class RecipeTextParser {
       ..writeln()
       ..writeln('Malzemeler');
     for (final item in recipe.ingredients) {
-      final amount = item.amount.trim();
-      if (amount.isEmpty || amount == '—') {
-        buffer.writeln(item.name);
-      } else {
-        buffer.writeln('$amount ${item.name}'.trim());
+      buffer.writeln(_line(item));
+    }
+    if (recipe.sauce.isNotEmpty) {
+      buffer
+        ..writeln()
+        ..writeln('Sosu için');
+      for (final item in recipe.sauce) {
+        buffer.writeln(_line(item));
       }
     }
     buffer
@@ -124,18 +161,41 @@ class RecipeTextParser {
     for (final step in recipe.steps) {
       buffer.writeln(step);
     }
+    if (recipe.tips.isNotEmpty) {
+      buffer
+        ..writeln()
+        ..writeln('İpucu');
+      for (final tip in recipe.tips) {
+        buffer.writeln(tip);
+      }
+    }
+    if (recipe.footnote.trim().isNotEmpty) {
+      buffer
+        ..writeln()
+        ..writeln('Dipnot')
+        ..writeln(recipe.footnote.trim());
+    }
     return buffer.toString().trimRight();
+  }
+
+  static String _line(Ingredient item) {
+    final amount = item.amount.trim();
+    if (amount.isEmpty || amount == '—') return item.name;
+    return '$amount ${item.name}'.trim();
   }
 
   static bool _isSauceHeader(String key) {
     return key == 'sosu icin' ||
         key == 'sos icin' ||
+        key == 'sosu' ||
+        key == 'sos' ||
         key.startsWith('sosu icin ') ||
         key.startsWith('sos icin ');
   }
 
-  static String _fold(String value) {
-    return value
+  static String _key(String line) {
+    final plain = line.replaceAll(_symbol, ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+    return plain
         .toLowerCase()
         .replaceAll('ı', 'i')
         .replaceAll('İ', 'i')
@@ -146,6 +206,12 @@ class RecipeTextParser {
         .replaceAll('ö', 'o')
         .replaceAll('ç', 'c')
         .replaceAll('â', 'a');
+  }
+
+  static String _valueAfterColon(String line) {
+    final index = line.indexOf(':');
+    if (index < 0) return '';
+    return line.substring(index + 1).trim();
   }
 
   static int _firstNumber(String text) {
@@ -160,4 +226,4 @@ class RecipeTextParser {
   }
 }
 
-enum _Mode { meta, ingredients, steps }
+enum _Mode { meta, ingredients, sauce, steps, tips, footnote }

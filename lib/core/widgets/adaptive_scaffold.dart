@@ -36,6 +36,16 @@ List<NavDest> adminDestinations() => [
       NavDest(label: 'nav.more'.tr(), icon: Icons.grid_view_rounded, emoji: '✨', location: '/admin/more', kind: KawaiiKind.sparkle),
     ];
 
+List<NavDest> adminToolDestinations() => const [
+      NavDest(label: 'Akademi', icon: Icons.article_rounded, emoji: '📰', location: '/admin/blog', kind: KawaiiKind.blog),
+      NavDest(label: 'Hizmetler', icon: Icons.medical_services_rounded, emoji: '🎁', location: '/admin/services', kind: KawaiiKind.gift),
+      NavDest(label: 'Tarifler', icon: Icons.menu_book_rounded, emoji: '🍲', location: '/admin/recipes', kind: KawaiiKind.recipe),
+      NavDest(label: 'Diyet planları', icon: Icons.restaurant_rounded, emoji: '🥗', location: '/admin/diet-plans', kind: KawaiiKind.diet),
+      NavDest(label: 'Öğün günlüğü', icon: Icons.photo_camera_rounded, emoji: '📷', location: '/admin/meals', kind: KawaiiKind.camera),
+      NavDest(label: 'Bildirimler', icon: Icons.notifications_active_rounded, emoji: '🔔', location: '/admin/notifications', kind: KawaiiKind.sparkle),
+      NavDest(label: 'Ayarlar', icon: Icons.settings_rounded, emoji: '⚙️', location: '/admin/settings', kind: KawaiiKind.settings),
+    ];
+
 List<NavDest> clientDestinations() => [
       NavDest(label: 'nav.home'.tr(), icon: Icons.home_rounded, emoji: '🏠', location: '/app', kind: KawaiiKind.home),
       NavDest(label: 'nav.diet'.tr(), icon: Icons.restaurant_rounded, emoji: '🥗', location: '/app/diet', kind: KawaiiKind.diet),
@@ -140,10 +150,13 @@ class AdaptiveScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dest = role == UserRole.admin ? adminDestinations() : clientDestinations();
+    final tools = role == UserRole.admin && isDesktopOs ? adminToolDestinations() : const <NavDest>[];
     final desktop = context.isDesktopLayout;
     final cartoon = context.isCartoon;
     final modern = context.isModern;
-    final selected = navigationShell.currentIndex.clamp(0, dest.length - 1);
+    final path = GoRouterState.of(context).uri.path;
+    final exact = dest.indexWhere((d) => d.location == path);
+    final selected = exact >= 0 ? exact : (tools.any((d) => d.location == path) ? -1 : navigationShell.currentIndex);
     final body = KeyedSubtree(
       key: ValueKey(navigationShell.currentIndex),
       child: navigationShell,
@@ -168,6 +181,7 @@ class AdaptiveScaffold extends StatelessWidget {
           children: [
             _DesktopSidebar(
               destinations: dest,
+              tools: tools,
               selectedIndex: selected,
               extended: extended,
               cartoon: cartoon,
@@ -321,6 +335,7 @@ class AdaptiveScaffold extends StatelessWidget {
 class _DesktopSidebar extends StatelessWidget {
   const _DesktopSidebar({
     required this.destinations,
+    required this.tools,
     required this.selectedIndex,
     required this.extended,
     required this.cartoon,
@@ -329,6 +344,7 @@ class _DesktopSidebar extends StatelessWidget {
   });
 
   final List<NavDest> destinations;
+  final List<NavDest> tools;
   final int selectedIndex;
   final bool extended;
   final bool cartoon;
@@ -340,6 +356,7 @@ class _DesktopSidebar extends StatelessWidget {
     if (modern) {
       return _SoftDesktopSidebar(
         destinations: destinations,
+        tools: tools,
         selectedIndex: selectedIndex,
         extended: extended,
         onSelect: onSelect,
@@ -405,8 +422,16 @@ class _DesktopSidebar extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: destinations.length,
+                itemCount: destinations.length + tools.length,
                 itemBuilder: (context, i) {
+                  if (i >= destinations.length) {
+                    return _ToolTile(
+                      dest: tools[i - destinations.length],
+                      extended: extended,
+                      cartoon: cartoon,
+                      modern: false,
+                    );
+                  }
                   final d = destinations[i];
                   final selected = i == selectedIndex;
                   final accent = cartoon ? AppColors.kawaiiLeaf : ModernPalette.accent(d.kind);
@@ -501,12 +526,14 @@ class _DesktopSidebar extends StatelessWidget {
 class _SoftDesktopSidebar extends StatelessWidget {
   const _SoftDesktopSidebar({
     required this.destinations,
+    required this.tools,
     required this.selectedIndex,
     required this.extended,
     required this.onSelect,
   });
 
   final List<NavDest> destinations;
+  final List<NavDest> tools;
   final int selectedIndex;
   final bool extended;
   final ValueChanged<int> onSelect;
@@ -608,8 +635,16 @@ class _SoftDesktopSidebar extends StatelessWidget {
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: destinations.length,
+                  itemCount: destinations.length + tools.length,
                   itemBuilder: (context, i) {
+                    if (i >= destinations.length) {
+                      return _ToolTile(
+                        dest: tools[i - destinations.length],
+                        extended: extended,
+                        cartoon: false,
+                        modern: true,
+                      );
+                    }
                     final d = destinations[i];
                     final selected = i == selectedIndex;
                     return Padding(
@@ -735,6 +770,67 @@ class _SoftDesktopSidebar extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ToolTile extends StatelessWidget {
+  const _ToolTile({
+    required this.dest,
+    required this.extended,
+    required this.cartoon,
+    required this.modern,
+  });
+
+  final NavDest dest;
+  final bool extended;
+  final bool cartoon;
+  final bool modern;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = GoRouterState.of(context).uri.path == dest.location;
+    final accent = cartoon ? AppColors.kawaiiLeaf : AppColors.primary;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Material(
+        color: selected ? accent.withValues(alpha: 0.12) : Colors.transparent,
+        borderRadius: BorderRadius.circular(modern ? 16 : 12),
+        child: InkWell(
+          onTap: () => context.go(dest.location),
+          borderRadius: BorderRadius.circular(modern ? 16 : 12),
+          child: SizedBox(
+            height: extended ? 44 : 40,
+            child: extended
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Icon(dest.icon, size: 18, color: selected ? accent : accent.withValues(alpha: 0.55)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text((dest.label).ui,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                              fontSize: 13.5,
+                              color: cartoon ? AppColors.kawaiiInk : AppColors.primaryDeep,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Tooltip(
+                    message: dest.label.ui,
+                    child: Center(
+                      child: Icon(dest.icon, size: 18, color: selected ? accent : accent.withValues(alpha: 0.55)),
+                    ),
+                  ),
           ),
         ),
       ),

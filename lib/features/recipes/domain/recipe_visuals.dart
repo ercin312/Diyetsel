@@ -1,49 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
-import '../../../core/constants/diyetsel_assets.dart';
 import '../../../core/models/models.dart';
-import '../../../core/utils/recipe_logic.dart';
-import '../../../core/widgets/marketplace.dart';
 
 /// Visual + display helpers for Premium Cartoon recipe UI.
 class RecipeVisuals {
   RecipeVisuals._();
 
   static String imageFor(Recipe r) {
-    if (r.imageUrl != null && r.imageUrl!.trim().isNotEmpty) {
-      return r.imageUrl!.trim();
-    }
-    switch (r.id) {
-      case 'rcp-bowl':
-        return DiyetselAssets.foodSaladBowl;
-      case 'rcp-soup':
-        return DiyetselAssets.foodLentilSoup;
-      case 'rcp-yogurt':
-      case 'rcp-omlet':
-        return DiyetselAssets.foodGreenSmoothie;
-      case 'rcp-salmon':
-        return DiyetselAssets.foodSaladBowl;
-      default:
-        break;
-    }
-    final t = r.title.toLowerCase();
-    if (t.contains('mercimek') || t.contains('çorba')) return DiyetselAssets.foodLentilSoup;
-    if (t.contains('smoothie') || t.contains('yoğurt')) return DiyetselAssets.foodGreenSmoothie;
-    if (t.contains('kase') || t.contains('salata') || t.contains('bowl')) {
-      return DiyetselAssets.foodSaladBowl;
-    }
-    return diyetselFoodImage(imageUrl: r.imageUrl, seed: r.title);
+    final url = r.imageUrl?.trim() ?? '';
+    return url;
   }
 
   static List<String> displayTags(Recipe r) {
     if (r.tags.isNotEmpty) return r.tags;
     final out = <String>[r.category];
-    final protein = recipeProtein(r);
-    if (protein >= 25) out.add('Yüksek protein');
-    if (r.prepMinutes <= 15) out.add('Hızlı');
-    if (r.allergens.isEmpty) out.add('Temiz');
-    if (r.calories <= 350) out.add('Hafif');
+    if (r.prepMinutes > 0 && r.prepMinutes <= 15) out.add('Hızlı');
     return out.take(4).toList();
   }
 

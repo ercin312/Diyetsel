@@ -9,17 +9,20 @@ import '../../../../core/data/app_store.dart';
 import '../../../../core/data/providers.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/utils/recipe_logic.dart';
+import '../../../../core/widgets/diyetsel_widgets.dart';
 import '../../../../core/widgets/marketplace.dart';
 import '../../../../core/widgets/nav_back.dart';
 import '../../../auth/presentation/auth_controller.dart';
 import '../../../dashboard/presentation/widgets/premium_home_widgets.dart' show SoftTap;
 import '../../../dashboard/presentation/widgets/soft_home_widgets.dart' show SoftModernIcon;
+import '../../domain/portion_scale.dart';
 import '../../domain/recipe_visuals.dart';
+import '../recipe_market.dart';
 import '../../../../core/l10n/ui_string.dart';
 
 enum SoftRecipeShelf { discover, liked, saved }
 
-enum SoftRecipeQuickFilter { all, quick, highProtein, lowCal }
+enum SoftRecipeQuickFilter { all, quick }
 
 class SoftSectionTitle extends StatelessWidget {
   const SoftSectionTitle({super.key, required this.title, this.subtitle});
@@ -375,8 +378,6 @@ class SoftRecipeQuickFilters extends StatelessWidget {
     final items = [
       (SoftRecipeQuickFilter.all, 'Hepsi', Icons.apps_rounded),
       (SoftRecipeQuickFilter.quick, '≤15 dk', Icons.bolt_rounded),
-      (SoftRecipeQuickFilter.highProtein, 'Yüksek P', Icons.fitness_center_rounded),
-      (SoftRecipeQuickFilter.lowCal, 'Hafif', Icons.eco_rounded),
     ];
     return SizedBox(
       height: 38,
@@ -429,14 +430,12 @@ class SoftRecipesStatsRow extends StatelessWidget {
   const SoftRecipesStatsRow({
     super.key,
     required this.recipes,
-    required this.avgKcal,
     required this.quick,
     this.liked = 0,
     this.saved = 0,
   });
 
   final int recipes;
-  final int avgKcal;
   final int quick;
   final int liked;
   final int saved;
@@ -445,7 +444,6 @@ class SoftRecipesStatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       ('Tarif', '$recipes', DiyetselAssets.modernIconPlan, Icons.menu_book_rounded, AppColors.primary),
-      ('Ort. kcal', '$avgKcal', DiyetselAssets.modernIconCheck, Icons.local_fire_department_rounded, const Color(0xFFE07A5F)),
       ('Hızlı', '$quick', DiyetselAssets.modernIconCalendar, Icons.timer_outlined, const Color(0xFF5BA3C9)),
       if (liked + saved > 0)
         ('Koleksiyon', '${liked + saved}', DiyetselAssets.modernIconCheck, Icons.favorite_rounded, const Color(0xFFD4A017)),
@@ -872,7 +870,7 @@ class SoftRecipeSuggestionCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Text(('${r.calories} kcal · ${recipeProtein(r)} g P · ${r.prepMinutes} dk').ui,
+            Text(('${r.prepMinutes} dk').ui,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 12,
@@ -1051,10 +1049,6 @@ class SoftRecipeFeaturedCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: Row(
                 children: [
-                  SoftRecipeMacroPill(label: 'kcal', value: '${recipe.calories}', color: const Color(0xFFE07A5F)),
-                  const SizedBox(width: 6),
-                  SoftRecipeMacroPill(label: 'protein', value: '${recipeProtein(recipe)}g', color: AppColors.primary),
-                  const SizedBox(width: 6),
                   SoftRecipeMacroPill(
                     label: 'süre',
                     value: '${recipe.prepMinutes} dk',
@@ -1224,8 +1218,6 @@ class SoftRecipeCard extends StatelessWidget {
                     spacing: 6,
                     runSpacing: 6,
                     children: [
-                      SoftRecipeMacroPill(label: 'kcal', value: '${recipe.calories}', color: const Color(0xFFE07A5F)),
-                      SoftRecipeMacroPill(label: 'protein', value: '${recipeProtein(recipe)}g', color: AppColors.primary),
                       SoftRecipeMacroPill(
                         label: 'süre',
                         value: '${recipe.totalMinutes > 0 ? recipe.totalMinutes : recipe.prepMinutes} dk',
@@ -1456,8 +1448,16 @@ class SoftRecipeDetailSheet extends ConsumerStatefulWidget {
 
 class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
   final Set<int> _checkedIngredients = {};
+  final Set<int> _checkedSauce = {};
   final Set<int> _doneSteps = {};
-  int _servingsMul = 1;
+  late int _portion;
+
+  @override
+  void initState() {
+    super.initState();
+    final servings = widget.recipe.servings;
+    _portion = servings < 1 ? 1 : servings;
+  }
 
   Recipe get recipe {
     final list = ref.watch(recipesProvider).valueOrNull ?? const <Recipe>[];
@@ -1467,18 +1467,16 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
     return widget.recipe;
   }
 
-  String _scaleAmount(String amount) {
-    if (_servingsMul == 1) return amount;
-    final match = RegExp(r'^(\d+(?:[.,]\d+)?)\s*(.*)$').firstMatch(amount.trim());
-    if (match == null) return amount;
-    final n = double.tryParse(match.group(1)!.replaceAll(',', '.'));
-    if (n == null) return amount;
-    final scaled = n * _servingsMul;
-    final numStr = scaled == scaled.roundToDouble()
-        ? '${scaled.round()}'
-        : scaled.toStringAsFixed(scaled < 10 ? 1 : 0);
-    final unit = match.group(2) ?? '';
-    return unit.isEmpty ? numStr : '$numStr $unit';
+  Future<void> _market(Recipe current) {
+    return sendCheckedToMarket(
+      context: context,
+      ref: ref,
+      recipe: current,
+      portion: _portion,
+      ingredientIndexes: _checkedIngredients,
+      sauceIndexes: _checkedSauce,
+      cartoon: false,
+    );
   }
 
   @override
@@ -1492,8 +1490,8 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
     final accent = RecipeVisuals.softAccentFor(current);
     final tint = RecipeVisuals.softTintFor(current);
     final tags = RecipeVisuals.displayTags(current);
-    final baseServings = current.servings.clamp(1, 20);
-    final shownServings = baseServings * _servingsMul;
+    final baseServings = current.servings < 1 ? 1 : current.servings;
+    final factor = _portion / baseServings;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.92,
@@ -1630,20 +1628,6 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  SoftRecipeMacroPill(label: 'kcal', value: '${current.calories}', color: const Color(0xFFE07A5F)),
-                  SoftRecipeMacroPill(label: 'protein', value: '${recipeProtein(current)}g', color: AppColors.primary),
-                  if (current.carbsGrams > 0)
-                    SoftRecipeMacroPill(label: 'karb', value: '${current.carbsGrams}g', color: const Color(0xFF5BA3C9)),
-                  if (current.fatGrams > 0)
-                    SoftRecipeMacroPill(label: 'yağ', value: '${current.fatGrams}g', color: const Color(0xFFD4A017)),
-                ],
-              ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1662,7 +1646,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                       ),
                     ),
                     SoftTap(
-                      onTap: _servingsMul > 1 ? () => setState(() => _servingsMul--) : null,
+                      onTap: _portion > 1 ? () => setState(() => _portion--) : null,
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 36,
@@ -1674,7 +1658,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                         ),
                         child: Icon(
                           Icons.remove_rounded,
-                          color: _servingsMul > 1
+                          color: _portion > 1
                               ? AppColors.primary
                               : AppColors.primary.withValues(alpha: 0.3),
                         ),
@@ -1682,12 +1666,12 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(('×$_servingsMul').ui,
+                      child: Text(('$_portion').ui,
                         style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: accent),
                       ),
                     ),
                     SoftTap(
-                      onTap: _servingsMul < 4 ? () => setState(() => _servingsMul++) : null,
+                      onTap: () => setState(() => _portion++),
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 36,
@@ -1699,9 +1683,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                         ),
                         child: Icon(
                           Icons.add_rounded,
-                          color: _servingsMul < 4
-                              ? AppColors.primary
-                              : AppColors.primary.withValues(alpha: 0.3),
+                          color: AppColors.primary,
                         ),
                       ),
                     ),
@@ -1717,7 +1699,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(('${current.ingredients.length} malzeme · $shownServings porsiyon').ui,
+              Text(('${current.ingredients.length} malzeme · $_portion porsiyon').ui,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.5,
@@ -1764,7 +1746,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text((current.ingredients[i].name).ui,
+                                child: Text((PortionScale.present(current.ingredients[i], factor).name).ui,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     decoration: _checkedIngredients.contains(i)
@@ -1776,7 +1758,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                                   ),
                                 ),
                               ),
-                              Text((_scaleAmount(current.ingredients[i].amount)).ui,
+                              Text((PortionScale.present(current.ingredients[i], factor).amount).ui,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   color: accent,
@@ -1789,6 +1771,81 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                     ],
                   ],
                 ),
+              ),
+              if (current.sauce.isNotEmpty) ...[
+                const SizedBox(height: 18),
+                Text(('Sosu').ui,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    color: AppColors.primaryDeep,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.modernLine),
+                    boxShadow: AppSpacing.soft,
+                  ),
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < current.sauce.length; i++) ...[
+                        if (i > 0) const Divider(height: 1, color: AppColors.modernLine),
+                        SoftTap(
+                          onTap: () => setState(() {
+                            if (_checkedSauce.contains(i)) {
+                              _checkedSauce.remove(i);
+                            } else {
+                              _checkedSauce.add(i);
+                            }
+                          }),
+                          borderRadius: BorderRadius.circular(0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _checkedSauce.contains(i)
+                                      ? Icons.check_circle_rounded
+                                      : Icons.circle_outlined,
+                                  size: 22,
+                                  color: _checkedSauce.contains(i)
+                                      ? accent
+                                      : AppColors.primary.withValues(alpha: 0.35),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text((PortionScale.present(current.sauce[i], factor).name).ui,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      decoration: _checkedSauce.contains(i)
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      color: AppColors.primaryDeep.withValues(
+                                        alpha: _checkedSauce.contains(i) ? 0.45 : 1,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text((PortionScale.present(current.sauce[i], factor).amount).ui,
+                                  style: TextStyle(fontWeight: FontWeight.w800, color: accent),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 14),
+              DiyetselButton(
+                label: 'Markete Git',
+                icon: Icons.shopping_bag_outlined,
+                onPressed: () => _market(current),
               ),
               if (current.allergens.isNotEmpty) ...[
                 const SizedBox(height: 12),
@@ -1901,7 +1958,7 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                 ),
               if (current.tips.isNotEmpty) ...[
                 const SizedBox(height: 14),
-                Text(('İpuçları').ui,
+                Text(('İpucu').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
@@ -1935,6 +1992,33 @@ class _SoftRecipeDetailSheetState extends ConsumerState<SoftRecipeDetailSheet> {
                       ],
                     ),
                   ),
+              ],
+              if (current.footnote.trim().isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(('Dipnot').ui,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    color: AppColors.primaryDeep,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.modernLine),
+                  ),
+                  child: Text((current.footnote).ui,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                      color: AppColors.primary.withValues(alpha: 0.75),
+                    ),
+                  ),
+                ),
               ],
             ],
           ),

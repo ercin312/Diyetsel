@@ -416,9 +416,7 @@ class FeaturedRecipeCard extends StatelessWidget {
                         spacing: 8,
                         runSpacing: 6,
                         children: [
-                          _meta('🔥', '${recipe.kcal} kcal'),
                           _meta('🕒', '${recipe.minutes} dk'),
-                          _meta('🌿', '${recipe.proteinG} g'),
                         ],
                       ),
                       if (recipe.badge.isNotEmpty) ...[
@@ -711,7 +709,7 @@ class RecipeThumbCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text((recipe.title).ui, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: AppColors.kawaiiInk, height: 1.2)),
             const SizedBox(height: 4),
-            Text(('${recipe.kcal} kcal · ${recipe.minutes} dk').ui,
+            Text(('${recipe.minutes} dk').ui,
               style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.kawaiiMuted),
             ),
           ],
