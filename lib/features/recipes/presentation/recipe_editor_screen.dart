@@ -93,31 +93,45 @@ class _RecipeEditorScreenState extends ConsumerState<RecipeEditorScreen> {
     return AppPage(
       title: widget.existing == null ? 'Yeni tarif' : 'Tarifi düzenle',
       padding: EdgeInsets.zero,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      child: Column(
         children: [
-          Text(
-            ('Tarifi aşağıdaki düzende yapıştırın. Başlık, öğün, süreler, malzemeler ve adımlar bu metinden alınır.').ui,
-            style: const TextStyle(color: AppColors.lightMuted, height: 1.35),
-          ),
-          const SizedBox(height: 14),
-          TextField(
-            controller: _source,
-            minLines: 18,
-            maxLines: 28,
-            decoration: InputDecoration(
-              alignLabelWithHint: true,
-              labelText: ('Tarif metni').ui,
-              hintText: _recipeHint,
+          Expanded(
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              children: [
+                Text(
+                  ('Tarifi aşağıdaki düzende yapıştırın. Başlık, öğün, süreler, malzemeler ve adımlar bu metinden alınır.').ui,
+                  style: const TextStyle(color: AppColors.lightMuted, height: 1.35),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: _source,
+                  minLines: 8,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  decoration: InputDecoration(
+                    alignLabelWithHint: true,
+                    labelText: ('Tarif metni').ui,
+                    hintText: _recipeHint,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          DiyetselButton(
-            label: _saving
-                ? 'Kaydediliyor…'
-                : (widget.existing == null ? 'Tarifi kaydet' : 'Değişiklikleri kaydet'),
-            onPressed: _saving ? null : _save,
-            icon: Icons.restaurant_rounded,
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+              child: DiyetselButton(
+                label: _saving
+                    ? 'Kaydediliyor…'
+                    : (widget.existing == null ? 'Tarifi kaydet' : 'Değişiklikleri kaydet'),
+                onPressed: _saving ? null : _save,
+                icon: Icons.restaurant_rounded,
+              ),
+            ),
           ),
         ],
       ),
