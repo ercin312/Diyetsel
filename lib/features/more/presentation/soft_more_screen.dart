@@ -42,7 +42,7 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
       return const [
         SoftMoreItem(
           icon: Icons.edit_note_rounded,
-          title: 'Blog editörü',
+          title: 'Akademi editörü',
           subtitle: 'Yazı ekle, düzenle, yayınla',
           route: '/admin/blog',
           section: 'İçerik',
@@ -133,7 +133,7 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
     final all = <SoftMoreItem>[
       const SoftMoreItem(
         icon: Icons.article_rounded,
-        title: 'Blog',
+        title: 'Akademi',
         subtitle: 'Beslenme yazıları ve ipuçları',
         route: '/app/blog',
         section: 'Keşfet',
@@ -285,6 +285,17 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
         accent: _blue,
       ),
       const SoftMoreItem(
+        icon: Icons.notifications_none_rounded,
+        title: 'Bildirimler',
+        subtitle: 'Diyetisyen duyuruları ve hatırlatıcılar',
+        route: '/app/notifications',
+        section: 'Hesap',
+        asset: DiyetselAssets.modernIconBell,
+        tint: _peach,
+        accent: _coral,
+        featured: true,
+      ),
+      const SoftMoreItem(
         icon: Icons.settings_rounded,
         title: 'Ayarlar',
         subtitle: 'Tema, bildirim, hesap',
@@ -302,7 +313,8 @@ class _SoftMoreScreenState extends ConsumerState<SoftMoreScreen> {
       if (item.route == '/app/reports' ||
           item.route == '/app/settings' ||
           item.route == '/app/badges' ||
-          item.route == '/app/learn') {
+          item.route == '/app/learn' ||
+          item.route == '/app/notifications') {
         return true;
       }
       final id = AppModule.fromRoute(item.route);

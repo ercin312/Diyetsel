@@ -129,7 +129,7 @@ class SoftBarcodeHero extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text((hasProduct ? 'Ürün analizi hazır' : '$budget kcal tavan').ui,
+                Text((hasProduct ? 'Ürün analizi hazır' : (budget > 0 ? '$budget kcal tavan' : 'Ürünü tara')).ui,
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 22,

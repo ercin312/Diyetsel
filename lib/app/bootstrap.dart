@@ -13,6 +13,27 @@ import '../core/network/social_auth.dart';
 import '../core/utils/reminder_service.dart';
 import '../firebase_options.dart';
 
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await ReminderService.instance.init(requestPermissions: false);
+    final note = message.notification;
+    if (note != null) return;
+    final title = message.data['title']?.toString().trim() ?? '';
+    final body = message.data['body']?.toString().trim() ?? '';
+    if (title.isEmpty) return;
+    await ReminderService.instance.showSmart(
+      id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      title: title,
+      body: body,
+      channel: 'diyetsel_admin',
+      channelName: 'Diyetisyen bildirimleri',
+    );
+  } catch (_) {}
+}
+
 class BootstrapResult {
   const BootstrapResult({required this.database, this.firebaseReady = false});
   final LocalDatabase database;
@@ -21,6 +42,7 @@ class BootstrapResult {
 
 Future<BootstrapResult> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await EasyLocalization.ensureInitialized();
   await initializeDateFormatting('tr');
   await initializeDateFormatting('en');
@@ -31,6 +53,7 @@ Future<BootstrapResult> bootstrap() async {
   final db = LocalDatabase(box);
   final store = AppStore(db);
   await store.seedIfNeeded();
+  await store.ensureAdminAccount();
   await store.ensureDietitianName();
   final appearance = store.settings();
   if (appearance.themeMode != 'light') {

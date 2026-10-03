@@ -235,7 +235,7 @@ class SoftAdminNotifComposeCard extends StatelessWidget {
     ('/app/appointments', 'Randevu'),
     ('/app/check-in', 'Check-in'),
     ('/app/recipes', 'Tarifler'),
-    ('/app/blog', 'Blog'),
+    ('/app/blog', 'Akademi'),
     ('/app/chat', 'Sohbet'),
     ('/app/services', 'Hizmetler'),
   ];

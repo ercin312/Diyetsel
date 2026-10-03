@@ -177,7 +177,7 @@ class CartoonConfiguredHome extends ConsumerWidget {
         subtitle: 'Başlangıç rehberi',
         route: '/app/blog',
         imageAsset: DiyetselAssets.mascotCarrot,
-        tag: 'Blog',
+        tag: 'Akademi',
       ),
       HomeArticleModel(
         id: 'keto',
@@ -402,7 +402,7 @@ class _GreetingHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          onPressed: () => context.push('/app/badges'),
+          onPressed: () => context.push('/app/notifications'),
           tooltip: ('Bildirimler').ui,
           visualDensity: VisualDensity.compact,
           icon: Badge(

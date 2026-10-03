@@ -96,7 +96,7 @@ class _DietPlanScreenState extends ConsumerState<DietPlanScreen> {
     final p = consumed.fold(0, (s, m) => s + m.protein);
     final c = consumed.fold(0, (s, m) => s + m.carbs);
     final f = consumed.fold(0, (s, m) => s + m.fat);
-    final showMacros = plan.calorieTarget > 0 && day.meals.any((m) => m.calories > 0);
+    final showMacros = plan.targetsEntered;
 
     final doneCount = day.meals.where((m) => m.consumed).length;
     final totalMeals = day.meals.length;
@@ -1383,10 +1383,18 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
   bool _dragging = false;
   bool _saving = false;
   final _title = TextEditingController(text: 'Haftalık diyet planı');
+  final _kcal = TextEditingController();
+  final _protein = TextEditingController();
+  final _carbs = TextEditingController();
+  final _fat = TextEditingController();
 
   @override
   void dispose() {
     _title.dispose();
+    _kcal.dispose();
+    _protein.dispose();
+    _carbs.dispose();
+    _fat.dispose();
     super.dispose();
   }
 
@@ -1445,6 +1453,14 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
       dietitianId: admin.id,
       title: _title.text.trim().isEmpty ? 'Haftalık diyet planı' : _title.text.trim(),
       templateMeals: _meals,
+      calorieTarget: _readMacro(_kcal) ?? 0,
+      proteinTarget: _readMacro(_protein) ?? 0,
+      carbsTarget: _readMacro(_carbs) ?? 0,
+      fatTarget: _readMacro(_fat) ?? 0,
+      targetsEntered: _readMacro(_kcal) != null ||
+          _readMacro(_protein) != null ||
+          _readMacro(_carbs) != null ||
+          _readMacro(_fat) != null,
     );
     if (mounted) {
       setState(() => _saving = false);
@@ -1455,25 +1471,65 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
     }
   }
 
+  int? _readMacro(TextEditingController controller) {
+    final text = controller.text.trim();
+    if (text.isEmpty) return null;
+    return int.tryParse(text);
+  }
+
   Future<void> _editMeal(int index) async {
     final meal = _meals[index];
     final name = TextEditingController(text: meal.name);
     final desc = TextEditingController(text: meal.description);
+    final kcal = TextEditingController(text: meal.nutritionEntered && meal.calories > 0 ? '${meal.calories}' : '');
+    final protein = TextEditingController(text: meal.nutritionEntered && meal.protein > 0 ? '${meal.protein}' : '');
+    final carbs = TextEditingController(text: meal.nutritionEntered && meal.carbs > 0 ? '${meal.carbs}' : '');
+    final fat = TextEditingController(text: meal.nutritionEntered && meal.fat > 0 ? '${meal.fat}' : '');
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text((meal.type.tr).ui),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: name, decoration: InputDecoration(labelText: ('Başlık').ui)),
-            const SizedBox(height: 8),
-            TextField(
-              controller: desc,
-              maxLines: 5,
-              decoration: InputDecoration(labelText: ('İçerik').ui),
-            ),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: name, decoration: InputDecoration(labelText: ('Başlık').ui)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: desc,
+                maxLines: 5,
+                decoration: InputDecoration(labelText: ('İçerik').ui),
+              ),
+              const SizedBox(height: 12),
+              Text(('Besin değerleri isteğe bağlı. Boş bırakırsan danışanda görünmez.').ui,
+                style: Theme.of(ctx).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: kcal,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: ('Kalori (kcal)').ui),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: protein,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: ('Protein (g)').ui),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: carbs,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: ('Karbonhidrat (g)').ui),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: fat,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: ('Yağ (g)').ui),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(('Vazgeç').ui)),
@@ -1482,12 +1538,35 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
       ),
     );
     if (ok == true) {
+      int? read(TextEditingController controller) {
+        final text = controller.text.trim();
+        if (text.isEmpty) return null;
+        return int.tryParse(text);
+      }
+
+      final kc = read(kcal);
+      final pr = read(protein);
+      final cb = read(carbs);
+      final ft = read(fat);
+      final entered = kc != null || pr != null || cb != null || ft != null;
       setState(() {
-        _meals[index] = meal.copyWith(name: name.text.trim(), description: desc.text.trim());
+        _meals[index] = meal.copyWith(
+          name: name.text.trim(),
+          description: desc.text.trim(),
+          calories: kc ?? 0,
+          protein: pr ?? 0,
+          carbs: cb ?? 0,
+          fat: ft ?? 0,
+          nutritionEntered: entered,
+        );
       });
     }
     name.dispose();
     desc.dispose();
+    kcal.dispose();
+    protein.dispose();
+    carbs.dispose();
+    fat.dispose();
   }
 
   @override
@@ -1608,6 +1687,34 @@ class _AdminDietUploadSheetState extends ConsumerState<_AdminDietUploadSheet> {
           TextField(
             controller: _title,
             decoration: InputDecoration(labelText: ('Plan başlığı').ui),
+          ),
+          const SizedBox(height: 12),
+          Text(('Günlük hedefler isteğe bağlı. Boş bırakırsan danışanda kalori özeti görünmez.').ui,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _kcal,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: ('Günlük kalori (kcal)').ui),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _protein,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: ('Günlük protein (g)').ui),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _carbs,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: ('Günlük karbonhidrat (g)').ui),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _fat,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: ('Günlük yağ (g)').ui),
           ),
           const SizedBox(height: 16),
           dropZone.animate().fadeIn(),

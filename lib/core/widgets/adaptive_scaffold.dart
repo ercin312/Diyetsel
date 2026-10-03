@@ -286,7 +286,20 @@ class AdaptiveScaffold extends StatelessWidget {
       );
     }
 
-    return CallbackShortcuts(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        final router = GoRouter.of(context);
+        if (router.canPop()) {
+          router.pop();
+          return;
+        }
+        if (navigationShell.currentIndex != 0) {
+          navigationShell.goBranch(0);
+        }
+      },
+      child: CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.keyK, control: true): () {
           context.push(role == UserRole.admin ? '/admin/clients' : '/app/more');
@@ -299,6 +312,7 @@ class AdaptiveScaffold extends StatelessWidget {
         },
       },
       child: Focus(autofocus: true, child: scaffold),
+    ),
     );
   }
 }

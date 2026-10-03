@@ -3,11 +3,15 @@ service firebase.storage {
   match /b/{bucket}/o {
     function signedIn() { return request.auth != null; }
     function isAdmin() {
-      return signedIn() && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return signedIn()
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
+    // Owner uploads must not depend on the admin lookup. A missing user doc
+    // makes firestore.get() fail the whole request, which blocked avatars.
     match /users/{userId}/{allPaths=**} {
-      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
-      allow write: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == userId;
     }
     match /public/{allPaths=**} {
       allow read: if signedIn();

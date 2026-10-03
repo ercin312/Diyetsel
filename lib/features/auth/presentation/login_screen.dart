@@ -269,7 +269,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     if (context.isDesktopLayout) {
-      return Scaffold(
+      return PopScope(
+        canPop: false,
+        child: Scaffold(
         body: Row(
           children: [
             Expanded(
@@ -287,13 +289,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: SingleChildScrollView(
                       padding: EdgeInsets.all(context.isModern ? 40 : 32),
                       child: _formCard(context).animate().fadeIn(duration: 280.ms)))))),
-          ]));
+          ])));
     }
 
     final modern = context.isModern;
     final cartoon = context.isCartoon;
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -314,6 +318,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -400,7 +405,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
     );
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+          return;
+        }
+        context.go('/login');
+      },
+      child: Scaffold(
       backgroundColor: modern ? AppColors.modernWash : null,
       appBar: AppBar(title: Text('auth.register'.tr())),
       body: modern
@@ -424,6 +439,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ),
             ),
+      ),
     );
   }
 }

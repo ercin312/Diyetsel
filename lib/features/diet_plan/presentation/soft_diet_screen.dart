@@ -51,7 +51,7 @@ class _SoftDietScreenState extends ConsumerState<SoftDietScreen> {
     final p = consumed.fold(0, (s, m) => s + m.protein);
     final c = consumed.fold(0, (s, m) => s + m.carbs);
     final f = consumed.fold(0, (s, m) => s + m.fat);
-    final showMacros = plan.calorieTarget > 0 && day.meals.any((m) => m.calories > 0);
+    final showMacros = plan.targetsEntered;
     final doneCount = day.meals.where((m) => m.consumed).length;
     final totalMeals = day.meals.length;
     final dayComplete = doneCount == totalMeals && totalMeals > 0;

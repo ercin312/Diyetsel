@@ -332,7 +332,7 @@ class HomeThemeConfig {
                 title: 'Aralıklı Oruç Rehberi',
                 subtitle: 'Başlangıç için 5 ipucu',
                 imageKey: 'clock',
-                tag: 'Blog',
+                tag: 'Akademi',
                 route: '/app/blog',
               ),
               HomeSectionItemConfig(

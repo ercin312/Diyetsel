@@ -14,6 +14,7 @@ import '../../features/chat/presentation/chat_screens.dart';
 import '../../features/more/presentation/more_screens.dart';
 import '../../features/dashboard/presentation/admin_notifications_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screens.dart';
+import '../../features/dashboard/presentation/notification_inbox_screen.dart';
 import '../../features/dashboard/presentation/home_theme_editor_screen.dart';
 import '../../features/dashboard/presentation/settings_screen.dart';
 import '../../features/diet_plan/presentation/diet_screens.dart';
@@ -93,6 +94,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/app/water-shortcut', builder: (c, s) => const WaterShortcutScreen()),
       GoRoute(path: '/app/reports', builder: (c, s) => const ReportsScreen()),
       GoRoute(path: '/app/badges', builder: (c, s) => const BadgesScreen()),
+      GoRoute(path: '/app/notifications', builder: (c, s) => const NotificationInboxScreen()),
       GoRoute(path: '/app/learn', builder: (c, s) => const LearnHubScreen()),
       GoRoute(
         path: '/app/learn/:seriesId',

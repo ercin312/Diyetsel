@@ -159,7 +159,9 @@ class PdfReport {
                   pw.SizedBox(height: 8),
                   pw.Text((DateFormat('EEEE d MMM', 'tr').format(day.date)).ui, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                   ...day.meals.map((m) => pw.Bullet(
-                        text: '${m.type.tr} — ${m.name} (${m.calories} kcal)${m.consumed ? ' ✓' : ''}',
+                        text: m.nutritionEntered && m.calories > 0
+                            ? '${m.type.tr} — ${m.name} (${m.calories} kcal)${m.consumed ? ' ✓' : ''}'
+                            : '${m.type.tr} — ${m.name}${m.consumed ? ' ✓' : ''}',
                       )),
                 ],
               ),

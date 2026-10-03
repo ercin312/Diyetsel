@@ -136,7 +136,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
     final remaining = store.remainingKcal(user.id);
     final snackLeft = store
         .mealsToday(user.id)
-        .where((m) => !m.consumed)
+        .where((m) => !m.consumed && m.nutritionEntered && m.calories > 0)
         .fold<int>(9999, (s, m) => m.calories < s ? m.calories : s);
     final budget = snackLeft == 9999 ? remaining : (snackLeft < remaining ? snackLeft : remaining);
     final stamp = _product == null ? null : barcodeStamp(productKcal: _product!.kcal, remaining: budget);
@@ -150,7 +150,7 @@ class _BarcodeScreenState extends ConsumerState<BarcodeScreen> {
             emoji: '📷',
             title: 'Rafa bakmadan karar ver',
             subtitle: 'Ürünü tara; 100 g kalorisi bugünkü kalan bütçenle kıyaslanır.',
-            trailing: StatusChip(label: '$budget kcal', color: context.brandPrimary),
+            trailing: budget > 0 ? StatusChip(label: '$budget kcal', color: context.brandPrimary) : null,
           ),
           const SizedBox(height: 12),
           Row(

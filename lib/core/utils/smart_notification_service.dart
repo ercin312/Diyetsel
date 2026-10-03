@@ -34,7 +34,7 @@ class SmartNotificationService {
 
     if (prefs.smartReminders) {
       await _scheduleMeals(store, user, prefs);
-      await _scheduleWater(prefs);
+      await _scheduleWater(store, user, prefs);
       if (prefs.appointmentReminders) await _scheduleAppointment(store, user.id);
     }
 
@@ -49,6 +49,16 @@ class SmartNotificationService {
     final note = progress.pendingFeedbackNote;
     if (note == null || note.isEmpty) return;
     await notifyDietitianFeedback(note);
+    await store.rememberInbox(
+      InboxNotice(
+        id: 'feedback-${user.id}-${note.hashCode}-${_dayKey(DateTime.now())}',
+        userId: user.id,
+        title: 'Diyetisyenin bir not bıraktı 💬',
+        body: note,
+        createdAt: DateTime.now(),
+        source: 'dietitian',
+      ),
+    );
     await store.saveUserProgress(progress.copyWith(clearFeedback: true));
   }
 
@@ -92,14 +102,25 @@ class SmartNotificationService {
         final hour = int.tryParse(parts[0]);
         final minute = int.tryParse(parts[1]);
         if (hour == null || minute == null) continue;
+        final title = '${meal.type.tr} zamanı ${meal.type.emoji}';
+        final body = meal.description.isNotEmpty
+            ? meal.description.split('\n').first
+            : '${meal.name} — planına göz at ve işaretle.';
         await ReminderService.instance.scheduleDaily(
           id: meal.type.notificationId,
           hour: hour,
           minute: minute,
-          title: '${meal.type.tr} zamanı ${meal.type.emoji}',
-          body: meal.description.isNotEmpty
-              ? meal.description.split('\n').first
-              : '${meal.name} — planına göz at ve işaretle.',
+          title: title,
+          body: body,
+        );
+        await _rememberDue(
+          store,
+          user.id,
+          id: 'meal-${meal.type.notificationId}',
+          hour: hour,
+          minute: minute,
+          title: title,
+          body: body,
         );
       }
       return;
@@ -114,22 +135,42 @@ class SmartNotificationService {
     ];
     for (final slot in slots) {
       final parts = slot.$2.split(':');
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
       await ReminderService.instance.scheduleDaily(
         id: slot.$1,
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
+        hour: hour,
+        minute: minute,
+        title: slot.$3,
+        body: slot.$4,
+      );
+      await _rememberDue(
+        store,
+        user.id,
+        id: 'meal-${slot.$1}',
+        hour: hour,
+        minute: minute,
         title: slot.$3,
         body: slot.$4,
       );
     }
   }
 
-  Future<void> _scheduleWater(NotificationPrefs prefs) async {
+  Future<void> _scheduleWater(AppStore store, UserProfile user, NotificationPrefs prefs) async {
     var hour = 9;
     var idx = 0;
     while (hour <= 21 && idx < 8) {
       await ReminderService.instance.scheduleDaily(
         id: _waterBaseId + idx,
+        hour: hour,
+        minute: 0,
+        title: 'Su molası 💧',
+        body: 'Bir bardak su — hedefe bir adım daha.',
+      );
+      await _rememberDue(
+        store,
+        user.id,
+        id: 'water-$idx',
         hour: hour,
         minute: 0,
         title: 'Su molası 💧',
@@ -163,6 +204,15 @@ class SmartNotificationService {
       title: 'Yarın randevun var 📅',
       body: '${first.serviceTitle ?? 'Seans'} • saat $time — hazırlıklı ol.',
     );
+    await _rememberDue(
+      store,
+      userId,
+      id: 'appointment',
+      hour: 20,
+      minute: 0,
+      title: 'Yarın randevun var 📅',
+      body: '${first.serviceTitle ?? 'Seans'} • saat $time — hazırlıklı ol.',
+    );
   }
 
   Future<void> _evaluateImmediate(AppStore store, UserProfile user, NotificationPrefs prefs) async {
@@ -186,6 +236,13 @@ class SmartNotificationService {
     await _markSent(store, user.id, key);
     await ReminderService.instance.showSmart(
       id: 201,
+      title: 'Bugün $leftL L kaldı 💧',
+      body: 'Hedefine az kaldı — bir bardak su serini canlı tutar.',
+    );
+    await _rememberNow(
+      store,
+      user.id,
+      id: key,
       title: 'Bugün $leftL L kaldı 💧',
       body: 'Hedefine az kaldı — bir bardak su serini canlı tutar.',
     );
@@ -219,6 +276,13 @@ class SmartNotificationService {
       title: 'Akşam yemeğini işaretlemedin 🌙',
       body: '${todayMeals.first.name} — planına uygun mu kontrol et.',
     );
+    await _rememberNow(
+      store,
+      user.id,
+      id: key,
+      title: 'Akşam yemeğini işaretlemedin 🌙',
+      body: '${todayMeals.first.name} — planına uygun mu kontrol et.',
+    );
   }
 
   Future<void> _missYouClient(AppStore store, UserProfile user) async {
@@ -230,6 +294,13 @@ class SmartNotificationService {
     await _markSent(store, user.id, key);
     await ReminderService.instance.showSmart(
       id: _missYouId,
+      title: 'Seni özledik 🧡',
+      body: '3 gündür görüşemedik. Küçük bir su kaydı bile serini korur — gel!',
+    );
+    await _rememberNow(
+      store,
+      user.id,
+      id: key,
       title: 'Seni özledik 🧡',
       body: '3 gündür görüşemedik. Küçük bir su kaydı bile serini korur — gel!',
     );
@@ -267,6 +338,43 @@ class SmartNotificationService {
 
   String _dayKey(DateTime d) => '${d.year}-${d.month}-${d.day}';
   bool _sameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+
+  Future<void> _rememberDue(
+    AppStore store,
+    String userId, {
+    required String id,
+    required int hour,
+    required int minute,
+    required String title,
+    required String body,
+  }) async {
+    final now = DateTime.now();
+    final at = DateTime(now.year, now.month, now.day, hour, minute);
+    if (at.isAfter(now)) return;
+    await _rememberNow(store, userId, id: id, title: title, body: body, at: at);
+  }
+
+  Future<void> _rememberNow(
+    AppStore store,
+    String userId, {
+    required String id,
+    required String title,
+    required String body,
+    DateTime? at,
+    String source = 'automatic',
+  }) {
+    final when = at ?? DateTime.now();
+    return store.rememberInbox(
+      InboxNotice(
+        id: '$userId-$id-${_dayKey(when)}',
+        userId: userId,
+        title: title,
+        body: body,
+        createdAt: when,
+        source: source,
+      ),
+    );
+  }
 }
 
 class AchievementService {

@@ -385,7 +385,7 @@ List<HomeShortcutModel> softAdminShortcuts() => const [
       ),
       HomeShortcutModel(
         id: 'blog',
-        title: 'Blog',
+        title: 'Akademi',
         route: '/admin/blog',
         accent: Color(0xFFFFF0E8),
         iconAsset: DiyetselAssets.modernIconStory,

@@ -19,7 +19,7 @@ class ReminderService {
 
   void attach(AppStore store) => _store = store;
 
-  Future<void> init() async {
+  Future<void> init({bool requestPermissions = true}) async {
     if (!supportsNative) return;
     try {
       const android = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -30,10 +30,12 @@ class ReminderService {
       );
       final androidPlugin = _plugin
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      await androidPlugin?.requestNotificationsPermission();
-      final canExact = await androidPlugin?.canScheduleExactNotifications();
-      if (canExact == false) {
-        await androidPlugin?.requestExactAlarmsPermission();
+      if (requestPermissions) {
+        await androidPlugin?.requestNotificationsPermission();
+        final canExact = await androidPlugin?.canScheduleExactNotifications();
+        if (canExact == false) {
+          await androidPlugin?.requestExactAlarmsPermission();
+        }
       }
       await androidPlugin?.createNotificationChannel(
         const AndroidNotificationChannel(

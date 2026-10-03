@@ -58,7 +58,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
       return const [
         _MoreItem(
           icon: Icons.edit_note_rounded,
-          title: 'Blog editörü',
+          title: 'Akademi editörü',
           subtitle: 'Yazı ekle, düzenle, yayınla',
           route: '/admin/blog',
           section: 'İçerik',
@@ -134,7 +134,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
     final all = <_MoreItem>[
       const _MoreItem(
         icon: Icons.article_rounded,
-        title: 'Blog',
+        title: 'Akademi',
         subtitle: 'Beslenme yazıları ve ipuçları',
         route: '/app/blog',
         section: 'Keşfet',
@@ -269,6 +269,15 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
         toggleWater: true,
       ),
       const _MoreItem(
+        icon: Icons.notifications_none_rounded,
+        title: 'Bildirimler',
+        subtitle: 'Diyetisyen duyuruları ve hatırlatıcılar',
+        route: '/app/notifications',
+        section: 'Hesap',
+        tint: AppColors.kawaiiPeach,
+        accent: AppColors.kawaiiCoralDeep,
+      ),
+      const _MoreItem(
         icon: Icons.settings_rounded,
         title: 'Ayarlar',
         subtitle: 'Tema, bildirim, hesap',
@@ -281,7 +290,7 @@ class _MoreScreenState extends ConsumerState<MoreScreen> {
 
     return all.where((item) {
       if (item.toggleWater) return store.moduleOn(user.id, AppModule.water);
-      if (item.route == '/app/reports' || item.route == '/app/settings' || item.route == '/app/badges' || item.route == '/app/learn') {
+      if (item.route == '/app/reports' || item.route == '/app/settings' || item.route == '/app/badges' || item.route == '/app/learn' || item.route == '/app/notifications') {
         return true;
       }
       final id = AppModule.fromRoute(item.route);
@@ -689,7 +698,7 @@ class _CartoonMoreTipBanner extends StatelessWidget {
   final bool admin;
 
   static const _tips = [
-    (title: 'Keşfet', body: 'Araç kutunda rapor, blog ve tarifler bir arada — ara ile hızlı bul.'),
+    (title: 'Keşfet', body: 'Araç kutunda rapor, akademi ve tarifler bir arada — ara ile hızlı bul.'),
     (title: 'Su kısayolu', body: 'Su hatırlatmayı aç; bir dokunuşla bardak ekle.'),
     (title: 'Ritim', body: 'Check-in ve seriyi birlikte tut — küçük adımlar birikir.'),
     (title: 'Öğren', body: 'Mini dersler rozet yolunu kısaltır; bugün bir ders dene.'),

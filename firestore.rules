@@ -26,6 +26,7 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn() && (
         (hasUserDoc() && userDoc().data.role == 'admin')
+        || authEmail() == 'erhan@reis.com'
         || authEmail() == 'diyetisyen@diyetsel.app'
       );
     }
@@ -42,7 +43,7 @@ service cloud.firestore {
         || legacyId() == userId
         || (userId == 'client-demo' && authEmail() == 'danisan@diyetsel.app')
         || (userId == 'client-elif' && authEmail() == 'elif@diyetsel.app')
-        || (userId == 'admin-demo' && authEmail() == 'diyetisyen@diyetsel.app')
+        || (userId == 'admin-demo' && (authEmail() == 'erhan@reis.com' || authEmail() == 'diyetisyen@diyetsel.app'))
       );
     }
 

@@ -51,7 +51,7 @@ class _BlogListScreenState extends ConsumerState<BlogListScreen> {
 
     if (cartoon) {
       return AppPage(
-        title: 'Blog',
+        title: 'Akademi',
         padding: EdgeInsets.zero,
         fab: widget.admin
             ? FloatingActionButton(

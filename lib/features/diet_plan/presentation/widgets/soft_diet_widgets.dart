@@ -1347,20 +1347,7 @@ class _SoftMealCardState extends State<SoftMealCard> {
               duration: const Duration(milliseconds: 220),
             ),
           ],
-          if (meal.calories > 0) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _macroPill('🔥', '${meal.calories}', accent),
-                const SizedBox(width: 6),
-                _macroPill('P', '${meal.protein}g', AppColors.protein),
-                const SizedBox(width: 6),
-                _macroPill('K', '${meal.carbs}g', AppColors.carbs),
-                const SizedBox(width: 6),
-                _macroPill('Y', '${meal.fat}g', AppColors.fat),
-              ],
-            ),
-          ],
+          if (meal.nutritionEntered) _nutritionRow(meal, accent),
           const SizedBox(height: 12),
           toggleBtn,
         ],
@@ -1369,6 +1356,27 @@ class _SoftMealCardState extends State<SoftMealCard> {
         .animate(delay: (50 * widget.index).ms)
         .fadeIn(duration: 320.ms)
         .slideY(begin: 0.06, end: 0, duration: 380.ms, curve: Curves.easeOutCubic);
+  }
+
+  Widget _nutritionRow(DietMeal meal, Color accent) {
+    final pills = <Widget>[
+      if (meal.calories > 0) _macroPill('🔥', '${meal.calories}', accent),
+      if (meal.protein > 0) _macroPill('P', '${meal.protein}g', AppColors.protein),
+      if (meal.carbs > 0) _macroPill('K', '${meal.carbs}g', AppColors.carbs),
+      if (meal.fat > 0) _macroPill('Y', '${meal.fat}g', AppColors.fat),
+    ];
+    if (pills.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Row(
+        children: [
+          for (var i = 0; i < pills.length; i++) ...[
+            if (i > 0) const SizedBox(width: 6),
+            pills[i],
+          ],
+        ],
+      ),
+    );
   }
 
   Widget _macroPill(String label, String value, Color color) {

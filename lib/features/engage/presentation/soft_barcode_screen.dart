@@ -95,7 +95,7 @@ class _SoftBarcodeScreenState extends ConsumerState<SoftBarcodeScreen> {
     final remaining = store.remainingKcal(user.id);
     final snackLeft = store
         .mealsToday(user.id)
-        .where((m) => !m.consumed)
+        .where((m) => !m.consumed && m.nutritionEntered && m.calories > 0)
         .fold<int>(9999, (s, m) => m.calories < s ? m.calories : s);
     final budget = snackLeft == 9999 ? remaining : (snackLeft < remaining ? snackLeft : remaining);
     final stamp = _product == null ? null : barcodeStamp(productKcal: _product!.kcal, remaining: budget);
@@ -135,7 +135,9 @@ class _SoftBarcodeScreenState extends ConsumerState<SoftBarcodeScreen> {
             const SizedBox(height: 12),
             SoftTipCard(
               title: 'Etiket oku',
-              body: '100 g kalorisine bak; porsiyonu kendi tabağınla kıyasla. Bütçen ~$budget kcal.',
+              body: budget > 0
+                  ? '100 g kalorisine bak; porsiyonu kendi tabağınla kıyasla. Bütçen ~$budget kcal.'
+                  : '100 g kalorisine bak; porsiyonu kendi tabağınla kıyasla.',
               icon: Icons.qr_code_scanner_rounded,
               accent: AppColors.primary,
               tint: AppColors.modernMint,

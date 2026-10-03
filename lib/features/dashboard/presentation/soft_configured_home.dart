@@ -172,7 +172,7 @@ class SoftConfiguredHome extends ConsumerWidget {
         subtitle: 'Başlangıç rehberi',
         route: '/app/blog',
         imageAsset: DiyetselAssets.modernCardBlog,
-        tag: 'Blog',
+        tag: 'Akademi',
       ),
       HomeArticleModel(
         id: 'keto',

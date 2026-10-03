@@ -1,6 +1,7 @@
 class AppConstants {
   static const String appName = 'e-Diyet';
-  static const String demoAdminEmail = 'diyetisyen@diyetsel.app';
+  static const String demoAdminEmail = 'erhan@reis.com';
+  static const String demoAdminPassword = 'erhan12';
   static const String dietitianName = 'Zühre';
   static const String demoClientEmail = 'danisan@diyetsel.app';
   static const String demoPassword = 'Diyetsel123!';
@@ -41,4 +42,5 @@ class FirestorePaths {
   static const fasting = 'fasting';
   static const userProgress = 'userProgress';
   static const adminBroadcasts = 'adminBroadcasts';
+  static const inboxNotices = 'inboxNotices';
 }

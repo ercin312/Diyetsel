@@ -144,7 +144,7 @@ class _ModernMealCard extends StatelessWidget {
               ],
             ),
           ],
-          if (meal.calories > 0) ...[
+          if (meal.nutritionEntered) ...[
             const SizedBox(height: 10),
             _MacroRow(calories: meal.calories, protein: meal.protein, carbs: meal.carbs, fat: meal.fat),
           ],
@@ -431,7 +431,7 @@ class _CartoonMealCardState extends State<_CartoonMealCard> {
                     ),
                   ),
                 ],
-                if (meal.calories > 0) ...[
+                if (meal.nutritionEntered) ...[
                   const SizedBox(height: 12),
                   _MacroRow(
                     calories: meal.calories,
@@ -546,11 +546,16 @@ class _MacroRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      (label: 'kcal', value: '$calories', color: playful ? AppColors.kawaiiCoral : AppColors.primary),
-      (label: 'protein', value: '${protein}g', color: playful ? AppColors.kawaiiLeaf : const Color(0xFF2F9E7C)),
-      (label: 'karb', value: '${carbs}g', color: playful ? AppColors.kawaiiWarmYellow : const Color(0xFFD4A017)),
-      (label: 'yağ', value: '${fat}g', color: playful ? AppColors.kawaiiPurple : const Color(0xFF7C6CF0)),
+      if (calories > 0)
+        (label: 'kcal', value: '$calories', color: playful ? AppColors.kawaiiCoral : AppColors.primary),
+      if (protein > 0)
+        (label: 'protein', value: '${protein}g', color: playful ? AppColors.kawaiiLeaf : const Color(0xFF2F9E7C)),
+      if (carbs > 0)
+        (label: 'karb', value: '${carbs}g', color: playful ? AppColors.kawaiiWarmYellow : const Color(0xFFD4A017)),
+      if (fat > 0)
+        (label: 'yağ', value: '${fat}g', color: playful ? AppColors.kawaiiPurple : const Color(0xFF7C6CF0)),
     ];
+    if (items.isEmpty) return const SizedBox.shrink();
     return Wrap(
       spacing: 6,
       runSpacing: 6,

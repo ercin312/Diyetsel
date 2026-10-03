@@ -43,7 +43,7 @@ class AppModule {
         story => 'Hikaye kartı',
         fasting => 'Aralıklı oruç',
         recipes => 'Tarifler',
-        blog => 'Blog',
+        blog => 'Akademi',
         shopping => 'Alışveriş listesi',
         chat => 'Sohbet',
         services => 'Hizmetler',

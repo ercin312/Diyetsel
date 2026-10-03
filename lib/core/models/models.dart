@@ -385,6 +385,7 @@ class DietMeal {
     this.consumed = false,
     this.ingredients = const [],
     this.reminderTime,
+    this.nutritionEntered = false,
   });
 
   final String id;
@@ -399,6 +400,8 @@ class DietMeal {
   final List<Ingredient> ingredients;
   /// Optional daily reminder `HH:mm`. Falls back to [MealTypeX.defaultReminderTime].
   final String? reminderTime;
+  /// True only after the dietitian saves calorie or macro numbers for this meal.
+  final bool nutritionEntered;
 
   String get effectiveReminderTime => reminderTime ?? type.defaultReminderTime;
 
@@ -408,19 +411,25 @@ class DietMeal {
     String? description,
     String? reminderTime,
     bool clearReminderTime = false,
+    int? calories,
+    int? protein,
+    int? carbs,
+    int? fat,
+    bool? nutritionEntered,
   }) =>
       DietMeal(
         id: id,
         type: type,
         name: name ?? this.name,
         description: description ?? this.description,
-        calories: calories,
-        protein: protein,
-        carbs: carbs,
-        fat: fat,
+        calories: calories ?? this.calories,
+        protein: protein ?? this.protein,
+        carbs: carbs ?? this.carbs,
+        fat: fat ?? this.fat,
         consumed: consumed ?? this.consumed,
         ingredients: ingredients,
         reminderTime: clearReminderTime ? null : (reminderTime ?? this.reminderTime),
+        nutritionEntered: nutritionEntered ?? this.nutritionEntered,
       );
 
   Map<String, dynamic> toMap() => {
@@ -434,6 +443,7 @@ class DietMeal {
         'fat': fat,
         'consumed': consumed,
         'ingredients': ingredients.map((e) => e.toMap()).toList(),
+        'nutritionEntered': nutritionEntered,
         if (reminderTime != null) 'reminderTime': reminderTime,
       };
 
@@ -456,6 +466,7 @@ class DietMeal {
                 .toList() ??
             const [],
         reminderTime: map['reminderTime'] == null ? null : _s(map['reminderTime']),
+        nutritionEntered: map['nutritionEntered'] == true,
       );
 }
 
@@ -493,6 +504,7 @@ class DietPlan {
     this.proteinTarget = 110,
     this.carbsTarget = 160,
     this.fatTarget = 60,
+    this.targetsEntered = false,
   });
 
   final String id;
@@ -506,6 +518,8 @@ class DietPlan {
   final int proteinTarget;
   final int carbsTarget;
   final int fatTarget;
+  /// Daily calorie and macro targets are shown only after the dietitian saves them.
+  final bool targetsEntered;
 
   DietPlan copyWith({List<DietDay>? days}) => DietPlan(
         id: id,
@@ -519,6 +533,7 @@ class DietPlan {
         proteinTarget: proteinTarget,
         carbsTarget: carbsTarget,
         fatTarget: fatTarget,
+        targetsEntered: targetsEntered,
       );
 
   Map<String, dynamic> toMap() => {
@@ -533,6 +548,7 @@ class DietPlan {
         'proteinTarget': proteinTarget,
         'carbsTarget': carbsTarget,
         'fatTarget': fatTarget,
+        'targetsEntered': targetsEntered,
       };
 
   factory DietPlan.fromMap(Map<String, dynamic> map) => DietPlan(
@@ -551,6 +567,7 @@ class DietPlan {
         proteinTarget: _i(map['proteinTarget'], 110),
         carbsTarget: _i(map['carbsTarget'], 160),
         fatTarget: _i(map['fatTarget'], 60),
+        targetsEntered: map['targetsEntered'] == true,
       );
 }
 
@@ -1632,6 +1649,50 @@ class UserProgress {
         pendingAdminTitle: map['pendingAdminTitle'] as String?,
         pendingAdminBody: map['pendingAdminBody'] as String?,
         pendingAdminRoute: map['pendingAdminRoute'] as String?,
+      );
+}
+
+/// A notification the user can reopen: dietitian message or an automatic reminder.
+class InboxNotice {
+  const InboxNotice({
+    required this.id,
+    required this.userId,
+    required this.title,
+    required this.body,
+    required this.createdAt,
+    required this.source,
+    this.route = '',
+  });
+
+  final String id;
+  final String userId;
+  final String title;
+  final String body;
+  final DateTime createdAt;
+  /// `dietitian` or `automatic`.
+  final String source;
+  final String route;
+
+  bool get fromDietitian => source == 'dietitian';
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'userId': userId,
+        'title': title,
+        'body': body,
+        'createdAt': createdAt.toIso8601String(),
+        'source': source,
+        'route': route,
+      };
+
+  factory InboxNotice.fromMap(Map<String, dynamic> map) => InboxNotice(
+        id: _s(map['id']),
+        userId: _s(map['userId']),
+        title: _s(map['title']),
+        body: _s(map['body']),
+        createdAt: _dt(map['createdAt']),
+        source: _s(map['source'], 'automatic'),
+        route: _s(map['route']),
       );
 }
 

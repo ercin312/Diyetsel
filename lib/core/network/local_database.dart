@@ -11,6 +11,7 @@ import '../constants/app_constants.dart';
 /// Collections that stay on-device only (never pushed to / pulled from Firestore).
 const Set<String> kLocalOnlyCollections = {
   FirestorePaths.credentials,
+  FirestorePaths.inboxNotices,
   'settings',
 };
 
@@ -65,7 +66,7 @@ class LocalDatabase {
         }
         return;
       }
-      final sanitized = _sanitizeForLocal(data);
+      final sanitized = _keepLocalPhoto(collection, id, _sanitizeForLocal(data));
       await put(collection, id, sanitized, syncCloud: false);
     } finally {
       _applyingRemote = false;
@@ -108,6 +109,33 @@ class LocalDatabase {
         .where((k) => k.toString().startsWith(prefix))
         .map((k) => jsonDecode(_box.get(k)!) as Map<String, dynamic>)
         .toList();
+  }
+
+  Map<String, dynamic> _keepLocalPhoto(
+    String collection,
+    String id,
+    Map<String, dynamic> remote,
+  ) {
+    if (collection != FirestorePaths.users) return remote;
+    final local = get(collection, id);
+    final localPhoto = local?['photoUrl']?.toString().trim() ?? '';
+    final remotePhoto = remote['photoUrl']?.toString().trim() ?? '';
+    var next = remote;
+    if (localPhoto.isNotEmpty && remotePhoto.isEmpty) {
+      next = {...next, 'photoUrl': localPhoto};
+    }
+    // Keep the configured clinic admin email if this device already uses it.
+    final remoteRole = remote['role']?.toString();
+    final localEmail = local?['email']?.toString().trim().toLowerCase() ?? '';
+    if (remoteRole == 'admin' &&
+        localEmail == AppConstants.demoAdminEmail.trim().toLowerCase()) {
+      next = {
+        ...next,
+        'email': AppConstants.demoAdminEmail.trim().toLowerCase(),
+        'role': 'admin',
+      };
+    }
+    return next;
   }
 
   Map<String, dynamic> _sanitizeForLocal(Map<String, dynamic> data) {

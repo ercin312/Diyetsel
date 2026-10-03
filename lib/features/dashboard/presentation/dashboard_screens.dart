@@ -137,7 +137,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                           icon: Icons.chat,
                           route: '/admin/chat',
                           tint: AppColors.accent),
-                        HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article, route: '/admin/blog', tint: context.brandDeep),
+                        HomeCategory(label: 'Akademi', emoji: '📰', icon: Icons.article, route: '/admin/blog', tint: context.brandDeep),
                         HomeCategory(label: 'Hizmet', emoji: '🎁', icon: Icons.storefront, route: '/admin/services', tint: context.brandPrimary),
                         HomeCategory(
                           label: 'Tarif',
@@ -390,7 +390,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
           route: '/app/services',
           tint: (context.isModern ? AppColors.primaryBright : context.brandBright)),
         HomeCategory(label: 'Tarif', emoji: '🍲', icon: Icons.menu_book_rounded, route: '/app/recipes', tint: context.brandPrimary),
-        HomeCategory(label: 'Blog', emoji: '📰', icon: Icons.article_rounded, route: '/app/blog', tint: context.brandDeep),
+        HomeCategory(label: 'Akademi', emoji: '📰', icon: Icons.article_rounded, route: '/app/blog', tint: context.brandDeep),
         HomeCategory(
           label: 'Alışveriş',
           emoji: '🛒',
@@ -492,7 +492,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                   'Randevu',
                   'Hizmet',
                   'Tarif',
-                  'Blog',
+                  'Akademi',
                   'Alışveriş',
                   'Sohbet',
                 }.contains(c.label))
@@ -908,7 +908,10 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
                                     title: Text((m.name).ui,
                                       style: TextStyle(
                                         fontWeight: context.isModern ? FontWeight.w700 : FontWeight.w800)),
-                                    subtitle: Text(('${m.type.tr} • ${m.calories} kcal').ui),
+                                    subtitle: Text((m.nutritionEntered && m.calories > 0
+                                            ? '${m.type.tr} • ${m.calories} kcal'
+                                            : m.type.tr)
+                                        .ui),
                                     onChanged: plan == null
                                         ? null
                                         : (_) {

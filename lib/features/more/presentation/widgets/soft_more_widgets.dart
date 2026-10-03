@@ -159,7 +159,7 @@ class SoftMoreHero extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text((admin
-                      ? 'Bildirim, öğün, diyet planı ve blog araçları.'
+                      ? 'Bildirim, öğün, diyet planı ve akademi.'
                       : 'Blog, sohbet, rapor ve günlük araçlar.').ui,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,

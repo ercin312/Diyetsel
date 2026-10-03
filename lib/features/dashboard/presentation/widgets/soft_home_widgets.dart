@@ -61,7 +61,7 @@ class SoftSearchBar extends StatelessWidget {
       builder: (ctx) {
         final items = [
           (Icons.menu_book_rounded, 'Tarifler', '/app/recipes', SoftHomeColors.blushSoft),
-          (Icons.article_outlined, 'Blog', '/app/blog', SoftHomeColors.amberSoft),
+          (Icons.article_outlined, 'Akademi', '/app/blog', SoftHomeColors.amberSoft),
           (Icons.restaurant_rounded, 'Diyet planım', '/app/diet', SoftHomeColors.blush),
           (Icons.water_drop_rounded, 'Su takibi', '/app/track', SoftHomeColors.waterSoft),
           (Icons.storefront_outlined, 'Hizmetler', '/app/services', SoftHomeColors.blushSoft),
@@ -1269,7 +1269,7 @@ class SoftGreetingHeader extends StatelessWidget {
                     ),
                     const Spacer(),
                     SoftTap(
-                      onTap: () => context.push('/app/badges'),
+                      onTap: () => context.push('/app/notifications'),
                       borderRadius: BorderRadius.circular(999),
                       child: Container(
                         width: 40,

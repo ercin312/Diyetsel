@@ -50,7 +50,7 @@ class SeedData {
     await store.saveUser(admin);
     await store.saveUser(client);
     await store.saveUser(elif);
-    await store.saveCredential(admin.email, hashPassword(AppConstants.demoPassword));
+    await store.saveCredential(admin.email, hashPassword(AppConstants.demoAdminPassword));
     await store.saveCredential(client.email, hashPassword(AppConstants.demoPassword));
     await store.saveCredential(elif.email, hashPassword(AppConstants.demoPassword));
 

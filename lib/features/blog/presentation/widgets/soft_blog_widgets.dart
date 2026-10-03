@@ -29,7 +29,7 @@ class SoftBlogHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text((admin ? 'Blog editörü' : 'Blog').ui,
+              Text((admin ? 'Akademi editörü' : 'Akademi').ui,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,

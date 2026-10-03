@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +26,7 @@ Future<void> pickProfilePhoto(BuildContext context, WidgetRef ref) async {
   if (picked == null) return;
 
   try {
-    final photoUrl = await _storePhoto(File(picked.path), user.id);
+    final photoUrl = await _storePhoto(picked, user.id);
     await ref.read(authControllerProvider.notifier).updateProfile(
           user.copyWith(photoUrl: photoUrl),
         );
@@ -42,17 +44,33 @@ Future<void> pickProfilePhoto(BuildContext context, WidgetRef ref) async {
   }
 }
 
-Future<String> _storePhoto(File file, String userId) async {
+Future<String> _storePhoto(XFile picked, String userId) async {
+  final bytes = await picked.readAsBytes();
+  if (bytes.isEmpty) {
+    throw StateError('Seçilen dosya boş');
+  }
   if (Firebase.apps.isNotEmpty) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final storageRef = FirebaseStorage.instance.ref('users/$uid/avatar.jpg');
-      await storageRef.putFile(file, SettableMetadata(contentType: 'image/jpeg'));
-      return storageRef.getDownloadURL();
+      try {
+        final storageRef = FirebaseStorage.instance.ref('users/$uid/avatar.jpg');
+        await storageRef
+            .putData(
+              bytes,
+              SettableMetadata(contentType: 'image/jpeg'),
+            )
+            .timeout(const Duration(seconds: 12));
+        return await storageRef.getDownloadURL().timeout(const Duration(seconds: 8));
+      } catch (e) {
+        debugPrint('Profil fotoğrafı buluta yazılamadı: $e');
+      }
     }
+  }
+  if (bytes.length <= 450000) {
+    return 'data:image/jpeg;base64,${base64Encode(bytes)}';
   }
   final dir = await getApplicationDocumentsDirectory();
   final dest = File('${dir.path}/avatar_$userId.jpg');
-  await file.copy(dest.path);
+  await dest.writeAsBytes(bytes, flush: true);
   return dest.path;
 }

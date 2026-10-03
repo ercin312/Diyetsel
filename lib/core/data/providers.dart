@@ -132,6 +132,11 @@ final adminBroadcastsProvider = StreamProvider<List<AdminBroadcast>>((ref) {
   return _watch(store, FirestorePaths.adminBroadcasts, store.adminBroadcasts);
 });
 
+final inboxNoticesProvider = StreamProvider.family<List<InboxNotice>, String>((ref, userId) {
+  final store = ref.watch(appStoreProvider);
+  return _watch(store, FirestorePaths.inboxNotices, () => store.inboxFor(userId));
+});
+
 final settingsProvider = StreamProvider<AppSettings>((ref) {
   final store = ref.watch(appStoreProvider);
   return _watch(store, 'settings', store.settings);

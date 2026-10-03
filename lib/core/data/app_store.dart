@@ -26,6 +26,14 @@ String hashPassword(String password) => sha256.convert(utf8.encode('diyetsel::$p
 
 String dayKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
+String? _keepUploadedPhoto(String? existing, String? fromAuth) {
+  final current = existing?.trim() ?? '';
+  if (current.startsWith('data:image') || current.contains('firebasestorage')) return current;
+  final auth = fromAuth?.trim() ?? '';
+  if (auth.isNotEmpty) return auth;
+  return current.isEmpty ? null : current;
+}
+
 class AppStore {
   AppStore(this.db);
 
@@ -532,6 +540,11 @@ class AppStore {
     required String dietitianId,
     required String title,
     required List<DietMeal> templateMeals,
+    int calorieTarget = 0,
+    int proteinTarget = 0,
+    int carbsTarget = 0,
+    int fatTarget = 0,
+    bool targetsEntered = false,
   }) async {
     var monday = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
     monday = DateTime(monday.year, monday.month, monday.day);
@@ -544,6 +557,11 @@ class AppStore {
       dietitianId: dietitianId,
       title: title,
       weekStart: monday,
+      calorieTarget: targetsEntered ? calorieTarget : 0,
+      proteinTarget: targetsEntered ? proteinTarget : 0,
+      carbsTarget: targetsEntered ? carbsTarget : 0,
+      fatTarget: targetsEntered ? fatTarget : 0,
+      targetsEntered: targetsEntered,
       days: [
         for (var i = 0; i < 7; i++)
           DietDay(
@@ -559,6 +577,7 @@ class AppStore {
                   protein: m.protein,
                   carbs: m.carbs,
                   fat: m.fat,
+                  nutritionEntered: m.nutritionEntered,
                   ingredients: m.ingredients,
                   reminderTime: m.reminderTime ?? m.type.defaultReminderTime,
                 ),
@@ -606,30 +625,6 @@ class AppStore {
     return profile;
   }
 
-  Future<UserProfile> login(String email, String password) async {
-    final normalized = email.trim().toLowerCase();
-    final local = userByEmail(normalized);
-    final localOk = local != null && verifyPassword(normalized, password);
-
-    if (Firebase.apps.isNotEmpty) {
-      final firebaseUser =
-          await _ensureFirebaseSession(normalized, password, localOk: localOk);
-      if (firebaseUser != null) {
-        final profile = user(firebaseUser.uid) ?? userByEmail(normalized) ?? local;
-        if (profile != null) {
-          await _mirrorAuthIdentity(profile);
-          return profile;
-        }
-      }
-    }
-
-    if (local == null || !localOk) {
-      throw StateError('E-posta veya şifre hatalı');
-    }
-    await _mirrorAuthIdentity(local);
-    return local;
-  }
-
   Future<UserProfile> loginWithGoogle() async {
     final cred = await SocialAuth.signInWithGoogle();
     final user = cred.user;
@@ -670,7 +665,7 @@ class AppStore {
       final merged = existing.copyWith(
         email: resolvedEmail,
         displayName: name,
-        photoUrl: firebaseUser.photoURL ?? existing.photoUrl,
+        photoUrl: _keepUploadedPhoto(existing.photoUrl, firebaseUser.photoURL),
       );
       await saveUser(merged);
       await _mirrorAuthIdentity(merged);
@@ -705,8 +700,10 @@ class AppStore {
     } on FirebaseAuthException catch (e) {
       final missing = e.code == 'user-not-found' ||
           e.code == 'invalid-credential' ||
-          e.code == 'INVALID_LOGIN_CREDENTIALS';
-      if (!localOk || !missing) return FirebaseAuth.instance.currentUser;
+          e.code == 'INVALID_LOGIN_CREDENTIALS' ||
+          e.code == 'wrong-password';
+      if (!localOk) return FirebaseAuth.instance.currentUser;
+      if (!missing) return FirebaseAuth.instance.currentUser;
 
       try {
         final created = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -716,7 +713,7 @@ class AppStore {
         return created.user;
       } on FirebaseAuthException catch (createErr) {
         if (createErr.code == 'email-already-in-use') {
-          // Cloud password differs from local demo hash — stay local-only.
+          // Cloud password differs from local — continue with local session.
           return null;
         }
         return null;
@@ -893,6 +890,7 @@ class AppStore {
     await purgeLocalWhere(FirestorePaths.recipeInteractions);
     await purgeLocalWhere(FirestorePaths.chats);
     await purgeLocalWhere(FirestorePaths.messages);
+    await purgeLocalWhere(FirestorePaths.inboxNotices);
 
     await purgeByField(FirestorePaths.appointments, 'clientId');
     await purgeByField(FirestorePaths.serviceRequests, 'clientId');
@@ -916,6 +914,87 @@ class AppStore {
     if (settings().seeded) return;
     await SeedData.seed(this);
     await saveSettings(settings().copyWith(seeded: true));
+  }
+
+  /// Keeps the clinic admin login at [AppConstants.demoAdminEmail] / [AppConstants.demoAdminPassword].
+  Future<void> ensureAdminAccount() async {
+    final targetEmail = AppConstants.demoAdminEmail.trim().toLowerCase();
+    final password = AppConstants.demoAdminPassword;
+    var admins = users().where((u) => u.isAdmin).toList();
+    if (admins.isEmpty) {
+      final created = UserProfile(
+        id: SeedData.adminId,
+        email: targetEmail,
+        displayName: AppConstants.dietitianName,
+        role: UserRole.admin,
+        createdAt: DateTime.now(),
+        notes: 'Kurucu diyetisyen',
+      );
+      await saveUser(created);
+      admins = [created];
+    }
+
+    for (final admin in admins) {
+      final current = admin.email.trim().toLowerCase();
+      if (current != targetEmail && current.isNotEmpty) {
+        await db.delete(FirestorePaths.credentials, current, syncCloud: false);
+      }
+      if (current != targetEmail || admin.displayName != AppConstants.dietitianName) {
+        await saveUser(
+          admin.copyWith(
+            email: targetEmail,
+            displayName: AppConstants.dietitianName,
+          ),
+        );
+      }
+    }
+    await saveCredential(targetEmail, hashPassword(password));
+  }
+
+  Future<UserProfile> _loginAsConfiguredAdmin(String password) async {
+    await ensureAdminAccount();
+    final admin = users().where((u) => u.isAdmin).firstOrNull;
+    if (admin == null || !verifyPassword(AppConstants.demoAdminEmail, password)) {
+      throw StateError('E-posta veya şifre hatalı');
+    }
+    if (Firebase.apps.isNotEmpty) {
+      await _ensureFirebaseSession(
+        AppConstants.demoAdminEmail.trim().toLowerCase(),
+        password,
+        localOk: true,
+      );
+    }
+    await _mirrorAuthIdentity(admin);
+    return users().where((u) => u.isAdmin).firstOrNull ?? admin;
+  }
+
+  Future<UserProfile> login(String email, String password) async {
+    final normalized = email.trim().toLowerCase();
+    final adminEmail = AppConstants.demoAdminEmail.trim().toLowerCase();
+    if (normalized == adminEmail && password == AppConstants.demoAdminPassword) {
+      return _loginAsConfiguredAdmin(password);
+    }
+
+    final local = userByEmail(normalized);
+    final localOk = local != null && verifyPassword(normalized, password);
+
+    if (Firebase.apps.isNotEmpty) {
+      final firebaseUser =
+          await _ensureFirebaseSession(normalized, password, localOk: localOk);
+      if (firebaseUser != null) {
+        final profile = user(firebaseUser.uid) ?? userByEmail(normalized) ?? local;
+        if (profile != null) {
+          await _mirrorAuthIdentity(profile);
+          return profile;
+        }
+      }
+    }
+
+    if (local == null || !localOk) {
+      throw StateError('E-posta veya şifre hatalı');
+    }
+    await _mirrorAuthIdentity(local);
+    return local;
   }
 
   /// Clinic dietitian display name is Zühre on every admin profile and chat label.
@@ -1101,8 +1180,11 @@ class AppStore {
 
   int remainingKcal(String clientId) {
     final plan = dietPlanForClient(clientId);
-    final eaten = mealsToday(clientId).where((m) => m.consumed).fold<int>(0, (s, m) => s + m.calories);
-    return ((plan?.calorieTarget ?? 1800) - eaten).clamp(0, 99999);
+    if (plan == null || !plan.targetsEntered || plan.calorieTarget <= 0) return 0;
+    final eaten = mealsToday(clientId)
+        .where((m) => m.consumed && m.nutritionEntered)
+        .fold<int>(0, (s, m) => s + m.calories);
+    return (plan.calorieTarget - eaten).clamp(0, plan.calorieTarget);
   }
 
   List<UserProfile> silentClients({int days = 3}) {
@@ -1133,6 +1215,26 @@ class AppStore {
 
   Future<void> saveAdminBroadcast(AdminBroadcast item) =>
       db.put(FirestorePaths.adminBroadcasts, item.id, item.toMap());
+
+  List<InboxNotice> inboxFor(String userId) {
+    final items = _map(FirestorePaths.inboxNotices, InboxNotice.fromMap)
+        .where((n) => n.userId == userId)
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items;
+  }
+
+  /// Keeps one copy of a notice. Older automatic reminders drop after 80 entries.
+  Future<void> rememberInbox(InboxNotice notice) async {
+    if (notice.title.trim().isEmpty) return;
+    if (db.get(FirestorePaths.inboxNotices, notice.id) != null) return;
+    await db.put(FirestorePaths.inboxNotices, notice.id, notice.toMap());
+    final mine = inboxFor(notice.userId);
+    if (mine.length <= 80) return;
+    for (final extra in mine.skip(80)) {
+      await db.delete(FirestorePaths.inboxNotices, extra.id);
+    }
+  }
 
   /// Queues a custom admin notification for target clients and stores history.
   Future<AdminBroadcast> sendAdminBroadcast({

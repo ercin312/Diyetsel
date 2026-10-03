@@ -140,7 +140,13 @@ class AuthController extends Notifier<AuthState> {
     final sync = ref.read(cloudSyncServiceProvider);
     try {
       await sync.start();
+      await ref.read(appStoreProvider).ensureAdminAccount();
       await ref.read(appStoreProvider).ensureDietitianName();
+      final sessionId = ref.read(appStoreProvider).settings().sessionUserId;
+      if (sessionId != null) {
+        final refreshed = ref.read(appStoreProvider).user(sessionId);
+        if (refreshed != null) state = AuthState(user: refreshed);
+      }
     } catch (e) {
       debugPrint('Cloud sync start failed: $e');
     }
